@@ -1,13 +1,13 @@
 ---
 import { getIndex } from '../lib/api.js';
 import Layout from '../layouts/Layout.astro';
-import Blocks from '../components/Blocks.astro';
 
-const data = await getIndex(`/home.json`);
-const global = data.global;
+const data = await getIndex(`/z-error.json`);
 const pageTitle = data.global.siteTitle + ' | ' + data.title;
 ---
 
 <Layout pageTitle={pageTitle} data={data}>
-	<Blocks blocks={data.blocks} global={global} />
+	<section class="container">
+		<h1 class="text-green">Fehler</h1>
+	</section>
 </Layout>

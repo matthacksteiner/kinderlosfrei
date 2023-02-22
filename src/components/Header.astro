@@ -1,0 +1,44 @@
+---
+import Hamburger from './Hamburger.astro';
+import Navigation from './Navigation.astro';
+import { Icon } from 'astro-icon';
+
+const { data } = Astro.props;
+---
+
+<header
+	class="fixed z-10 w-full pt-4 transition-all duration-300 ease-in-out max-md:items-center md:pt-16"
+	w
+>
+	<div class="grid-default container">
+		<div
+			class="logo z-10 col-span-2 w-full transition-all duration-300 ease-in-out max-md:py-4"
+		>
+			<a href="/" aria-label="Zurück zur Homepage">
+				<Icon name="logo" />
+			</a>
+		</div>
+		<nav
+			class="col-span-2 col-start-4 ml-auto justify-end transition-all duration-300 ease-in-out max-lg:self-center lg:col-span-10 lg:col-start-3"
+		>
+			<Hamburger />
+			<Navigation data={data} />
+		</nav>
+	</div>
+</header>
+
+<script>
+	import '../scripts/header.js';
+</script>
+
+<style lang="css">
+	.header--small {
+		@apply bg-white py-0 shadow-lg lg:py-4;
+	}
+	.header--small .logo {
+		@apply w-24 opacity-100 lg:w-24;
+	}
+	.header--small nav {
+		@apply self-center;
+	}
+</style>

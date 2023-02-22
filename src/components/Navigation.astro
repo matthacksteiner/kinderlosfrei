@@ -1,0 +1,43 @@
+---
+const { data } = Astro.props;
+const { slug } = Astro.params;
+const currentPath = slug ? slug : "";
+---
+
+<div
+  class="nav-links invisible top-0 left-0 z-10 mr-24 flex min-h-full w-full flex-col justify-center text-center text-2xl uppercase opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none max-lg:fixed max-lg:bg-green max-lg:text-white lg:visible lg:flex lg:flex-row lg:justify-end lg:opacity-100"
+>
+  <a
+    href="/"
+    class={`nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24 ${
+      currentPath === "" ? "active" : ""
+    }`}>Home</a
+  >
+  {
+    data.global.nav
+      .filter((item) => item.intendedtemplate === "default")
+      .map((item) => {
+        const uri = item.uri;
+
+        return (
+          <a
+            href={item.uri}
+            class={`nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24 ${
+              currentPath === uri ? "active" : ""
+            }`}
+          >
+            {item.title}
+          </a>
+        );
+      })
+  }
+</div>
+
+<style>
+  .expanded {
+    @apply pointer-events-auto visible opacity-100;
+  }
+  .active {
+    @apply font-semibold;
+  }
+</style>

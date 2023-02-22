@@ -1,0 +1,21 @@
+---
+---
+
+<button
+	class="lg c-hamburger--stack c-hamburger relative z-20 lg:hidden"
+	aria-label="hamburger-button"
+	type="button"
+>
+	<div class="c-hamburger-inner">
+		<span class="c-hamburger-bar"></span>
+		<span class="c-hamburger-bar"></span>
+		<span class="c-hamburger-bar"></span>
+	</div>
+</button>
+
+<style>
+	.c-hamburger.active span.c-hamburger-bar:nth-child(1)::before,
+	.c-hamburger.active span.c-hamburger-bar:nth-child(3)::before {
+		@apply bg-white;
+	}
+</style>

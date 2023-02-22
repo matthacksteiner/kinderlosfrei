@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Blocks from '../components/Blocks.astro';
+const API_URL = import.meta.env.KIRBY_URL;
+
+export async function getStaticPaths() {
+	const API_URL = import.meta.env.KIRBY_URL;
+	const response = await fetch(API_URL + '/index.json');
+	const data = await response.json();
+
+	return data.map((item) => {
+		return {
+			params: {
+				slug: item.uri,
+			},
+		};
+	});
+}
+
+const { slug } = Astro.params;
+const response = await fetch(API_URL + '/' + slug + '.json');
+const data = await response.json();
+const global = data.global;
+const pageTitle = data.global.siteTitle + ' | ' + data.title;
+---
+
+<Layout pageTitle={pageTitle} data={data}>
+	<Blocks blocks={data.blocks} global={global} />
+</Layout>

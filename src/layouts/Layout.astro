@@ -1,35 +1,35 @@
 ---
-export interface Props {
-	title: string;
-}
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MetaKnight from '../components/MetaKnight.astro';
 
-const { title } = Astro.props;
+const { data, pageTitle } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 	<head>
+		<MetaKnight data={data} />
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+		<title>{pageTitle}</title>
+		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<meta name="theme-color" content="#82a71f" />
 	</head>
-	<body>
-		<slot />
+	<body class="mx-auto items-center overflow-x-hidden">
+		<Header data={data} />
+		<main class="mb-20 flex min-h-[100vh] w-full flex-col">
+			<slot />
+		</main>
+		<Footer data={data} />
+		<script>
+			import '../scripts/menu.js';
+		</script>
 	</body>
 </html>
-<style is:global>
-	:root {
-		--accent: 124, 58, 237;
-		--accent-gradient: linear-gradient(45deg, rgb(var(--accent)), #da62c4 30%, white 60%);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background-color: #F6F6F6;
-	}
-	code {
-		font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-			Bitstream Vera Sans Mono, Courier New, monospace;
-	}
-</style>

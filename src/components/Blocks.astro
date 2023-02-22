@@ -1,0 +1,25 @@
+---
+// import BlockImage from '../blocks/BlockImage.astro';
+import BlockText from '../blocks/BlockText.astro';
+// import BlockCards from '../blocks/BlockCards.astro';
+// import BlockList from '../blocks/BlockList.astro';
+// import BlockColumn from '../blocks/BlockColumn.astro';
+const { blocks, global } = Astro.props;
+---
+
+{
+	blocks ? (
+		blocks.map((block) => {
+			switch (block.type) {
+				case 'block-text':
+					return <BlockText text={block.content.text} />;
+				default:
+					return null;
+			}
+		})
+	) : (
+		<section class="container">
+			<p>Kein Blöcke gefunden.</p>
+		</section>
+	)
+}

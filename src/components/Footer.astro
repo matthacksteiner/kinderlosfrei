@@ -1,0 +1,23 @@
+---
+const { data } = Astro.props;
+const global = data.global;
+---
+
+<footer class="bg-green py-2 text-center text-white contrast-more:bg-darkGreen">
+	<nav>
+		{
+			data.global.nav
+				.filter((item) => item.intendedtemplate === 'footer')
+				.map((item) => {
+					return (
+						<a
+							href={item.uri}
+							class="after:content-['/'] last:after:content-['']"
+						>
+							{item.title}
+						</a>
+					);
+				})
+		}
+	</nav>
+</footer>
