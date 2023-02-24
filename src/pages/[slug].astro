@@ -24,6 +24,6 @@ const global = data.global;
 const pageTitle = data.global.siteTitle + ' | ' + data.title;
 ---
 
-<Layout pageTitle={pageTitle} data={data}>
+<Layout pageTitle={pageTitle} data={data} global={global}>
 	<Blocks blocks={data.blocks} global={global} />
 </Layout>

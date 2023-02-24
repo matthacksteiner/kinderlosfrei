@@ -1,23 +1,35 @@
 ---
 const { data } = Astro.props;
-const global = data.global;
 ---
 
-<footer class="bg-green py-2 text-center text-white contrast-more:bg-darkGreen">
+<footer class="bg-green contrast-more:bg-darkGreen py-2 text-center text-white">
 	<nav>
 		{
-			data.global.nav
-				.filter((item) => item.intendedtemplate === 'footer')
-				.map((item) => {
+			data.global.navFooter.map((item) => {
+				if (item.type === 'url') {
 					return (
 						<a
-							href={item.uri}
-							class="after:content-['/'] last:after:content-['']"
+							href={item.href}
+							target={`${item.popup === true ? '_blank' : '_self'}`}
+							rel={`${item.popup === true ? 'noopener noreferrer' : ''}`}
+							class="nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24"
 						>
 							{item.title}
 						</a>
 					);
-				})
+				}
+
+				if (item.type === 'page') {
+					return (
+						<a
+							href={item.uri}
+							class="nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24"
+						>
+							{item.title}
+						</a>
+					);
+				}
+			})
 		}
 	</nav>
 </footer>

@@ -3,19 +3,23 @@ import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
 import { Icon } from 'astro-icon';
 
-const { data } = Astro.props;
+const { data, global } = Astro.props;
+
+const headerColor = global.headerColor;
+const headerBackground = global.headerBackground;
+const headerColorActive = global.headerColorActive;
+const headerBackgroundActive = global.headerBackgroundActive;
 ---
 
 <header
-	class="fixed z-10 w-full pt-4 transition-all duration-300 ease-in-out max-md:items-center md:pt-16"
-	w
+	class={`bg-${headerBackground} text-${headerColor} fixed z-10 w-full py-4 transition-all duration-300 ease-in-out max-md:items-center md:py-8`}
 >
-	<div class="grid-default container">
+	<div class="grid-default container items-center">
 		<div
 			class="logo z-10 col-span-2 w-full transition-all duration-300 ease-in-out max-md:py-4"
 		>
 			<a href="/" aria-label="Zurück zur Homepage">
-				<Icon name="logo" />
+				<Icon name="fallback" />
 			</a>
 		</div>
 		<nav
@@ -33,7 +37,7 @@ const { data } = Astro.props;
 
 <style lang="css">
 	.header--small {
-		@apply bg-white py-0 shadow-lg lg:py-4;
+		@apply py-0 shadow-lg lg:py-4;
 	}
 	.header--small .logo {
 		@apply w-24 opacity-100 lg:w-24;

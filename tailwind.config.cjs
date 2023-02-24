@@ -25,13 +25,12 @@ module.exports = {
 			center: true,
 		},
 		colors: {
-			primary: '#82a71f',
-			secondary: '#4B5F0C',
-			tertiary: '#FFF',
-			white: '#fff',
-			black: '#000',
+			primary: 'var(--color-primary)',
+			secondary: 'var(--color-secondary)',
+			tertiary: 'var(--color-tertiary)',
+			white: 'var(--color-white)',
+			black: 'var(--color-black)',
 		},
-		extend: {},
 		deliciousHamburgers: {
 			// size: '19px',
 			// width: '24px',
