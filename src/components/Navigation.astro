@@ -1,5 +1,5 @@
 ---
-const { data } = Astro.props;
+const { data, global } = Astro.props;
 const { slug } = Astro.params;
 const currentPath = slug ? slug : '';
 ---
@@ -8,33 +8,34 @@ const currentPath = slug ? slug : '';
 	class="nav-links max-lg:bg-green invisible top-0 left-0 z-10 mr-24 flex min-h-full w-full flex-col justify-center text-center text-2xl opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none max-lg:fixed max-lg:text-white lg:visible lg:flex lg:flex-row lg:justify-end lg:opacity-100"
 >
 	{
-		data.global.navHeader.map((item) => {
-			if (item.type === 'url') {
-				return (
-					<a
-						href={item.href}
-						target={`${item.popup === true ? '_blank' : '_self'}`}
-						rel={`${item.popup === true ? 'noopener noreferrer' : ''}`}
-						class="nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24"
-					>
-						{item.title}
-					</a>
-				);
-			}
+		global.navHeader &&
+			global.navHeader.map((item) => {
+				if (item.type === 'url') {
+					return (
+						<a
+							href={item.href}
+							target={`${item.popup === true ? '_blank' : '_self'}`}
+							rel={`${item.popup === true ? 'noopener noreferrer' : ''}`}
+							class="nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24"
+						>
+							{item.title}
+						</a>
+					);
+				}
 
-			if (item.type === 'page') {
-				return (
-					<a
-						href={item.uri}
-						class={`nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24 ${
-							currentPath === item.uri ? 'active' : ''
-						}`}
-					>
-						{item.title}
-					</a>
-				);
-			}
-		})
+				if (item.type === 'page') {
+					return (
+						<a
+							href={item.uri}
+							class={`nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24 ${
+								currentPath === item.uri ? 'active' : ''
+							}`}
+						>
+							{item.title}
+						</a>
+					);
+				}
+			})
 	}
 </div>
 
