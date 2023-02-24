@@ -35,9 +35,17 @@ const headerBackgroundActive = global.headerBackgroundActive;
 	import '../scripts/header.js';
 </script>
 
-<style lang="css">
+<style
+	lang="css"
+	define:vars={{
+		headerColorActive,
+		headerBackgroundActive,
+	}}
+>
 	.header--small {
 		@apply py-0 shadow-lg lg:py-4;
+		background-color: var(--headerBackgroundActive);
+		color: var(--headerColorActive);
 	}
 	.header--small .logo {
 		@apply w-24 opacity-100 lg:w-24;

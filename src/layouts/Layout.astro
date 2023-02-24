@@ -10,7 +10,7 @@ const colorSecondary = global.colorSecondary;
 const colorTertiary = global.colorTertiary;
 const colorBlack = global.colorBlack;
 const colorWhite = global.colorWhite;
-
+const colorTransparent = global.colorTransparent;
 const backgroundColor = global.backgroundColor;
 ---
 
@@ -42,12 +42,14 @@ const backgroundColor = global.backgroundColor;
 			import '../scripts/menu.js';
 		</script>
 		<style
+			is:global
 			define:vars={{
 				colorPrimary,
 				colorSecondary,
 				colorTertiary,
 				colorBlack,
 				colorWhite,
+				colorTransparent,
 			}}
 		>
 			:root {
@@ -56,6 +58,7 @@ const backgroundColor = global.backgroundColor;
 				--color-tertiary: var(--colorTertiary);
 				--color-black: var(--colorBlack);
 				--color-white: var(--colorWhite);
+				--color-transparent: var(--colorTransparent);
 			}
 		</style>
 	</body>

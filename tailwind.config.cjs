@@ -24,13 +24,7 @@ module.exports = {
 			},
 			center: true,
 		},
-		colors: {
-			primary: 'var(--color-primary)',
-			secondary: 'var(--color-secondary)',
-			tertiary: 'var(--color-tertiary)',
-			white: 'var(--color-white)',
-			black: 'var(--color-black)',
-		},
+
 		deliciousHamburgers: {
 			// size: '19px',
 			// width: '24px',
@@ -41,6 +35,15 @@ module.exports = {
 			colorLight: '#fff',
 			// padding: '4px',
 			animationSpeed: 1,
+		},
+		extend: {
+			colors: {
+				primary: 'var(--color-primary)',
+				secondary: 'var(--color-secondary)',
+				tertiary: 'var(--color-tertiary)',
+				white: 'var(--color-white)',
+				black: 'var(--color-black)',
+			},
 		},
 	},
 	plugins: [require('tailwindcss-delicious-hamburgers')],
