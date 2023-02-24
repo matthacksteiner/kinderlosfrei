@@ -43,6 +43,7 @@ module.exports = {
 				tertiary: 'var(--color-tertiary)',
 				white: 'var(--color-white)',
 				black: 'var(--color-black)',
+				transparent: 'var(--color-transparent)',
 			},
 		},
 	},
