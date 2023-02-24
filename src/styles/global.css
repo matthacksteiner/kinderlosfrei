@@ -1,3 +1,9 @@
-.grid-default {
-	@apply grid grid-cols-4 gap-x-4 lg:grid-cols-12 lg:gap-x-5;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	.grid-default {
+		@apply grid grid-cols-4 gap-x-4 lg:grid-cols-12 lg:gap-x-5;
+	}
 }

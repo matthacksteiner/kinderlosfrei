@@ -7,7 +7,11 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
 	// site: 'https://physioflatz.at/',
 	integrations: [
-		tailwind({}),
+		tailwind({
+			config: {
+				applyBaseStyles: false,
+			},
+		}),
 		image({
 			serviceEntryPoint: '@astrojs/image/sharp',
 		}),

@@ -9,6 +9,7 @@ const headerColor = global.headerColor;
 const headerBackground = global.headerBackground;
 const headerColorActive = global.headerColorActive;
 const headerBackgroundActive = global.headerBackgroundActive;
+const headerGridSize = global.headerGridSize;
 ---
 
 <header
@@ -16,7 +17,7 @@ const headerBackgroundActive = global.headerBackgroundActive;
 >
 	<div class="grid-default container items-center">
 		<div
-			class="logo z-10 col-span-2 w-full transition-all duration-300 ease-in-out max-md:py-4"
+			class={`${headerGridSize} logo z-10 w-full transition-all duration-300 ease-in-out max-md:py-4`}
 		>
 			<a href="/" aria-label="Zurück zur Homepage">
 				<Icon name="fallback" />
