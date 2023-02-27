@@ -11,14 +11,29 @@ const colorTertiary = global.colorTertiary;
 const colorBlack = global.colorBlack;
 const colorWhite = global.colorWhite;
 const colorTransparent = global.colorTransparent;
-const backgroundColor = global.backgroundColor;
+
+function getBackgroundColor() {
+	const backgroundColor = global.backgroundColor;
+	if (backgroundColor === 'primary') {
+		return 'bg-primary';
+	} else if (backgroundColor === 'secondary') {
+		return 'bg-secondary';
+	} else if (backgroundColor === 'tertiary') {
+		return 'bg-tertiary';
+	} else if (backgroundColor === 'black') {
+		return 'bg-colorBlack';
+	} else if (backgroundColor === 'white') {
+		return 'bg-colorWhite';
+	} else if (backgroundColor === 'transparent') {
+		return 'bg-colorTransparent';
+	}
+}
+const backgroundColor = getBackgroundColor();
 ---
 
 <!DOCTYPE html>
-<html
-	lang="de"
-	class={`bg-${backgroundColor} h-full motion-safe:scroll-smooth`}
->
+<!-- <html lang="de" class={`bg-${backgroundColor} full motion-safe:scroll-smooth`}> -->
+<html lang="de" class:list={[backgroundColor]}>
 	<head>
 		<MetaKnight data={data} />
 		<meta charset="UTF-8" />
@@ -32,7 +47,9 @@ const backgroundColor = global.backgroundColor;
 		<!-- <link rel="manifest" href="/site.webmanifest" /> -->
 		<meta name="theme-color" content={`${colorPrimary}`} />
 	</head>
-	<body class="mx-auto items-center overflow-x-hidden">
+	<body
+		class="mx-auto items-center overflow-x-hidden selection:bg-secondary selection:text-white"
+	>
 		<Header data={data} global={global} />
 		<main class="mb-20 flex min-h-[100vh] w-full flex-col">
 			<slot />
@@ -43,6 +60,7 @@ const backgroundColor = global.backgroundColor;
 		</script>
 		<style
 			is:global
+			lang="css"
 			define:vars={{
 				colorPrimary,
 				colorSecondary,
