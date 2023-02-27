@@ -13,3 +13,20 @@ export async function getIndex(uri) {
 
 	return json;
 }
+
+// export function getBackgroundColor() {
+// 	const backgroundColor = global.backgroundColor;
+// 	if (backgroundColor === 'primary') {
+// 		return 'bg-primary';
+// 	} else if (backgroundColor === 'secondary') {
+// 		return 'bg-secondary';
+// 	} else if (backgroundColor === 'tertiary') {
+// 		return 'bg-tertiary';
+// 	} else if (backgroundColor === 'black') {
+// 		return 'bg-colorBlack';
+// 	} else if (backgroundColor === 'white') {
+// 		return 'bg-colorWhite';
+// 	} else if (backgroundColor === 'transparent') {
+// 		return 'bg-colorTransparent';
+// 	}
+// }
