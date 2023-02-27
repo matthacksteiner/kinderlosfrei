@@ -32,8 +32,10 @@ const backgroundColor = getBackgroundColor();
 ---
 
 <!DOCTYPE html>
-<!-- <html lang="de" class={`bg-${backgroundColor} full motion-safe:scroll-smooth`}> -->
-<html lang="de" class:list={[backgroundColor]}>
+<html
+	lang="de"
+	class:list={['full motion-safe:scroll-smooth', backgroundColor]}
+>
 	<head>
 		<MetaKnight data={data} />
 		<meta charset="UTF-8" />
