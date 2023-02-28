@@ -13,6 +13,9 @@ const logoDesktop = global.logoDesktop + 'px';
 const logoDesktopActive = global.logoDesktopActive + 'px';
 const logoMobile = global.logoMobile + 'px';
 const logoMobileActive = global.logoMobileActive + 'px';
+const logoAlign = global.logoAlign;
+
+console.log('logoAlign: ', logoAlign);
 ---
 
 <header
@@ -20,14 +23,15 @@ const logoMobileActive = global.logoMobileActive + 'px';
 >
 	<div class="container flex items-center">
 		<div
-			class={`logo z-10 w-full transition-all duration-300 ease-in-out max-md:py-4`}
+			id="logo"
+			class={`${logoAlign} relative z-10 w-full transition-all duration-300 ease-in-out max-md:py-4`}
 		>
 			<a href="/" aria-label="Zurück zur Homepage">
 				<Icon name="fallback" />
 			</a>
 		</div>
 		<nav
-			class="ml-auto justify-end transition-all duration-300 ease-in-out max-lg:self-center"
+			class="justify-end transition-all duration-300 ease-in-out max-md:ml-auto lg:flex-grow"
 		>
 			<Hamburger />
 			<Navigation data={data} global={global} />
@@ -48,6 +52,7 @@ const logoMobileActive = global.logoMobileActive + 'px';
 		logoDesktop,
 		logoDesktopActive,
 		logoMobileActive,
+		logoAlign,
 	}}
 >
 	.header--active {
@@ -58,11 +63,16 @@ const logoMobileActive = global.logoMobileActive + 'px';
 	.header--active .logo {
 		@apply w-[var(--logoMobileActive)] md:w-[var(--logoDesktopActive)];
 	}
+
 	.header--active nav {
 		@apply self-center;
 	}
 
-	.logo {
+	#logo {
 		@apply w-[var(--logoMobile)] md:w-[var(--logoDesktop)];
+	}
+
+	#logo.center {
+		@apply left-1/2 -translate-x-1/2;
 	}
 </style>
