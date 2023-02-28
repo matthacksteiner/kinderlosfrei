@@ -7,3 +7,51 @@
 		@apply grid grid-cols-4 gap-x-4 lg:grid-cols-12 lg:gap-x-5;
 	}
 }
+
+.bg--primary {
+	@apply bg-primary;
+}
+
+.bg--secondary {
+	@apply bg-secondary;
+}
+
+.bg--tertiary {
+	@apply bg-tertiary;
+}
+
+.bg--black {
+	@apply bg-black;
+}
+
+.bg--white {
+	@apply bg-white;
+}
+
+.bg--transparent {
+	@apply bg-transparent;
+}
+
+.text--primary {
+	@apply text-primary;
+}
+
+.text--secondary {
+	@apply text-secondary;
+}
+
+.text--tertiary {
+	@apply text-tertiary;
+}
+
+.text--black {
+	@apply text-black;
+}
+
+.text--white {
+	@apply text-white;
+}
+
+.text--transparent {
+	@apply text-transparent;
+}
