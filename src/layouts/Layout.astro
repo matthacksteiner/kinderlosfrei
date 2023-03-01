@@ -11,11 +11,30 @@ const colorTertiary = global.colorTertiary;
 const colorBlack = global.colorBlack;
 const colorWhite = global.colorWhite;
 const colorTransparent = global.colorTransparent;
-const backgroundColor = global.backgroundColor;
+const colorBackground = global.colorBackground;
+
+function getFonts() {
+	return `
+      ${global.font
+				.map((item) => {
+					return `@font-face {
+		font-family: ${item.name};
+		src: 	url(${item.url2}) format('woff2'),
+				url(${item.url1}) format('woff');
+		font-weight: normal;
+		font-style: normal;
+		font-display: swap;
+		}`;
+				})
+				.join('\n')}
+  `;
+}
+
+const fonts = getFonts();
 ---
 
 <!DOCTYPE html>
-<html lang="de" class={`bg--${backgroundColor} full motion-safe:scroll-smooth`}>
+<html lang="de" class={`bg--${colorBackground} full motion-safe:scroll-smooth`}>
 	<head>
 		<MetaKnight data={data} />
 		<meta charset="UTF-8" />
@@ -31,19 +50,27 @@ const backgroundColor = global.backgroundColor;
 	</head>
 	<body
 		class="mx-auto items-center overflow-x-hidden selection:bg-secondary selection:text-white"
+		data-font={fonts}
 	>
 		<Header data={data} global={global} />
+
 		<main class="mb-20 flex min-h-[100vh] w-full flex-col">
 			<slot />
 		</main>
 		<Footer data={data} global={global} />
 		<script>
 			import '../scripts/menu.js';
+
+			const fonts = document.body.dataset.font;
+			const styles = document.createElement('style');
+			styles.innerHTML = fonts;
+			document.head.appendChild(styles);
 		</script>
 		<style
 			is:global
 			lang="css"
 			define:vars={{
+				global,
 				colorPrimary,
 				colorSecondary,
 				colorTertiary,
@@ -59,6 +86,10 @@ const backgroundColor = global.backgroundColor;
 				--color-black: var(--colorBlack);
 				--color-white: var(--colorWhite);
 				--color-transparent: var(--colorTransparent);
+			}
+
+			html {
+				font-family: 'ValueSansPro-Regular';
 			}
 		</style>
 	</body>
