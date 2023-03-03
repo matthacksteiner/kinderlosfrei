@@ -4,7 +4,6 @@ export async function getIndex(uri) {
 	const response = await fetch(API_URL + uri, {
 		method: 'GET',
 		headers: {
-			'access-control-allow-origin': '*', // CORS
 			'Content-Type': 'application/json',
 		},
 	});
