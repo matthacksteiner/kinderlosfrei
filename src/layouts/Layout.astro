@@ -15,9 +15,8 @@ const colorBackground = global.colorBackground;
 
 function getFonts() {
 	return `
-      ${global.font
-				.map((item) => {
-					return `@font-face {
+      ${global.font.map((item) => {
+				return `@font-face {
 		font-family: ${item.name};
 		src: 	url(${item.url2}) format('woff2'),
 				url(${item.url1}) format('woff');
@@ -25,11 +24,9 @@ function getFonts() {
 		font-style: normal;
 		font-display: swap;
 		}`;
-				})
-				.join('\n')}
+			})}
   `;
 }
-
 const fonts = getFonts();
 ---
 
@@ -47,10 +44,10 @@ const fonts = getFonts();
 		<!-- <link rel="apple-touch-icon" href="/apple-touch-icon.png" /> -->
 		<!-- <link rel="manifest" href="/site.webmanifest" /> -->
 		<meta name="theme-color" content={`${colorPrimary}`} />
+		<style set:html={fonts}></style>
 	</head>
 	<body
 		class="mx-auto items-center overflow-x-hidden selection:bg-secondary selection:text-white"
-		data-font={fonts}
 	>
 		<Header data={data} global={global} />
 
@@ -60,11 +57,6 @@ const fonts = getFonts();
 		<Footer data={data} global={global} />
 		<script>
 			import '../scripts/menu.js';
-
-			const fonts = document.body.dataset.font;
-			const styles = document.createElement('style');
-			styles.innerHTML = fonts;
-			document.head.appendChild(styles);
 		</script>
 		<style
 			is:global
