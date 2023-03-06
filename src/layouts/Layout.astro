@@ -14,20 +14,41 @@ const colorTransparent = global.colorTransparent;
 const colorBackground = global.colorBackground;
 
 function getFonts() {
-	return `
-      ${global.font.map((item) => {
-				return `@font-face {
-		font-family: ${item.name};
-		src: 	url(${item.url2}) format('woff2'),
-				url(${item.url1}) format('woff');
-		font-weight: normal;
-		font-style: normal;
-		font-display: swap;
-		}`;
-			})}
-  `;
+	return `${global.font
+		.map((item) => {
+			return `@font-face {
+      font-family: '${item.name}';
+      src: url('${item.url2}') format('woff2'),
+           url('${item.url1}') format('woff');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }`;
+		})
+		.join('')}`;
 }
+
 const fonts = getFonts();
+
+function getSizes() {
+	const baseFontSize = 16;
+	return `${global.fontSize
+		.map((item) => {
+			return `
+      .font--${item.name} {
+        font-size: ${item.sizeMobile / baseFontSize}rem;
+        line-height: ${item.lineHeightMobile / item.sizeMobile};
+        @media (min-width: 768px) {
+          font-size: ${item.sizeDesktop / baseFontSize}rem;
+          line-height: ${item.lineHeightDesktop / item.sizeDesktop};
+        }
+      }
+      `;
+		})
+		.join('')}`;
+}
+
+const sizes = getSizes();
 ---
 
 <!DOCTYPE html>
@@ -45,6 +66,7 @@ const fonts = getFonts();
 		<!-- <link rel="manifest" href="/site.webmanifest" /> -->
 		<meta name="theme-color" content={`${colorPrimary}`} />
 		<style set:html={fonts}></style>
+		<style set:html={sizes}></style>
 	</head>
 	<body
 		class="mx-auto items-center overflow-x-hidden selection:bg-secondary selection:text-white"
@@ -78,10 +100,6 @@ const fonts = getFonts();
 				--color-black: var(--colorBlack);
 				--color-white: var(--colorWhite);
 				--color-transparent: var(--colorTransparent);
-			}
-
-			html {
-				font-family: 'ValueSansPro-Regular';
 			}
 		</style>
 	</body>
