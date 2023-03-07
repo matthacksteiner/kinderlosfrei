@@ -55,3 +55,15 @@
 .text--transparent {
 	@apply text-transparent;
 }
+
+.text--left {
+	@apply text-left;
+}
+
+.text--center {
+	@apply text-center;
+}
+
+.text--right {
+	@apply text-right;
+}

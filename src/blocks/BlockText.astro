@@ -1,7 +1,44 @@
 ---
-const { text } = Astro.props;
+const {
+	text,
+	textFont,
+	textSize,
+	textAlign,
+	backgroundContainer,
+	backgroundColor,
+	widthMobile,
+	startMobile,
+	widthDesktop,
+	startDesktop,
+	spacingMobileTop,
+	spacingMobileBottom,
+	spacingDesktopTop,
+	spacingDesktopBottom,
+} = Astro.props;
 ---
 
-<section class="BlockText container">
-	<div set:html={text} class="kirby-text" />
+<section
+	class={`BlockText grid-default ${backgroundContainer} bg--${backgroundColor}`}
+>
+	<div
+		set:html={text}
+		class={`font--${textSize} text--${textAlign} ${widthMobile} lg:${widthDesktop} lg:${startDesktop} ${startMobile}`}
+	/>
 </section>
+
+<style
+	lang="css"
+	define:vars={{
+		textFont,
+		spacingDesktopBottom,
+		spacingDesktopTop,
+		spacingMobileBottom,
+		spacingMobileTop,
+	}}
+>
+	.BlockText {
+		font-family: var(--textFont);
+
+		@apply mt-[var(--spacingMobileTop)] mb-[var(--spacingMobileBottom)] lg:mt-[var(--spacingDesktopTop)] lg:mb-[var(--spacingDesktopBottom)];
+	}
+</style>
