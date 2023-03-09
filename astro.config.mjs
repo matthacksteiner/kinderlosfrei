@@ -4,11 +4,13 @@ import image from '@astrojs/image';
 import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
-
-// https://astro.build/config
 export default defineConfig({
-  // site: 'https://physioflatz.at/',
-  integrations: [tailwind(), image({
-    serviceEntryPoint: '@astrojs/image/sharp'
-  }), sitemap()]
+	// site: 'https://physioflatz.at/',
+	integrations: [
+		tailwind(),
+		image({
+			serviceEntryPoint: '@astrojs/image/sharp',
+		}),
+		sitemap(),
+	],
 });
