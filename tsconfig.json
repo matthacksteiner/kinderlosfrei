@@ -12,6 +12,12 @@
       "@layouts/*": [
         "src/layouts/*"
       ],
+      "@styles/*": [
+        "src/styles/*"
+      ],
+      "@scripts/*": [
+        "src/scripts/*"
+      ],
       "@lib/*": [
         "src/lib/*"
       ]

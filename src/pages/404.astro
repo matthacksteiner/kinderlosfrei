@@ -1,7 +1,7 @@
 ---
-import { getIndex } from '../lib/api.js';
-import Layout from '../layouts/Layout.astro';
-import Blocks from '../components/Blocks.astro';
+import { getIndex } from '@lib/api.js';
+import Layout from '@layouts/Layout.astro';
+import Blocks from '@components/Blocks.astro';
 
 const data = await getIndex(`/z-error.json`);
 const global = data.global;
