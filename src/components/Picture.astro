@@ -1,0 +1,19 @@
+---
+let { ...props } = Astro.props;
+
+let Picture;
+
+if (import.meta.env.PUBLIC_ENV === 'preview') {
+	Picture = 'img';
+	props = {
+		...props,
+	};
+} else {
+	Picture = (await import('@astrojs/image/components')).Picture;
+	props = {
+		...props,
+	};
+}
+---
+
+<Picture {...props} />
