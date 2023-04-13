@@ -9,5 +9,5 @@ const pageTitle = data.global.siteTitle + ' | ' + data.title;
 ---
 
 <Layout pageTitle={pageTitle} data={data} global={global}>
-	<Blocks blocks={data.blocks} global={global} />
+	<Blocks blocks={data.blocks} data={data} global={global} />
 </Layout>

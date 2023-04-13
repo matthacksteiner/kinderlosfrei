@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+main section:first-of-type {
+	@apply pt-20;
+}
+
 .bg--primary {
 	@apply bg-primary;
 }

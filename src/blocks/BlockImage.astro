@@ -1,2 +1,77 @@
 ---
+import Picture from '@components/Picture.astro';
+const {
+	images,
+	ratio,
+	width,
+	gridGapMobile,
+	gridGapDesktop,
+	backgroundContainer,
+	backgroundColor,
+	widthMobile,
+	startMobile,
+	widthDesktop,
+	startDesktop,
+	spacingMobileTop,
+	spacingMobileBottom,
+	spacingDesktopTop,
+	spacingDesktopBottom,
+} = Astro.props;
+const count = images.length;
+const margins = gridGapDesktop.slice(0, -2) * (count - 1);
 ---
+
+<section class={`block blockImages bg--${backgroundColor}`}>
+	<div class={`grid-default ${backgroundContainer}`}>
+		<div
+			class={`images images--${width} grid lg:grid-flow-col ${widthMobile} lg:${widthDesktop} lg:${startDesktop} ${startMobile}`}
+		>
+			{
+				images &&
+					images.map((image) => {
+						return (
+							<Picture
+								src={image.url}
+								alt={image.alt}
+								widths={[
+									1824 / count - margins / count,
+									1343 / count - margins / count,
+									944 / count - margins / count,
+								]}
+								aspectRatio={ratio}
+								class="w-full object-cover"
+							/>
+						);
+					})
+			}
+		</div>
+	</div>
+</section>
+
+<style
+	lang="css"
+	define:vars={{
+		gridGapMobile,
+		gridGapDesktop,
+		spacingDesktopBottom,
+		spacingDesktopTop,
+		spacingMobileBottom,
+		spacingMobileTop,
+	}}
+>
+	.block {
+		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
+	}
+
+	.images {
+		@apply gap-x-[var(--gridGapMobile)] gap-y-[var(--gridGapMobile)] lg:gap-x-[var(--gridGapDesktop)];
+	}
+
+	.images--big-small {
+		@apply lg:grid-flow-row lg:grid-cols-big-small;
+	}
+
+	.images--small-big {
+		@apply lg:grid-flow-row lg:grid-cols-small-big;
+	}
+</style>

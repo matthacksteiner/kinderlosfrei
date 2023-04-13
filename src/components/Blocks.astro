@@ -1,13 +1,34 @@
 ---
 import BlockText from '@blocks/BlockText.astro';
 import BlockDivider from '@blocks/BlockDivider.astro';
-const { blocks } = Astro.props;
+import BlockImage from '@blocks/BlockImage.astro';
+const { blocks, data, global } = Astro.props;
 ---
 
 {
 	blocks ? (
 		blocks.map((block) => {
 			switch (block.type) {
+				case 'blockImage':
+					return (
+						<BlockImage
+							images={block.content.images}
+							ratio={block.content.ratio}
+							width={block.content.width}
+							gridGapMobile={global.gridGapMobile + 'px'}
+							gridGapDesktop={global.gridGapDesktop + 'px'}
+							backgroundContainer={block.content.backgroundcontainer}
+							backgroundColor={block.content.backgroundcolor}
+							widthMobile={block.content.widthmobile}
+							startMobile={block.content.startmobile}
+							widthDesktop={block.content.widthdesktop}
+							startDesktop={block.content.startdesktop}
+							spacingMobileTop={block.content.spacingmobiletop + 'px'}
+							spacingMobileBottom={block.content.spacingmobilebottom + 'px'}
+							spacingDesktopTop={block.content.spacingdesktoptop + 'px'}
+							spacingDesktopBottom={block.content.spacingdesktopbottom + 'px'}
+						/>
+					);
 				case 'blockText':
 					return (
 						<BlockText

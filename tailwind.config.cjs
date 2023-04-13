@@ -64,6 +64,7 @@ module.exports = {
 			lg: '1024px',
 			xl: '1280px',
 			'2xl': '1440px',
+			'3xl': '1920px',
 		},
 		container: {
 			padding: {
@@ -72,6 +73,7 @@ module.exports = {
 				lg: 'var(--grid-margin-desktop)',
 				xl: 'var(--grid-margin-desktop)',
 				'2xl': 'var(--grid-margin-desktop)',
+				'3xl': 'var(--grid-margin-desktop)',
 			},
 			center: true,
 		},
@@ -95,6 +97,10 @@ module.exports = {
 				white: 'var(--color-white)',
 				black: 'var(--color-black)',
 				transparent: 'var(--color-transparent)',
+			},
+			gridTemplateColumns: {
+				'big-small': '2fr 1fr',
+				'small-big': '1fr 2fr',
 			},
 		},
 	},

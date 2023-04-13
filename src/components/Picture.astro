@@ -1,16 +1,29 @@
 ---
-let { ...props } = Astro.props;
+let { widths = [], aspectRatio = [], ...props } = Astro.props;
+const width = widths.length ? widths[0] : undefined;
+
+const ratio = aspectRatio
+	.split(':')
+	.reduce((a, b) => parseInt(a) / parseInt(b));
+const height = width / ratio;
+const ratioParts = aspectRatio.split(':');
+const ratioFraction = `${ratioParts[0]}/${ratioParts[1]}`;
 
 let Picture;
 
 if (import.meta.env.PUBLIC_ENV === 'preview') {
 	Picture = 'img';
 	props = {
+		width: width,
+		height: height,
+		style: `aspect-ratio: ${ratioFraction}`,
 		...props,
 	};
 } else {
 	Picture = (await import('@astrojs/image/components')).Picture;
 	props = {
+		widths: widths,
+		aspectRatio: aspectRatio,
 		...props,
 	};
 }

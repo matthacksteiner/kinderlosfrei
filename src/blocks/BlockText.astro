@@ -17,7 +17,7 @@ const {
 } = Astro.props;
 ---
 
-<section class={`BlockText  bg--${backgroundColor}`}>
+<section class={`block blockText  bg--${backgroundColor}`}>
 	<div class={`grid-default ${backgroundContainer}`}>
 		<div
 			set:html={text}
@@ -30,15 +30,18 @@ const {
 	lang="css"
 	define:vars={{
 		textFont,
+		backgroundContainer,
 		spacingDesktopBottom,
 		spacingDesktopTop,
 		spacingMobileBottom,
 		spacingMobileTop,
 	}}
 >
-	.BlockText {
-		font-family: var(--textFont);
-
+	.block {
 		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
+	}
+
+	.blockText {
+		font-family: var(--textFont);
 	}
 </style>
