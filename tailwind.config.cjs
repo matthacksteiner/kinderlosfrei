@@ -67,11 +67,11 @@ module.exports = {
 		},
 		container: {
 			padding: {
-				DEFAULT: '1rem',
-				sm: '2rem',
-				lg: '4rem',
-				xl: '4.375rem',
-				'2xl': '4.375rem',
+				DEFAULT: 'var(--grid-margin-mobile)',
+				sm: 'var(--grid-margin-mobile)',
+				lg: 'var(--grid-margin-desktop)',
+				xl: 'var(--grid-margin-desktop)',
+				'2xl': 'var(--grid-margin-desktop)',
 			},
 			center: true,
 		},

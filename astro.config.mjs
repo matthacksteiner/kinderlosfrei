@@ -7,7 +7,7 @@ import netlify from '@astrojs/netlify/functions';
 
 // https://astro.build/config
 export default defineConfig({
-	// site: 'https://physioflatz.at/',
+	site: 'https://baukasten.netlify.app/',
 	integrations: [
 		tailwind(),
 		image({
