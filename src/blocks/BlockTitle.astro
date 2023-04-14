@@ -1,10 +1,11 @@
 ---
 const {
-	text,
+	title,
 	font,
 	size,
 	align,
 	color,
+	Headline,
 	backgroundContainer,
 	backgroundColor,
 	widthMobile,
@@ -18,12 +19,21 @@ const {
 } = Astro.props;
 ---
 
-<section class={`block blockText  bg--${backgroundColor}`}>
+<section class={`block blockTitle  bg--${backgroundColor}`}>
 	<div class={`grid-default ${backgroundContainer}`}>
-		<div
-			set:html={text}
-			class={`kirby-text font--${size} text--${color} text--${align} ${widthMobile} lg:${widthDesktop} lg:${startDesktop} ${startMobile}`}
-		/>
+		<Headline
+			class:list={[
+				`font--${size}`,
+				`text--${color}`,
+				`text--${align}`,
+				startMobile,
+				widthMobile,
+				`lg:${widthDesktop}`,
+				`lg:${startDesktop}`,
+			]}
+		>
+			{title}
+		</Headline>
 	</div>
 </section>
 
@@ -42,7 +52,7 @@ const {
 		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
 	}
 
-	.blockText {
+	.blockTitle {
 		font-family: var(--font);
 	}
 </style>

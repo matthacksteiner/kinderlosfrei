@@ -65,3 +65,32 @@ main section:first-of-type {
 .text--right {
 	@apply text-right;
 }
+
+.kirby-text p + p {
+	@apply pt-2 lg:pt-6;
+}
+
+.kirby-text ul,
+.kirby-text ol {
+	@apply ml-5 list-outside py-3;
+}
+
+.kirby-text ul {
+	@apply list-disc;
+}
+
+.kirby-text ol {
+	@apply list-decimal;
+}
+
+.kirby-text ul > li,
+.kirby-text ol > li {
+	@apply mb-2 last:mb-0 3xl:mb-3;
+}
+
+.kirby-text a {
+	@apply underline underline-offset-4;
+}
+address {
+	font-style: normal;
+}
