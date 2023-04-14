@@ -3,6 +3,7 @@ import BlockText from '@blocks/BlockText.astro';
 import BlockDivider from '@blocks/BlockDivider.astro';
 import BlockImage from '@blocks/BlockImage.astro';
 import BlockTitle from '@blocks/BlockTitle.astro';
+import BlockImageText from '@blocks/BlockImageText.astro';
 const { blocks, data, global } = Astro.props;
 ---
 
@@ -15,7 +16,8 @@ const { blocks, data, global } = Astro.props;
 						<BlockImage
 							images={block.content.images}
 							ratio={block.content.ratio}
-							width={block.content.width}
+							layout={block.content.layout}
+							align={block.content.align}
 							gridGapMobile={global.gridGapMobile + 'px'}
 							gridGapDesktop={global.gridGapDesktop + 'px'}
 							backgroundContainer={block.content.backgroundcontainer}
@@ -34,11 +36,11 @@ const { blocks, data, global } = Astro.props;
 					return (
 						<BlockTitle
 							title={block.content.title}
-							font={block.content.font}
-							color={block.content.color}
-							size={block.content.size}
-							align={block.content.align}
-							Headline={block.content.headline}
+							font={block.content.titlefont}
+							color={block.content.titlecolor}
+							size={block.content.titlesize}
+							align={block.content.titlealign}
+							Tag={block.content.titletag}
 							backgroundContainer={block.content.backgroundcontainer}
 							backgroundColor={block.content.backgroundcolor}
 							widthMobile={block.content.widthmobile}
@@ -55,10 +57,41 @@ const { blocks, data, global } = Astro.props;
 					return (
 						<BlockText
 							text={block.content.text}
-							font={block.content.font}
-							color={block.content.color}
-							size={block.content.size}
-							align={block.content.align}
+							font={block.content.textfont}
+							color={block.content.textcolor}
+							size={block.content.textsize}
+							align={block.content.textalign}
+							backgroundContainer={block.content.backgroundcontainer}
+							backgroundColor={block.content.backgroundcolor}
+							widthMobile={block.content.widthmobile}
+							startMobile={block.content.startmobile}
+							widthDesktop={block.content.widthdesktop}
+							startDesktop={block.content.startdesktop}
+							spacingMobileTop={block.content.spacingmobiletop + 'px'}
+							spacingMobileBottom={block.content.spacingmobilebottom + 'px'}
+							spacingDesktopTop={block.content.spacingdesktoptop + 'px'}
+							spacingDesktopBottom={block.content.spacingdesktopbottom + 'px'}
+						/>
+					);
+				case 'blockImageText':
+					return (
+						<BlockImageText
+							title={block.content.title}
+							titleFont={block.content.titlefont}
+							titleColor={block.content.titlecolor}
+							titleSize={block.content.titlesize}
+							titleAlign={block.content.titlealign}
+							TitleTag={block.content.titletag}
+							text={block.content.text}
+							textFont={block.content.textfont}
+							textColor={block.content.textcolor}
+							textSize={block.content.textsize}
+							textAlign={block.content.textalign}
+							image={block.content.image}
+							ratio={block.content.ratio}
+							gridGapMobile={global.gridGapMobile + 'px'}
+							gridGapDesktop={global.gridGapDesktop + 'px'}
+							link={block.content.link}
 							backgroundContainer={block.content.backgroundcontainer}
 							backgroundColor={block.content.backgroundcolor}
 							widthMobile={block.content.widthmobile}

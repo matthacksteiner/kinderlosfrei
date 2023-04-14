@@ -98,10 +98,6 @@ module.exports = {
 				black: 'var(--color-black)',
 				transparent: 'var(--color-transparent)',
 			},
-			gridTemplateColumns: {
-				'big-small': '2fr 1fr',
-				'small-big': '1fr 2fr',
-			},
 		},
 	},
 	plugins: [require('tailwindcss-delicious-hamburgers')],

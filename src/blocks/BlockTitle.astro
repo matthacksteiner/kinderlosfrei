@@ -5,7 +5,7 @@ const {
 	size,
 	align,
 	color,
-	Headline,
+	Tag,
 	backgroundContainer,
 	backgroundColor,
 	widthMobile,
@@ -21,7 +21,7 @@ const {
 
 <section class={`block blockTitle  bg--${backgroundColor}`}>
 	<div class={`grid-default ${backgroundContainer}`}>
-		<Headline
+		<Tag
 			class:list={[
 				`font--${size}`,
 				`text--${color}`,
@@ -33,7 +33,7 @@ const {
 			]}
 		>
 			{title}
-		</Headline>
+		</Tag>
 	</div>
 </section>
 

@@ -1,0 +1,102 @@
+---
+import Picture from '@components/Picture.astro';
+const {
+	title,
+	titleFont,
+	titleColor,
+	titleSize,
+	titleAlign,
+	TitleTag,
+	text,
+	textFont,
+	textColor,
+	textSize,
+	textAlign,
+	image,
+	ratio,
+	gridGapMobile,
+	gridGapDesktop,
+	link,
+	backgroundContainer,
+	backgroundColor,
+	widthMobile,
+	startMobile,
+	widthDesktop,
+	startDesktop,
+	spacingMobileTop,
+	spacingMobileBottom,
+	spacingDesktopTop,
+	spacingDesktopBottom,
+} = Astro.props;
+
+const margins = gridGapDesktop.slice(0, -2);
+---
+
+<section class={`block blockImageText  bg--${backgroundColor}`}>
+	<div class={`grid-default ${backgroundContainer}`}>
+		<div
+			class={`columns grid lg:grid-flow-col ${widthMobile} lg:${widthDesktop} lg:${startDesktop} ${startMobile}`}
+		>
+			<div class="col1">
+				<TitleTag
+					class:list={[
+						`font--${titleSize}`,
+						`text--${titleColor}`,
+						`text--${titleAlign}`,
+					]}
+				>
+					{title}
+				</TitleTag>
+				<div
+					set:html={text}
+					class={`blockImageText--text kirby-text font--${textSize} text--${textColor} text--${textAlign}`}
+				/>
+			</div>
+			<div class="col2">
+				<Picture
+					src={image.url}
+					alt={image.alt}
+					widths={[1840 / 2 - margins]}
+					aspectRatio={ratio}
+					class="w-full object-cover"
+				/>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style
+	lang="css"
+	define:vars={{
+		titleFont,
+		textFont,
+		backgroundContainer,
+		spacingDesktopBottom,
+		spacingDesktopTop,
+		spacingMobileBottom,
+		spacingMobileTop,
+	}}
+>
+	.block {
+		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
+	}
+
+	.blockImageText--text {
+		font-family: var(--textFont);
+	}
+	.blockImageText--title {
+		font-family: var(--titleFont);
+	}
+
+	.columns {
+		@apply gap-x-[var(--gridGapMobile)] gap-y-[var(--gridGapMobile)] lg:gap-x-[var(--gridGapDesktop)];
+	}
+
+	/* .images--big-small {
+		@apply lg:grid-flow-row lg:grid-cols-big-small;
+	}
+
+	.images--small-big {
+		@apply lg:grid-flow-row lg:grid-cols-small-big;
+	} */
+</style>
