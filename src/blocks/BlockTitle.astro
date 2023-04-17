@@ -1,57 +1,19 @@
 ---
-const {
-	title,
-	font,
-	size,
-	align,
-	color,
-	Tag,
-	backgroundContainer,
-	backgroundColor,
-	widthMobile,
-	startMobile,
-	widthDesktop,
-	startDesktop,
-	spacingMobileTop,
-	spacingMobileBottom,
-	spacingDesktopTop,
-	spacingDesktopBottom,
-} = Astro.props;
+const { title, font, size, align, color, Tag } = Astro.props;
 ---
 
-<section class={`block blockTitle  bg--${backgroundColor}`}>
-	<div class={`grid-default ${backgroundContainer}`}>
-		<Tag
-			class:list={[
-				`font--${size}`,
-				`text--${color}`,
-				`text--${align}`,
-				startMobile,
-				widthMobile,
-				`lg:${widthDesktop}`,
-				`lg:${startDesktop}`,
-			]}
-		>
-			{title}
-		</Tag>
-	</div>
+<section class={`block blockTitle`}>
+	<Tag class:list={[`font--${size}`, `text--${color}`, `text--${align}`]}>
+		{title}
+	</Tag>
 </section>
 
 <style
 	lang="css"
 	define:vars={{
 		font,
-		backgroundContainer,
-		spacingDesktopBottom,
-		spacingDesktopTop,
-		spacingMobileBottom,
-		spacingMobileTop,
 	}}
 >
-	.block {
-		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
-	}
-
 	.blockTitle {
 		font-family: var(--font);
 	}

@@ -1,47 +1,20 @@
 ---
-const {
-	text,
-	font,
-	size,
-	align,
-	color,
-	backgroundContainer,
-	backgroundColor,
-	widthMobile,
-	startMobile,
-	widthDesktop,
-	startDesktop,
-	spacingMobileTop,
-	spacingMobileBottom,
-	spacingDesktopTop,
-	spacingDesktopBottom,
-} = Astro.props;
+const { text, font, size, align, color } = Astro.props;
 ---
 
-<section class={`block blockText  bg--${backgroundColor}`}>
-	<div class={`grid-default ${backgroundContainer}`}>
-		<div
-			set:html={text}
-			class={`kirby-text font--${size} text--${color} text--${align} ${widthMobile} lg:${widthDesktop} lg:${startDesktop} ${startMobile}`}
-		/>
-	</div>
+<section class={`block blockText`}>
+	<div
+		set:html={text}
+		class={`kirby-text font--${size} text--${color} text--${align}`}
+	/>
 </section>
 
 <style
 	lang="css"
 	define:vars={{
 		font,
-		backgroundContainer,
-		spacingDesktopBottom,
-		spacingDesktopTop,
-		spacingMobileBottom,
-		spacingMobileTop,
 	}}
 >
-	.block {
-		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
-	}
-
 	.blockText {
 		font-family: var(--font);
 	}

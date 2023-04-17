@@ -1,0 +1,37 @@
+---
+import Blocks from '@components/Blocks.astro';
+const {
+	global,
+	columns,
+	spacingDesktopBottom,
+	spacingDesktopTop,
+	spacingMobileBottom,
+	spacingMobileTop,
+} = Astro.props;
+---
+
+{
+	columns &&
+		columns.map((column) => {
+			const span = column.span;
+			return (
+				<div class={`column col-span-${span}`}>
+					<Blocks blocks={column.blocks} global={global} />
+				</div>
+			);
+		})
+}
+
+<style
+	lang="css"
+	define:vars={{
+		spacingDesktopBottom,
+		spacingDesktopTop,
+		spacingMobileBottom,
+		spacingMobileTop,
+	}}
+>
+	.column {
+		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
+	}
+</style>

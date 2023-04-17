@@ -1,0 +1,22 @@
+---
+import Columns from '@components/Columns.astro';
+const { global, layouts } = Astro.props;
+---
+
+{
+	layouts &&
+		layouts.map((layout) => (
+			<section class={`columns bg--${layout.backgroundColor}`}>
+				<div class={`grid-default ${layout.backgroundContainer}`}>
+					<Columns
+						columns={layout.content.columns}
+						global={global}
+						spacingDesktopBottom={layout.spacingDesktopBottom}
+						spacingDesktopTop={layout.spacingDesktopTop}
+						spacingMobileBottom={layout.spacingMobileBottom}
+						spacingMobileTop={layout.spacingMobileTop}
+					/>
+				</div>
+			</section>
+		))
+}

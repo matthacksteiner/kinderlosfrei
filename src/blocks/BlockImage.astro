@@ -1,53 +1,18 @@
 ---
 import Picture from '@components/Picture.astro';
-const {
-	images,
-	ratio,
-	layout,
-	align,
-	gridGapMobile,
-	gridGapDesktop,
-	backgroundContainer,
-	backgroundColor,
-	widthMobile,
-	startMobile,
-	widthDesktop,
-	startDesktop,
-	spacingMobileTop,
-	spacingMobileBottom,
-	spacingDesktopTop,
-	spacingDesktopBottom,
-} = Astro.props;
-const count = images.length;
-const margins = gridGapDesktop.slice(0, -2) * (count - 1);
+const { image, ratio, layout, align, gridGapMobile, gridGapDesktop } =
+	Astro.props;
 ---
 
-<section class={`block blockImages bg--${backgroundColor}`}>
-	<div class={`grid-default ${backgroundContainer} `}>
-		<div
-			class={`grid-default lg:grid-flow-col layout--${layout} align--${align} ${widthMobile} lg:${widthDesktop} lg:${startDesktop} ${startMobile}`}
-		>
-			{
-				images &&
-					images.map((image) => {
-						return (
-							<div class="image">
-								<Picture
-									src={image.url}
-									alt={image.alt}
-									widths={[
-										1824 / count - margins / count,
-										1343 / count - margins / count,
-										944 / count - margins / count,
-									]}
-									aspectRatio={ratio}
-									class="w-full object-cover"
-								/>
-							</div>
-						);
-					})
-			}
-		</div>
+<section class={`block blockImages`}>
+	<div class="image max-lg:col-span-6">
+		<Picture
+			src={image.url}
+			alt={image.alt}
+			widths={[1824, 1343, 944]}
+			aspectRatio={ratio}
+			class="w-full object-cover"
+		/>
 	</div>
 </section>
 
@@ -56,13 +21,9 @@ const margins = gridGapDesktop.slice(0, -2) * (count - 1);
 	define:vars={{
 		gridGapMobile,
 		gridGapDesktop,
-		spacingDesktopBottom,
-		spacingDesktopTop,
-		spacingMobileBottom,
-		spacingMobileTop,
 	}}
 >
-	.block {
-		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
+	.grid-default {
+		@apply max-lg:gap-[var(--gridGapMobile)];
 	}
 </style>
