@@ -1,23 +1,57 @@
 ---
 import Picture from '@components/Picture.astro';
-const { image, ratioMobile, ratioDesktop } = Astro.props;
+const { image, link, ratioMobile, ratioDesktop } = Astro.props;
 const aspectMobile = ratioMobile.replace('/', ':');
 const aspectDesktop = ratioDesktop.replace('/', ':');
+const slug = Astro.params.slug || 'home';
 ---
 
 <div class={`block blockImages`}>
-	<Picture
-		src={image.url}
-		alt={image.alt}
-		widths={[335, 335 * 2]}
-		aspectRatio={aspectMobile}
-		class="w-full object-cover lg:hidden"
-	/>
-	<Picture
-		src={image.url}
-		alt={image.alt}
-		widths={[430, 900, 1824]}
-		aspectRatio={aspectDesktop}
-		class="hidden w-full object-cover lg:block"
-	/>
+	{
+		link.href ? (
+			<a
+				href={
+					link.popup
+						? link.href
+						: link.has
+						? `${link.href}/${link.hash}`
+						: link.href
+				}
+				target={link.popup ? '_blank' : undefined}
+				rel={link.popup ? 'noopener' : undefined}
+			>
+				<Picture
+					src={image.url}
+					alt={image.alt}
+					widths={[335, 335 * 2]}
+					aspectRatio={aspectMobile}
+					class="w-full object-cover lg:hidden"
+				/>
+				<Picture
+					src={image.url}
+					alt={image.alt}
+					widths={[430, 900, 1824]}
+					aspectRatio={aspectDesktop}
+					class="hidden w-full object-cover lg:block"
+				/>
+			</a>
+		) : (
+			<>
+				<Picture
+					src={image.url}
+					alt={image.alt}
+					widths={[335, 335 * 2]}
+					aspectRatio={aspectMobile}
+					class="w-full object-cover lg:hidden"
+				/>
+				<Picture
+					src={image.url}
+					alt={image.alt}
+					widths={[430, 900, 1824]}
+					aspectRatio={aspectDesktop}
+					class="hidden w-full object-cover lg:block"
+				/>
+			</>
+		)
+	}
 </div>
