@@ -1,6 +1,6 @@
 ---
 import Blocks from '@components/Blocks.astro';
-const { columns } = Astro.props;
+const { columns, global } = Astro.props;
 ---
 
 {
@@ -8,9 +8,9 @@ const { columns } = Astro.props;
 		columns.map((column) => {
 			const span = column.span;
 			return (
-				<div class={`column col-span-6 lg:col-span-${span}`}>
-					<Blocks blocks={column.blocks} />
-				</div>
+				<section class={`column col-span-6 lg:col-span-${span}`}>
+					<Blocks blocks={column.blocks} global={global} />
+				</section>
 			);
 		})
 }

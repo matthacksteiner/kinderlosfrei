@@ -6,15 +6,20 @@ const { global, layouts } = Astro.props;
 {
 	layouts &&
 		layouts.map((layout) => {
+			const backgroundColor = layout.backgroundColor;
+			const backgroundContainer = layout.backgroundContainer;
+			const backgroundAlign = layout.backgroundAlign;
 			const spacingMobileTop = layout.spacingMobileTop;
 			const spacingMobileBottom = layout.spacingMobileBottom;
 			const spacingDesktopTop = layout.spacingDesktopTop;
 			const spacingDesktopBottom = layout.spacingDesktopBottom;
 			return (
 				<section
-					class={`columns bg--${layout.backgroundColor} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom}`}
+					class={`columns bg--${backgroundColor} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom}`}
 				>
-					<div class={`grid-default ${layout.backgroundContainer}`}>
+					<div
+						class={`grid-default ${backgroundContainer} align--${backgroundAlign}`}
+					>
 						<Columns
 							columns={layout.content.columns}
 							global={global}

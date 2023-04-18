@@ -3,7 +3,7 @@ import BlockText from '@blocks/BlockText.astro';
 import BlockDivider from '@blocks/BlockDivider.astro';
 import BlockImage from '@blocks/BlockImage.astro';
 import BlockTitle from '@blocks/BlockTitle.astro';
-const { blocks } = Astro.props;
+const { blocks, global } = Astro.props;
 ---
 
 {
@@ -40,7 +40,14 @@ const { blocks } = Astro.props;
 						/>
 					);
 				case 'blockDivider':
-					return <BlockDivider />;
+					return (
+						<BlockDivider
+							spacingMobileTop={block.content.spacingmobiletop + 'px'}
+							spacingMobileBottom={block.content.spacingmobilebottom + 'px'}
+							spacingDesktopTop={block.content.spacingdesktoptop + 'px'}
+							spacingDesktopBottom={block.content.spacingdesktopbottom + 'px'}
+						/>
+					);
 
 				default:
 					return null;

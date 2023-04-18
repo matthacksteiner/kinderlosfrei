@@ -2,11 +2,11 @@
 const { title, font, size, align, color, Level } = Astro.props;
 ---
 
-<section class={`block blockTitle`}>
+<div class={`block blockTitle`}>
 	<Level class:list={[`font--${size}`, `text--${color}`, `text--${align}`]}>
 		{title}
 	</Level>
-</section>
+</div>
 
 <style
 	lang="css"

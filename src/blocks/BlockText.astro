@@ -2,12 +2,12 @@
 const { text, font, size, align, color } = Astro.props;
 ---
 
-<section class={`block blockText`}>
+<div class={`block blockText`}>
 	<div
 		set:html={text}
 		class={`kirby-text font--${size} text--${color} text--${align}`}
 	/>
-</section>
+</div>
 
 <style
 	lang="css"

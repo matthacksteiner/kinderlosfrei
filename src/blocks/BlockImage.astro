@@ -5,7 +5,7 @@ const aspectMobile = ratioMobile.replace('/', ':');
 const aspectDesktop = ratioDesktop.replace('/', ':');
 ---
 
-<section class={`block blockImages`}>
+<div class={`block blockImages`}>
 	<Picture
 		src={image.url}
 		alt={image.alt}
@@ -20,4 +20,4 @@ const aspectDesktop = ratioDesktop.replace('/', ':');
 		aspectRatio={aspectDesktop}
 		class="hidden w-full object-cover lg:block"
 	/>
-</section>
+</div>
