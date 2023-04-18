@@ -1,11 +1,11 @@
 ---
-const { title, font, size, align, color, Tag } = Astro.props;
+const { title, font, size, align, color, Level } = Astro.props;
 ---
 
 <section class={`block blockTitle`}>
-	<Tag class:list={[`font--${size}`, `text--${color}`, `text--${align}`]}>
+	<Level class:list={[`font--${size}`, `text--${color}`, `text--${align}`]}>
 		{title}
-	</Tag>
+	</Level>
 </section>
 
 <style

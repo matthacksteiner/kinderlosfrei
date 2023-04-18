@@ -17,10 +17,10 @@ const colorWhite = global.colorWhite;
 const colorTransparent = global.colorTransparent;
 const colorBackground = global.colorBackground;
 
-const gridGapMobile = global.gridGapMobile + 'px';
-const gridMarginMobile = global.gridMarginMobile + 'px';
-const gridGapDesktop = global.gridGapDesktop + 'px';
-const gridMarginDesktop = global.gridMarginDesktop + 'px';
+const gridGapMobile = global.gridGapMobile;
+const gridMarginMobile = global.gridMarginMobile;
+const gridGapDesktop = global.gridGapDesktop;
+const gridMarginDesktop = global.gridMarginDesktop;
 ---
 
 <!DOCTYPE html>
@@ -81,7 +81,7 @@ const gridMarginDesktop = global.gridMarginDesktop + 'px';
 			}
 
 			.grid-default {
-				@apply grid grid-cols-6 gap-x-[var(--gridGapMobile)] lg:grid-cols-12 lg:gap-x-[var(--gridGapDesktop)];
+				@apply grid grid-cols-6 gap-x-[var(--gridGapMobile)] max-lg:gap-y-[var(--gridGapMobile)] lg:grid-cols-12 lg:gap-x-[var(--gridGapDesktop)];
 			}
 		</style>
 	</body>

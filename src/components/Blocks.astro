@@ -3,25 +3,25 @@ import BlockText from '@blocks/BlockText.astro';
 import BlockDivider from '@blocks/BlockDivider.astro';
 import BlockImage from '@blocks/BlockImage.astro';
 import BlockTitle from '@blocks/BlockTitle.astro';
-const { blocks, global } = Astro.props;
+const { blocks } = Astro.props;
 ---
 
 {
 	blocks ? (
 		blocks.map((block) => {
 			switch (block.type) {
-				case 'blockTitle':
+				case 'title':
 					return (
 						<BlockTitle
-							title={block.content.title}
-							font={block.content.titlefont}
-							color={block.content.titlecolor}
-							size={block.content.titlesize}
-							align={block.content.titlealign}
-							Tag={block.content.titletag}
+							title={block.content.text}
+							font={block.content.textfont}
+							color={block.content.textcolor}
+							size={block.content.textsize}
+							align={block.content.textalign}
+							Level={block.content.level}
 						/>
 					);
-				case 'blockText':
+				case 'text':
 					return (
 						<BlockText
 							text={block.content.text}
@@ -31,17 +31,14 @@ const { blocks, global } = Astro.props;
 							align={block.content.textalign}
 						/>
 					);
-				// case 'blockImage':
-				// 	return (
-				// 		<BlockImage
-				// 			image={block.content.image}
-				// 			ratio={block.content.ratio}
-				// 			layout={block.content.layout}
-				// 			align={block.content.align}
-				// 			gridGapMobile={global.gridGapMobile + 'px'}
-				// 			gridGapDesktop={global.gridGapDesktop + 'px'}
-				// 		/>
-				// 	);
+				case 'image':
+					return (
+						<BlockImage
+							image={block.content.image}
+							ratioMobile={block.content.ratiomobile}
+							ratioDesktop={block.content.ratio}
+						/>
+					);
 				case 'blockDivider':
 					return <BlockDivider />;
 
