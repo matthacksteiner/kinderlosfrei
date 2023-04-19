@@ -3,7 +3,9 @@ import BlockText from '@blocks/BlockText.astro';
 import BlockDivider from '@blocks/BlockDivider.astro';
 import BlockImage from '@blocks/BlockImage.astro';
 import BlockTitle from '@blocks/BlockTitle.astro';
-const { blocks, global } = Astro.props;
+import BlockSlider from '@blocks/BlockSlider.astro';
+
+const { blocks } = Astro.props;
 ---
 
 {
@@ -41,7 +43,23 @@ const { blocks, global } = Astro.props;
 							ratioDesktop={block.content.ratio}
 						/>
 					);
-				case 'blockDivider':
+				case 'slider':
+					return (
+						<BlockSlider
+							images={block.content.images}
+							text={block.content.caption}
+							font={block.content.textfont}
+							textcolor={block.content.textcolor}
+							size={block.content.textsize}
+							align={block.content.textalign}
+							ratioMobile={block.content.ratiomobile}
+							ratioDesktop={block.content.ratio}
+							controls={block.content.controls}
+							color={block.content.color}
+							time={block.content.time}
+						/>
+					);
+				case 'divider':
 					return (
 						<BlockDivider
 							spacingMobileTop={block.content.spacingmobiletop + 'px'}

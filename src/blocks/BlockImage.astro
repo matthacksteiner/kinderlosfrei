@@ -1,8 +1,6 @@
 ---
 import ImageComponent from '@components/ImageComponent.astro';
 const { image, link, toggle, ratioMobile, ratioDesktop } = Astro.props;
-const aspectMobile = ratioMobile.replace('/', ':');
-const aspectDesktop = ratioDesktop.replace('/', ':');
 ---
 
 <div class={`block blockImages`}>
@@ -17,16 +15,16 @@ const aspectDesktop = ratioDesktop.replace('/', ':');
 					>
 						<ImageComponent
 							image={image}
-							aspectMobile={aspectMobile}
-							aspectDesktop={aspectDesktop}
+							ratioMobile={ratioMobile}
+							ratioDesktop={ratioDesktop}
 						/>
 					</a>
 				) : link.type === 'page' ? (
 					<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
 						<ImageComponent
 							image={image}
-							aspectMobile={aspectMobile}
-							aspectDesktop={aspectDesktop}
+							ratioMobile={ratioMobile}
+							ratioDesktop={ratioDesktop}
 						/>
 					</a>
 				) : null
@@ -34,8 +32,8 @@ const aspectDesktop = ratioDesktop.replace('/', ':');
 				<>
 					<ImageComponent
 						image={image}
-						aspectMobile={aspectMobile}
-						aspectDesktop={aspectDesktop}
+						ratioMobile={ratioMobile}
+						ratioDesktop={ratioDesktop}
 					/>
 				</>
 			)
