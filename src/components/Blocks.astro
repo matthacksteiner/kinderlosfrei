@@ -35,7 +35,8 @@ const { blocks, global } = Astro.props;
 					return (
 						<BlockImage
 							image={block.content.image}
-							link={block.content.link}
+							link={block.content.linkexternal}
+							toggle={block.content.toggle}
 							ratioMobile={block.content.ratiomobile}
 							ratioDesktop={block.content.ratio}
 						/>

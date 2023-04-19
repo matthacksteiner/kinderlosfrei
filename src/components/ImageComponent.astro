@@ -1,0 +1,19 @@
+---
+import Picture from '@components/Picture.astro';
+const { image, aspectDesktop, aspectMobile } = Astro.props;
+---
+
+<Picture
+	src={image.url}
+	alt={image.alt}
+	widths={[335, 335 * 2]}
+	aspectRatio={aspectMobile}
+	class="w-full object-cover lg:hidden"
+/>
+<Picture
+	src={image.url}
+	alt={image.alt}
+	widths={[430, 900, 1824]}
+	aspectRatio={aspectDesktop}
+	class="hidden w-full object-cover lg:block"
+/>
