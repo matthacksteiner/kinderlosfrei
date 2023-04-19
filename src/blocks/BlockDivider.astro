@@ -5,13 +5,9 @@ const {
 	spacingDesktopTop,
 	spacingDesktopBottom,
 } = Astro.props;
-console.log(
-	'🚀 ~ file: BlockDivider.astro:8 ~ spacingDesktopBottom:',
-	spacingDesktopBottom
-);
 ---
 
-<div class="BlockDivider"></div>
+<div class="blockDivider"></div>
 
 <style
 	lang="css"
@@ -22,7 +18,7 @@ console.log(
 		spacingMobileTop,
 	}}
 >
-	.BlockDivider {
+	.blockDivider {
 		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
 	}
 </style>
