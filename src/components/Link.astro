@@ -1,0 +1,56 @@
+---
+const { link, class: className } = Astro.props;
+const slug = Astro.params.slug;
+---
+
+{
+	link ? (
+		link.type === 'url' ? (
+			<a
+				href={link.href}
+				target={link.popup ? '_blank' : undefined}
+				rel={link.popup ? 'noopener' : undefined}
+				class={`${className}`}
+			>
+				{link.title ? link.title : link.href}
+			</a>
+		) : link.type === 'page' ? (
+			<a
+				href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}
+				target={link.popup ? '_blank' : undefined}
+				rel={link.popup ? 'noopener' : undefined}
+				class={`${className}`}
+			>
+				{link.title ? link.title : link.uri}
+			</a>
+		) : link.type === 'file' ? (
+			<a
+				href={link.href}
+				download
+				target="_blank"
+				rel="noopener"
+				class={`${className}`}
+			>
+				{link.title ? link.title : 'Download File'}
+			</a>
+		) : link.type === 'email' ? (
+			<a
+				href={`mailto:${link.href}`}
+				target="_blank"
+				rel="noopener"
+				class={`${className}`}
+			>
+				{link.title ? link.title : 'Download File'}
+			</a>
+		) : link.type === 'tel' ? (
+			<a
+				href={`${link.href}`}
+				target="_blank"
+				rel="noopener"
+				class={`${className}`}
+			>
+				{link.title ? link.title : link.href}
+			</a>
+		) : null
+	) : null
+}

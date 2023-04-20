@@ -4,14 +4,17 @@ import BlockDivider from '@blocks/BlockDivider.astro';
 import BlockImage from '@blocks/BlockImage.astro';
 import BlockTitle from '@blocks/BlockTitle.astro';
 import BlockSlider from '@blocks/BlockSlider.astro';
+import BlockButton from '@blocks/BlockButton.astro';
 
-const { blocks } = Astro.props;
+const { blocks, global } = Astro.props;
 ---
 
 {
 	blocks ? (
 		blocks.map((block) => {
 			switch (block.type) {
+				case 'button':
+					return <BlockButton link={block.content.link} global={global} />;
 				case 'title':
 					return (
 						<BlockTitle

@@ -1,0 +1,47 @@
+---
+import Link from '@components/Link.astro';
+const { link, global } = Astro.props;
+
+const font = global.buttonFont;
+const size = global.buttonFontSize;
+const padding = global.buttonPadding + 'px';
+const bg = global.buttonBackgroundColor;
+const bgActive = global.buttonBackgroundColorActive;
+const color = global.buttonTextColor;
+const colorActive = global.buttonTextColorActive;
+const borderColor = global.buttonBorderColor;
+const borderColorActive = global.buttonBorderColorActive;
+const borderRadius = global.buttonBorderRadius + 'px';
+const borderWidth = global.buttonBorderWidth + 'px';
+---
+
+<div class="blockButton block">
+	<Link
+		link={link}
+		class={`button inline-block font--${size} text--${color} bg--${bg}`}
+	/>
+</div>
+
+<style
+	set:html={`
+	:root {
+		--font: ${font};
+		--padding: ${padding};
+		--borderWidth: ${borderWidth};
+		--borderRadius: ${borderRadius};
+		--color: ${color};
+		--bgActive: ${bgActive};
+		--colorActive: ${colorActive};
+		--borderColor: ${borderColor};
+		--borderColorActive: ${borderColorActive};
+		--bgActive: ${bgActive};
+	}
+  `}
+></style>
+
+<style>
+	.button {
+		@apply rounded-[var(--borderRadius)] border-[length:var(--borderWidth)] border-[color:var(--color)] pb-[var(--padding)] pl-[var(--padding)] pr-[var(--padding)] pt-[var(--padding)] hover:bg-[color:var(--bgActive)];
+		font-family: var(--font);
+	}
+</style>

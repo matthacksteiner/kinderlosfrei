@@ -6,6 +6,7 @@ const { global, layouts } = Astro.props;
 {
 	layouts &&
 		layouts.map((layout) => {
+			const anchor = layout.anchor;
 			const backgroundColor = layout.backgroundColor;
 			const backgroundContainer = layout.backgroundContainer;
 			const backgroundAlign = layout.backgroundAlign;
@@ -13,8 +14,11 @@ const { global, layouts } = Astro.props;
 			const spacingMobileBottom = layout.spacingMobileBottom;
 			const spacingDesktopTop = layout.spacingDesktopTop;
 			const spacingDesktopBottom = layout.spacingDesktopBottom;
+			const idAttribute = anchor ? `id="${anchor}"` : '';
+			const sectionProps = anchor ? { id: anchor } : {};
 			return (
 				<section
+					{...sectionProps}
 					class={`columns bg--${backgroundColor} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom}`}
 				>
 					<div

@@ -1,6 +1,6 @@
 ---
 const { global } = Astro.props;
-const { slug } = Astro.params;
+const slug = Astro.params.slug;
 const currentPath = slug ? slug : '';
 
 const headerOverlayBackground = global.headerOverlayBackground;
@@ -30,7 +30,9 @@ const headerFontSize = global.headerFontSize;
 				if (item.type === 'page') {
 					return (
 						<a
-							href={item.uri}
+							href={item.hash ? `${item.uri}#${item.hash}` : `${item.uri}`}
+							target={item.popup ? '_blank' : undefined}
+							rel={item.popup ? 'noopener' : undefined}
 							class={`nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24 ${
 								currentPath === item.uri ? 'active' : ''
 							}`}
