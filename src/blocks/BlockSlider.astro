@@ -45,12 +45,16 @@ const colorValue = `color${color.charAt(0).toUpperCase()}${color.slice(1)}`;
 		{
 			arrows && (
 				<nav>
-					<div class="swiper-button-next" />
-					<div class="swiper-button-prev" />
+					<div class={`text--${color} swiper-button-next`} />
+					<div class={`text--${color} swiper-button-prev`} />
 				</nav>
 			)
 		}
-		{(dots || line) && <div class="swiper-pagination" />}
+		{
+			(dots || line) && (
+				<div class={`swiper-pagination swiper-pagination--${color}`} />
+			)
+		}
 		<div
 			class="slide-content absolute left-2/4 top-2/4 z-[1] w-4/5 max-w-[600px] -translate-x-2/4 -translate-y-2/4"
 		>
@@ -75,42 +79,44 @@ const colorValue = `color${color.charAt(0).toUpperCase()}${color.slice(1)}`;
 	import 'swiper/css/bundle';
 	Swiper.use([Navigation, Autoplay, Pagination]);
 
-	const block = document.querySelector('.blockSlider') as HTMLElement;
-	const controls = block?.dataset.controls;
-	const line = controls?.includes('line');
-	const time = block?.dataset.time;
+	const blockSliders = document.querySelectorAll('.blockSlider');
 
-	if (block || time) {
-		const swiperSlider = document.querySelectorAll('.swiperSlider');
-		swiperSlider.forEach((el) => {
-			const swiper = new Swiper(el as HTMLElement, {
-				autoplay: {
-					delay: parseInt(time),
-				},
-				loop: true,
-				navigation: {
-					nextEl: '.swiper-button-next',
-					prevEl: '.swiper-button-prev',
-				},
-				pagination: {
-					el: '.swiper-pagination',
-					type: line ? 'progressbar' : 'bullets',
-				},
-			});
-		});
-	}
+	blockSliders.forEach((blockSlider) => {
+		if (blockSlider instanceof HTMLElement) {
+			const controls = blockSlider?.dataset.controls;
+			const line = controls?.includes('line');
+			const time = blockSlider?.dataset.time;
+
+			if (time) {
+				const swiperSlider = blockSlider.querySelector(
+					'.swiperSlider'
+				) as HTMLElement;
+				const swiper = new Swiper(swiperSlider, {
+					autoplay: {
+						delay: parseInt(time),
+					},
+					loop: true,
+					navigation: {
+						nextEl: blockSlider.querySelector(
+							'.swiper-button-next'
+						) as HTMLElement,
+						prevEl: blockSlider.querySelector(
+							'.swiper-button-prev'
+						) as HTMLElement,
+					},
+					pagination: {
+						el: blockSlider.querySelector('.swiper-pagination') as HTMLElement,
+						type: line ? 'progressbar' : 'bullets',
+					},
+				});
+			}
+		}
+	});
 </script>
 
 <style
-	set:html={`
-	:root {
-		--swiper-theme-color: var(--${colorValue});
-	}
-  `}
-></style>
-
-<style
 	lang="css"
+	is:global
 	define:vars={{
 		font,
 	}}
@@ -118,8 +124,37 @@ const colorValue = `color${color.charAt(0).toUpperCase()}${color.slice(1)}`;
 	.title {
 		font-family: var(--font);
 	}
-
 	.overlay:before {
 		@apply absolute left-0 top-0 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
+	}
+
+	.swiper-pagination--primary .swiper-pagination-bullet-active,
+	.swiper-pagination--primary .swiper-pagination-progressbar-fill {
+		@apply bg-primary;
+	}
+
+	.swiper-pagination--secondary .swiper-pagination-bullet-active,
+	.swiper-pagination--secondary .swiper-pagination-progressbar-fill {
+		@apply bg-secondary;
+	}
+
+	.swiper-pagination--tertiary .swiper-pagination-bullet-active,
+	.swiper-pagination--tertiary .swiper-pagination-progressbar-fill {
+		@apply bg-tertiary;
+	}
+
+	.swiper-pagination--black .swiper-pagination-bullet-active,
+	.swiper-pagination--black .swiper-pagination-progressbar-fill {
+		@apply bg-black;
+	}
+
+	.swiper-pagination--white .swiper-pagination-bullet-active,
+	.swiper-pagination--white .swiper-pagination-progressbar-fill {
+		@apply bg-white;
+	}
+
+	.swiper-pagination--transparent .swiper-pagination-bullet-active,
+	.swiper-pagination--transparent .swiper-pagination-progressbar-fill {
+		@apply bg-transparent;
 	}
 </style>
