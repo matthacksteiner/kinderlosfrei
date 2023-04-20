@@ -6,7 +6,7 @@ const { image, link, toggle, ratioMobile, ratioDesktop } = Astro.props;
 <div class={`block blockImages`}>
 	{
 		image && image.url ? (
-			toggle === 'true' ? (
+			toggle ? (
 				link.type === 'url' ? (
 					<a
 						href={link.href}
