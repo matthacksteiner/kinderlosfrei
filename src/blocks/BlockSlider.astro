@@ -36,7 +36,7 @@ const colorValue = `color${color.charAt(0).toUpperCase()}${color.slice(1)}`;
 							image={image}
 							ratioMobile={ratioMobile}
 							ratioDesktop={ratioDesktop}
-							class={`${full} w-full object-cover`}
+							class={`${full}`}
 						/>
 					</div>
 				))
@@ -71,32 +71,34 @@ const colorValue = `color${color.charAt(0).toUpperCase()}${color.slice(1)}`;
 </section>
 
 <script>
-	const block = document.querySelector('.blockSlider') as HTMLElement;
-	const controls = block.dataset.controls;
-	const line = controls.includes('line');
-	const time = block.dataset.time;
-
 	import Swiper, { Navigation, Autoplay, Pagination } from 'swiper';
 	import 'swiper/css/bundle';
 	Swiper.use([Navigation, Autoplay, Pagination]);
 
-	const swiperSlider = document.querySelectorAll('.swiperSlider');
-	swiperSlider.forEach((el) => {
-		const swiper = new Swiper(el as HTMLElement, {
-			autoplay: {
-				delay: parseInt(time),
-			},
-			loop: true,
-			navigation: {
-				nextEl: '.swiper-button-next',
-				prevEl: '.swiper-button-prev',
-			},
-			pagination: {
-				el: '.swiper-pagination',
-				type: line ? 'progressbar' : 'bullets',
-			},
+	const block = document.querySelector('.blockSlider') as HTMLElement;
+	const controls = block?.dataset.controls;
+	const line = controls?.includes('line');
+	const time = block?.dataset.time;
+
+	if (block || time) {
+		const swiperSlider = document.querySelectorAll('.swiperSlider');
+		swiperSlider.forEach((el) => {
+			const swiper = new Swiper(el as HTMLElement, {
+				autoplay: {
+					delay: parseInt(time),
+				},
+				loop: true,
+				navigation: {
+					nextEl: '.swiper-button-next',
+					prevEl: '.swiper-button-prev',
+				},
+				pagination: {
+					el: '.swiper-pagination',
+					type: line ? 'progressbar' : 'bullets',
+				},
+			});
 		});
-	});
+	}
 </script>
 
 <style

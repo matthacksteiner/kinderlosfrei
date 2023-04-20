@@ -10,12 +10,12 @@ const aspectDesktop = ratioDesktop.replace('/', ':');
 	alt={image.alt}
 	widths={[335, 335 * 2]}
 	aspectRatio={aspectMobile}
-	class={`${className} lg:hidden`}
+	class={`${className} lg:hidden w-full object-cover`}
 />
 <Picture
 	src={image.url}
 	alt={image.alt}
 	widths={[430, 900, 1824]}
 	aspectRatio={aspectDesktop}
-	class={`${className} hidden lg:block`}
+	class={`${className} hidden lg:block w-full object-cover`}
 />
