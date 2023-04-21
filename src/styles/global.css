@@ -6,6 +6,10 @@
 	@apply pt-40;
 } */
 
+.block + .block {
+	margin-top: 1rem;
+}
+
 ::selection {
 	@apply bg-secondary text-primary;
 }

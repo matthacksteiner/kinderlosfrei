@@ -1,0 +1,115 @@
+---
+const {
+	items,
+	Level,
+	titleFont,
+	titleColor,
+	titleSize,
+	textFont,
+	textColor,
+	textSize,
+	textAlign,
+	borderWidth,
+	borderColor,
+} = Astro.props;
+---
+
+<div class={`block blockAccordion`}>
+	<ul>
+		{
+			Array.isArray(items) && items.length > 0
+				? items.map((item) => (
+						<li
+							class={`service accordion__item borderColor--${borderColor} py-2`}
+						>
+							<button
+								class={`accordion__button flex w-full items-center justify-between font--${titleSize} text--${titleColor}`}
+							>
+								<Level set:html={item.title} class={`title `} />
+								<span class="transition-all duration-300">&#8595;</span>
+							</button>
+							<div class="accordion__panel max-h-0 max-w-[95%] overflow-hidden transition-all duration-300">
+								<div
+									set:html={item.text}
+									class={`text kirby-text font--${textSize} text--${textColor} text--${textAlign}`}
+								/>
+							</div>
+						</li>
+				  ))
+				: null
+		}
+	</ul>
+</div>
+
+<script>
+	// accordion
+	const acc = document.querySelectorAll<HTMLElement>('.accordion__button');
+	let padding = 150;
+
+	for (const el of acc) {
+		el.onclick = function (this: HTMLElement) {
+			if (!this.classList.contains('active')) {
+				closeAll();
+			}
+
+			this.classList.toggle('active');
+			let panel = this.nextElementSibling as HTMLElement;
+
+			if (panel?.style.maxHeight) {
+				panel.style.maxHeight = null;
+			} else {
+				panel.style.maxHeight = panel.scrollHeight + padding + 'px';
+			}
+		};
+	}
+
+	function closeAll() {
+		for (const el of acc) {
+			el.classList.remove('active');
+			const nextSibling = el.nextElementSibling;
+			if (nextSibling instanceof HTMLElement) {
+				nextSibling.style.maxHeight = null;
+			}
+		}
+	}
+</script>
+
+<style lang="css" define:vars={{ titleFont, textFont, borderWidth }}>
+	li {
+		@apply border-t-[length:var(--borderWidth)] last:border-b-[length:var(--borderWidth)];
+	}
+
+	.title {
+		font-family: var(--titleFont);
+	}
+	.text {
+		font-family: var(--textFont);
+	}
+	.active > span {
+		@apply rotate-180;
+	}
+
+	.borderColor--primary {
+		@apply border-primary;
+	}
+
+	.borderColor--secondary {
+		@apply border-secondary;
+	}
+
+	.borderColor--tertiary {
+		@apply border-tertiary;
+	}
+
+	.borderColor--black {
+		@apply border-black;
+	}
+
+	.borderColor--white {
+		@apply border-white;
+	}
+
+	.borderColor--transparent {
+		@apply border-transparent;
+	}
+</style>
