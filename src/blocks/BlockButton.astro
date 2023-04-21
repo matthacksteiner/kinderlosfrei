@@ -18,7 +18,7 @@ const borderWidth = global.buttonBorderWidth + 'px';
 <div class="blockButton block">
 	<Link
 		link={link}
-		class={`button inline-block font--${size} text--${color} bg--${bg}`}
+		class={`button inline-block font--${size} text--${color} textActive--${colorActive} bg--${bg} bgActive--${bgActive} borderActive--${borderColorActive} `}
 	/>
 </div>
 
@@ -29,19 +29,80 @@ const borderWidth = global.buttonBorderWidth + 'px';
 		--padding: ${padding};
 		--borderWidth: ${borderWidth};
 		--borderRadius: ${borderRadius};
-		--color: ${color};
-		--bgActive: ${bgActive};
-		--colorActive: ${colorActive};
 		--borderColor: ${borderColor};
-		--borderColorActive: ${borderColorActive};
-		--bgActive: ${bgActive};
 	}
   `}
 ></style>
 
 <style>
 	.button {
-		@apply rounded-[var(--borderRadius)] border-[length:var(--borderWidth)] border-[color:var(--color)] pb-[var(--padding)] pl-[var(--padding)] pr-[var(--padding)] pt-[var(--padding)] hover:bg-[color:var(--bgActive)];
+		@apply rounded-[var(--borderRadius)] border-[length:var(--borderWidth)] border-[color:var(--borderColor)];
 		font-family: var(--font);
+		padding: var(--padding) calc(var(--padding) * 2);
+	}
+
+	.textActive--primary {
+		@apply hover:text-primary;
+	}
+
+	.textActive--secondary {
+		@apply hover:text-secondary;
+	}
+
+	.textActive--tertiary {
+		@apply hover:text-tertiary;
+	}
+	.textActive--black {
+		@apply hover:text-black;
+	}
+	.textActive--white {
+		@apply hover:text-white;
+	}
+	.textActive--transparent {
+		@apply hover:text-transparent;
+	}
+
+	.bgActive--primary {
+		@apply hover:bg-primary;
+	}
+
+	.bgActive--secondary {
+		@apply hover:bg-secondary;
+	}
+
+	.bgActive--tertiary {
+		@apply hover:bg-tertiary;
+	}
+
+	.bgActive--black {
+		@apply hover:bg-black;
+	}
+
+	.bgActive--white {
+		@apply hover:bg-white;
+	}
+
+	.borderActive--primary {
+		@apply hover:border-primary;
+	}
+
+	.borderActive--secondary {
+		@apply hover:border-secondary;
+	}
+
+	.borderActive--tertiary {
+		@apply hover:border-tertiary;
+	}
+
+	.borderActive--black {
+		@apply hover:border-black;
+	}
+
+	.borderActive--white {
+		@apply hover:border-white;
+	}
+
+	.borderActive--transparent {
+		@apply hover:border-transparent;
 	}
 </style>
