@@ -1,0 +1,28 @@
+---
+const { borderStyle, borderWidth, borderColor } = Astro.props;
+---
+
+<div class="blockLine block">
+	<hr class={`borderColor--${borderColor} borderStyle--${borderStyle}`} />
+</div>
+
+<style lang="css" define:vars={{ borderWidth }}>
+	hr {
+		@apply border-t-[length:var(--borderWidth)];
+	}
+
+	.borderStyle--solid {
+		@apply border-solid;
+	}
+	.borderStyle--dashed {
+		@apply border-dashed;
+	}
+
+	.borderStyle--dotted {
+		@apply border-dotted;
+	}
+
+	.borderStyle--double {
+		@apply border-double;
+	}
+</style>

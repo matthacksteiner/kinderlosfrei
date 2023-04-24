@@ -6,6 +6,7 @@ import BlockTitle from '@blocks/BlockTitle.astro';
 import BlockSlider from '@blocks/BlockSlider.astro';
 import BlockButton from '@blocks/BlockButton.astro';
 import BlockAccordion from '@blocks/BlockAccordion.astro';
+import BlockLine from '@blocks/BlockLine.astro';
 
 const { blocks, global } = Astro.props;
 ---
@@ -14,6 +15,14 @@ const { blocks, global } = Astro.props;
 	blocks ? (
 		blocks.map((block) => {
 			switch (block.type) {
+				case 'line':
+					return (
+						<BlockLine
+							borderStyle={block.content.borderstyle}
+							borderWidth={block.content.borderwidth}
+							borderColor={block.content.bordercolor}
+						/>
+					);
 				case 'accordion':
 					return (
 						<BlockAccordion
