@@ -18,7 +18,7 @@ const { blocks, global } = Astro.props;
 					return (
 						<BlockAccordion
 							items={block.content.acc}
-							Level={block.content.titlelevel}
+							Level={block.content.level}
 							titleFont={block.content.titlefont}
 							titleColor={block.content.titlecolor}
 							titleSize={block.content.titlesize}
@@ -36,11 +36,11 @@ const { blocks, global } = Astro.props;
 					return (
 						<BlockTitle
 							title={block.content.text}
-							font={block.content.textfont}
-							color={block.content.textcolor}
-							size={block.content.textsize}
-							align={block.content.textalign}
 							Level={block.content.level}
+							font={block.content.titlefont}
+							color={block.content.titlecolor}
+							size={block.content.titlesize}
+							align={block.content.titlealign}
 						/>
 					);
 				case 'text':

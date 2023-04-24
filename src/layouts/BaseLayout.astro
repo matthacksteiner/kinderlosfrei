@@ -21,6 +21,8 @@ const gridGapMobile = global.gridGapMobile + 'px';
 const gridMarginMobile = global.gridMarginMobile + 'px';
 const gridGapDesktop = global.gridGapDesktop + 'px';
 const gridMarginDesktop = global.gridMarginDesktop + 'px';
+const gridBlockMobile = global.gridBlockMobile + 'rem';
+const gridBlockDesktop = global.gridBlockDesktop + 'rem';
 ---
 
 <!DOCTYPE html>
@@ -67,6 +69,8 @@ const gridMarginDesktop = global.gridMarginDesktop + 'px';
 				gridMarginMobile,
 				gridGapDesktop,
 				gridMarginDesktop,
+				gridBlockMobile,
+				gridBlockDesktop,
 			}}
 		>
 			:root {
@@ -82,6 +86,10 @@ const gridMarginDesktop = global.gridMarginDesktop + 'px';
 
 			.grid-default {
 				@apply grid grid-cols-6 gap-x-[var(--gridGapMobile)] max-lg:gap-y-[var(--gridGapMobile)] lg:grid-cols-12 lg:gap-x-[var(--gridGapDesktop)];
+			}
+
+			.block + .block {
+				@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
 			}
 		</style>
 	</body>

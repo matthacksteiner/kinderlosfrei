@@ -24,6 +24,7 @@ const {
 						>
 							<button
 								class={`accordion__button flex w-full items-center justify-between font--${titleSize} text--${titleColor}`}
+								aria-label="Akkordion öffnen oder schließen"
 							>
 								<Level set:html={item.title} class={`title `} />
 								<span class="transition-all duration-300">&#8595;</span>
