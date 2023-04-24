@@ -1,0 +1,29 @@
+---
+const { image, toggle, link } = Astro.props;
+---
+
+<div class="blockVector block">
+	{
+		image && image.url ? (
+			toggle ? (
+				link.type === 'url' ? (
+					<a
+						href={link.href}
+						target={link.popup ? '_blank' : undefined}
+						rel={link.popup ? 'noopener' : undefined}
+					>
+						<img src={image.url} alt={image.alt} />
+					</a>
+				) : link.type === 'page' ? (
+					<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
+						<img src={image} alt={image.at} />
+					</a>
+				) : null
+			) : (
+				<>
+					<img src={image.url} alt={image.alt} />
+				</>
+			)
+		) : null
+	}
+</div>

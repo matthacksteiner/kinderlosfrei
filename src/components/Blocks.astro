@@ -7,6 +7,7 @@ import BlockSlider from '@blocks/BlockSlider.astro';
 import BlockButton from '@blocks/BlockButton.astro';
 import BlockAccordion from '@blocks/BlockAccordion.astro';
 import BlockLine from '@blocks/BlockLine.astro';
+import BlockVector from '@blocks/BlockVector.astro';
 
 const { blocks, global } = Astro.props;
 ---
@@ -15,6 +16,15 @@ const { blocks, global } = Astro.props;
 	blocks ? (
 		blocks.map((block) => {
 			switch (block.type) {
+				case 'vector':
+					return (
+						<BlockVector
+							image={block.content.image}
+							toggle={block.content.toggle}
+							link={block.content.linkexternal}
+						/>
+					);
+
 				case 'line':
 					return (
 						<BlockLine
