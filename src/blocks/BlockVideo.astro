@@ -6,14 +6,18 @@ const autoplay = hasOption('autoplay');
 const loop = hasOption('loop');
 const muted = hasOption('muted');
 const controls = hasOption('controls');
+const isYoutube = url.includes('youtube.com');
+const isVimeo = url.includes('vimeo.com');
 
-const urlNoCookies = url.replace(
+const youtubeNoCookies = url.replace(
 	'https://www.youtube.com/watch?v=',
 	'https://www.youtube-nocookie.com/embed/'
 );
 
-const isYoutube = url.includes('youtube.com');
-const isVimeo = url.includes('vimeo.com');
+const vimeoPlayer = url.replace(
+	'https://vimeo.com/',
+	'https://player.vimeo.com/video/'
+);
 ---
 
 <div class="blockVideo block">
@@ -22,15 +26,19 @@ const isVimeo = url.includes('vimeo.com');
 			source === 'remote' ? (
 				isYoutube ? (
 					<iframe
-						src={`${urlNoCookies}?autoplay=${autoplay ? 1 : 0}&loop=${
+						src={`${youtubeNoCookies}?autoplay=${autoplay ? 1 : 0}&loop=${
 							loop ? 1 : 0
-						}&mute=${muted || autoplay ? 1 : 0}&controls=${controls ? 1 : 0}`}
+						}&mute=${muted || autoplay ? 1 : 0}&controls=${
+							controls ? 1 : 0
+						}&dnt=1`}
 						allow="autoplay; encrypted-media"
 						allowfullscreen
 					/>
 				) : isVimeo ? (
 					<iframe
-						src="https://player.vimeo.com/video/76979871?autoplay=1&loop=1&autopause=0"
+						src={`${vimeoPlayer}?autoplay=${autoplay ? 1 : 0}&loop=${
+							loop ? 1 : 0
+						}&muted=${muted || autoplay ? 1 : 0}&controls=${controls ? 1 : 0}`}
 						width="640"
 						height="360"
 						frameborder="0"
