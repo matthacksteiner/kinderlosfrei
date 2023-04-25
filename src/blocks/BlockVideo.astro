@@ -1,0 +1,58 @@
+---
+const { source, url, file, options, ratioDesktop, ratioMobile } = Astro.props;
+const hasOption = (option) => options.includes(option);
+
+const autoplay = hasOption('autoplay');
+const loop = hasOption('loop');
+const muted = hasOption('muted');
+const controls = hasOption('controls');
+
+const urlNoCookies = url.replace(
+	'https://www.youtube.com/watch?v=',
+	'https://www.youtube-nocookie.com/embed/'
+);
+
+const isYoutube = url.includes('youtube.com');
+const isVimeo = url.includes('vimeo.com');
+---
+
+<div class="blockVideo block">
+	<div class="video-container">
+		{
+			source === 'remote' ? (
+				isYoutube ? (
+					<iframe
+						src={`${urlNoCookies}?autoplay=${autoplay ? 1 : 0}&loop=${
+							loop ? 1 : 0
+						}&mute=${muted || autoplay ? 1 : 0}&controls=${controls ? 1 : 0}`}
+						allow="autoplay; encrypted-media"
+						allowfullscreen
+					/>
+				) : isVimeo ? (
+					<iframe
+						src="https://player.vimeo.com/video/76979871?autoplay=1&loop=1&autopause=0"
+						width="640"
+						height="360"
+						frameborder="0"
+						allow="autoplay; fullscreen"
+						allowfullscreen
+					/>
+				) : null
+			) : (
+				<video
+					src={file.url}
+					muted={muted || autoplay}
+					autoplay={autoplay}
+					loop={loop}
+					controls={controls}
+				/>
+			)
+		}
+	</div>
+</div>
+
+<style lang="css" define:vars={{ ratioDesktop, ratioMobile }}>
+	iframe {
+		@apply aspect-[var(--ratioMobile)] h-auto w-full lg:aspect-[var(--ratioDesktop)];
+	}
+</style>

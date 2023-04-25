@@ -8,6 +8,7 @@ import BlockButton from '@blocks/BlockButton.astro';
 import BlockAccordion from '@blocks/BlockAccordion.astro';
 import BlockLine from '@blocks/BlockLine.astro';
 import BlockVector from '@blocks/BlockVector.astro';
+import BlockVideo from '@blocks/BlockVideo.astro';
 
 const { blocks, global } = Astro.props;
 ---
@@ -16,6 +17,17 @@ const { blocks, global } = Astro.props;
 	blocks ? (
 		blocks.map((block) => {
 			switch (block.type) {
+				case 'video':
+					return (
+						<BlockVideo
+							source={block.content.source}
+							url={block.content.url}
+							file={block.content.file}
+							options={block.content.options}
+							ratioMobile={block.content.ratiomobile}
+							ratioDesktop={block.content.ratio}
+						/>
+					);
 				case 'vector':
 					return (
 						<BlockVector
