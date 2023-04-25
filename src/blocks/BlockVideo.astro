@@ -45,7 +45,13 @@ const vimeoPlayer = url.replace(
 						allow="autoplay; fullscreen"
 						allowfullscreen
 					/>
-				) : null
+				) : (
+					<div class="error">
+						<p class="text-red-500">
+							Der Video-Link ist ungültig. Bitte überprüfe ihn.
+						</p>
+					</div>
+				)
 			) : (
 				<video
 					src={file.url}
