@@ -19,12 +19,12 @@ const logoFile = global.logoFile;
 ---
 
 <header
-	class={`bg--${headerBackground} text--${headerColor} fixed z-10 w-full py-4 transition-all duration-300 ease-in-out max-md:items-center md:py-8`}
+	class={`bg--${headerBackground} text--${headerColor} fixed z-10 w-full py-4 transition-all duration-300 ease-in-out md:py-8`}
 >
 	<div class="container flex items-center">
 		<div
 			id="logo"
-			class={`${logoAlign} relative z-10 transition-all duration-300 ease-in-out max-md:py-4 w-80`}
+			class={`${logoAlign} relative z-20 transition-all duration-300 ease-in-out max-md:py-4 w-80`}
 		>
 			<a href="/" aria-label="Zurück zur Homepage">
 				{
@@ -47,17 +47,26 @@ const logoFile = global.logoFile;
 				}
 			</a>
 		</div>
-		<nav
-			class="justify-end transition-all duration-300 ease-in-out max-md:ml-auto lg:flex-grow"
-		>
-			<Hamburger />
+		<nav class="ml-auto transition-all duration-300 ease-in-out">
+			<Hamburger global={global} />
 			<Navigation global={global} />
 		</nav>
 	</div>
 </header>
 
 <script>
-	import '@scripts/header.js';
+	var header = document.querySelector('header');
+
+	window.onscroll = function () {
+		if (
+			document.body.scrollTop > 80 ||
+			document.documentElement.scrollTop > 80
+		) {
+			header.classList.add('header--active');
+		} else {
+			header.classList.remove('header--active');
+		}
+	};
 </script>
 
 <style
@@ -69,7 +78,6 @@ const logoFile = global.logoFile;
 		logoDesktop,
 		logoDesktopActive,
 		logoMobileActive,
-		logoAlign,
 	}}
 >
 	.header--active {

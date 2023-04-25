@@ -32,7 +32,6 @@ const vimeoPlayer = url.replace(
 							controls ? 1 : 0
 						}&dnt=1`}
 						allow="autoplay; encrypted-media"
-						allowfullscreen
 					/>
 				) : isVimeo ? (
 					<iframe
@@ -43,7 +42,6 @@ const vimeoPlayer = url.replace(
 						height="360"
 						frameborder="0"
 						allow="autoplay; fullscreen"
-						allowfullscreen
 					/>
 				) : (
 					<div class="error">

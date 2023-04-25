@@ -3,13 +3,16 @@ const { global } = Astro.props;
 const slug = Astro.params.slug;
 const currentPath = slug ? slug : '';
 
-const headerOverlayBackground = global.headerOverlayBackground;
+const headerHamburgerOverlay = global.headerHamburgerOverlay;
 const headerFont = global.headerFont;
 const headerFontSize = global.headerFontSize;
+const logoAlign = global.logoAlign;
 ---
 
 <div
-	class={`nav-links bg--${headerOverlayBackground} font--${headerFontSize} lg:bg-transparent invisible top-0 left-0 z-10 mr-24 flex min-h-full w-full flex-col justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none max-lg:fixed lg:visible lg:flex lg:flex-row lg:justify-end lg:opacity-100`}
+	class={`nav-links--desktop hidden lg:flex font--${headerFontSize} lg:bg-transparent top-0 left-0 z-10 mr-24 min-h-full w-full justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none  visible flex-row lg:justify-end lg:opacity-100 ${
+		logoAlign === 'center' ? 'lg:hidden' : ''
+	}`}
 >
 	{
 		global.navHeader &&
@@ -44,16 +47,8 @@ const headerFontSize = global.headerFontSize;
 			})
 	}
 </div>
-
 <style lang="css" define:vars={{ headerFont }}>
 	.nav-links {
 		font-family: var(--headerFont);
-	}
-
-	.expanded {
-		@apply pointer-events-auto visible opacity-100;
-	}
-	.active {
-		@apply font-semibold;
 	}
 </style>
