@@ -1,8 +1,10 @@
 ---
-const { text, font, size, align, color } = Astro.props;
+const { text, font, size, align, color, controls } = Astro.props;
+const hasControl = (control) => controls && controls.includes(control);
+const full = hasControl('full') ? 'flex h-screen items-center' : null;
 ---
 
-<div class={`block blockText`}>
+<div class={`block blockText ${full}`}>
 	<div
 		set:html={text}
 		class={`kirby-text font--${size} text--${color} text--${align}`}

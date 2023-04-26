@@ -2,7 +2,7 @@
 import VectorImage from '@components/VectorImage.astro';
 const { image, toggle, link, controls } = Astro.props;
 
-const hasControl = (control) => controls.includes(control);
+const hasControl = (control) => controls && controls.includes(control);
 const full = hasControl('full') ? 'flex h-screen' : null;
 ---
 

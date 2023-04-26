@@ -17,7 +17,7 @@ const {
 	toggle,
 } = Astro.props;
 
-const hasControl = (control) => controls.includes(control);
+const hasControl = (control) => controls && controls.includes(control);
 const arrows = hasControl('arrows');
 const dots = hasControl('dots');
 const line = hasControl('line');
