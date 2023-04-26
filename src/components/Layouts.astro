@@ -9,6 +9,7 @@ const { global, layouts } = Astro.props;
 			const anchor = layout.anchor;
 			const backgroundColor = layout.backgroundColor;
 			const backgroundContainer = layout.backgroundContainer;
+
 			const backgroundAlign = layout.backgroundAlign;
 			const spacingMobileTop = layout.spacingMobileTop;
 			const spacingMobileBottom = layout.spacingMobileBottom;
@@ -38,6 +39,10 @@ const { global, layouts } = Astro.props;
 }
 
 <style class="css">
+	.container-mobile {
+		@apply max-lg:pl-[var(--grid-margin-mobile)] max-lg:pr-[var(--grid-margin-mobile)];
+	}
+
 	.spacingMobileTop--0 {
 		@apply pt-0;
 	}

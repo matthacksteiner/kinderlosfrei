@@ -3,7 +3,6 @@ const { global } = Astro.props;
 const slug = Astro.params.slug;
 const currentPath = slug ? slug : '';
 
-const headerHamburgerOverlay = global.headerHamburgerOverlay;
 const headerFont = global.headerFont;
 const headerFontSize = global.headerFontSize;
 const logoAlign = global.logoAlign;
@@ -48,7 +47,7 @@ const logoAlign = global.logoAlign;
 	}
 </div>
 <style lang="css" define:vars={{ headerFont }}>
-	.nav-links {
+	.nav-links--desktop {
 		font-family: var(--headerFont);
 	}
 </style>

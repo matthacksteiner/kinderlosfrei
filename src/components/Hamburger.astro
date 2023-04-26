@@ -3,16 +3,18 @@ const { global } = Astro.props;
 const slug = Astro.params.slug;
 const currentPath = slug ? slug : '';
 
-const headerHamburgerOverlay = global.headerHamburgerOverlay;
-const headerFont = global.headerFont;
-const headerFontSize = global.headerFontSize;
-const hamburgerColor = global.headerHamburgerColor;
-const hamburgerColorActive = global.headerHamburgerColorActive;
+const hamburgerFont = global.hamburgerFont;
+const hamburgerFontSize = global.hamburgerFontSize;
+const hamburgerFontColor = global.hamburgerFontColor;
+const hamburgerMenuColor = global.hamburgerMenuColor;
+const hamburgerMenuColorActive = global.hamburgerMenuColorActive;
+const hamburgerOverlay = global.hamburgerOverlay;
+
 const logoAlign = global.logoAlign;
 ---
 
 <button
-	class={`c-hamburger--stack c-hamburger hamburgerColorActive--${hamburgerColorActive}  hamburgerColor--${hamburgerColor} relative z-20 flex-grow ${
+	class={`c-hamburger--stack c-hamburger hamburgerColorActive--${hamburgerMenuColorActive}  hamburgerColor--${hamburgerMenuColor} relative z-20 flex-grow ${
 		logoAlign === 'left' ? 'lg:hidden' : ''
 	}`}
 	aria-label="hamburger-button"
@@ -26,7 +28,7 @@ const logoAlign = global.logoAlign;
 </button>
 
 <div
-	class={`nav-links--hamburger invisible bg--${headerHamburgerOverlay} font--${headerFontSize} top-0 left-0  mr-24 flex min-h-full w-full flex-col justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none fixed ${
+	class={`nav-links--hamburger invisible text--${hamburgerFontColor} bg--${hamburgerOverlay} font--${hamburgerFontSize} top-0 left-0  mr-24 flex min-h-full w-full flex-col justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none fixed ${
 		logoAlign === 'left' ? 'lg:hidden' : ''
 	}`}
 >
@@ -39,7 +41,7 @@ const logoAlign = global.logoAlign;
 							href={item.href}
 							target={`${item.popup === true ? '_blank' : '_self'}`}
 							rel={`${item.popup === true ? 'noopener noreferrer' : ''}`}
-							class="nav-link--hamburger mb-8"
+							class={`nav-link--hamburger mb-8 `}
 						>
 							{item.title}
 						</a>
@@ -54,7 +56,7 @@ const logoAlign = global.logoAlign;
 							rel={item.popup ? 'noopener' : undefined}
 							class={`nav-link--hamburger mb-8 ${
 								currentPath === item.uri ? 'active' : ''
-							}`}
+							}  `}
 						>
 							{item.title}
 						</a>
@@ -64,7 +66,11 @@ const logoAlign = global.logoAlign;
 	}
 </div>
 
-<style lang="css">
+<style lang="css" define:vars={{ hamburgerFont }}>
+	.nav-links--hamburger {
+		font-family: var(--hamburgerFont);
+	}
+
 	.expanded {
 		@apply pointer-events-auto visible opacity-100;
 	}
