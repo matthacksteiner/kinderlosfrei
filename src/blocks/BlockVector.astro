@@ -1,8 +1,12 @@
 ---
-const { image, toggle, link } = Astro.props;
+import VectorImage from '@components/VectorImage.astro';
+const { image, toggle, link, controls } = Astro.props;
+
+const hasControl = (control) => controls.includes(control);
+const full = hasControl('full') ? 'flex h-screen' : null;
 ---
 
-<div class="blockVector block">
+<div class={`blockVector block ${full}`}>
 	{
 		image && image.url ? (
 			toggle ? (
@@ -12,16 +16,16 @@ const { image, toggle, link } = Astro.props;
 						target={link.popup ? '_blank' : undefined}
 						rel={link.popup ? 'noopener' : undefined}
 					>
-						<img src={image.url} alt={image.alt} />
+						<VectorImage image={image} />
 					</a>
 				) : link.type === 'page' ? (
 					<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
-						<img src={image} alt={image.at} />
+						<VectorImage image={image} />
 					</a>
 				) : null
 			) : (
 				<>
-					<img src={image.url} alt={image.alt} />
+					<VectorImage image={image} />
 				</>
 			)
 		) : null
