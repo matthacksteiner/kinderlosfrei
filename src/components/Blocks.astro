@@ -9,6 +9,7 @@ import BlockAccordion from '@blocks/BlockAccordion.astro';
 import BlockLine from '@blocks/BlockLine.astro';
 import BlockVector from '@blocks/BlockVector.astro';
 import BlockVideo from '@blocks/BlockVideo.astro';
+import BlockIconList from '@blocks/BlockIconList.astro';
 
 const { blocks, global } = Astro.props;
 ---
@@ -60,6 +61,19 @@ const { blocks, global } = Astro.props;
 							textAlign={block.content.textalign}
 							borderWidth={block.content.borderwidth}
 							borderColor={block.content.bordercolor}
+						/>
+					);
+				case 'iconlist':
+					return (
+						<BlockIconList
+							items={block.content.list}
+							font={block.content.textfont}
+							color={block.content.textcolor}
+							size={block.content.textsize}
+							align={block.content.textalign}
+							iconSize={block.content.iconsize}
+							iconGap={block.content.icongap}
+							iconListGap={block.content.iconlistgap}
 						/>
 					);
 				case 'button':

@@ -1,36 +1,8 @@
 ---
+import Layouts from '@components/Layouts.astro';
 const { data, global } = Astro.props;
 ---
 
-<footer class="bg-green contrast-more:bg-darkGreen py-2 text-center text-white">
-	<nav>
-		{
-			global.navFooter &&
-			global.navFooter.map((item) => {
-				if (item.type === 'url') {
-					return (
-						<a
-							href={item.href}
-							target={`${item.popup && '_blank' || '_self'}`}
-							rel={`${item.popup && 'noopener noreferrer'}`}
-							class="nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24"
-						>
-							{item.title}
-						</a>
-					);
-				}
-
-				if (item.type === 'page') {
-					return (
-						<a
-							href={item.uri}
-							class="nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24"
-						>
-							{item.title}
-						</a>
-					);
-				}
-			})
-		}
-	</nav>
+<footer>
+	<!-- <Layouts layouts={data.layouts} data={data} global={global} /> -->
 </footer>

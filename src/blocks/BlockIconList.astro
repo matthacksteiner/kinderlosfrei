@@ -1,0 +1,54 @@
+---
+const { items, font, color, size, align, iconSize, iconGap, iconListGap } =
+	Astro.props;
+---
+
+<div class="blockIconlist block">
+	<ul class="list flex flex-col">
+		{
+			items.map((item) => (
+				<li>
+					<a
+						href={item.url}
+						target="_blank"
+						rel="noopener"
+						class="link flex items-center"
+					>
+						<img src={item.icon.url} class="icon" />
+						<span class={`text font--${size} text--${color} text--${align}`}>
+							{item.text}
+						</span>
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</div>
+
+<style
+	set:html={`
+	:root {
+		--iconSize: ${iconSize}px;
+		--iconGap: ${iconGap}px;
+        --iconListGap: ${iconListGap}px;
+	}
+  `}
+></style>
+
+<style lang="css" define:vars={font}>
+	.blockIconlist {
+		font-family: var(--font);
+	}
+
+	.list {
+		@apply gap-y-[var(--iconGap)];
+	}
+
+	.link {
+		@apply gap-x-[var(--iconListGap)];
+	}
+
+	.icon {
+		@apply h-[var(--iconSize)] w-[var(--iconSize)];
+	}
+</style>
