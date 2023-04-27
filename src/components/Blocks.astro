@@ -10,6 +10,7 @@ import BlockLine from '@blocks/BlockLine.astro';
 import BlockVector from '@blocks/BlockVector.astro';
 import BlockVideo from '@blocks/BlockVideo.astro';
 import BlockIconList from '@blocks/BlockIconList.astro';
+import BlockMenu from '@blocks/BlockMenu.astro';
 
 const { blocks, global } = Astro.props;
 ---
@@ -74,6 +75,16 @@ const { blocks, global } = Astro.props;
 							iconSize={block.content.iconsize}
 							iconGap={block.content.icongap}
 							iconListGap={block.content.iconlistgap}
+						/>
+					);
+				case 'menu':
+					return (
+						<BlockMenu
+							items={block.content.nav}
+							font={block.content.textfont}
+							color={block.content.textcolor}
+							size={block.content.textsize}
+							gap={block.content.listgap}
 						/>
 					);
 				case 'button':
