@@ -17,12 +17,13 @@ const colorWhite = global.colorWhite;
 const colorTransparent = global.colorTransparent;
 const colorBackground = global.colorBackground;
 
-const gridGapMobile = global.gridGapMobile + 'px';
-const gridMarginMobile = global.gridMarginMobile + 'px';
-const gridGapDesktop = global.gridGapDesktop + 'px';
-const gridMarginDesktop = global.gridMarginDesktop + 'px';
-const gridBlockMobile = global.gridBlockMobile + 'px';
-const gridBlockDesktop = global.gridBlockDesktop + 'px';
+const baseSize = 16;
+const gridGapMobile = global.gridGapMobile / baseSize + 'rem';
+const gridMarginMobile = global.gridMarginMobile / baseSize + 'rem';
+const gridGapDesktop = global.gridGapDesktop / baseSize + 'rem';
+const gridMarginDesktop = global.gridMarginDesktop / baseSize + 'rem';
+const gridBlockMobile = global.gridBlockMobile / baseSize + 'rem';
+const gridBlockDesktop = global.gridBlockDesktop / baseSize + 'rem';
 ---
 
 <!DOCTYPE html>

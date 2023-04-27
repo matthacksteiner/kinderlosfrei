@@ -2,17 +2,18 @@
 import Link from '@components/Link.astro';
 const { link, global } = Astro.props;
 
+const baseSize = 16;
 const font = global.buttonFont;
 const size = global.buttonFontSize;
-const padding = global.buttonPadding + 'px';
+const padding = global.buttonPadding / baseSize + 'rem';
 const bg = global.buttonBackgroundColor;
 const bgActive = global.buttonBackgroundColorActive;
 const color = global.buttonTextColor;
 const colorActive = global.buttonTextColorActive;
 const borderColor = global.buttonBorderColor;
 const borderColorActive = global.buttonBorderColorActive;
-const borderRadius = global.buttonBorderRadius + 'px';
-const borderWidth = global.buttonBorderWidth + 'px';
+const borderRadius = global.buttonBorderRadius / baseSize + 'rem';
+const borderWidth = global.buttonBorderWidth / baseSize + 'rem';
 ---
 
 <div class="blockButton block">

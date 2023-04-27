@@ -112,7 +112,7 @@
 
 .kirby-text ul,
 .kirby-text ol {
-	@apply ml-5 list-outside py-3;
+	@apply ml-5 list-inside py-3;
 }
 
 .kirby-text ul {

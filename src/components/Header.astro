@@ -4,16 +4,17 @@ import Navigation from '@components/Navigation.astro';
 import { Icon } from 'astro-icon';
 
 const { global } = Astro.props;
+const baseSize = 16;
 
 const headerColor = global.headerColor;
 const headerBackground = global.headerBackground;
 const headerColorActive = global.headerColorActive;
 const headerBackgroundActive = global.headerBackgroundActive;
 
-const logoDesktop = global.logoDesktop + 'px';
-const logoDesktopActive = global.logoDesktopActive + 'px';
-const logoMobile = global.logoMobile + 'px';
-const logoMobileActive = global.logoMobileActive + 'px';
+const logoDesktop = global.logoDesktop / baseSize + 'rem';
+const logoDesktopActive = global.logoDesktopActive / baseSize + 'rem';
+const logoMobile = global.logoMobile / baseSize + 'rem';
+const logoMobileActive = global.logoMobileActive / baseSize + 'rem';
 const logoAlign = global.logoAlign;
 const logoFile = global.logoFile;
 ---

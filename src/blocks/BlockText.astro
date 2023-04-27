@@ -1,7 +1,9 @@
 ---
-const { text, font, size, align, color, controls } = Astro.props;
+const { text, font, size, align, color, controls, headlines } = Astro.props;
 const hasControl = (control) => controls && controls.includes(control);
 const full = hasControl('full') ? 'flex h-screen items-center' : null;
+
+const h1Size = headlines.h1.size;
 ---
 
 <div class={`block blockText ${full}`}>

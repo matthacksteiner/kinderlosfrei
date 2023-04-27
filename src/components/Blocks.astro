@@ -13,6 +13,7 @@ import BlockIconList from '@blocks/BlockIconList.astro';
 import BlockMenu from '@blocks/BlockMenu.astro';
 
 const { blocks, global } = Astro.props;
+const baseSize = 16;
 ---
 
 {
@@ -109,6 +110,7 @@ const { blocks, global } = Astro.props;
 							size={block.content.textsize}
 							align={block.content.textalign}
 							controls={block.content.controls}
+							headlines={global.headlines}
 						/>
 					);
 				case 'image':
@@ -142,10 +144,18 @@ const { blocks, global } = Astro.props;
 				case 'divider':
 					return (
 						<BlockDivider
-							spacingMobileTop={block.content.spacingmobiletop + 'px'}
-							spacingMobileBottom={block.content.spacingmobilebottom + 'px'}
-							spacingDesktopTop={block.content.spacingdesktoptop + 'px'}
-							spacingDesktopBottom={block.content.spacingdesktopbottom + 'px'}
+							spacingMobileTop={
+								block.content.spacingmobiletop / baseSize + 'rem'
+							}
+							spacingMobileBottom={
+								block.content.spacingmobilebottom / baseSize + 'rem'
+							}
+							spacingDesktopTop={
+								block.content.spacingdesktoptop / baseSize + 'rem'
+							}
+							spacingDesktopBottom={
+								block.content.spacingdesktopbottom / baseSize + 'rem'
+							}
 						/>
 					);
 
