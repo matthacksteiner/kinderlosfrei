@@ -110,6 +110,10 @@
 	@apply items-end;
 }
 
+.align-vert--normal {
+	@apply items-normal;
+}
+
 .align-hor--start {
 	@apply justify-items-start;
 }
@@ -120,6 +124,10 @@
 
 .align-hor--end {
 	@apply justify-items-end;
+}
+
+.align-hor--normal {
+	@apply justify-items-normal;
 }
 
 .kirby-text h1,
