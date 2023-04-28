@@ -98,16 +98,28 @@
 	@apply text-right;
 }
 
-.align--start {
+.align-vert--start {
 	@apply items-start;
 }
 
-.align--center {
+.align-vert--center {
 	@apply items-center;
 }
 
-.align--end {
+.align-vert--end {
 	@apply items-end;
+}
+
+.align-hor--start {
+	@apply justify-items-start;
+}
+
+.align-hor--center {
+	@apply justify-items-center;
+}
+
+.align-hor--end {
+	@apply justify-items-end;
 }
 
 .kirby-text h1,
