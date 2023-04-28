@@ -124,11 +124,13 @@ const {
 
 	const arrowButton = document.querySelector('.arrow');
 
-	arrowButton.addEventListener('click', () => {
-		const currentColumns = arrowButton.closest('.columns');
-		const nextColumns = currentColumns.nextElementSibling;
-		if (nextColumns && nextColumns.classList.contains('columns')) {
-			nextColumns.scrollIntoView({ behavior: 'smooth' });
-		}
-	});
+	if (arrowButton) {
+		arrowButton.addEventListener('click', () => {
+			const currentColumns = arrowButton.closest('.columns');
+			const nextColumns = currentColumns.nextElementSibling;
+			if (nextColumns && nextColumns.classList.contains('columns')) {
+				nextColumns.scrollIntoView({ behavior: 'smooth' });
+			}
+		});
+	}
 </script>
