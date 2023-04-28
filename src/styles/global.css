@@ -111,7 +111,7 @@
 }
 
 .align-vert--normal {
-	@apply items-normal;
+	justify-items: normal;
 }
 
 .align-hor--start {
@@ -127,7 +127,7 @@
 }
 
 .align-hor--normal {
-	@apply justify-items-normal;
+	justify-items: normal;
 }
 
 .kirby-text h1,
