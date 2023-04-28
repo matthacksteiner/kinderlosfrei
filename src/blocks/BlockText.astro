@@ -3,23 +3,118 @@ const { text, font, size, align, color, controls, headlines } = Astro.props;
 const hasControl = (control) => controls && controls.includes(control);
 const full = hasControl('full') ? 'flex h-screen items-center' : null;
 
-const h1Size = headlines.h1.size;
+const h1Font = headlines.h1.font;
+const h2Font = headlines.h2.font;
+const h3Font = headlines.h3.font;
+const h4Font = headlines.h4.font;
+const h5Font = headlines.h5.font;
+const h6Font = headlines.h6.font;
+
+const {
+	h1: { size: h1Size, color: h1Color, align: h1Align },
+	h2: { size: h2Size, color: h2Color, align: h2Align },
+	h3: { size: h3Size, color: h3Color, align: h3Align },
+	h4: { size: h4Size, color: h4Color, align: h4Align },
+	h5: { size: h5Size, color: h5Color, align: h5Align },
+	h6: { size: h6Size, color: h6Color, align: h6Align },
+} = headlines;
 ---
 
 <div class={`block blockText ${full}`}>
 	<div
 		set:html={text}
-		class={`kirby-text font--${size} text--${color} text--${align}`}
+		class={`kirby-text font--${size} font--${h1Size} text--${color} text--${align}`}
+		data-h1Size={h1Size}
+		data-h1Color={h1Color}
+		data-h1Align={h1Align}
+		data-h2Size={h2Size}
+		data-h2Color={h2Color}
+		data-h2Align={h2Align}
+		data-h3Size={h3Size}
+		data-h3Color={h3Color}
+		data-h3Align={h3Align}
+		data-h4Size={h4Size}
+		data-h4Color={h4Color}
+		data-h4Align={h4Align}
+		data-h5Size={h5Size}
+		data-h5Color={h5Color}
+		data-h5Align={h5Align}
+		data-h6Size={h6Size}
+		data-h6Color={h6Color}
+		data-h6Align={h6Align}
 	/>
 </div>
 
 <style
 	lang="css"
+	is:global
 	define:vars={{
 		font,
+		h1Font,
+		h2Font,
+		h3Font,
+		h4Font,
+		h5Font,
+		h6Font,
 	}}
 >
-	.blockText {
+	.kirby-text p {
 		font-family: var(--font);
 	}
+
+	.kirby-text h1 {
+		font-family: var(--h1Font);
+	}
+
+	.kirby-text h2 {
+		font-family: var(--h2Font);
+	}
+
+	.kirby-text h3 {
+		font-family: var(--h3Font);
+	}
+
+	.kirby-text h4 {
+		font-family: var(--h4Font);
+	}
+
+	.kirby-text h5 {
+		font-family: var(--h5Font);
+	}
+
+	.kirby-text h6 {
+		font-family: var(--h6Font);
+	}
 </style>
+
+<script>
+	const kirbyText = document.querySelectorAll(
+		'.kirby-text'
+	) as NodeListOf<HTMLElement>;
+
+	kirbyText.forEach((el) => {
+		const headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+		headings.forEach((heading) => {
+			const size = el.dataset[`${heading}size`];
+			const color = el.dataset[`${heading}color`];
+			const align = el.dataset[`${heading}align`];
+			const headingEl = el.querySelector(heading);
+			if (headingEl) {
+				headingEl.classList.add(
+					`font--${size}`,
+					`text--${color}`,
+					`text--${align}`
+				);
+			}
+		});
+	});
+
+	document.querySelectorAll('ul, ol').forEach((list) => {
+		list.querySelectorAll('li').forEach((li) => {
+			const p = li.querySelector('p');
+			if (p !== null) {
+				li.innerHTML = p.innerHTML;
+			}
+		});
+	});
+</script>

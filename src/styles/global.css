@@ -106,13 +106,35 @@
 	@apply lg:items-end;
 }
 
+.kirby-text h1,
+.kirby-text h2,
+.kirby-text h3,
+.kirby-text h4,
+.kirby-text h5,
+.kirby-text h6 {
+	@apply mb-1 pt-5 lg:pt-5;
+}
+
+.kirby-text h1:first-of-type,
+.kirby-text h2:first-of-type,
+.kirby-text h3:first-of-type,
+.kirby-text h4:first-of-type,
+.kirby-text h5:first-of-type,
+.kirby-text h6:first-of-type {
+	@apply mt-0;
+}
 .kirby-text p + p {
 	@apply pt-2 lg:pt-6;
 }
 
 .kirby-text ul,
 .kirby-text ol {
-	@apply ml-5 list-inside py-3;
+	@apply ml-4 list-inside lg:ml-8;
+}
+
+.kirby-text p + ul,
+.kirby-text p + ol {
+	@apply mb-4 lg:mb-8;
 }
 
 .kirby-text ul {
@@ -125,12 +147,18 @@
 
 .kirby-text ul > li,
 .kirby-text ol > li {
-	@apply mb-2 last:mb-0 3xl:mb-3;
+	@apply my-1 last:mb-0 lg:my-2;
+}
+
+.kirby-text ol li:before {
+	content: '';
+	padding-left: 0.625rem;
 }
 
 .kirby-text a {
 	@apply underline underline-offset-4;
 }
+
 address {
 	font-style: normal;
 }
