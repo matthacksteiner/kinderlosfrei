@@ -10,6 +10,10 @@
 	@apply bg-secondary text-primary;
 }
 
+.h-screenHalf {
+	@apply h-screen-1/2;
+}
+
 .bg--primary {
 	@apply bg-primary;
 }
@@ -95,15 +99,15 @@
 }
 
 .align--start {
-	@apply lg:items-start;
+	@apply items-start;
 }
 
 .align--center {
-	@apply lg:items-center;
+	@apply items-center;
 }
 
 .align--end {
-	@apply lg:items-end;
+	@apply items-end;
 }
 
 .kirby-text h1,

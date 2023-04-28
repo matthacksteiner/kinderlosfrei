@@ -1,8 +1,9 @@
 ---
+import ScrollButton from '@components/ScrollButton.astro';
+
 const { text, font, size, align, color, controls, headlines } = Astro.props;
 const hasControl = (control) => controls && controls.includes(control);
 const full = hasControl('full') ? 'flex h-screen items-center' : null;
-
 const h1Font = headlines.h1.font;
 const h2Font = headlines.h2.font;
 const h3Font = headlines.h3.font;
@@ -20,10 +21,10 @@ const {
 } = headlines;
 ---
 
-<div class={`block blockText ${full}`}>
+<div class={`block blockText relative ${full}`}>
 	<div
 		set:html={text}
-		class={`kirby-text font--${size} font--${h1Size} text--${color} text--${align}`}
+		class={`kirby-text font--${size} text--${color} text--${align}`}
 		data-h1Size={h1Size}
 		data-h1Color={h1Color}
 		data-h1Align={h1Align}
@@ -43,6 +44,7 @@ const {
 		data-h6Color={h6Color}
 		data-h6Align={h6Align}
 	/>
+	<ScrollButton controls={controls} color={color} />
 </div>
 
 <style
@@ -58,7 +60,8 @@ const {
 		h6Font,
 	}}
 >
-	.kirby-text p {
+	.kirby-text p,
+	.arrow {
 		font-family: var(--font);
 	}
 
@@ -116,5 +119,15 @@ const {
 				li.innerHTML = p.innerHTML;
 			}
 		});
+	});
+
+	const arrowButton = document.querySelector('.arrow');
+
+	arrowButton.addEventListener('click', () => {
+		const currentColumns = arrowButton.closest('.columns');
+		const nextColumns = currentColumns.nextElementSibling;
+		if (nextColumns && nextColumns.classList.contains('columns')) {
+			nextColumns.scrollIntoView({ behavior: 'smooth' });
+		}
 	});
 </script>

@@ -11,6 +11,7 @@ const { global, layouts } = Astro.props;
 			const backgroundContainer = layout.backgroundContainer;
 			const backgroundContainerColor =
 				layout.backgroundContainerColor || 'transparent';
+			const backgroundHeight = layout.backgroundHeight;
 
 			const backgroundAlign = layout.backgroundAlign;
 			const spacingMobileTop = layout.spacingMobileTop;
@@ -24,7 +25,13 @@ const { global, layouts } = Astro.props;
 					class={`columns bg--${backgroundColor} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom}`}
 				>
 					<div
-						class={`grid-default bg--${backgroundContainerColor} ${backgroundContainer} align--${backgroundAlign}`}
+						class={`grid-default bg--${backgroundContainerColor} ${backgroundContainer} align--${backgroundAlign} ${
+							backgroundHeight === 'full'
+								? 'h-screen'
+								: backgroundHeight === 'half'
+								? 'h-screenHalf'
+								: 'auto'
+						}`}
 					>
 						<Columns
 							columns={layout.content.columns}

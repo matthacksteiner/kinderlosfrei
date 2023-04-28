@@ -1,0 +1,15 @@
+---
+const { controls, color } = Astro.props;
+
+const colorFallback = color || '';
+---
+
+{
+	controls && controls.includes('arrow') ? (
+		<button
+			class={`arrow absolute bottom-[10vh] left-1/2 text-5xl text--${colorFallback}`}
+		>
+			&#8595;
+		</button>
+	) : null
+}

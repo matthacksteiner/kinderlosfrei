@@ -1,4 +1,5 @@
 ---
+import ScrollButton from '@components/ScrollButton.astro';
 import VectorImage from '@components/VectorImage.astro';
 const { image, toggle, link, controls } = Astro.props;
 
@@ -30,4 +31,5 @@ const full = hasControl('full') ? 'flex h-screen' : null;
 			)
 		) : null
 	}
+	<!-- <ScrollButton controls={controls} color={color ? color : ''} /> -->
 </div>

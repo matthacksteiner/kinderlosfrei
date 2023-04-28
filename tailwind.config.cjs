@@ -98,6 +98,9 @@ module.exports = {
 				black: 'var(--color-black)',
 				transparent: 'var(--color-transparent)',
 			},
+			spacing: {
+				'screen-1/2': '50vh',
+			},
 		},
 	},
 	plugins: [require('tailwindcss-delicious-hamburgers')],
