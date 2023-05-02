@@ -153,7 +153,7 @@
 
 .kirby-text ul,
 .kirby-text ol {
-	@apply ml-4 list-inside lg:ml-8;
+	@apply list-inside;
 }
 
 .kirby-text p + ul,
