@@ -101,6 +101,9 @@ module.exports = {
 			spacing: {
 				'screen-1/2': '50vh',
 			},
+			height: {
+				screen: ['100vh /* fallback for Opera, IE and etc. */', '100svh'],
+			},
 		},
 	},
 	plugins: [require('tailwindcss-delicious-hamburgers')],

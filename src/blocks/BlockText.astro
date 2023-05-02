@@ -1,10 +1,10 @@
 ---
 import ScrollButton from '@components/ScrollButton.astro';
 
-const { text, font, size, align, color, controls, headlines, arrowcolor } =
+const { text, font, size, align, color, controls, headlines, arrowColor, arrowSize } =
 	Astro.props;
 const hasControl = (control) => controls && controls.includes(control);
-const full = hasControl('full') ? 'flex h-svh items-center' : null;
+const full = hasControl('full') ? 'flex h-screen items-center' : null;
 const h1Font = headlines.h1.font;
 const h2Font = headlines.h2.font;
 const h3Font = headlines.h3.font;
@@ -45,7 +45,7 @@ const {
 		data-h6Color={h6Color}
 		data-h6Align={h6Align}
 	/>
-	<ScrollButton controls={controls} color={arrowcolor} />
+	<ScrollButton controls={controls} color={arrowColor} size={arrowSize} />
 </div>
 
 <style

@@ -1,9 +1,9 @@
 ---
 import ScrollButton from '@components/ScrollButton.astro';
 import VectorImage from '@components/VectorImage.astro';
-const { image, toggle, link, controls, arrowcolor } = Astro.props;
+const { image, toggle, link, controls, arrowColor, arrowSize } = Astro.props;
 const hasControl = (control) => controls && controls.includes(control);
-const full = hasControl('full') ? 'flex h-svh' : null;
+const full = hasControl('full') ? 'flex h-screen' : null;
 ---
 
 <div class={`blockVector block ${full}`}>
@@ -30,5 +30,5 @@ const full = hasControl('full') ? 'flex h-svh' : null;
 			)
 		) : null
 	}
-	<ScrollButton controls={controls} color={arrowcolor} />
+	<ScrollButton controls={controls} color={arrowColor} size={arrowSize} />
 </div>

@@ -1,12 +1,11 @@
 ---
-const { controls, color } = Astro.props;
+const { controls, color, size } = Astro.props;
+console.log("🚀 ~ file: ScrollButton.astro:3 ~ size:", size)
 ---
 
 {
 	controls && controls.includes('arrow') ? (
-		<button
-			class={`arrow absolute bottom-[10vh] left-1/2 -translate-x-2/4 text-5xl text--${color}`}
-		>
+	<button class={`arrow absolute bottom-[10vh] left-1/2 -translate-x-2/4 text--${color} ${size === 'Klein' ? 'text-3xl' : size === 'Mittel' ? 'text-5xl' : size === 'Groß' ? 'text-8xl' : ''}`}>
 			&#8595;
 		</button>
 	) : null
