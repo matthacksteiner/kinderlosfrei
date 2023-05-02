@@ -10,6 +10,10 @@
 	@apply bg-secondary text-primary;
 }
 
+.h-svh {
+	height: 100svh;
+}
+
 .h-screenHalf {
 	@apply h-screen-1/2;
 }
