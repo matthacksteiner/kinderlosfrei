@@ -41,8 +41,9 @@ const logoFile = global.logoFile;
 					) : (
 						<Icon
 							name="fallback"
+							id="fallback"
 							alt={`Logo ${global.siteTitle}`}
-							class="w-full transition-all duration-300 ease-in-out"
+							class="transition-all duration-300 ease-in-out"
 						/>
 					)
 				}
@@ -86,15 +87,19 @@ const logoFile = global.logoFile;
 		background-color: var(--headerBackgroundActive);
 		color: var(--headerColorActive);
 	}
-	.header--active #logo {
-		@apply w-[var(--logoMobileActive)] md:w-[var(--logoDesktopActive)];
-	}
 
-	#logo {
+	#logo,
+	svg#fallback {
 		@apply w-[var(--logoMobile)] md:w-[var(--logoDesktop)];
 	}
 
-	#logo.center {
+	.header--active #logo,
+	.header--active svg#fallback {
+		@apply w-[var(--logoMobileActive)] md:w-[var(--logoDesktopActive)];
+	}
+
+	#logo.center,
+	svg#fallback.center {
 		@apply left-1/2 -translate-x-1/2;
 	}
 </style>
