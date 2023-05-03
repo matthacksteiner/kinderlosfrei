@@ -11,10 +11,26 @@ const headerBackground = global.headerBackground;
 const headerColorActive = global.headerColorActive;
 const headerBackgroundActive = global.headerBackgroundActive;
 
-const logoDesktop = global.logoDesktop / baseSize + 'rem';
-const logoDesktopActive = global.logoDesktopActive / baseSize + 'rem';
-const logoMobile = global.logoMobile / baseSize + 'rem';
-const logoMobileActive = global.logoMobileActive / baseSize + 'rem';
+const logoDesktop =
+	global.logoDesktop / baseSize
+		? global.logoDesktop / baseSize + 'rem'
+		: '25rem';
+
+const logoDesktopActive =
+	global.logoDesktopActive / baseSize
+		? global.logoDesktopActive / baseSize + 'rem'
+		: '12.5rem';
+
+const logoMobile =
+	global.logoMobile / baseSize
+		? global.logoMobile / baseSize + 'rem'
+		: '12.5rem';
+
+const logoMobileActive =
+	global.logoMobileActive / baseSize
+		? global.logoMobileActive / baseSize + 'rem'
+		: '6.25rem';
+
 const logoAlign = global.logoAlign;
 const logoFile = global.logoFile;
 ---
