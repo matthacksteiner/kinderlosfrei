@@ -43,7 +43,7 @@ const gridBlockDesktop =
 		? global.gridBlockDesktop / baseSize + 'rem'
 		: '16px';
 
-const Url = Astro.url.href;
+const url = Astro.url.origin;
 const description = global.meta[2].content;
 const favSvg = global.favicon.svgSrc;
 const favIco = global.favicon.icoSrc;
@@ -83,7 +83,7 @@ const png512Src = global.favicon.png512Src;
 		class="mx-auto items-center overflow-x-hidden selection:bg-secondary selection:text-white"
 		data-png192src={png192Src}
 		data-png512src={png512Src}
-		data-url={Url}
+		data-url={url}
 		data-color={colorPrimary}
 		data-description={description}
 	>
@@ -149,12 +149,12 @@ const png512Src = global.favicon.png512Src;
 				display: 'standalone',
 				icons: [
 					{
-						src: png192Src || url + 'favicons/android-chrome-192x192.png',
+						src: png192Src || url + '/favicons/android-chrome-192x192.png',
 						sizes: '192x192',
 						type: 'image/png',
 					},
 					{
-						src: png512Src || url + 'favicons/android-chrome-512x512.png',
+						src: png512Src || url + '/favicons/android-chrome-512x512.png',
 						sizes: '512x512',
 						type: 'image/png',
 					},
