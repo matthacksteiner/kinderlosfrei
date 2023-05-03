@@ -18,12 +18,30 @@ const colorTransparent = global.colorTransparent;
 const colorBackground = global.colorBackground;
 
 const baseSize = 16;
-const gridGapMobile = global.gridGapMobile / baseSize + 'rem';
-const gridMarginMobile = global.gridMarginMobile / baseSize + 'rem';
-const gridGapDesktop = global.gridGapDesktop / baseSize + 'rem';
-const gridMarginDesktop = global.gridMarginDesktop / baseSize + 'rem';
-const gridBlockMobile = global.gridBlockMobile / baseSize + 'rem';
-const gridBlockDesktop = global.gridBlockDesktop / baseSize + 'rem';
+const gridGapMobile =
+	global.gridGapMobile / baseSize
+		? global.gridGapMobile / baseSize + 'rem'
+		: '20px';
+const gridMarginMobile =
+	global.gridMarginMobile / baseSize
+		? global.gridMarginMobile / baseSize + 'rem'
+		: '20px';
+const gridGapDesktop =
+	global.gridGapDesktop / baseSize
+		? global.gridGapDesktop / baseSize + 'rem'
+		: '40px';
+const gridMarginDesktop =
+	global.gridMarginDesktop / baseSize
+		? global.gridMarginDesktop / baseSize + 'rem'
+		: '40px';
+const gridBlockMobile =
+	global.gridBlockMobile / baseSize
+		? global.gridBlockMobile / baseSize + 'rem'
+		: '16px';
+const gridBlockDesktop =
+	global.gridBlockDesktop / baseSize
+		? global.gridBlockDesktop / baseSize + 'rem'
+		: '16px';
 
 const Url = Astro.url.href;
 const description = global.meta[2].content;
