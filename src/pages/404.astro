@@ -3,7 +3,7 @@ import { getIndex } from '@lib/api.js';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 
-const data = await getIndex(`/z-error.json`);
+const data = await getIndex(`/error.json`);
 const global = data.global;
 const pageTitle = global.siteTitle + ' | ' + data.title;
 ---
