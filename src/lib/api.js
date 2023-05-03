@@ -16,20 +16,21 @@ export async function getIndex(uri) {
 
 // export the getFonts function
 export async function getFonts() {
-	// call getIndex with some uri
 	const data = await getIndex('/home.json');
 	const global = data.global;
-	// use index to get global.font or do something else
+	if (!global.font) {
+		return 'Bitte Schriften definieren';
+	}
 	return `${global.font
 		.map((item) => {
 			return `@font-face {
-		font-family: '${item.name}';
-		src: url('${item.url2}') format('woff2'),
-			 url('${item.url1}') format('woff');
-		font-weight: normal;
-		font-style: normal;
-		font-display: swap;
-	  }`;
+		  font-family: '${item.name}';
+		  src: url('${item.url2}') format('woff2'),
+			   url('${item.url1}') format('woff');
+		  font-weight: normal;
+		  font-style: normal;
+		  font-display: swap;
+		}`;
 		})
 		.join('')}`;
 }
