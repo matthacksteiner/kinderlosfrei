@@ -24,6 +24,14 @@ const gridGapDesktop = global.gridGapDesktop / baseSize + 'rem';
 const gridMarginDesktop = global.gridMarginDesktop / baseSize + 'rem';
 const gridBlockMobile = global.gridBlockMobile / baseSize + 'rem';
 const gridBlockDesktop = global.gridBlockDesktop / baseSize + 'rem';
+
+const Url = Astro.url.href;
+const description = global.meta[2].content;
+const favSvg = global.favicon.svgSrc;
+const favIco = global.favicon.icoSrc;
+const pngAppleSrc = global.favicon.pngAppleSrc;
+const png192Src = global.favicon.png192Src;
+const png512Src = global.favicon.png512Src;
 ---
 
 <!DOCTYPE html>
@@ -32,19 +40,34 @@ const gridBlockDesktop = global.gridBlockDesktop / baseSize + 'rem';
 		<MetaKnight data={data} />
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{pageTitle}</title>
-		<!-- <link rel="icon" href="/favicon.ico" /> -->
-		<!-- <link rel="icon" href="/favicon.svg" type="image/svg+xml" /> -->
-		<!-- <link rel="apple-touch-icon" href="/apple-touch-icon.png" /> -->
-		<!-- <link rel="manifest" href="/site.webmanifest" /> -->
+		<link
+			rel="icon"
+			type="image/svg+xml"
+			href={`${favSvg || '/favicons/favicon.svg'}`}
+		/>
+		<link
+			rel="icon"
+			type="image/x-icon"
+			href={`${favIco || '/favicons/favicon.ico'}`}
+		/>
+		<link
+			rel="apple-touch-icon"
+			href={`${pngAppleSrc || '/favicons/apple-touch-icon.png'}`}
+		/>
+		<link rel="manifest" id="manifestPlaceholder" />
 		<meta name="theme-color" content={`${colorPrimary}`} />
 		<style set:html={fonts}></style>
 		<style set:html={sizes}></style>
 	</head>
 	<body
 		class="mx-auto items-center overflow-x-hidden selection:bg-secondary selection:text-white"
+		data-png192src={png192Src}
+		data-png512src={png512Src}
+		data-url={Url}
+		data-color={colorPrimary}
+		data-description={description}
 	>
 		<Header data={data} global={global} />
 
@@ -90,5 +113,41 @@ const gridBlockDesktop = global.gridBlockDesktop / baseSize + 'rem';
 				@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
 			}
 		</style>
+		<script>
+			let png192Src = document.querySelector('body')?.dataset.png192src;
+			let png512Src = document.querySelector('body')?.dataset.png512src;
+			let url = document.querySelector('body')?.dataset.url;
+			let color = document.querySelector('body')?.dataset.color;
+			let title = document.querySelector('title')?.innerText;
+			let description = document.querySelector('body')?.dataset.description;
+			let myDynamicManifest = {
+				name: title,
+				short_name: title,
+				description: description,
+
+				start_url: url,
+				background_color: '#ffffff',
+				theme_color: color,
+				display: 'standalone',
+				icons: [
+					{
+						src: png192Src || url + 'favicons/android-chrome-192x192.png',
+						sizes: '192x192',
+						type: 'image/png',
+					},
+					{
+						src: png512Src || url + 'favicons/android-chrome-512x512.png',
+						sizes: '512x512',
+						type: 'image/png',
+					},
+				],
+			};
+			const stringManifest = JSON.stringify(myDynamicManifest);
+			const blob = new Blob([stringManifest], { type: 'application/json' });
+			const manifestURL = URL.createObjectURL(blob);
+			document
+				.querySelector('#manifestPlaceholder')
+				.setAttribute('href', manifestURL);
+		</script>
 	</body>
 </html>
