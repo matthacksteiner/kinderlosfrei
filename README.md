@@ -6,5 +6,6 @@ Temmplate: https://github.com/matthacksteiner/baukasten
 
 `git fetch --all`
 
+git merge template/main] --allow-unrelated-histories
 ## Installation
 Anleitung siehe https://github.com/matthacksteiner/cms.baukasten
