@@ -36,7 +36,7 @@ const logoFile = global.logoFile;
 ---
 
 <header
-	class={`bg--${headerBackground} text--${headerColor} fixed z-10 w-full py-4 transition-all duration-300 ease-in-out md:py-8`}
+	class={`bg--${headerBackground} text--${headerColor} textActive--${headerColorActive} bgActive--${headerBackgroundActive} fixed z-10 w-full py-4 transition-all duration-300 ease-in-out md:py-8`}
 >
 	<div class="container flex items-center">
 		<div
@@ -72,26 +72,9 @@ const logoFile = global.logoFile;
 	</div>
 </header>
 
-<script>
-	var header = document.querySelector('header');
-
-	window.onscroll = function () {
-		if (
-			document.body.scrollTop > 80 ||
-			document.documentElement.scrollTop > 80
-		) {
-			header.classList.add('header--active');
-		} else {
-			header.classList.remove('header--active');
-		}
-	};
-</script>
-
 <style
 	lang="css"
 	define:vars={{
-		headerColorActive,
-		headerBackgroundActive,
 		logoMobile,
 		logoDesktop,
 		logoDesktopActive,
@@ -100,8 +83,46 @@ const logoFile = global.logoFile;
 >
 	.header--active {
 		@apply py-0 shadow-lg lg:py-4;
-		background-color: var(--headerBackgroundActive);
-		color: var(--headerColorActive);
+	}
+
+	.header--active.textActive--primary {
+		@apply text-primary;
+	}
+
+	.header--active.textActive--secondary {
+		@apply text-secondary;
+	}
+
+	.header--active.textActive--tertiary {
+		@apply text-tertiary;
+	}
+
+	.header--active.textActive--white {
+		@apply text-white;
+	}
+
+	.header--active.textActive--black {
+		@apply text-black;
+	}
+
+	.header--active.bgActive--primary {
+		@apply bg-primary;
+	}
+
+	.header--active.bgActive--secondary {
+		@apply bg-secondary;
+	}
+
+	.header--active.bgActive--tertiary {
+		@apply bg-tertiary;
+	}
+
+	.header--active.bgActive--white {
+		@apply bg-white;
+	}
+
+	.header--active.bgActive--black {
+		@apply bg-black;
 	}
 
 	#logo,
@@ -119,3 +140,18 @@ const logoFile = global.logoFile;
 		@apply left-1/2 -translate-x-1/2;
 	}
 </style>
+
+<script>
+	var header = document.querySelector('header');
+
+	window.onscroll = function () {
+		if (
+			document.body.scrollTop > 80 ||
+			document.documentElement.scrollTop > 80
+		) {
+			header.classList.add('header--active');
+		} else {
+			header.classList.remove('header--active');
+		}
+	};
+</script>

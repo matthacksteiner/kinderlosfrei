@@ -39,11 +39,11 @@ const { link, class: className } = Astro.props;
 				rel="noopener"
 				class={`${className}`}
 			>
-				{link.title ? link.title : 'Download File'}
+				{link.title ? link.title : link.href}
 			</a>
 		) : link.type === 'tel' ? (
 			<a
-				href={`${link.href}`}
+				href={`tel:${link.href}`}
 				target="_blank"
 				rel="noopener"
 				class={`${className}`}
