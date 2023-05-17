@@ -15,6 +15,7 @@ const { global, layouts } = Astro.props;
 			const backgroundHeight = layout.backgroundHeight;
 			const backgroundAlignVertical = layout.backgroundAlignVertical;
 			const backgroundAlignHorizontal = layout.backgroundAlignHorizontal;
+			const backgroundAlignItemsVertical = layout.backgroundAlignItemsVertical;
 			const backgroundArrow = layout.backgroundArrow;
 			const backgroundArrowColor = layout.backgroundArrowColor;
 			const backgroundArrowSize = layout.backgroundArrowSize;
@@ -26,18 +27,18 @@ const { global, layouts } = Astro.props;
 			return (
 				<section
 					{...sectionProps}
-					class={`columns bg--${backgroundColor} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom}`}
+					class={`columns bg--${backgroundColor} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom} align-vert--${backgroundAlignVertical} align-hor--${backgroundAlignHorizontal}
+						${
+							backgroundHeight === 'full'
+								? 'flex h-screen'
+								: backgroundHeight === 'half'
+								? 'h-screenHalf flex'
+								: 'auto'
+						}`}
 				>
 					<div
 						class={`grid-default bg--${backgroundContainerColor} ${backgroundContainer}
-						align-vert--${backgroundAlignVertical} align-hor--${backgroundAlignHorizontal}
-						${
-							backgroundHeight === 'full'
-								? 'h-screen'
-								: backgroundHeight === 'half'
-								? 'h-screenHalf'
-								: 'auto'
-						}`}
+						align-vert--${backgroundAlignItemsVertical}`}
 					>
 						<Columns
 							columns={layout.content.columns}
