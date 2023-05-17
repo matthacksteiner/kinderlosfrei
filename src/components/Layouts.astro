@@ -30,7 +30,7 @@ const { global, layouts } = Astro.props;
 					class={`columns bg--${backgroundColor} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom} align-vert--${backgroundAlignVertical} align-hor--${backgroundAlignHorizontal}
 						${
 							backgroundHeight === 'full'
-								? 'flex h-screen'
+								? 'flex min-h-screen'
 								: backgroundHeight === 'half'
 								? 'h-screenHalf flex'
 								: 'auto'

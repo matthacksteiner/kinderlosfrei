@@ -135,14 +135,15 @@
 	@apply mb-1 pt-5 lg:pt-5;
 }
 
-.kirby-text h1:first-of-type,
-.kirby-text h2:first-of-type,
-.kirby-text h3:first-of-type,
-.kirby-text h4:first-of-type,
-.kirby-text h5:first-of-type,
-.kirby-text h6:first-of-type {
-	@apply mt-0;
+.kirby-text > h1:first-child,
+.kirby-text > h2:first-child,
+.kirby-text > h3:first-child,
+.kirby-text > h4:first-child,
+.kirby-text > h5:first-child,
+.kirby-text > h6:first-child {
+	@apply pt-0;
 }
+
 .kirby-text p + p {
 	@apply pt-2 lg:pt-6;
 }
