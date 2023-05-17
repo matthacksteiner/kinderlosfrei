@@ -1,10 +1,7 @@
 ---
 import ScrollButton from '@components/ScrollButton.astro';
 
-const { text, font, size, align, color, controls, headlines, arrowColor, arrowSize } =
-	Astro.props;
-const hasControl = (control) => controls && controls.includes(control);
-const full = hasControl('full') ? 'flex h-screen items-center' : null;
+const { text, font, size, align, color, headlines } = Astro.props;
 const h1Font = headlines.h1.font;
 const h2Font = headlines.h2.font;
 const h3Font = headlines.h3.font;
@@ -22,7 +19,7 @@ const {
 } = headlines;
 ---
 
-<div class={`block blockText relative ${full}`}>
+<div class={`block blockText relative`}>
 	<div
 		set:html={text}
 		class={`kirby-text font--${size} text--${color} text--${align}`}
@@ -45,7 +42,6 @@ const {
 		data-h6Color={h6Color}
 		data-h6Align={h6Align}
 	/>
-	<ScrollButton controls={controls} color={arrowColor} size={arrowSize} />
 </div>
 
 <style
@@ -121,22 +117,4 @@ const {
 			}
 		});
 	});
-
-	const arrowButton = document.querySelector('.arrow');
-	const header = document.querySelector('header');
-
-	if (arrowButton) {
-		arrowButton.addEventListener('click', () => {
-			const currentColumns = arrowButton.closest('.columns');
-			const nextColumns = currentColumns.nextElementSibling as HTMLElement;
-			if (nextColumns && nextColumns.classList.contains('columns')) {
-				const headerHeight = header.offsetHeight;
-				const distanceToScroll = nextColumns.offsetTop - headerHeight;
-				window.scrollTo({
-					top: distanceToScroll,
-					behavior: 'smooth',
-				});
-			}
-		});
-	}
 </script>

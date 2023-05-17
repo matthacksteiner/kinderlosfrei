@@ -1,5 +1,6 @@
 ---
 import Columns from '@components/Columns.astro';
+import ScrollButton from '@components/ScrollButton.astro';
 const { global, layouts } = Astro.props;
 ---
 
@@ -12,9 +13,11 @@ const { global, layouts } = Astro.props;
 			const backgroundContainerColor =
 				layout.backgroundContainerColor || 'transparent';
 			const backgroundHeight = layout.backgroundHeight;
-
 			const backgroundAlignVertical = layout.backgroundAlignVertical;
 			const backgroundAlignHorizontal = layout.backgroundAlignHorizontal;
+			const backgroundArrow = layout.backgroundArrow;
+			const backgroundArrowColor = layout.backgroundArrowColor;
+			const backgroundArrowSize = layout.backgroundArrowSize;
 			const spacingMobileTop = layout.spacingMobileTop;
 			const spacingMobileBottom = layout.spacingMobileBottom;
 			const spacingDesktopTop = layout.spacingDesktopTop;
@@ -44,6 +47,11 @@ const { global, layouts } = Astro.props;
 							spacingMobileTop={layout.spacingMobileTop}
 						/>
 					</div>
+					<ScrollButton
+						controls={backgroundArrow}
+						color={backgroundArrowColor}
+						size={backgroundArrowSize}
+					/>
 				</section>
 			);
 		})
@@ -276,3 +284,23 @@ const { global, layouts } = Astro.props;
 		@apply lg:pb-48;
 	}
 </style>
+
+<script>
+	const arrowButton = document.querySelector('.arrow');
+	const header = document.querySelector('header');
+
+	if (arrowButton) {
+		arrowButton.addEventListener('click', () => {
+			const currentColumns = arrowButton.closest('.columns');
+			const nextColumns = currentColumns.nextElementSibling as HTMLElement;
+			if (nextColumns && nextColumns.classList.contains('columns')) {
+				const headerHeight = header.offsetHeight;
+				const distanceToScroll = nextColumns.offsetTop - headerHeight;
+				window.scrollTo({
+					top: distanceToScroll,
+					behavior: 'smooth',
+				});
+			}
+		});
+	}
+</script>
