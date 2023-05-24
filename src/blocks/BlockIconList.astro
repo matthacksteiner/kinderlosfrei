@@ -14,7 +14,7 @@ const { items, font, color, size, align, iconSize, iconGap, iconListGap } =
 						rel="noopener"
 						class="link flex items-center"
 					>
-						<img src={item.icon.url} class="icon" />
+						<div set:html={item.icon.source} class={`icon text--${color}`} />
 						<span class={`text font--${size} text--${color} text--${align}`}>
 							{item.text}
 						</span>

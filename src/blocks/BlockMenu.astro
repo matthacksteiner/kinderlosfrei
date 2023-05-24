@@ -1,4 +1,5 @@
 ---
+import Link from '@components/Link.astro';
 const { items, font, align, color, size, gap } = Astro.props;
 ---
 
@@ -9,37 +10,12 @@ const { items, font, align, color, size, gap } = Astro.props;
 				items &&
 					items.map((item) => {
 						const link = item.link;
-						if (link.type === 'url') {
-							return (
-								<li>
-									<a
-										href={link.href}
-										target={`${link.popup === true ? '_blank' : '_self'}`}
-										rel={`${link.popup === true ? 'noopener noreferrer' : ''}`}
-										class={`text font--${size} text--${color} text--${align} `}
-									>
-										{link.title}
-									</a>
-								</li>
-							);
-						}
-
-						if (link.type === 'page') {
-							return (
-								<li>
-									<a
-										href={
-											link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`
-										}
-										target={link.popup ? '_blank' : undefined}
-										rel={link.popup ? 'noopener' : undefined}
-										class={`text font--${size} text--${color} text--${align}`}
-									>
-										{link.title}
-									</a>
-								</li>
-							);
-						}
+						return (
+							<Link
+								link={link}
+								class={`text font--${size} text--${color} text--${align} `}
+							/>
+						);
 					})
 			}
 		</ul>
