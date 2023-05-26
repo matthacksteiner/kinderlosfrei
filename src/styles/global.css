@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+section {
+	@apply relative;
+}
+
 ::selection {
 	@apply bg-secondary text-primary;
 }
