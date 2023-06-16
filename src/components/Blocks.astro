@@ -88,7 +88,13 @@ const baseSize = 16;
 						/>
 					);
 				case 'button':
-					return <BlockButton link={block.content.link} global={global} />;
+					return (
+						<BlockButton
+							link={block.content.link}
+							global={global}
+							align={block.content.buttonalign}
+						/>
+					);
 				case 'title':
 					return (
 						<BlockTitle
