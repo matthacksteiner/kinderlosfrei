@@ -18,8 +18,13 @@ export async function getIndex(uri) {
 export async function getFonts() {
 	const data = await getIndex('/home.json');
 	const global = data.global;
-	if (!global.font) {
-		return 'Bitte Schriften definieren';
+	if (!global.font || global.font.length === 0) {
+		return `@font-face {
+		  font-family: system-ui;
+		  font-weight: normal;
+		  font-style: normal;
+		  font-display: swap;
+		}`;
 	}
 	return `${global.font
 		.map((item) => {

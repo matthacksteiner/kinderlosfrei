@@ -1,16 +1,51 @@
 ---
 import Blocks from '@components/Blocks.astro';
-const { columns, global } = Astro.props;
+const { columns, global, backgroundPadding } = Astro.props;
 ---
 
 {
 	columns &&
-		columns.map((column) => {
-			const span = column.span;
-			return (
-				<section class={`column col-span-6 lg:col-span-${span}`}>
-					<Blocks blocks={column.blocks} global={global} />
+		(columns.length > 1 ? (
+			<>
+				<section
+					class={`column col-span-6 lg:col-span-${columns[0].span} ${
+						backgroundPadding === 'right' || backgroundPadding === 'none'
+							? 'lg:-ml-[var(--grid-margin-desktop)]'
+							: ''
+					}`}
+				>
+					<Blocks blocks={columns[0].blocks} global={global} />
 				</section>
-			);
-		})
+
+				{columns.slice(1, -1).map((column) => {
+					const span = column.span;
+					return (
+						<section class={`column col-span-6 lg:col-span-${span}`}>
+							<Blocks blocks={column.blocks} global={global} />
+						</section>
+					);
+				})}
+
+				<section
+					class={`column col-span-6 lg:col-span-${
+						columns[columns.length - 1].span
+					} ${
+						backgroundPadding === 'left' || backgroundPadding === 'none'
+							? 'lg:-mr-[var(--grid-margin-desktop)]'
+							: ''
+					}`}
+				>
+					<Blocks blocks={columns[columns.length - 1].blocks} global={global} />
+				</section>
+			</>
+		) : (
+			columns.map((column) => {
+				const span = column.span;
+				return (
+					<section class={`column col-span-6 lg:col-span-${span}`}>
+						<Blocks blocks={column.blocks} global={global} />
+					</section>
+				);
+			})
+		))
 }

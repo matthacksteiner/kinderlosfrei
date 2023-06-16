@@ -9,6 +9,7 @@ const { global, layouts } = Astro.props;
 		layouts.map((layout) => {
 			const anchor = layout.anchor;
 			const backgroundColor = layout.backgroundColor || 'transparent';
+			const backgroundPadding = layout.backgroundPadding || 'both';
 			const backgroundContainer = layout.backgroundContainer;
 			const backgroundContainerColor =
 				layout.backgroundContainerColor || 'transparent';
@@ -43,9 +44,7 @@ const { global, layouts } = Astro.props;
 						<Columns
 							columns={layout.content.columns}
 							global={global}
-							spacingDesktopTop={layout.spacingDesktopTop}
-							spacingMobileBottom={layout.spacingMobileBottom}
-							spacingMobileTop={layout.spacingMobileTop}
+							backgroundPadding={layout.backgroundPadding}
 						/>
 					</div>
 					<ScrollButton
