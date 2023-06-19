@@ -42,7 +42,17 @@ const { columns, global, backgroundPadding } = Astro.props;
 			columns.map((column) => {
 				const span = column.span;
 				return (
-					<section class={`column col-span-6 lg:col-span-${span}`}>
+					<section
+						class={`column col-span-6 lg:col-span-${span} ${
+							backgroundPadding === 'right' || backgroundPadding === 'none'
+								? 'lg:-ml-[var(--grid-margin-desktop)]'
+								: ''
+						} ${
+							backgroundPadding === 'left' || backgroundPadding === 'none'
+								? 'lg:-mr-[var(--grid-margin-desktop)]'
+								: ''
+						}`}
+					>
 						<Blocks blocks={column.blocks} global={global} />
 					</section>
 				);
