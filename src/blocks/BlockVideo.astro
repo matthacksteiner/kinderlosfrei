@@ -1,23 +1,26 @@
 ---
 const { source, url, file, options, ratioDesktop, ratioMobile } = Astro.props;
+console.log('🚀 ~ file: BlockVideo.astro:3 ~ url:', url);
 const hasOption = (option) => options.includes(option);
 
 const autoplay = hasOption('autoplay');
 const loop = hasOption('loop');
 const muted = hasOption('muted');
 const controls = hasOption('controls');
-const isYoutube = url.includes('youtube.com');
+const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
 const isVimeo = url.includes('vimeo.com');
 
-const youtubeNoCookies = url.replace(
-	'https://www.youtube.com/watch?v=',
-	'https://www.youtube-nocookie.com/embed/'
-);
-
-const vimeoPlayer = url.replace(
-	'https://vimeo.com/',
-	'https://player.vimeo.com/video/'
-);
+const youtubeNoCookies = isYoutube
+	? url
+			.replace(
+				'https://www.youtube.com/watch?v=',
+				'https://www.youtube-nocookie.com/embed/'
+			)
+			.replace('https://youtu.be/', 'https://www.youtube-nocookie.com/embed/')
+	: null;
+const vimeoPlayer = isVimeo
+	? url.replace('https://vimeo.com/', 'https://player.vimeo.com/video/')
+	: null;
 ---
 
 <div class="blockVideo block">
