@@ -11,14 +11,17 @@ const color = global.buttonTextColor;
 const colorActive = global.buttonTextColorActive;
 const borderColor = global.buttonBorderColor;
 const borderColorActive = global.buttonBorderColorActive;
-const borderRadius = global.buttonBorderRadius / baseSize + 'rem';
 const borderWidth = global.buttonBorderWidth / baseSize + 'rem';
+const borderRadius =
+	link.title.length === 1
+		? '50%'
+		: global.buttonBorderRadius / baseSize + 'rem';
 ---
 
 <div class="blockButton flex flex-col">
 	<Link
 		link={link}
-		class={`button inline-block font--${size} text--${color} textActive--${colorActive} bg--${bg} bgActive--${bgActive} borderActive--${borderColorActive}  ${
+		class={`button inline-block font--${size} text--${color} textActive--${colorActive} bg--${bg} bgActive--${bgActive} borderActive--${borderColorActive} ${
 			align === 'start' || align === 'normal'
 				? 'mr-auto'
 				: align === 'center'
