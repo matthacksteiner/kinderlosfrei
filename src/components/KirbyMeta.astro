@@ -1,0 +1,26 @@
+---
+const { data } = Astro.props;
+---
+
+<!-- {
+	data.global.meta.map((meta, i) => {
+		const { tag: Tag, html, ...rest } = meta;
+		return <Tag {...rest}>{html}</Tag>;
+	})
+}
+
+<title>{page.meta.title}</title>
+<meta name="description" content={page.meta.description} />
+<meta name="robots" content={page.meta.robots} />
+<meta name="canonical" content={page.meta.canonical} />
+{
+	Object.keys(page.meta.social).map((socialMetaKey) => {
+		return (
+			<meta
+				property={socialMetaKey}
+				content={page.meta.social[socialMetaKey]}
+				key={socialMetaKey}
+			/>
+		);
+	})
+} -->

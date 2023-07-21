@@ -2,7 +2,8 @@
 import '@styles/global.css';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
-import MetaKnight from '@components/MetaKnight.astro';
+// import MetaKnight from '@components/MetaKnight.astro';
+import KirbyMeta from '@components/KirbyMeta.astro';
 import { getFonts, getSizes } from '@lib/api.js';
 
 const { data, global, pageTitle } = Astro.props;
@@ -44,7 +45,7 @@ const gridBlockDesktop =
 		: '16px';
 
 const url = Astro.url.origin;
-const description = global.meta[2].content;
+const description = global.meta.description;
 const favSvg = global.favicon.svgSrc;
 const favIco = global.favicon.icoSrc;
 const pngAppleSrc = global.favicon.pngAppleSrc;
@@ -55,7 +56,8 @@ const png512Src = global.favicon.png512Src;
 <!DOCTYPE html>
 <html lang="de" class={`bg--${colorBackground} full motion-safe:scroll-smooth`}>
 	<head>
-		<MetaKnight data={data} />
+		<!-- <MetaKnight data={data} /> -->
+		<KirbyMeta data={data} />
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
@@ -87,6 +89,7 @@ const png512Src = global.favicon.png512Src;
 		data-url={url}
 		data-color={colorPrimary}
 		data-description={description}
+
 	>
 		<Header data={data} global={global} />
 
