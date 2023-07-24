@@ -1,0 +1,15 @@
+---
+const { data } = Astro.props;
+const socialMeta = data.global.meta.social;
+---
+
+<title>{data.global.meta.title}</title>
+<meta name="description" content={data.global.meta.description} />
+<meta name="robots" content={data.global.meta.robots} />
+<meta name="canonical" content={data.global.meta.canonical} />
+
+{
+	Object.entries(socialMeta).map(([key, value]) => (
+		<meta property={key} content={value.toString()} key={key as string} />
+	))
+}
