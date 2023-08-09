@@ -19,11 +19,19 @@ const { columns, global, backgroundPadding } = Astro.props;
 
 				{columns.slice(1, -1).map((column) => {
 					const span = column.span;
-					return (
-						<section class={`column col-span-6 lg:col-span-${span}`}>
-							<Blocks blocks={column.blocks} global={global} />
-						</section>
-					);
+					if (span !== 1) {
+						return (
+							<section class={`column col-span-6 lg:col-span-${span}`}>
+								<Blocks blocks={column.blocks} global={global} />
+							</section>
+						);
+					} else {
+						return (
+							<section class={`column hidden lg:block lg:col-span-${span}`}>
+								<Blocks blocks={column.blocks} global={global} />
+							</section>
+						);
+					}
 				})}
 
 				<section
