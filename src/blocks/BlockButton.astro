@@ -13,12 +13,12 @@ const borderColor = global.buttonBorderColor;
 const borderColorActive = global.buttonBorderColorActive;
 const borderWidth = global.buttonBorderWidth / baseSize + 'rem';
 const borderRadius =
-	link.title.length === 1
+	link.title && link.title.length === 1
 		? '50%'
 		: global.buttonBorderRadius / baseSize + 'rem';
 ---
 
-<div class="blockButton flex flex-col">
+<div class="blockButton block flex flex-col">
 	<Link
 		link={link}
 		class={`button inline-block font--${size} text--${color} textActive--${colorActive} bg--${bg} bgActive--${bgActive} borderActive--${borderColorActive} ${
@@ -32,22 +32,13 @@ const borderRadius =
 </div>
 
 <style
-	set:html={`
-	:root {
-		--font: ${font};
-		--padding: ${padding};
-		--borderWidth: ${borderWidth};
-		--borderRadius: ${borderRadius};
-		--borderColor: ${borderColor};
-	}
-  `}
-></style>
-
-<style>
+	lang="css"
+	define:vars={{ font, padding, borderRadius, borderWidth, borderColor }}
+>
 	.button {
 		@apply rounded-[var(--borderRadius)] border-[length:var(--borderWidth)] border-[color:var(--borderColor)];
-		font-family: var(--font);
 		padding: var(--padding) calc(var(--padding) * 2);
+		font-family: var(--font);
 	}
 
 	.textActive--primary {
