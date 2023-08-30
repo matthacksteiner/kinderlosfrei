@@ -8,26 +8,21 @@ const focusX = image.focusX;
 const focusY = image.focusY;
 
 let position = '';
-if (focusX < 33) {
-	position += 'left';
-} else if (focusX > 66) {
-	position += 'right';
-} else {
-	position += '';
-}
 
-if (focusY < 33) {
-	position += ' top';
-} else if (focusY > 66) {
-	position += ' bottom';
-} else {
-	position += '';
-}
+position += focusX < 33 ? 'left' : focusX > 66 ? 'right' : '';
+position +=
+	focusY < 33
+		? position
+			? ' top'
+			: 'top'
+		: focusY > 66
+		? position
+			? ' bottom'
+			: 'bottom'
+		: '';
 
-if (position === '') {
+if (!position.trim()) {
 	position = 'center';
-} else if (position === ' left' || position === ' right') {
-	position = position.trim();
 }
 ---
 
@@ -42,9 +37,10 @@ if (position === '') {
 <Picture
 	src={image.url}
 	alt={image.alt}
-	widths={[900]}
+	widths={[1824]}
 	aspectRatio={aspectDesktop}
 	position={position}
+	positionPreview={`${focusX}%  ${focusY}%`}
 	class={`${className} hidden lg:block w-full`}
 />
 <!-- widths={[335, 335 * 2]} -->

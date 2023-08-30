@@ -1,9 +1,15 @@
 ---
-let { widths = [], aspectRatio = [], position = [], ...props } = Astro.props;
+let {
+	widths = [],
+	aspectRatio = [],
+	position = [],
+	positionPreview = [],
+	...props
+} = Astro.props;
 const width = widths.length ? widths[0] : undefined;
 
 const focusPosition = position;
-
+const focusPositionPreview = positionPreview;
 const ratio = aspectRatio
 	.split(':')
 	.reduce((a, b) => parseInt(a) / parseInt(b));
@@ -18,7 +24,7 @@ if (import.meta.env.PUBLIC_ENV === 'preview') {
 	props = {
 		width: width,
 		height: height,
-		style: `aspect-ratio: ${ratioFraction}`,
+		style: `aspect-ratio: ${ratioFraction}; object-fit: cover; object-position: ${focusPositionPreview};`,
 		...props,
 	};
 } else {
