@@ -8,24 +8,30 @@ const { columns, global, backgroundPadding } = Astro.props;
 		<>
 			{columns.map((column, index) => {
 				const span = column.span;
-				const isLeftBackgroundPadding =
-					backgroundPadding === 'left' || backgroundPadding === 'none';
-				const isRightBackgroundPadding =
-					backgroundPadding === 'right' || backgroundPadding === 'none';
+				const blocks = column.blocks;
 				const isFirstColumn = index === 0;
 				const isLastColumn = index === columns.length - 1;
-				const hasBlocks = column.blocks.length > 0;
 
-				const columnClass = `column col-span-6 lg:col-span-${span} ${
-					(isLeftBackgroundPadding && isFirstColumn) ||
-					(isRightBackgroundPadding && isLastColumn)
+				const colClass = `column lg:col-span-${span} ${
+					isFirstColumn &&
+					(backgroundPadding === 'right' || backgroundPadding === 'none')
 						? 'lg:-ml-[var(--grid-margin-desktop)]'
 						: ''
-				} ${hasBlocks ? 'col-span-6' : 'hidden lg:block'}`;
+				} ${
+					(!isFirstColumn && !isLastColumn) ||
+					(blocks.length > 0 && isFirstColumn)
+						? 'col-span-6'
+						: 'hidden lg:block'
+				} ${
+					isLastColumn &&
+					(backgroundPadding === 'left' || backgroundPadding === 'none')
+						? 'lg:-mr-[var(--grid-margin-desktop)]'
+						: ''
+				}`;
 
 				return (
-					<section class={columnClass}>
-						{hasBlocks && <Blocks blocks={column.blocks} global={global} />}
+					<section key={index} class={colClass}>
+						<Blocks blocks={blocks} global={global} />
 					</section>
 				);
 			})}
