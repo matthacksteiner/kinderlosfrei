@@ -3,19 +3,49 @@ import Picture from '@components/Picture.astro';
 const { image, ratioDesktop, ratioMobile, class: className } = Astro.props;
 const aspectMobile = ratioMobile.replace('/', ':');
 const aspectDesktop = ratioDesktop.replace('/', ':');
+
+const focusX = image.focusX;
+const focusY = image.focusY;
+
+let position = '';
+if (focusX < 33) {
+	position += 'left';
+} else if (focusX > 66) {
+	position += 'right';
+} else {
+	position += '';
+}
+
+if (focusY < 33) {
+	position += ' top';
+} else if (focusY > 66) {
+	position += ' bottom';
+} else {
+	position += '';
+}
+
+if (position === '') {
+	position = 'center';
+} else if (position === ' left' || position === ' right') {
+	position = position.trim();
+}
 ---
 
+<!--
 <Picture
 	src={image.url}
 	alt={image.alt}
-	widths={[335, 335 * 2]}
+	widths={[335]}
 	aspectRatio={aspectMobile}
 	class={`${className} lg:hidden w-full object-cover`}
-/>
+/> -->
 <Picture
 	src={image.url}
 	alt={image.alt}
-	widths={[430, 900, 1824]}
+	widths={[900]}
 	aspectRatio={aspectDesktop}
-	class={`${className} hidden lg:block w-full object-cover`}
+	position={position}
+	class={`${className} hidden lg:block w-full`}
 />
+<!-- widths={[335, 335 * 2]} -->
+<!-- widths={[430, 900, 1824]} -->
