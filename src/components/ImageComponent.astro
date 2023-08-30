@@ -26,22 +26,21 @@ if (!position.trim()) {
 }
 ---
 
-<!--
 <Picture
 	src={image.url}
 	alt={image.alt}
-	widths={[335]}
+	widths={[335, 335 * 2]}
+	position={position}
+	positionPreview={`${focusX}%  ${focusY}%`}
 	aspectRatio={aspectMobile}
 	class={`${className} lg:hidden w-full object-cover`}
-/> -->
+/>
 <Picture
 	src={image.url}
 	alt={image.alt}
-	widths={[1824]}
+	widths={[430, 900, 1824]}
 	aspectRatio={aspectDesktop}
 	position={position}
 	positionPreview={`${focusX}%  ${focusY}%`}
 	class={`${className} hidden lg:block w-full`}
 />
-<!-- widths={[335, 335 * 2]} -->
-<!-- widths={[430, 900, 1824]} -->
