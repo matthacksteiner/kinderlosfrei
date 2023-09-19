@@ -3,8 +3,7 @@ const { title, font, size, align, color, Level } = Astro.props;
 ---
 
 <div class={`blockTitle blocks`}>
-	<Level class:list={[`font--${size}`, `text--${color}`, `text--${align}`]}>
-		{title}
+	<Level class:list={[`font--${size}`, `text--${color}`, `text--${align}`]} set:html={title}>
 	</Level>
 </div>
 
