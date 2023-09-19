@@ -90,12 +90,21 @@ section {
 	@apply text-left;
 }
 
+.text--leftCenter {
+	@apply text-left mx-auto;
+}
+
+
 .text--center {
-	@apply text-center;
+	@apply text-center mx-auto;
 }
 
 .text--right {
-	@apply text-right;
+	@apply text-right ml-auto;
+}
+
+.text--rightCenter {
+	@apply text-right mx-auto;
 }
 
 .align-vert--start {
