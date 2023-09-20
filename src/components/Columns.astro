@@ -17,17 +17,14 @@ const { columns, global, backgroundPadding } = Astro.props;
 					(backgroundPadding === 'right' || backgroundPadding === 'none')
 						? 'lg:-ml-[var(--grid-margin-desktop)]'
 						: ''
-				} ${
-					(!isFirstColumn && !isLastColumn) ||
-					(blocks.length > 0 && isFirstColumn)
-						? 'col-span-6'
-						: 'hidden lg:block'
-				} ${
+				}
+				${
 					isLastColumn &&
 					(backgroundPadding === 'left' || backgroundPadding === 'none')
 						? 'lg:-mr-[var(--grid-margin-desktop)]'
 						: ''
-				}`;
+				}
+				${blocks.length > 0 ? 'col-span-6' : 'hidden lg:block'} `;
 
 				return (
 					<section key={index} class={colClass}>

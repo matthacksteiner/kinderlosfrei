@@ -28,7 +28,7 @@ const { global, layouts } = Astro.props;
 			return (
 				<section
 					{...sectionProps}
-					class={`columns bg--${backgroundColor} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom} align-vert--${backgroundAlignVertical} align-hor--${backgroundAlignHorizontal}
+					class={`columns bg--${backgroundColor} align-vert--${backgroundAlignVertical} align-hor--${backgroundAlignHorizontal}
 						${
 							backgroundHeight === 'full'
 								? 'flex min-h-screen'
@@ -38,7 +38,7 @@ const { global, layouts } = Astro.props;
 						}`}
 				>
 					<div
-						class={`grid-default bg--${backgroundContainerColor} ${backgroundContainer}
+						class={`grid-default bg--${backgroundContainerColor} ${backgroundContainer} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom}
 						align-vert--${backgroundAlignItemsVertical}`}
 					>
 						<Columns
