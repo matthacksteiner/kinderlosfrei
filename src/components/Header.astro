@@ -43,8 +43,8 @@ const logoFile = global.logoFile;
 			<a href="/" aria-label="Zurück zur Homepage">
 				{
 					logoFile.src ? (
-						<img
-							src={logoFile.src}
+						<Fragment
+							set:html={logoFile.source}
 							id="logo"
 							alt={
 								logoFile.alt ? `${logoFile.alt}` : `Logo ${global.siteTitle}`
