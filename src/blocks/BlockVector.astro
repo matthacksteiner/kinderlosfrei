@@ -19,6 +19,14 @@ const { image, toggle, link } = Astro.props;
 					<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
 						<VectorImage image={image} />
 					</a>
+				) : link.type === 'file' ? (
+					<a
+						href={image.url}
+						target={link.popup ? '_blank' : undefined}
+						rel={link.popup ? 'noopener' : undefined}
+					>
+						<VectorImage image={image} />
+					</a>
 				) : null
 			) : (
 				<>
