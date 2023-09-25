@@ -8,6 +8,7 @@ const {
 	controls,
 	color,
 	time,
+	view,
 	text,
 	font,
 	size,
@@ -25,7 +26,7 @@ const full = hasControl('full') ? 'h-screen' : null;
 const overlay = hasControl('overlay') ? 'overlay' : null;
 ---
 
-<section class="blockSlider blocks" data-controls={controls} data-time={time}>
+<section class="blockSlider blocks" data-controls={controls} data-time={time} data-view={view} >
 	<div class="swiper swiperSlider">
 		<div class="swiper-wrapper">
 			{
@@ -85,7 +86,7 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 			const controls = blockSlider?.dataset.controls;
 			const line = controls?.includes('line');
 			const time = blockSlider?.dataset.time;
-
+			const view = blockSlider?.dataset.view;
 			if (time) {
 				const swiperSlider = blockSlider.querySelector(
 					'.swiperSlider'
@@ -94,6 +95,7 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 					autoplay: {
 						delay: parseInt(time),
 					},
+					slidesPerView: parseInt(view),
 					loop: true,
 					navigation: {
 						nextEl: blockSlider.querySelector(
