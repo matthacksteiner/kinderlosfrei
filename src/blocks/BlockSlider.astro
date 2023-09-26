@@ -18,7 +18,6 @@ const {
 	Level,
 	toggle,
 } = Astro.props;
-
 const hasControl = (control) => controls && controls.includes(control);
 const arrows = hasControl('arrows');
 const dots = hasControl('dots');
@@ -43,6 +42,7 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 							image={image}
 							ratioMobile={ratioMobile}
 							ratioDesktop={ratioDesktop}
+							loading="eager"
 							class={`${full}`}
 						/>
 					</div>
@@ -93,9 +93,12 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 			const controls = blockSlider?.dataset.controls;
 			const line = controls?.includes('line');
 			const time = blockSlider?.dataset.time;
-			const viewMobile = blockSlider?.dataset.viewmobile ?? '1';
-			const viewDesktop = blockSlider?.dataset.viewdesktop ?? '1';
-
+			const viewMobile = blockSlider?.dataset.viewmobile
+				? blockSlider.dataset.viewmobile
+				: '1';
+			const viewDesktop = blockSlider?.dataset.viewdesktop
+				? blockSlider.dataset.viewdesktop
+				: '1';
 			if (time) {
 				const swiperSlider = blockSlider.querySelector(
 					'.swiperSlider'
