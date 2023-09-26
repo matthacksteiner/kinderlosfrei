@@ -8,7 +8,8 @@ const {
 	controls,
 	color,
 	time,
-	view,
+	viewMobile,
+	viewDesktop,
 	text,
 	font,
 	size,
@@ -26,7 +27,13 @@ const full = hasControl('full') ? 'h-screen' : null;
 const overlay = hasControl('overlay') ? 'overlay' : null;
 ---
 
-<section class="blockSlider blocks" data-controls={controls} data-time={time} data-view={view} >
+<section
+	class="blockSlider blocks"
+	data-controls={controls}
+	data-time={time}
+	data-viewmobile={viewMobile}
+	data-viewdesktop={viewDesktop}
+>
 	<div class="swiper swiperSlider">
 		<div class="swiper-wrapper">
 			{
@@ -86,7 +93,9 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 			const controls = blockSlider?.dataset.controls;
 			const line = controls?.includes('line');
 			const time = blockSlider?.dataset.time;
-			const view = blockSlider?.dataset.view;
+			const viewMobile = blockSlider?.dataset.viewmobile ?? '1';
+			const viewDesktop = blockSlider?.dataset.viewdesktop ?? '1';
+
 			if (time) {
 				const swiperSlider = blockSlider.querySelector(
 					'.swiperSlider'
@@ -95,7 +104,7 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 					autoplay: {
 						delay: parseInt(time),
 					},
-					slidesPerView: parseInt(view),
+					slidesPerView: parseInt(viewMobile),
 					loop: true,
 					navigation: {
 						nextEl: blockSlider.querySelector(
@@ -108,6 +117,12 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 					pagination: {
 						el: blockSlider.querySelector('.swiper-pagination') as HTMLElement,
 						type: line ? 'progressbar' : 'bullets',
+						clickable: true,
+					},
+					breakpoints: {
+						1024: {
+							slidesPerView: parseInt(viewDesktop),
+						},
 					},
 				});
 			}
