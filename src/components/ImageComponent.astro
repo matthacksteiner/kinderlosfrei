@@ -1,6 +1,13 @@
 ---
 import Picture from '@components/Picture.astro';
-const { image, ratioDesktop, ratioMobile, class: className } = Astro.props;
+const {
+	image,
+	ratioDesktop,
+	ratioMobile,
+	loading,
+	class: className,
+} = Astro.props;
+
 const aspectMobile = ratioMobile.replace('/', ':');
 const aspectDesktop = ratioDesktop.replace('/', ':');
 
@@ -34,6 +41,7 @@ if (!position.trim()) {
 	positionPreview={`${focusX}%  ${focusY}%`}
 	aspectRatio={aspectMobile}
 	class={`${className} lg:hidden w-full object-cover`}
+	loading={loading}
 />
 <Picture
 	src={image.url}
@@ -43,4 +51,5 @@ if (!position.trim()) {
 	position={position}
 	positionPreview={`${focusX}%  ${focusY}%`}
 	class={`${className} hidden lg:block w-full object-cover`}
+	loading={loading}
 />

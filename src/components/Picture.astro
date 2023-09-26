@@ -4,8 +4,10 @@ let {
 	aspectRatio = [],
 	position = [],
 	positionPreview = [],
+	loading = [],
 	...props
 } = Astro.props;
+
 const width = widths.length ? widths[0] : undefined;
 
 const focusPosition = position;
@@ -34,6 +36,7 @@ if (import.meta.env.PUBLIC_ENV === 'preview') {
 		aspectRatio: aspectRatio,
 		position: focusPosition,
 		fit: 'cover',
+		loading: loading,
 		...props,
 	};
 }
