@@ -10,6 +10,8 @@ const {
 	time,
 	viewMobile,
 	viewDesktop,
+	viewPaddingMobile,
+	viewPaddingDesktop,
 	text,
 	font,
 	size,
@@ -32,6 +34,8 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 	data-time={time}
 	data-viewmobile={viewMobile}
 	data-viewdesktop={viewDesktop}
+	data-viewpaddingmobile={viewPaddingMobile}
+	data-viewpaddingdesktop={viewPaddingDesktop}
 >
 	<div class="swiper swiperSlider">
 		<div class="swiper-wrapper">
@@ -99,6 +103,12 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 			const viewDesktop = blockSlider?.dataset.viewdesktop
 				? blockSlider.dataset.viewdesktop
 				: '1';
+			const viewPaddingMobile = blockSlider?.dataset.viewpaddingmobile
+				? blockSlider.dataset.viewpaddingmobile
+				: '0';
+			const viewPaddingDesktop = blockSlider?.dataset.viewpaddingdesktop
+				? blockSlider.dataset.viewpaddingdesktop
+				: '0';
 			if (time) {
 				const swiperSlider = blockSlider.querySelector(
 					'.swiperSlider'
@@ -108,6 +118,7 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 						delay: parseInt(time),
 					},
 					slidesPerView: parseInt(viewMobile),
+					spaceBetween: parseInt(viewPaddingMobile),
 					loop: true,
 					navigation: {
 						nextEl: blockSlider.querySelector(
@@ -125,6 +136,7 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 					breakpoints: {
 						1024: {
 							slidesPerView: parseInt(viewDesktop),
+							spaceBetween: parseInt(viewPaddingDesktop),
 						},
 					},
 				});
