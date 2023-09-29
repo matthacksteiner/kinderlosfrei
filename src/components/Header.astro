@@ -6,6 +6,7 @@ import { Icon } from 'astro-icon';
 const { global } = Astro.props;
 const baseSize = 16;
 
+const headerActive = global.headerActive;
 const headerColor = global.headerColor;
 const headerBackground = global.headerBackground;
 const headerColorActive = global.headerColorActive;
@@ -35,39 +36,41 @@ const logoAlign = global.logoAlign;
 const logoFile = global.logoFile;
 ---
 
-<header
-	class={`bg--${headerBackground} text--${headerColor} textActive--${headerColorActive} bgActive--${headerBackgroundActive} fixed z-20 w-full py-4 transition-all duration-300 ease-in-out md:py-8`}
->
-	<div class="container flex items-center">
-		<div id="logo" class={`${logoAlign} relative z-20 max-md:py-4 w-80`}>
-			<a href="/" aria-label="Zurück zur Homepage">
-				{
-					logoFile.src ? (
-						<Fragment
-							set:html={logoFile.source}
-							id="logo"
-							alt={
-								logoFile.alt ? `${logoFile.alt}` : `Logo ${global.siteTitle}`
-							}
-							class="transition-all duration-300 ease-in-out"
-						/>
-					) : (
-						<Icon
-							name="fallback"
-							id="fallback"
-							alt={`Logo ${global.siteTitle}`}
-							class="transition-all duration-300 ease-in-out"
-						/>
-					)
-				}
-			</a>
-		</div>
-		<nav class="ml-auto transition-all duration-300 ease-in-out">
-			<Hamburger global={global} />
-			<Navigation global={global} />
-		</nav>
-	</div>
-</header>
+{
+	headerActive === true ? (
+		<header
+			class={`bg--${headerBackground} text--${headerColor} textActive--${headerColorActive} bgActive--${headerBackgroundActive} fixed z-20 w-full py-4 transition-all duration-300 ease-in-out md:py-8`}
+		>
+			<div class="container flex items-center">
+				<div id="logo" class={`${logoAlign} relative z-20 w-80 max-md:py-4`}>
+					<a href="/" aria-label="Zurück zur Homepage">
+						{logoFile.src ? (
+							<Fragment
+								set:html={logoFile.source}
+								id="logo"
+								alt={
+									logoFile.alt ? `${logoFile.alt}` : `Logo ${global.siteTitle}`
+								}
+								class="transition-all duration-300 ease-in-out"
+							/>
+						) : (
+							<Icon
+								name="fallback"
+								id="fallback"
+								alt={`Logo ${global.siteTitle}`}
+								class="transition-all duration-300 ease-in-out"
+							/>
+						)}
+					</a>
+				</div>
+				<nav class="ml-auto transition-all duration-300 ease-in-out">
+					<Hamburger global={global} />
+					<Navigation global={global} />
+				</nav>
+			</div>
+		</header>
+	) : null
+}
 
 <style
 	lang="css"
@@ -142,9 +145,11 @@ const logoFile = global.logoFile;
 	const header = document.querySelector('header');
 	const hamburger = document.querySelector('.c-hamburger-inner');
 	const colorElement = document.querySelector('.c-hamburger');
-	const colorClass = Array.from(colorElement.classList)
-		.find((className) => className.includes('hamburgerColorActive--'))
-		.replace('Active', '');
+	const colorClass =
+		colorElement &&
+		Array.from(colorElement.classList)
+			.find((className) => className.includes('hamburgerColorActive--'))
+			.replace('Active', '');
 
 	window.onscroll = function () {
 		if (

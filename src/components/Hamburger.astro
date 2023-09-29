@@ -13,20 +13,23 @@ const hamburgerOverlay = global.hamburgerOverlay;
 const logoAlign = global.logoAlign;
 ---
 
-<button
-	class={`c-hamburger--chop c-hamburger hamburgerColor--${hamburgerMenuColor} hamburgerColorActive--${hamburgerMenuColorActive} relative z-20 flex-grow ${
-		logoAlign === 'left' ? 'lg:hidden' : ''
-	}`}
-	aria-label="hamburger-button"
-	type="button"
->
-	<div class={`c-hamburger-inner`}>
-		<span class="c-hamburger-bar"></span>
-		<span class="c-hamburger-bar"></span>
-		<span class="c-hamburger-bar"></span>
-	</div>
-</button>
-
+{
+	global.navHamburger ? (
+		<button
+			class={`c-hamburger c-hamburger--chop hamburgerColor--${hamburgerMenuColor} hamburgerColorActive--${hamburgerMenuColorActive} relative z-20 flex-grow ${
+				logoAlign === 'left' ? 'lg:hidden' : ''
+			}`}
+			aria-label="hamburger-button"
+			type="button"
+		>
+			<div class={`c-hamburger-inner`}>
+				<span class="c-hamburger-bar" />
+				<span class="c-hamburger-bar" />
+				<span class="c-hamburger-bar" />
+			</div>
+		</button>
+	) : null
+}
 <div
 	class={`nav-links--hamburger invisible text--${hamburgerFontColor} bg--${hamburgerOverlay} font--${hamburgerFontSize} top-0 left-0  mr-24 flex min-h-full w-full flex-col justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none fixed ${
 		logoAlign === 'left' ? 'lg:hidden' : ''
@@ -138,7 +141,7 @@ const logoAlign = global.logoAlign;
 	const navLinks = document.querySelectorAll('.nav-link--hamburger');
 	const body = document.querySelector('body');
 
-	hamburger.addEventListener('click', () => {
+	hamburger?.addEventListener('click', () => {
 		menu.classList.toggle('expanded');
 		hamburger.classList.toggle('active');
 		body.style.overflowY =
