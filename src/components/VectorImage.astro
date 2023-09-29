@@ -1,11 +1,50 @@
 ---
-const { image } = Astro.props;
+let { image, widthMobile, widthDesktop } = Astro.props;
 ---
 
-<img src={image.url} alt={image.alt} />
+<img
+	src={image.url}
+	alt={image.alt}
+	class={`widthMobile--${widthMobile || '100'} widthDesktop--${
+		widthDesktop || '100'
+	}`}
+/>
 
 <style lang="css">
-	img {
-		@apply h-full w-full;
+	.widthMobile--20 {
+		@apply w-1/5;
+	}
+	.widthMobile--33 {
+		@apply w-1/3;
+	}
+	.widthMobile--50 {
+		@apply w-1/2;
+	}
+	.widthMobile--66 {
+		@apply w-2/3;
+	}
+	.widthMobile--75 {
+		@apply w-3/4;
+	}
+	.widthMobile--100 {
+		@apply w-full;
+	}
+	.widthDesktop--20 {
+		@apply lg:w-1/5;
+	}
+	.widthDesktop--33 {
+		@apply lg:w-1/3;
+	}
+	.widthDesktop--50 {
+		@apply lg:w-1/2;
+	}
+	.widthDesktop--66 {
+		@apply lg:w-2/3;
+	}
+	.widthDesktop--75 {
+		@apply lg:w-3/4;
+	}
+	.widthDesktop--100 {
+		@apply lg:w-full;
 	}
 </style>

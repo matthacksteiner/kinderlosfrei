@@ -1,38 +1,57 @@
 ---
 import VectorImage from '@components/VectorImage.astro';
-const { image, toggle, link } = Astro.props;
+const { image, toggle, link, widthMobile, widthDesktop, widthAlign } =
+	Astro.props;
 ---
 
 <div class={`blockVector blocks`}>
-	{
-		image && image.url ? (
-			toggle ? (
-				link.type === 'url' ? (
-					<a
-						href={link.href}
-						target={link.popup ? '_blank' : undefined}
-						rel={link.popup ? 'noopener' : undefined}
-					>
-						<VectorImage image={image} />
-					</a>
-				) : link.type === 'page' ? (
-					<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
-						<VectorImage image={image} />
-					</a>
-				) : link.type === 'file' ? (
-					<a
-						href={image.url}
-						target={link.popup ? '_blank' : undefined}
-						rel={link.popup ? 'noopener' : undefined}
-					>
-						<VectorImage image={image} />
-					</a>
-				) : null
-			) : (
-				<>
-					<VectorImage image={image} />
-				</>
-			)
-		) : null
-	}
+	<div class={`flex flex-col align-vert--${widthAlign || 'center'}`}>
+		{
+			image && image.url ? (
+				toggle ? (
+					link.type === 'url' ? (
+						<a
+							href={link.href}
+							target={link.popup ? '_blank' : undefined}
+							rel={link.popup ? 'noopener' : undefined}
+						>
+							<VectorImage
+								image={image}
+								widthMobile={widthMobile}
+								widthDesktop={widthDesktop}
+							/>
+						</a>
+					) : link.type === 'page' ? (
+						<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
+							<VectorImage
+								image={image}
+								widthMobile={widthMobile}
+								widthDesktop={widthDesktop}
+							/>
+						</a>
+					) : link.type === 'file' ? (
+						<a
+							href={image.url}
+							target={link.popup ? '_blank' : undefined}
+							rel={link.popup ? 'noopener' : undefined}
+						>
+							<VectorImage
+								image={image}
+								widthMobile={widthMobile}
+								widthDesktop={widthDesktop}
+							/>
+						</a>
+					) : null
+				) : (
+					<>
+						<VectorImage
+							image={image}
+							widthMobile={widthMobile}
+							widthDesktop={widthDesktop}
+						/>
+					</>
+				)
+			) : null
+		}
+	</div>
 </div>
