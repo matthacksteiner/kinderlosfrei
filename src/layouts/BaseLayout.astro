@@ -44,7 +44,8 @@ const gridBlockDesktop =
 		: '16px';
 
 const url = Astro.url.origin;
-const description = global.meta.description;
+// const description = global.meta.description;
+const description = 'test';
 const favSvg = global.favicon.svgSrc;
 const favIco = global.favicon.icoSrc;
 const pngAppleSrc = global.favicon.pngAppleSrc;
@@ -55,7 +56,7 @@ const png512Src = global.favicon.png512Src;
 <!DOCTYPE html>
 <html lang="de" class={`bg--${colorBackground} full motion-safe:scroll-smooth`}>
 	<head>
-		<KirbyMeta data={data} />
+		<KirbyMeta data={data} global={global} />
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
