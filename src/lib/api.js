@@ -1,6 +1,7 @@
 const API_URL = import.meta.env.KIRBY_URL;
 
-export async function getIndex(uri) {
+// Reusable function for making GET requests
+async function fetchData(uri) {
 	const response = await fetch(API_URL + uri, {
 		method: 'GET',
 	});
@@ -8,34 +9,38 @@ export async function getIndex(uri) {
 		console.log(API_URL);
 		throw new KirbyApiError(await response.text(), response.status, API_URL);
 	}
+	return response.json();
+}
 
-	const json = await response.json();
+export async function getData(uri) {
+	return fetchData(uri);
+}
 
-	return json;
+export async function getGlobal() {
+	return fetchData('/global.json');
 }
 
 // export the getFonts function
 export async function getFonts() {
-	const data = await getIndex('/home.json');
-	const global = data.global;
+	const global = await getGlobal();
 	if (!global.font || global.font.length === 0) {
 		return `@font-face {
-		  font-family: system-ui;
-		  font-weight: normal;
-		  font-style: normal;
-		  font-display: swap;
-		}`;
+      font-family: system-ui;
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }`;
 	}
 	return `${global.font
 		.map((item) => {
 			return `@font-face {
-		  font-family: '${item.name}';
-		  src: url('${item.url2}') format('woff2'),
-			   url('${item.url1}') format('woff');
-		  font-weight: normal;
-		  font-style: normal;
-		  font-display: swap;
-		}`;
+        font-family: '${item.name}';
+        src: url('${item.url2}') format('woff2'),
+             url('${item.url1}') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }`;
 		})
 		.join('')}`;
 }
@@ -43,22 +48,20 @@ export async function getFonts() {
 // export all font sizes
 export async function getSizes() {
 	const baseFontSize = 16;
-	const data = await getIndex('/home.json');
-	const global = data.global;
+	const global = await getGlobal();
 	return `${global.fontSize
 		.map((item) => {
 			return `
-		.font--${item.name} {
-			font-size: ${item.sizeMobile / baseFontSize}rem;
-			line-height: ${item.lineHeightMobile / item.sizeMobile};
-		}
-		@media (min-width: 768px) {
-			.font--${item.name} {
-		font-size: ${item.sizeDesktop / baseFontSize}rem;
-		line-height: ${item.lineHeightDesktop / item.sizeDesktop};
-		}
-	}
-      `;
+      .font--${item.name} {
+        font-size: ${item.sizeMobile / baseFontSize}rem;
+        line-height: ${item.lineHeightMobile / item.sizeMobile};
+      }
+      @media (min-width: 768px) {
+        .font--${item.name} {
+          font-size: ${item.sizeDesktop / baseFontSize}rem;
+          line-height: ${item.lineHeightDesktop / item.sizeDesktop};
+        }
+      }`;
 		})
 		.join('')}`;
 }
