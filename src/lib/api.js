@@ -20,6 +20,11 @@ export async function getGlobal() {
 	return fetchData('/global.json');
 }
 
+export async function getLanguages() {
+	const global = await getGlobal();
+	return global.languages;
+}
+
 // export the getFonts function
 export async function getFonts() {
 	const global = await getGlobal();
