@@ -1,6 +1,7 @@
 ---
 import Hamburger from '@components/Hamburger.astro';
 import Navigation from '@components/Navigation.astro';
+import LanguagePicker from './LanguagePicker.astro';
 import { Icon } from 'astro-icon';
 
 const { global } = Astro.props;
@@ -67,6 +68,7 @@ const logoFile = global.logoFile;
 					<Hamburger global={global} />
 					<Navigation global={global} />
 				</nav>
+				<LanguagePicker global={global} />
 			</div>
 		</header>
 	) : null

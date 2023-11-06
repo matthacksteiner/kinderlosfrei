@@ -1,0 +1,19 @@
+---
+import { getLanguages } from '@lib/api.js';
+const languages = await getLanguages();
+---
+
+<ul>
+	{
+		languages.map((language) => {
+			const path = Astro.url.pathname;
+			const lang = language.code;
+
+			return (
+				<li>
+					<a href={`/${lang}${path}`}>{language.name}</a>
+				</li>
+			);
+		})
+	}
+</ul>
