@@ -22,7 +22,10 @@ export async function getGlobal() {
 
 export async function getLanguages() {
 	const global = await getGlobal();
-	return global.languages;
+	return {
+		translations: global.translations,
+		defaultLang: global.defaultLang,
+	};
 }
 
 // export the getFonts function

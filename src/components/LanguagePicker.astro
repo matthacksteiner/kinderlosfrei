@@ -1,17 +1,20 @@
 ---
 import { getLanguages } from '@lib/api.js';
 const languages = await getLanguages();
+const defaultLang = languages.defaultLang;
 ---
 
 <ul>
 	{
-		languages.map((language) => {
-			const path = Astro.url.pathname;
+		languages.translations.map((language) => {
+			const path = Astro.url.origin;
 			const lang = language.code;
 
 			return (
 				<li>
-					<a href={`/${lang}${path}`}>{language.name}</a>
+					<a href={`${path}/${lang === defaultLang ? '' : lang}`}>
+						{language.name}
+					</a>
 				</li>
 			);
 		})

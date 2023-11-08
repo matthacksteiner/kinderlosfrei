@@ -3,15 +3,17 @@ import { getGlobal, getLanguages } from '@lib/api.js';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 const API_URL = import.meta.env.KIRBY_URL;
+export const showDefaultLang = false;
 
 export async function getStaticPaths() {
 	const API_URL = import.meta.env.KIRBY_URL;
 	const pagesResponse = await fetch(API_URL + '/index.json');
 	const data = await pagesResponse.json();
 	const languages = await getLanguages();
-	const allLang = languages.map((lang) => lang.code);
+	const translations = languages.translations.map((lang) => lang.code);
+
 	return data.flatMap((item) => {
-		return allLang.map((lang) => {
+		return translations.map((lang) => {
 			return {
 				params: {
 					lang: lang,
@@ -23,7 +25,11 @@ export async function getStaticPaths() {
 }
 
 const { lang, slug } = Astro.params;
-const pagesResponse = await fetch(API_URL + '/' + lang + '/' + slug + '.json');
+const languages = await getLanguages();
+const defaultLang = languages.defaultLang;
+const pagesResponse = await fetch(
+	API_URL + '/' + (lang !== defaultLang ? lang + '/' : '') + slug + '.json'
+);
 const data = await pagesResponse.json();
 const global = await getGlobal();
 const pageTitle = global.siteTitle + ' | ' + data.title;
