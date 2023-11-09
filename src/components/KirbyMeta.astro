@@ -1,15 +1,21 @@
 ---
 const { data, global } = Astro.props;
 const socialMeta = data.meta.social;
+const frontendURL = global.frontendUrl;
+const siteURL = global.siteUrl;
+const canonicalFrontend = data.meta.canonical.replace(siteURL, frontendURL);
 ---
 
 <title>{data.meta.title}</title>
 <meta name="description" content={data.meta.description} />
 <meta name="robots" content={data.meta.robots} />
-<meta name="canonical" content={data.meta.canonical} />
+<meta name="canonical" content={canonicalFrontend} />
 
 {
 	Object.entries(socialMeta).map(([key, value]) => (
-		<meta property={key} content={value.toString()} key={key as string} />
+		<meta
+			property={key === 'og:url' ? 'og:url' : key}
+			content={key === 'og:url' ? canonicalFrontend : value.toString()}
+		/>
 	))
 }
