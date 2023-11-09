@@ -1,8 +1,9 @@
 ---
-const { global } = Astro.props;
-const slug = Astro.params.slug;
+const { data, global } = Astro.props;
+const { slug } = Astro.params;
 const currentPath = slug ? slug : '';
-
+const defaultLang = global.defaultLang.code;
+const currentLang = data.lang;
 const headerFont = global.headerFont;
 const headerFontSize = global.headerFontSize;
 const logoAlign = global.logoAlign;
@@ -22,7 +23,7 @@ const logoAlign = global.logoAlign;
 							href={item.href}
 							target={`${item.popup === true ? '_blank' : '_self'}`}
 							rel={`${item.popup === true ? 'noopener noreferrer' : ''}`}
-							class="nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24"
+							class="nav-link max-lg:mb-8 lg:mr-16 2xl:mr-24"
 						>
 							{item.title}
 						</a>
@@ -32,10 +33,18 @@ const logoAlign = global.logoAlign;
 				if (item.type === 'page') {
 					return (
 						<a
-							href={item.hash ? `${item.uri}#${item.hash}` : `${item.uri}`}
+							href={
+								item.hash
+									? `${currentLang !== defaultLang ? currentLang : ''}/${
+											item.uri
+									  }#${item.hash}`
+									: `${currentLang !== defaultLang ? currentLang : ''}/${
+											item.uri
+									  }`
+							}
 							target={item.popup ? '_blank' : undefined}
 							rel={item.popup ? 'noopener' : undefined}
-							class={`nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24 ${
+							class={`nav-link max-lg:mb-8 lg:mr-16 2xl:mr-24 ${
 								currentPath === item.uri ? 'active' : ''
 							}`}
 						>
