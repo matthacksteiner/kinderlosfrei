@@ -16,4 +16,6 @@ export default defineConfig({
 	],
 	output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
 	adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
+	// output: 'server',
+	// adapter: netlify(),
 });
