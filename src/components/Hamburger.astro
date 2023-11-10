@@ -36,7 +36,7 @@ const logoAlign = global.logoAlign;
 	) : null
 }
 <div
-	class={`nav-links--hamburger invisible text--${hamburgerFontColor} bg--${hamburgerOverlay} font--${hamburgerFontSize} top-0 left-0  mr-24 flex min-h-full w-full flex-col justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none fixed ${
+	class={`nav-links--hamburger flex flex-col items-center invisible text--${hamburgerFontColor} bg--${hamburgerOverlay} font--${hamburgerFontSize} top-0 left-0  mr-24 flex min-h-full w-full flex-col justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none fixed ${
 		logoAlign === 'left' ? 'lg:hidden' : ''
 	}`}
 >
@@ -49,7 +49,7 @@ const logoAlign = global.logoAlign;
 							href={item.href}
 							target={`${item.popup === true ? '_blank' : '_self'}`}
 							rel={`${item.popup === true ? 'noopener noreferrer' : ''}`}
-							class={`nav-link--hamburger mb-8 `}
+							class={`nav-link--hamburger gap-8 `}
 						>
 							{item.title}
 						</a>
