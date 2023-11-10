@@ -3,7 +3,8 @@ const { data, global } = Astro.props;
 const socialMeta = data.meta.social;
 const frontendURL = global.frontendUrl;
 const siteURL = global.siteUrl;
-const canonicalFrontend = data.meta.canonical.replace(siteURL, frontendURL);
+let canonicalFrontend = data.meta.canonical.replace(siteURL, frontendURL);
+canonicalFrontend = canonicalFrontend.replace(/\/$/, '');
 ---
 
 <title>{data.meta.title}</title>
