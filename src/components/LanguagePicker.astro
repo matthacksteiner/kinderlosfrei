@@ -18,10 +18,9 @@ const headerFontSize = global.headerFontSize;
 			.map((language) => {
 				const path = Astro.url.origin;
 				const lang = language.code;
-
 				return (
 					<li>
-						<a href={`${path}/${lang === defaultLang.code ? '' : lang}`}>
+						<a href={`/${lang === defaultLang.code ? '' : lang}`}>
 							{language.code}
 						</a>
 					</li>

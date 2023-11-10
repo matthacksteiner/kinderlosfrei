@@ -6,22 +6,23 @@ const API_URL = import.meta.env.KIRBY_URL;
 
 export async function getStaticPaths() {
 	const API_URL = import.meta.env.KIRBY_URL;
-	const pagesResponse = await fetch(API_URL + '/index.json');
-	const data = await pagesResponse.json();
 	const languages = await getLanguages();
 	const translations = languages.translations.map((lang) => lang.code);
-	return data.flatMap((item) => {
-		return translations.map((lang) => {
-			return {
+	const paths = [];
+	for (const lang of translations) {
+		const pagesResponse = await fetch(API_URL + '/' + lang + '/index.json');
+		const data = await pagesResponse.json();
+		paths.push(
+			...(data as { uri: string }[]).map((item: { uri: string }) => ({
 				params: {
 					lang: lang,
 					slug: item.uri,
 				},
-			};
-		});
-	});
+			}))
+		);
+	}
+	return paths;
 }
-
 const { lang, slug } = Astro.params;
 const languages = await getLanguages();
 const defaultLang = languages.defaultLang;
