@@ -5,9 +5,10 @@ async function fetchData(uri) {
 	const response = await fetch(API_URL + uri, {
 		method: 'GET',
 	});
+	// console.log('Fetching', uri, response.status, response.statusText);
 	if (response.status !== 200) {
-		console.log(API_URL);
-		throw new KirbyApiError(await response.text(), response.status, API_URL);
+		// console.log('Error fetching', uri, response.status, response.statusText);
+		throw new KirbyApiError(await response.text(), response.status, uri);
 	}
 	return response.json();
 }
