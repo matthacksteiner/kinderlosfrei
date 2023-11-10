@@ -1,9 +1,11 @@
 ---
-import { getData, getGlobal } from '@lib/api.js';
+import { getData, getLanguages } from '@lib/api.js';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
-const data = await getData(`/home.json`);
-const global = await getGlobal();
+const languages = await getLanguages();
+const defaultLanguage = languages.defaultLang.code;
+const data = await getData(`/${defaultLanguage}/home.json`);
+const global = await getData(`/${defaultLanguage}/global.json`);
 const pageTitle = global.siteTitle + ' | ' + data.title;
 ---
 

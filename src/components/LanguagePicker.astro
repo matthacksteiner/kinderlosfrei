@@ -1,0 +1,36 @@
+---
+const { lang } = Astro.params;
+const { global } = Astro.props;
+const defaultLang = global.defaultLang;
+const allLangs = global.allLang;
+const currentLang = lang;
+const headerFont = global.headerFont;
+const headerFontSize = global.headerFontSize;
+---
+
+<ul
+	class={`langDesktop uppercase font--${headerFontSize} gap-4 hidden lg:flex`}
+>
+	{
+		allLangs
+			.filter((language) => language.code !== currentLang)
+			.filter((language) => lang || language.code !== defaultLang.code)
+			.map((language) => {
+				const path = Astro.url.origin;
+				const lang = language.code;
+				return (
+					<li>
+						<a href={`/${lang === defaultLang.code ? '' : lang}`}>
+							{language.code}
+						</a>
+					</li>
+				);
+			})
+	}
+</ul>
+
+<style lang="css" define:vars={{ headerFont }}>
+	.langDesktop {
+		font-family: var(--headerFont);
+	}
+</style>
