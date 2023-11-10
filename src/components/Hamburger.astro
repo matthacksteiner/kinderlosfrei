@@ -1,7 +1,12 @@
 ---
-const { global } = Astro.props;
-const slug = Astro.params.slug;
+import LanguagePicker from './LanguagePicker.astro';
+const { data, global } = Astro.props;
+const { slug } = Astro.params;
+const origin = Astro.url.origin;
 const currentPath = slug ? slug : '';
+
+const defaultLang = global.defaultLang.code;
+const currentLang = data.lang;
 
 const hamburgerFont = global.hamburgerFont;
 const hamburgerFontSize = global.hamburgerFontSize;
@@ -54,7 +59,19 @@ const logoAlign = global.logoAlign;
 				if (item.type === 'page') {
 					return (
 						<a
-							href={item.hash ? `${item.uri}#${item.hash}` : `${item.uri}`}
+							href={
+								item.hash
+									? `${
+											currentLang !== defaultLang
+												? origin + '/' + currentLang
+												: ''
+									  }/${item.uri}#${item.hash}`
+									: `${
+											currentLang !== defaultLang
+												? origin + '/' + currentLang
+												: ''
+									  }/${item.uri}`
+							}
 							target={item.popup ? '_blank' : undefined}
 							rel={item.popup ? 'noopener' : undefined}
 							class={`nav-link--hamburger mb-8 ${
@@ -67,6 +84,7 @@ const logoAlign = global.logoAlign;
 				}
 			})
 	}
+	<LanguagePicker global={global} font={hamburgerFont} class="lg:hidden" />
 </div>
 
 <style lang="css" define:vars={{ hamburgerFont }}>

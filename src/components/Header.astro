@@ -13,6 +13,9 @@ const headerBackground = global.headerBackground;
 const headerColorActive = global.headerColorActive;
 const headerBackgroundActive = global.headerBackgroundActive;
 
+const headerFont = global.headerFont;
+const headerFontSize = global.headerFontSize;
+
 const logoDesktop =
 	global.logoDesktop / baseSize
 		? global.logoDesktop / baseSize + 'rem'
@@ -64,11 +67,13 @@ const logoFile = global.logoFile;
 						)}
 					</a>
 				</div>
-				<nav class="ml-auto transition-all duration-300 ease-in-out">
-					<Hamburger global={global} />
+				<nav
+					class={`nav-links--desktop font--${headerFontSize} ml-auto flex transition-all duration-300 ease-in-out`}
+				>
+					<Hamburger global={global} data={data} />
 					<Navigation global={global} data={data} />
+					<LanguagePicker global={global} class="hidden lg:flex" />
 				</nav>
-				<LanguagePicker global={global} />
 			</div>
 		</header>
 	) : null
@@ -77,12 +82,16 @@ const logoFile = global.logoFile;
 <style
 	lang="css"
 	define:vars={{
+		headerFont,
 		logoMobile,
 		logoDesktop,
 		logoDesktopActive,
 		logoMobileActive,
 	}}
 >
+	.nav-links--desktop {
+		font-family: var(--headerFont);
+	}
 	.header--active {
 		@apply py-0 shadow-lg lg:py-4;
 	}

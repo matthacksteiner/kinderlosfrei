@@ -1,16 +1,17 @@
 ---
 const { data, global } = Astro.props;
 const { slug } = Astro.params;
+const origin = Astro.url.origin;
 const currentPath = slug ? slug : '';
 const defaultLang = global.defaultLang.code;
 const currentLang = data.lang;
-const headerFont = global.headerFont;
-const headerFontSize = global.headerFontSize;
+
 const logoAlign = global.logoAlign;
+const translations = global.translations;
 ---
 
 <div
-	class={`nav-links--desktop hidden lg:flex font--${headerFontSize} lg:bg-transparent top-0 left-0 z-10 mr-24 min-h-full w-full justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none  visible flex-row lg:justify-end lg:opacity-100 ${
+	class={`nav-links--desktop hidden lg:flex lg:bg-transparent top-0 left-0 z-10 min-h-full w-full justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none  visible flex-row lg:justify-end lg:opacity-100 ${
 		logoAlign === 'center' ? 'lg:hidden' : ''
 	}`}
 >
@@ -23,7 +24,7 @@ const logoAlign = global.logoAlign;
 							href={item.href}
 							target={`${item.popup === true ? '_blank' : '_self'}`}
 							rel={`${item.popup === true ? 'noopener noreferrer' : ''}`}
-							class="nav-link max-lg:mb-8 lg:mr-16 2xl:mr-24"
+							class="nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24"
 						>
 							{item.title}
 						</a>
@@ -35,18 +36,24 @@ const logoAlign = global.logoAlign;
 						<a
 							href={
 								item.hash
-									? `${currentLang !== defaultLang ? currentLang : ''}/${
-											item.uri
-									  }#${item.hash}`
-									: `${currentLang !== defaultLang ? currentLang : ''}/${
-											item.uri
-									  }`
+									? `${
+											currentLang !== defaultLang
+												? origin + '/' + currentLang
+												: ''
+									  }/${item.uri}#${item.hash}`
+									: `${
+											currentLang !== defaultLang
+												? origin + '/' + currentLang
+												: ''
+									  }/${item.uri}`
 							}
 							target={item.popup ? '_blank' : undefined}
 							rel={item.popup ? 'noopener' : undefined}
-							class={`nav-link max-lg:mb-8 lg:mr-16 2xl:mr-24 ${
-								currentPath === item.uri ? 'active' : ''
-							}`}
+							class={`nav-link max-lg:mb-8 lg:mr-16 2xl:mr-24
+								${currentPath === item.uri ? 'active' : ''}
+								${translations.length === 0 ? 'last:mr-0' : ''}
+							`}
+							}
 						>
 							{item.title}
 						</a>
@@ -55,8 +62,4 @@ const logoAlign = global.logoAlign;
 			})
 	}
 </div>
-<style lang="css" define:vars={{ headerFont }}>
-	.nav-links--desktop {
-		font-family: var(--headerFont);
-	}
-</style>
+
