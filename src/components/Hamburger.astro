@@ -36,7 +36,7 @@ const logoAlign = global.logoAlign;
 	) : null
 }
 <div
-	class={`nav-links--hamburger flex flex-col items-center invisible text--${hamburgerFontColor} bg--${hamburgerOverlay} font--${hamburgerFontSize} top-0 left-0  mr-24 flex min-h-full w-full flex-col justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none fixed ${
+	class={`mobile-nav-list flex flex-col items-center invisible text--${hamburgerFontColor} bg--${hamburgerOverlay} font--${hamburgerFontSize} top-0 left-0  mr-24 flex min-h-full w-full flex-col justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none fixed ${
 		logoAlign === 'left' ? 'lg:hidden' : ''
 	}`}
 >
@@ -49,7 +49,7 @@ const logoAlign = global.logoAlign;
 							href={item.href}
 							target={`${item.popup === true ? '_blank' : '_self'}`}
 							rel={`${item.popup === true ? 'noopener noreferrer' : ''}`}
-							class={`nav-link--hamburger gap-8 `}
+							class={`mobile-nav-link gap-8 `}
 						>
 							{item.title}
 						</a>
@@ -74,7 +74,7 @@ const logoAlign = global.logoAlign;
 							}
 							target={item.popup ? '_blank' : undefined}
 							rel={item.popup ? 'noopener' : undefined}
-							class={`nav-link--hamburger mb-8 ${
+							class={`mobile-nav-link mb-8 ${
 								currentPath === item.uri ? 'active' : ''
 							}  `}
 						>
@@ -88,7 +88,7 @@ const logoAlign = global.logoAlign;
 </div>
 
 <style lang="css" define:vars={{ hamburgerFont }}>
-	.nav-links--hamburger {
+	.mobile-nav-list {
 		font-family: var(--hamburgerFont);
 	}
 
@@ -155,8 +155,8 @@ const logoAlign = global.logoAlign;
 
 <script>
 	const hamburger = document.querySelector('.c-hamburger');
-	const menu = document.querySelector('.nav-links--hamburger');
-	const navLinks = document.querySelectorAll('.nav-link--hamburger');
+	const menu = document.querySelector('.mobile-nav-list');
+	const navLinks = document.querySelectorAll('.mobile-nav-link');
 	const body = document.querySelector('body');
 
 	hamburger?.addEventListener('click', () => {
