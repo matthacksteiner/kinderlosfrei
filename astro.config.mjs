@@ -14,8 +14,8 @@ export default defineConfig({
 		}),
 		sitemap(),
 	],
-	output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
-	adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
-	// output: 'server',
+	// output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
+	// adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
+	output: 'server',
 	// adapter: netlify(),
 });

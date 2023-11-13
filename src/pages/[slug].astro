@@ -6,8 +6,8 @@ const API_URL = import.meta.env.KIRBY_URL;
 
 export async function getStaticPaths() {
 	const API_URL = import.meta.env.KIRBY_URL;
-	const response = await fetch(API_URL + '/index.json');
-	const data = await response.json();
+	const pagesResponse = await fetch(API_URL + '/index.json');
+	const data = await pagesResponse.json();
 
 	return data.map((item) => {
 		return {
@@ -19,8 +19,9 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const response = await fetch(API_URL + '/' + slug + '.json');
-const data = await response.json();
+const pagesResponse = await fetch(API_URL + '/' + slug + '.json');
+if (!pagesResponse) throw Astro.redirect('/404');
+const data = await pagesResponse.json();
 const global = await getGlobal();
 const pageTitle = global.siteTitle + ' | ' + data.title;
 ---
