@@ -294,14 +294,17 @@ const { global, layouts } = Astro.props;
 		arrowButton.addEventListener('click', () => {
 			const currentColumns = arrowButton.closest('.columns');
 			const nextColumns = currentColumns.nextElementSibling as HTMLElement;
+			let distanceToScroll;
 			if (nextColumns && nextColumns.classList.contains('columns')) {
-				const headerHeight = header.offsetHeight;
-				const distanceToScroll = nextColumns.offsetTop - headerHeight;
-				window.scrollTo({
-					top: distanceToScroll,
-					behavior: 'smooth',
-				});
+				const headerHeight = header?.offsetHeight || 0;
+				distanceToScroll = nextColumns.offsetTop - headerHeight;
+			} else {
+				distanceToScroll = nextColumns?.offsetTop || 0;
 			}
+			window.scrollTo({
+				top: distanceToScroll,
+				behavior: 'smooth',
+			});
 		});
 	}
 </script>
