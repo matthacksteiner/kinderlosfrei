@@ -162,20 +162,23 @@ const logoFile = global.logoFile;
 			.find((className) => className.includes('hamburgerColorActive--'))
 			.replace('Active', '');
 
-	window.onscroll = function () {
-		if (
-			document.body.scrollTop > 80 ||
-			document.documentElement.scrollTop > 80
-		) {
-			header.classList.add('header--active');
-			if (colorClass) {
-				hamburger.classList.add(colorClass);
+	if (header) {
+		window.onscroll = function () {
+			if (
+				document.body.scrollTop > 80 ||
+				document.documentElement.scrollTop > 80
+			) {
+				header.classList.add('header--active');
+				if (colorClass) {
+					hamburger.classList.add(colorClass);
+				}
+			} else {
+				header.classList.remove('header--active');
+				if (colorClass) {
+					hamburger.classList.remove(colorClass);
+				}
 			}
-		} else {
-			header.classList.remove('header--active');
-			if (colorClass) {
-				hamburger.classList.remove(colorClass);
-			}
-		}
-	};
+		};
+	}
 </script>
+
