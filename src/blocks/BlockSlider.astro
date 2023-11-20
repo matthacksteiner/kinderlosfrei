@@ -38,19 +38,31 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 	data-viewpaddingdesktop={viewPaddingDesktop}
 >
 	<div class="swiper swiperSlider">
-		<div class="swiper-wrapper">
+		<div class="swiper-wrapper items-center">
 			{
-				images?.map((image) => (
-					<div class={`swiper-slide ${overlay}`}>
-						<ImageComponent
-							image={image}
-							ratioMobile={ratioMobile}
-							ratioDesktop={ratioDesktop}
-							loading="eager"
-							class={`${full}`}
-						/>
-					</div>
-				))
+				images?.map((image) => {
+					const isSvg = image.url.endsWith('.svg');
+
+					if (isSvg) {
+						return (
+							<div class={`swiper-slide ${overlay}`}>
+								<img src={image.url} alt={image.alt} class={`${full}`} />
+							</div>
+						);
+					} else {
+						return (
+							<div class={`swiper-slide ${overlay}`}>
+								<ImageComponent
+									image={image}
+									ratioMobile={ratioMobile}
+									ratioDesktop={ratioDesktop}
+									loading="eager"
+									class={`${full}`}
+								/>
+							</div>
+						);
+					}
+				})
 			}
 		</div>
 		{
