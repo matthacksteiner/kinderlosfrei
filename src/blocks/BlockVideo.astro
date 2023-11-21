@@ -20,6 +20,7 @@ const hasOption = (option) => options.includes(option);
 const autoplay = hasOption('autoplay');
 const loop = hasOption('loop');
 const muted = hasOption('muted');
+const full = hasOption('full') ? 'h-screen object-cover' : null;
 const controls = hasOption('controls');
 const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
 const isVimeo = url.includes('vimeo.com');
@@ -76,6 +77,7 @@ const vimeoPlayer = isVimeo
 					loop={loop}
 					controls={controls}
 					poster={thumb}
+					class={`${full}`}
 				/>
 			)
 		}
