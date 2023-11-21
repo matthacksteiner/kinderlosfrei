@@ -1,5 +1,20 @@
 ---
-const { source, url, file, options, ratioDesktop, ratioMobile, thumbnail } = Astro.props;
+const {
+	source,
+	url,
+	file,
+	options,
+	ratioDesktop,
+	ratioMobile,
+	thumbnail,
+	text,
+	font,
+	size,
+	align,
+	textcolor,
+	Level,
+	toggle,
+} = Astro.props;
 const hasOption = (option) => options.includes(option);
 
 const autoplay = hasOption('autoplay');
@@ -11,14 +26,14 @@ const isVimeo = url.includes('vimeo.com');
 const thumb = thumbnail ? thumbnail.url : null;
 
 const youtubeNoCookies = isYoutube
-? url
-.replace(
-	'https://www.youtube.com/watch?v=',
-	'https://www.youtube-nocookie.com/embed/'
-	)
-	.replace('https://youtu.be/', 'https://www.youtube-nocookie.com/embed/')
+	? url
+			.replace(
+				'https://www.youtube.com/watch?v=',
+				'https://www.youtube-nocookie.com/embed/'
+			)
+			.replace('https://youtu.be/', 'https://www.youtube-nocookie.com/embed/')
 	: null;
-	const vimeoPlayer = isVimeo
+const vimeoPlayer = isVimeo
 	? url.replace('https://vimeo.com/', 'https://player.vimeo.com/video/')
 	: null;
 ---
@@ -64,10 +79,29 @@ const youtubeNoCookies = isYoutube
 				/>
 			)
 		}
+		<div
+			class="text-content absolute left-2/4 top-2/4 z-[1] w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4"
+		>
+			{
+				toggle ? (
+					<Level
+						set:html={text}
+						class:list={[
+							`title font--${size}`,
+							`text--${textcolor}`,
+							`text--${align}`,
+						]}
+					/>
+				) : null
+			}
+		</div>
 	</div>
 </div>
 
-<style lang="css" define:vars={{ ratioDesktop, ratioMobile }}>
+<style lang="css" define:vars={{ ratioDesktop, ratioMobile, font }}>
+	.title {
+		font-family: var(--font);
+	}
 	iframe {
 		@apply aspect-[var(--ratioMobile)] h-auto w-full lg:aspect-[var(--ratioDesktop)];
 	}
