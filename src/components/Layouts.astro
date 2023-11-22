@@ -7,6 +7,7 @@ const { global, layouts } = Astro.props;
 {
 	layouts &&
 		layouts.map((layout) => {
+			const columns = layout.content.columns;
 			const anchor = layout.anchor;
 			const backgroundColor = layout.backgroundColor || 'transparent';
 			const backgroundPadding = layout.backgroundPadding || 'both';
@@ -42,9 +43,9 @@ const { global, layouts } = Astro.props;
 						align-vert--${backgroundAlignItemsVertical}`}
 					>
 						<Columns
-							columns={layout.content.columns}
+							columns={columns}
 							global={global}
-							backgroundPadding={layout.backgroundPadding}
+							backgroundPadding={backgroundPadding}
 						/>
 					</div>
 					<ScrollButton

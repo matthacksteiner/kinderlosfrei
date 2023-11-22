@@ -11,7 +11,7 @@ import BlockVector from '@blocks/BlockVector.astro';
 import BlockVideo from '@blocks/BlockVideo.astro';
 import BlockIconList from '@blocks/BlockIconList.astro';
 import BlockMenu from '@blocks/BlockMenu.astro';
-
+import BlockColumns from '@blocks/BlockColumns.astro';
 const { blocks, global } = Astro.props;
 const baseSize = 16;
 ---
@@ -20,6 +20,10 @@ const baseSize = 16;
 	blocks ? (
 		blocks.map((block) => {
 			switch (block.type) {
+				case 'columns':
+					return (
+						<BlockColumns columns={block.content.columns} global={global} />
+					);
 				case 'video':
 					return (
 						<BlockVideo
@@ -37,8 +41,8 @@ const baseSize = 16;
 							textcolor={block.content.textcolor}
 							size={block.content.textsize}
 							align={block.content.textalign}
-							/>
-							);
+						/>
+					);
 				case 'vector':
 					return (
 						<BlockVector
