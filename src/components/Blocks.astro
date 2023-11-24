@@ -20,7 +20,6 @@ const baseSize = 16;
 {
 	blocks ? (
 		blocks.map((block) => {
-			// console.log(block.type);
 			switch (block.type) {
 				case 'grid':
 					return <BlockGrid grid={block} global={global} />;
