@@ -2,6 +2,7 @@
 import ImageComponent from '@components/ImageComponent.astro';
 
 const {
+	global,
 	images,
 	ratioMobile,
 	ratioDesktop,
@@ -53,6 +54,7 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 						return (
 							<div class={`swiper-slide ${overlay}`}>
 								<ImageComponent
+									global={global}
 									image={image}
 									ratioMobile={ratioMobile}
 									ratioDesktop={ratioDesktop}

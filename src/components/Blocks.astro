@@ -138,6 +138,7 @@ const baseSize = 16;
 				case 'image':
 					return (
 						<BlockImage
+							global={global}
 							image={block.content.image}
 							link={block.content.linkexternal}
 							toggle={block.content.toggle}
@@ -165,6 +166,7 @@ const baseSize = 16;
 							viewDesktop={block.content.viewdesktop}
 							viewPaddingMobile={block.content.viewpaddingmobile}
 							viewPaddingDesktop={block.content.viewpaddingdesktop}
+							global={global}
 						/>
 					);
 				case 'divider':

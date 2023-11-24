@@ -1,6 +1,6 @@
 ---
 import ImageComponent from '@components/ImageComponent.astro';
-const { image, link, toggle, ratioMobile, ratioDesktop } = Astro.props;
+const { global, image, link, toggle, ratioMobile, ratioDesktop } = Astro.props;
 ---
 
 <div class={`blocks blockImages`}>
@@ -14,6 +14,7 @@ const { image, link, toggle, ratioMobile, ratioDesktop } = Astro.props;
 						rel={link.popup ? 'noopener' : undefined}
 					>
 						<ImageComponent
+							global={global}
 							image={image}
 							ratioMobile={ratioMobile}
 							ratioDesktop={ratioDesktop}
@@ -22,6 +23,7 @@ const { image, link, toggle, ratioMobile, ratioDesktop } = Astro.props;
 				) : link.type === 'page' ? (
 					<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
 						<ImageComponent
+							global={global}
 							image={image}
 							ratioMobile={ratioMobile}
 							ratioDesktop={ratioDesktop}
@@ -31,6 +33,7 @@ const { image, link, toggle, ratioMobile, ratioDesktop } = Astro.props;
 			) : (
 				<>
 					<ImageComponent
+						global={global}
 						image={image}
 						ratioMobile={ratioMobile}
 						ratioDesktop={ratioDesktop}
