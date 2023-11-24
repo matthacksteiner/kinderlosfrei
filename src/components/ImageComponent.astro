@@ -7,7 +7,6 @@ const {
 	loading,
 	class: className,
 } = Astro.props;
-
 const aspectMobile = ratioMobile.replace('/', ':');
 const aspectDesktop = ratioDesktop.replace('/', ':');
 
@@ -31,25 +30,78 @@ position +=
 if (!position.trim()) {
 	position = 'center';
 }
+
+const fileCaption = image.filecaption;
+const fileToggle = image.filetoggle;
+const Filelevel = image.filelevel;
+const fileTextFont = image.filetextfont;
+const fileTextSize = image.filetextsize;
+const fileTextColor = image.filetextcolor;
+const fileTextAlign = image.filetextalign;
+const fileOverlay = image.fileoverlay;
 ---
 
-<Picture
-	src={image.url}
-	alt={image.alt}
-	widths={[335, 335 * 2]}
-	position={position}
-	positionPreview={`${focusX}%  ${focusY}%`}
-	aspectRatio={aspectMobile}
-	class={`${className} lg:hidden w-full object-cover`}
-	loading={loading}
-/>
-<Picture
-	src={image.url}
-	alt={image.alt}
-	widths={[430, 900, 1824]}
-	aspectRatio={aspectDesktop}
-	position={position}
-	positionPreview={`${focusX}%  ${focusY}%`}
-	class={`${className} hidden lg:block w-full object-cover`}
-	loading={loading}
-/>
+<div class={`${fileOverlay === 'overlay' ? 'overlay' : null}`}>
+	<Picture
+		src={image.url}
+		alt={image.alt}
+		widths={[335, 335 * 2]}
+		position={position}
+		positionPreview={`${focusX}%  ${focusY}%`}
+		aspectRatio={aspectMobile}
+		class={`${className} lg:hidden w-full object-cover`}
+		loading={loading}
+	/>
+
+	{
+		fileToggle ? (
+			<div class="text-content absolute left-2/4 top-2/4 z-[1] w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
+				<Filelevel
+					set:html={fileCaption}
+					class:list={[
+						`caption font--${fileTextSize}`,
+						`text--${fileTextColor}`,
+						`text--${fileTextAlign}`,
+					]}
+				/>
+			</div>
+		) : null
+	}
+</div>
+
+<div class={`${fileOverlay === 'overlay' ? 'overlay' : null}`}>
+	<Picture
+		src={image.url}
+		alt={image.alt}
+		widths={[430, 900, 1824]}
+		aspectRatio={aspectDesktop}
+		position={position}
+		positionPreview={`${focusX}%  ${focusY}%`}
+		class={`${className} hidden lg:block w-full object-cover`}
+		loading={loading}
+	/>
+
+	{
+		fileToggle ? (
+			<div class="text-content absolute left-2/4 top-2/4 z-[1] w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
+				<Filelevel
+					set:html={fileCaption}
+					class:list={[
+						`caption font--${fileTextSize}`,
+						`text--${fileTextColor}`,
+						`text--${fileTextAlign}`,
+					]}
+				/>
+			</div>
+		) : null
+	}
+</div>
+
+<style lang="css" define:vars={{ fileTextFont }}>
+	.caption {
+		font-family: var(--font);
+	}
+	.overlay:before {
+		@apply absolute left-0 top-0 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
+	}
+</style>
