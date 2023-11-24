@@ -1,26 +1,9 @@
 ---
-import Blocks from '@components/Blocks.astro';
-const { grids, global } = Astro.props;
+import Columns from '@blocks/BlockColumns.astro';
+const { grid, global } = Astro.props;
+const grids = grid.content.grid;
 ---
 
-<section class="blockGrid blocks grid-default">
-	<!-- {
-		columns && (
-			<>
-				{columns.map((column, index) => {
-					const span = column.span;
-					const blocks = column.blocks;
-					const colClass = `column lg:col-span-${span}
-
-				${blocks.length > 0 ? 'col-span-6' : 'hidden lg:block'} `;
-
-					return (
-						<section key={index} class={colClass}>
-							<Blocks blocks={blocks} global={global} />
-						</section>
-					);
-				})}
-			</>
-		)
-	} -->
+<section class="blockGrid blocks">
+	{grids.map((grid, index) => <Columns {...grid} key={index} />)}
 </section>
