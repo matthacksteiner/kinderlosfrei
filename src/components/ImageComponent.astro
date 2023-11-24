@@ -39,9 +39,10 @@ const fileTextSize = image.filetextsize;
 const fileTextColor = image.filetextcolor;
 const fileTextAlign = image.filetextalign;
 const fileOverlay = image.fileoverlay;
+const captionMargin = '16px';
 ---
 
-<div class={`${fileOverlay === 'overlay' ? 'overlay' : null}`}>
+<div class={`lg:hidden ${fileOverlay === 'overlay' ? 'overlay' : null}`}>
 	<Picture
 		src={image.url}
 		alt={image.alt}
@@ -49,7 +50,7 @@ const fileOverlay = image.fileoverlay;
 		position={position}
 		positionPreview={`${focusX}%  ${focusY}%`}
 		aspectRatio={aspectMobile}
-		class={`${className} lg:hidden w-full object-cover`}
+		class={`${className} w-full object-cover`}
 		loading={loading}
 	/>
 
@@ -69,7 +70,7 @@ const fileOverlay = image.fileoverlay;
 	}
 </div>
 
-<div class={`${fileOverlay === 'overlay' ? 'overlay' : null}`}>
+<div class={`hidden lg:block ${fileOverlay === 'overlay' ? 'overlay' : null}`}>
 	<Picture
 		src={image.url}
 		alt={image.alt}
@@ -77,7 +78,7 @@ const fileOverlay = image.fileoverlay;
 		aspectRatio={aspectDesktop}
 		position={position}
 		positionPreview={`${focusX}%  ${focusY}%`}
-		class={`${className} hidden lg:block w-full object-cover`}
+		class={`${className} w-full object-cover`}
 		loading={loading}
 	/>
 
