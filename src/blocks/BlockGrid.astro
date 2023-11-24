@@ -5,5 +5,5 @@ const grids = grid.content.grid;
 ---
 
 <section class="blockGrid blocks">
-	{grids.map((grid, index) => <Columns {...grid} key={index} />)}
+	{grids.map((grid) => <Columns {...grid} global={global} />)}
 </section>
