@@ -1,0 +1,9 @@
+---
+import Columns from '@blocks/BlockColumns.astro';
+const { grid, global } = Astro.props;
+const grids = grid.content.grid;
+---
+
+<section class="blockGrid blocks">
+	{grids.map((grid) => <Columns {...grid} global={global} />)}
+</section>

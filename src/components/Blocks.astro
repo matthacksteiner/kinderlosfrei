@@ -12,6 +12,7 @@ import BlockVideo from '@blocks/BlockVideo.astro';
 import BlockIconList from '@blocks/BlockIconList.astro';
 import BlockMenu from '@blocks/BlockMenu.astro';
 import BlockColumns from '@blocks/BlockColumns.astro';
+import BlockGrid from '@blocks/BlockGrid.astro';
 const { blocks, global } = Astro.props;
 const baseSize = 16;
 ---
@@ -19,7 +20,10 @@ const baseSize = 16;
 {
 	blocks ? (
 		blocks.map((block) => {
+			// console.log(block.type);
 			switch (block.type) {
+				case 'grid':
+					return <BlockGrid grid={block} global={global} />;
 				case 'columns':
 					return (
 						<BlockColumns columns={block.content.columns} global={global} />
