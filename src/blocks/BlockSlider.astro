@@ -27,6 +27,7 @@ const dots = hasControl('dots');
 const line = hasControl('line');
 const full = hasControl('full') ? 'h-screen' : null;
 const overlay = hasControl('overlay') ? 'overlay' : null;
+const filetoggle = images.map((image) => image?.filetoggle);
 ---
 
 <section
@@ -43,7 +44,7 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 			{
 				images?.map((image) => {
 					const isSvg = image.url.endsWith('.svg');
-
+					const toggle = image?.filetoggle;
 					if (isSvg) {
 						return (
 							<div class={`swiper-slide ${overlay}`}>
@@ -158,6 +159,18 @@ const overlay = hasControl('overlay') ? 'overlay' : null;
 		}
 	});
 </script>
+
+{
+	filetoggle.map((toggle) =>
+		toggle ? (
+			<style lang="css" is:global>
+				:root {
+					--swiper-pagination-bottom: 12%;
+				}
+			</style>
+		) : null
+	)
+}
 
 <style
 	lang="css"
