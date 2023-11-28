@@ -1,13 +1,18 @@
 ---
-const { data, global } = Astro.props;
+const { data, global, pageTitle } = Astro.props;
 const socialMeta = data.meta.social;
 const frontendURL = global.frontendUrl;
 const siteURL = global.siteUrl;
 let canonicalFrontend = data.meta.canonical.replace(siteURL, frontendURL);
 canonicalFrontend = canonicalFrontend.replace(/\/$/, '');
+const separators = data.meta.separators;
+const siteTitle = global.siteTitle;
+const orgOrPerson = data.meta.org || data.meta.person;
 ---
 
-<title>{data.meta.title}</title>
+<title data-siteTitle={siteTitle} data-orgOrPerson={orgOrPerson}>
+	{pageTitle === 'home' ? siteTitle : `${pageTitle} ${separators} ${siteTitle}`}
+</title>
 <meta name="description" content={data.meta.description} />
 <meta name="robots" content={data.meta.robots} />
 <meta name="canonical" content={canonicalFrontend} />
@@ -20,3 +25,22 @@ canonicalFrontend = canonicalFrontend.replace(/\/$/, '');
 		/>
 	))
 }
+
+<script define:vars={{ orgOrPerson }}>
+	const script = document.createElement('script');
+	script.setAttribute('type', 'application/ld+json');
+
+	script.textContent = JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'website',
+		author: {
+			'@type': orgOrPerson['@type'],
+			'name': orgOrPerson['name'],
+			'email': orgOrPerson['email'] && orgOrPerson['email'],
+			'logo': orgOrPerson['logo'] && orgOrPerson['logo'],
+			'avatar': orgOrPerson['avatar'] && orgOrPerson['avatar'],
+		},
+
+	});
+	document.head.appendChild(script);
+</script>
