@@ -11,7 +11,11 @@ const orgOrPerson = data.meta.org || data.meta.person;
 ---
 
 <title data-siteTitle={siteTitle} data-orgOrPerson={orgOrPerson}>
-	{pageTitle === 'home' ? siteTitle : `${pageTitle} ${separators} ${siteTitle}`}
+	{
+		pageTitle === 'home' || undefined || null
+			? siteTitle
+			: `${pageTitle} ${separators} ${siteTitle}`
+	}
 </title>
 <meta name="description" content={data.meta.description} />
 <meta name="robots" content={data.meta.robots} />
@@ -27,6 +31,7 @@ const orgOrPerson = data.meta.org || data.meta.person;
 }
 
 <script define:vars={{ orgOrPerson }}>
+	if (!orgOrPerson) return;
 	const script = document.createElement('script');
 	script.setAttribute('type', 'application/ld+json');
 
@@ -35,12 +40,11 @@ const orgOrPerson = data.meta.org || data.meta.person;
 		'@type': 'website',
 		author: {
 			'@type': orgOrPerson['@type'],
-			'name': orgOrPerson['name'],
-			'email': orgOrPerson['email'] && orgOrPerson['email'],
-			'logo': orgOrPerson['logo'] && orgOrPerson['logo'],
-			'avatar': orgOrPerson['avatar'] && orgOrPerson['avatar'],
+			name: orgOrPerson['name'],
+			email: orgOrPerson['email'] && orgOrPerson['email'],
+			logo: orgOrPerson['logo'] && orgOrPerson['logo'],
+			avatar: orgOrPerson['avatar'] && orgOrPerson['avatar'],
 		},
-
 	});
 	document.head.appendChild(script);
 </script>

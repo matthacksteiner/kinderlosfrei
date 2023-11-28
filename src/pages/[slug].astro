@@ -23,7 +23,7 @@ const pagesResponse = await fetch(API_URL + '/' + slug + '.json');
 if (!pagesResponse) throw Astro.redirect('/404');
 const data = await pagesResponse.json();
 const global = await getGlobal();
-const pageTitle = global.siteTitle + ' | ' + data.title;
+const pageTitle = data.title;
 ---
 
 <BaseLayout pageTitle={pageTitle} data={data} global={global}>

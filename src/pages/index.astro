@@ -12,7 +12,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 const data = await getData(`/home.json`);
 const global = await getGlobal();
-const pageTitle = global.siteTitle + ' | ' + data.title;
+const pageTitle = data.title;
 ---
 
 {

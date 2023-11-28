@@ -24,7 +24,7 @@ export async function getStaticPaths() {
 const currentLang = lang;
 const data = await getData(`/${currentLang}/home.json`);
 const global = await getGlobal();
-const pageTitle = global.siteTitle + ' | ' + data.title;
+const pageTitle = data.title;
 ---
 
 <BaseLayout pageTitle={pageTitle} data={data} global={global}>

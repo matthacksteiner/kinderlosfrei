@@ -59,32 +59,32 @@ const png512Src = global.favicon.png512Src;
 	class={`bg--${colorBackground} full motion-safe:scroll-smooth`}
 >
 	<head>
-		<KirbyMeta data={data} global={global} />
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{pageTitle}</title>
-		<link
-			rel="icon"
-			type="image/svg+xml"
-			href={`${favSvg || '/favicons/favicon.svg'}`}
-		/>
-		<link
-			rel="icon"
-			type="image/x-icon"
-			href={`${favIco || '/favicons/favicon.ico'}`}
-		/>
-		<link
-			rel="apple-touch-icon"
-			href={`${pngAppleSrc || '/favicons/apple-touch-icon.png'}`}
-		/>
-		<link rel="manifest" id="manifestPlaceholder" />
-		<meta name="theme-color" content={`${colorPrimary}`} />
-		<style set:html={fonts}></style>
-		<style set:html={sizes}></style>
-		<link rel="sitemap" href="/sitemap-index.xml" />
-	</head>
-	<body
+		<KirbyMeta data={data} global={global} pageTitle={pageTitle}>
+			<meta charset="UTF-8" />
+			<meta name="viewport" content="width=device-width" />
+			<meta name="generator" content={Astro.generator} />
+			<title>{pageTitle}</title>
+			<link
+				rel="icon"
+				type="image/svg+xml"
+				href={`${favSvg || '/favicons/favicon.svg'}`}
+			/>
+			<link
+				rel="icon"
+				type="image/x-icon"
+				href={`${favIco || '/favicons/favicon.ico'}`}
+			/>
+			<link
+				rel="apple-touch-icon"
+				href={`${pngAppleSrc || '/favicons/apple-touch-icon.png'}`}
+			/>
+			<link rel="manifest" id="manifestPlaceholder" />
+			<meta name="theme-color" content={`${colorPrimary}`} />
+			<style set:html={fonts}></style>
+			<style set:html={sizes}></style>
+			<link rel="sitemap" href="/sitemap-index.xml" />
+		</KirbyMeta>
+	</head><body
 		class="mx-auto items-center overflow-x-hidden selection:bg-secondary selection:text-white"
 		data-png192src={png192Src}
 		data-png512src={png512Src}
