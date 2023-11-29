@@ -10,7 +10,7 @@ const translations = global.translations;
 ---
 
 <div
-	class={`nav-links--desktop hidden lg:flex lg:bg-transparent top-0 left-0 z-10 min-h-full w-full justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none  visible flex-row lg:justify-end lg:opacity-100 ${
+	class={`nav-links--desktop hidden lg:flex lg:bg-transparent top-0 left-0 z-10 min-h-full w-full justify-center text-center opacity-0 transition-opacity  duration-300 ease-in-out placeholder:pointer-events-none  visible flex-row lg:justify-end lg:opacity-100 ${
 		logoAlign === 'center' ? 'lg:hidden' : ''
 	}`}
 >
@@ -39,7 +39,7 @@ const translations = global.translations;
 											translations.length > 0
 												? origin + '/' + currentLang
 												: ''
-									  }/${item.uri}#${item.hash}`
+									  }${item.uri}#${item.hash}`
 									: `${
 										translations.length > 0
 												? origin + '/' + currentLang
