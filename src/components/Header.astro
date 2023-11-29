@@ -4,7 +4,7 @@ import Navigation from '@components/Navigation.astro';
 import LanguagePicker from './LanguagePicker.astro';
 import { Icon } from 'astro-icon';
 
-const { global, data } = Astro.props;
+const { global, data, lang } = Astro.props;
 const baseSize = 16;
 
 const headerActive = global.headerActive;
@@ -38,6 +38,8 @@ const logoMobileActive =
 
 const logoAlign = global.logoAlign;
 const logoFile = global.logoFile;
+const currentLang = lang;
+const translations = global.translations;
 ---
 
 {
@@ -47,7 +49,10 @@ const logoFile = global.logoFile;
 		>
 			<div class="container flex items-center">
 				<div id="logo" class={`${logoAlign} relative z-20 w-80 max-md:py-4`}>
-					<a href="/" aria-label="Zurück zur Homepage">
+					<a
+						href={`${translations.length < 1 ? '/' : '/' + currentLang}`}
+						aria-label="Zurück zur Homepage"
+					>
 						{logoFile.src ? (
 							<Fragment
 								set:html={logoFile.source}
@@ -181,4 +186,3 @@ const logoFile = global.logoFile;
 		};
 	}
 </script>
-

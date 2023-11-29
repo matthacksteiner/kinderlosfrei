@@ -1,12 +1,7 @@
 ---
-import LanguagePicker from './LanguagePicker.astro';
+import LanguagePicker from '@components/LanguagePicker.astro';
+import NavLinks from '@components/NavLinks.astro';
 const { data, global } = Astro.props;
-const { slug } = Astro.params;
-const origin = Astro.url.origin;
-const currentPath = slug ? slug : '';
-
-const defaultLang = global.defaultLang.code;
-const currentLang = data.lang;
 
 const hamburgerFont = global.hamburgerFont;
 const hamburgerFontSize = global.hamburgerFontSize;
@@ -40,50 +35,7 @@ const logoAlign = global.logoAlign;
 		logoAlign === 'left' ? 'lg:hidden' : ''
 	}`}
 >
-	{
-		global.navHamburger &&
-			global.navHamburger.map((item) => {
-				if (item.type === 'url') {
-					return (
-						<a
-							href={item.href}
-							target={`${item.popup === true ? '_blank' : '_self'}`}
-							rel={`${item.popup === true ? 'noopener noreferrer' : ''}`}
-							class={`mobile-nav-link gap-8 `}
-						>
-							{item.title}
-						</a>
-					);
-				}
-
-				if (item.type === 'page') {
-					return (
-						<a
-							href={
-								item.hash
-									? `${
-											currentLang !== defaultLang
-												? origin + '/' + currentLang
-												: ''
-									  }/${item.uri}#${item.hash}`
-									: `${
-											currentLang !== defaultLang
-												? origin + '/' + currentLang
-												: ''
-									  }/${item.uri}`
-							}
-							target={item.popup ? '_blank' : undefined}
-							rel={item.popup ? 'noopener' : undefined}
-							class={`mobile-nav-link mb-8 ${
-								currentPath === item.uri ? 'active' : ''
-							}  `}
-						>
-							{item.title}
-						</a>
-					);
-				}
-			})
-	}
+	<NavLinks links={global.navHamburger} global={global} data={data} />
 	<LanguagePicker global={global} font={hamburgerFont} class="lg:hidden" />
 </div>
 

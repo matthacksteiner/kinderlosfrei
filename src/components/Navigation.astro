@@ -1,12 +1,7 @@
 ---
+import NavLinks from '@components/NavLinks.astro';
 const { data, global } = Astro.props;
-const { slug } = Astro.params;
-const origin = Astro.url.origin;
-const currentPath = slug ? slug : '';
-const defaultLang = global.defaultLang.code;
-const currentLang = data.lang;
 const logoAlign = global.logoAlign;
-const translations = global.translations;
 ---
 
 <div
@@ -14,51 +9,5 @@ const translations = global.translations;
 		logoAlign === 'center' ? 'lg:hidden' : ''
 	}`}
 >
-	{
-		global.navHeader &&
-			global.navHeader.map((item) => {
-				if (item.type === 'url') {
-					return (
-						<a
-							href={item.href}
-							target={`${item.popup === true ? '_blank' : '_self'}`}
-							rel={`${item.popup === true ? 'noopener noreferrer' : ''}`}
-							class="nav-link max-lg:mb-8 lg:mr-16 lg:last:mr-0 2xl:mr-24"
-						>
-							{item.title}
-						</a>
-					);
-				}
-
-				if (item.type === 'page') {
-					return (
-						<a
-							href={
-								item.hash
-									? `${
-											translations.length > 0
-												? origin + '/' + currentLang
-												: ''
-									  }${item.uri}#${item.hash}`
-									: `${
-										translations.length > 0
-												? origin + '/' + currentLang
-												: ''
-									  }/${item.uri}`
-							}
-							target={item.popup ? '_blank' : undefined}
-							rel={item.popup ? 'noopener' : undefined}
-							class={`nav-link max-lg:mb-8 lg:mr-16 2xl:mr-24
-								${currentPath === item.uri ? 'active' : ''}
-								${translations.length === 0 ? 'last:mr-0' : ''}
-							`}
-							}
-						>
-							{item.title}
-						</a>
-					);
-				}
-			})
-	}
+	<NavLinks links={global.navHeader} global={global} data={data} />
 </div>
-
