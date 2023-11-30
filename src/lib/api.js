@@ -43,6 +43,11 @@ export async function getLanguages() {
 	};
 }
 
+export async function getFrontendUrl() {
+	const global = await getGlobal();
+	return global.frontendUrl;
+}
+
 // export the getFonts function
 export async function getFonts() {
 	const global = await getGlobal();

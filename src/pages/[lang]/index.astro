@@ -23,7 +23,7 @@ export async function getStaticPaths() {
 }
 const currentLang = lang;
 const data = await getData(`/${currentLang}/home.json`);
-const global = await getGlobal();
+const global = await getData(`/${currentLang}/global.json`);
 const pageTitle = data.title;
 ---
 

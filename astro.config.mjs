@@ -1,4 +1,11 @@
 import { defineConfig } from 'astro/config';
+const API_URL = import.meta.env.KIRBY_URL;
+// const response = await fetch(API_URL + '/global.json');
+const response = await fetch(
+	'https://cms.baukasten.matthiashacksteiner.net/global.json'
+);
+const data = await response.json();
+const frontendUrl = data.frontendUrl;
 import tailwind from '@astrojs/tailwind';
 import image from '@astrojs/image';
 import sitemap from '@astrojs/sitemap';
@@ -6,7 +13,7 @@ import netlify from '@astrojs/netlify/functions';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://baukasten.netlify.app/',
+	site: frontendUrl,
 	integrations: [
 		tailwind(),
 		image({

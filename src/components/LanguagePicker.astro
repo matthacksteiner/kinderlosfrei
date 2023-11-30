@@ -18,13 +18,10 @@ const headerFontSize = global.headerFontSize;
 				.filter((language) => language.code !== currentLang)
 				.filter((language) => lang || language.code !== defaultLang.code)
 				.map((language) => {
-					const path = Astro.url.origin;
 					const lang = language.code;
 					return (
 						<li>
-							<a href={`/${lang === defaultLang.code ? '' : lang}`}>
-								{language.code}
-							</a>
+							<a href={`/${lang}`}>{language.code}</a>
 						</li>
 					);
 				})}
