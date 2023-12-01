@@ -9,13 +9,15 @@ export async function getStaticPaths() {
 	const pagesResponse = await fetch(API_URL + '/index.json');
 	const data = await pagesResponse.json();
 
-	return data.map((item) => {
-		return {
-			params: {
-				slug: item.uri,
-			},
-		};
-	});
+	return data
+		.filter((item) => item.uri !== 'home')
+		.map((item) => {
+			return {
+				params: {
+					slug: item.uri,
+				},
+			};
+		});
 }
 
 const { slug } = Astro.params;

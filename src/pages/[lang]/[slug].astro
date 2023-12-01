@@ -14,12 +14,14 @@ export async function getStaticPaths() {
 		const pagesResponse = await fetch(API_URL + '/' + lang + '/index.json');
 		const data = await pagesResponse.json();
 		paths.push(
-			...(data as { uri: string }[]).map((item: { uri: string }) => ({
-				params: {
-					lang: lang,
-					slug: item.uri,
-				},
-			}))
+			...(data as { uri: string }[])
+				.filter((item: { uri: string }) => item.uri !== 'home')
+				.map((item: { uri: string }) => ({
+					params: {
+						lang: lang,
+						slug: item.uri,
+					},
+				}))
 		);
 	}
 	return paths;
