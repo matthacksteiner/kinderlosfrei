@@ -1,9 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import { defineConfig } from 'astro/config';
-const API_URL = import.meta.env.KIRBY_URL;
-// const response = await fetch(API_URL + '/global.json');
-const response = await fetch(
-	'https://cms.baukasten.matthiashacksteiner.net/global.json'
-);
+const API_URL = process.env.KIRBY_URL;
+const response = await fetch(API_URL + '/global.json');
 const data = await response.json();
 const frontendUrl = data.frontendUrl;
 import tailwind from '@astrojs/tailwind';
