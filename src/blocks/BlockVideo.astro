@@ -1,15 +1,29 @@
 ---
-const { source, url, file, options, ratioDesktop, ratioMobile, thumbnail } =
-	Astro.props;
+const {
+	source,
+	url,
+	file,
+	options,
+	thumbnail,
+	text,
+	font,
+	size,
+	align,
+	textcolor,
+	Level,
+	toggle,
+} = Astro.props;
 const hasOption = (option) => options.includes(option);
 
 const autoplay = hasOption('autoplay');
 const loop = hasOption('loop');
 const muted = hasOption('muted');
+const full = hasOption('full') ? 'h-screen object-cover' : null;
 const controls = hasOption('controls');
 const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
 const isVimeo = url.includes('vimeo.com');
 const thumb = thumbnail ? thumbnail.url : null;
+const cursor = thumbnail ? 'cursor-pointer' : null;
 
 const youtubeNoCookies = isYoutube
 	? url
@@ -61,33 +75,51 @@ const vimeoPlayer = isVimeo
 					autoplay={autoplay}
 					loop={loop}
 					controls={controls}
+					playsinline={autoplay}
 					poster={thumb}
-					preload="none"
-					class="video w-full cursor-pointer"
+					class={`${full} ${cursor} w-full`}
 				/>
 			)
 		}
+		<div
+			class="text-content absolute left-2/4 top-2/4 z-[1] w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4"
+		>
+			{
+				toggle ? (
+					<Level
+						set:html={text}
+						class:list={[
+							`title font--${size}`,
+							`text--${textcolor}`,
+							`text--${align}`,
+						]}
+					/>
+				) : null
+			}
+		</div>
 	</div>
 </div>
 
-<style lang="css" define:vars={{ ratioDesktop, ratioMobile }}>
-	iframe {
-		@apply aspect-[var(--ratioMobile)] h-auto w-full lg:aspect-[var(--ratioDesktop)];
+<style lang="css" define:vars={{ font }}>
+	.title {
+		font-family: var(--font);
 	}
 </style>
 
-<script>
-	document.addEventListener('DOMContentLoaded', function () {
-		const video = document.querySelectorAll('video');
+<script define:vars={{ cursor }}>
+	if (cursor) {
+		document.addEventListener('DOMContentLoaded', function () {
+			const video = document.querySelectorAll('video');
 
-		video.forEach((item) => {
-			item.addEventListener('click', (event) => {
-				if (item.paused) {
-					item.play();
-				} else {
-					item.pause();
-				}
+			video.forEach((item) => {
+				item.addEventListener('click', (event) => {
+					if (item.paused) {
+						item.play();
+					} else {
+						item.pause();
+					}
+				});
 			});
 		});
-	});
+	}
 </script>
