@@ -1,6 +1,6 @@
 ---
 import Link from '@components/Link.astro';
-const { items, font, align, color, size, gap } = Astro.props;
+const { global, items, font, align, color, size, gap } = Astro.props;
 ---
 
 <div class="blockMenu blocks">
@@ -12,6 +12,7 @@ const { items, font, align, color, size, gap } = Astro.props;
 						const link = item.link;
 						return (
 							<Link
+								global={global}
 								link={link}
 								class={`text font--${size} text--${color} text--${align} `}
 							/>

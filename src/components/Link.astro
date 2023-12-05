@@ -1,5 +1,7 @@
 ---
 const { link, class: className } = Astro.props;
+const { lang } = Astro.params;
+const currentLang = lang;
 ---
 
 {
@@ -15,7 +17,7 @@ const { link, class: className } = Astro.props;
 			</a>
 		) : link.type === 'page' ? (
 			<a
-				href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}
+				href={link.hash ? `${currentLang ? `/${currentLang}/` : ''}${link.uri}#${link.hash}` : `${currentLang ? `/${currentLang}/` : ''}${link.uri}`}
 				target={link.popup ? '_blank' : undefined}
 				rel={link.popup ? 'noopener' : undefined}
 				class={`${className}`}
