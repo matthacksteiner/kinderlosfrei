@@ -41,13 +41,15 @@ const logoFile = global.logoFile;
 const currentLang = lang;
 const translations = global.translations;
 const path = Astro.url.pathname;
-const isHome = /^\/[a-zA-Z]{2}$/.test(path) || path === '';
+const isHome = /^\/[a-zA-Z]{2}(\/)?$/.test(path) || path === '';
 ---
 
 {
 	headerActive === true ? (
 		<header
-			class={`${isHome ? '' : 'header--active'} bg--${headerBackground} text--${headerColor} textActive--${headerColorActive} bgActive--${headerBackgroundActive} fixed z-20 w-full py-4 transition-all duration-300 ease-in-out md:py-8`}
+			class={`${
+				isHome ? '' : 'header--active'
+			} bg--${headerBackground} text--${headerColor} textActive--${headerColorActive} bgActive--${headerBackgroundActive} fixed z-20 w-full py-4 transition-all duration-300 ease-in-out md:py-8`}
 		>
 			<div class="container flex items-center">
 				<div id="logo" class={`${logoAlign} relative z-20 w-80 max-md:py-4`}>
@@ -159,7 +161,7 @@ const isHome = /^\/[a-zA-Z]{2}$/.test(path) || path === '';
 	}
 </style>
 
-<script define:vars= {{ isHome }}>
+<script define:vars={{ isHome }}>
 	const header = document.querySelector('header');
 	const hamburger = document.querySelector('.c-hamburger-inner');
 	const colorElement = document.querySelector('.c-hamburger');
