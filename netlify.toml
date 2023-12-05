@@ -1,6 +1,7 @@
 [build]
-  command = "npm run build:production"
+  # command = "npm run build:production"
   base = "/"
   publish = "dist"
+
 [build.processing.html]
   pretty_urls = false
