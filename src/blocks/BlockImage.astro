@@ -13,31 +13,16 @@ const { global, image, link, toggle, ratioMobile, ratioDesktop } = Astro.props;
 						target={link.popup ? '_blank' : undefined}
 						rel={link.popup ? 'noopener' : undefined}
 					>
-						<ImageComponent
-							global={global}
-							image={image}
-							ratioMobile={ratioMobile}
-							ratioDesktop={ratioDesktop}
-						/>
+						<ImageComponent global={global} image={image} />
 					</a>
 				) : link.type === 'page' ? (
 					<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
-						<ImageComponent
-							global={global}
-							image={image}
-							ratioMobile={ratioMobile}
-							ratioDesktop={ratioDesktop}
-						/>
+						<ImageComponent global={global} image={image} />
 					</a>
 				) : null
 			) : (
 				<>
-					<ImageComponent
-						global={global}
-						image={image}
-						ratioMobile={ratioMobile}
-						ratioDesktop={ratioDesktop}
-					/>
+					<ImageComponent global={global} image={image} />
 				</>
 			)
 		) : null

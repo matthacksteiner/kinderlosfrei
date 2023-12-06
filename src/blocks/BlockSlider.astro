@@ -4,8 +4,6 @@ import ImageComponent from '@components/ImageComponent.astro';
 const {
 	global,
 	images,
-	ratioMobile,
-	ratioDesktop,
 	controls,
 	color,
 	time,
@@ -57,8 +55,6 @@ const filetoggle = images.map((image) => image?.filetoggle);
 								<ImageComponent
 									global={global}
 									image={image}
-									ratioMobile={ratioMobile}
-									ratioDesktop={ratioDesktop}
 									loading="eager"
 									class={`${full}`}
 								/>

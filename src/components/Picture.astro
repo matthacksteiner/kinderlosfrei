@@ -1,45 +1,23 @@
 ---
-let {
-	widths = [],
-	aspectRatio = [],
-	position = [],
-	positionPreview = [],
-	loading = [],
-	...props
-} = Astro.props;
-
-const width = widths.length ? widths[0] : undefined;
-
-const focusPosition = position;
-const focusPositionPreview = positionPreview;
-const ratio = aspectRatio
-	.split(':')
-	.reduce((a, b) => parseInt(a) / parseInt(b));
-const height = width / ratio;
-const ratioParts = aspectRatio.split(':');
-const ratioFraction = `${ratioParts[0]}/${ratioParts[1]}`;
-
-let Picture;
-
-if (import.meta.env.PUBLIC_ENV === 'preview') {
-	Picture = 'img';
-	props = {
-		width: width,
-		height: height,
-		style: `aspect-ratio: ${ratioFraction}; object-fit: cover; object-position: ${focusPositionPreview};`,
-		...props,
-	};
-} else {
-	Picture = (await import('@astrojs/image/components')).Picture;
-	props = {
-		widths: widths,
-		aspectRatio: aspectRatio,
-		position: focusPosition,
-		fit: 'cover',
-		loading: loading,
-		...props,
-	};
+interface Props {
+	srcsetMobile: string;
+	srcset: string;
+	src: string;
+	alt: string;
+	width: string;
+	height: string;
 }
+const {
+	src,
+	srcsetMobile,
+	srcset,
+	class: className,
+	...pictureProps
+} = Astro.props;
 ---
 
-<Picture {...props} />
+<picture>
+	<source srcset={srcsetMobile} media="(max-width: 768px)" type="image/webp" />
+	<source srcset={srcset} media="(min-width: 769px)" type="image/webp" />
+	<img src={src} class={className} {...pictureProps} />
+</picture>
