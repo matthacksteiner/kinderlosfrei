@@ -1,13 +1,6 @@
 ---
 import Picture from '@components/Picture.astro';
-const {
-	global,
-	image,
-	ratioDesktop,
-	ratioMobile,
-	loading,
-	class: className,
-} = Astro.props;
+const { global, image, loading, class: className } = Astro.props;
 const baseSize = 16;
 const gridBlockMobile =
 	global.gridBlockMobile / baseSize
@@ -17,30 +10,6 @@ const gridBlockDesktop =
 	global.gridBlockDesktop / baseSize
 		? global.gridBlockDesktop / baseSize + 'rem'
 		: '16px';
-
-const aspectMobile = ratioMobile.replace('/', ':');
-const aspectDesktop = ratioDesktop.replace('/', ':');
-
-const focusX = image.focusX;
-const focusY = image.focusY;
-
-let position = '';
-
-position += focusX < 33 ? 'left' : focusX > 66 ? 'right' : '';
-position +=
-	focusY < 33
-		? position
-			? ' top'
-			: 'top'
-		: focusY > 66
-		? position
-			? ' bottom'
-			: 'bottom'
-		: '';
-
-if (!position.trim()) {
-	position = 'center';
-}
 
 const fileCaption = image.filecaption;
 const fileToggle = image.filetoggle;
@@ -54,70 +23,20 @@ const captionAlign = image.captionalign;
 
 const pictureProps = {
 	src: image.url,
+	srcsetMobile: image.srcsetMobile,
+	srcset: image.srcset,
 	alt: image.alt,
-	position,
-	positionPreview: `${focusX}%  ${focusY}%`,
+	width: image.width,
+	height: image.height,
 	class: `${className} w-full object-cover`,
-	loading,
 };
 ---
 
 {
 	captionAlign === 'center' ? (
-		<div class="image-mobile lg:hidden">
-			<div class={`${fileOverlay === 'overlay' ? 'overlay' : null}`}>
-				<Picture
-					{...pictureProps}
-					widths={[335, 335 * 2]}
-					aspectRatio={aspectMobile}
-				/>
-				{fileToggle ? (
-					<div class="text-content absolute left-2/4 top-2/4 z-[1] w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
-						<Filelevel
-							set:html={fileCaption}
-							class:list={[
-								`caption font--${fileTextSize}`,
-								`text--${fileTextColor}`,
-								`text--${fileTextAlign}`,
-							]}
-						/>
-					</div>
-				) : null}
-			</div>
-		</div>
-	) : (
-		<div class="image-mobile lg:hidden">
-			<div class={`${fileOverlay === 'overlay' ? 'overlay' : null}`}>
-				<Picture
-					{...pictureProps}
-					widths={[335, 335 * 2]}
-					aspectRatio={aspectMobile}
-				/>
-			</div>
-			{fileToggle ? (
-				<div class={`text-content z-[1]`}>
-					<Filelevel
-						set:html={fileCaption}
-						class:list={[
-							`caption font--${fileTextSize}`,
-							`text--${fileTextColor}`,
-							`text--${fileTextAlign}`,
-						]}
-					/>
-				</div>
-			) : null}
-		</div>
-	)
-}
-{
-	captionAlign === 'center' ? (
-		<div class="image-desktop hidden lg:block">
+		<div>
 			<div class={`relative  ${fileOverlay === 'overlay' ? 'overlay' : null}`}>
-				<Picture
-					{...pictureProps}
-					widths={[430, 900, 1824]}
-					aspectRatio={aspectDesktop}
-				/>
+				<Picture {...pictureProps} />
 				{fileToggle ? (
 					<div class="text-content absolute left-2/4 top-2/4 z-[1] w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
 						<Filelevel
@@ -133,13 +52,9 @@ const pictureProps = {
 			</div>
 		</div>
 	) : (
-		<div class="image-desktop hidden lg:block">
+		<div>
 			<div class={`relative ${fileOverlay === 'overlay' ? 'overlay' : null}`}>
-				<Picture
-					{...pictureProps}
-					widths={[430, 900, 1824]}
-					aspectRatio={aspectDesktop}
-				/>
+				<Picture {...pictureProps} />
 			</div>
 			{fileToggle ? (
 				<div class="text-content z-[1]">

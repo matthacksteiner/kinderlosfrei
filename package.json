@@ -1,35 +1,30 @@
 {
-  "name": "baukasten",
-  "type": "module",
-  "version": "0.0.1",
-  "trustedDependencies": [
-    "sharp"
-  ],
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build:production": "PUBLIC_ENV=production astro build",
-    "build:preview": "PUBLIC_ENV=preview astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/image": "^0.13.1",
-    "@astrojs/netlify": "^2.2.2",
-    "@astrojs/sitemap": "^1.0.0",
-    "@astrojs/tailwind": "^3.0.0",
-    "astro": "^2.2.2",
-    "astro-icon": "^0.8.0",
-    "dotenv": "^16.3.1",
-    "sharp": "^0.31.3",
-    "swiper": "^9.2.3",
-    "tailwindcss": "^3.2.4",
-    "tailwindcss-delicious-hamburgers": "^1.0.3"
-  },
-  "devDependencies": {
-    "bun-types": "^1.0.1",
-    "prettier": "^2.8.3",
-    "prettier-plugin-astro": "^0.8.0",
-    "prettier-plugin-tailwindcss": "^0.2.2"
-  }
+	"name": "baukasten",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"start": "astro dev",
+		"build:production": "PUBLIC_ENV=production astro build",
+		"build:preview": "PUBLIC_ENV=preview astro build",
+		"preview": "astro preview",
+		"astro": "astro"
+	},
+	"dependencies": {
+		"@astrojs/netlify": "^3.0.4",
+		"@astrojs/sitemap": "^3.0.0",
+		"@astrojs/tailwind": "^5.0.0",
+		"astro": "^4.0.2",
+		"astro-icon": "^0.8.0",
+		"dotenv": "^16.3.1",
+		"swiper": "^9.2.3",
+		"tailwindcss": "^3.2.4",
+		"tailwindcss-delicious-hamburgers": "^1.0.3"
+	},
+	"devDependencies": {
+		"bun-types": "^1.0.1",
+		"prettier": "^2.8.3",
+		"prettier-plugin-astro": "^0.8.0",
+		"prettier-plugin-tailwindcss": "^0.2.2"
+	}
 }

@@ -8,22 +8,18 @@ const frontendUrl = data.frontendUrl.endsWith('/')
 	? data.frontendUrl
 	: data.frontendUrl + '/';
 import tailwind from '@astrojs/tailwind';
-import image from '@astrojs/image';
 import sitemap from '@astrojs/sitemap';
 import netlify from '@astrojs/netlify/functions';
 
 // https://astro.build/config
 export default defineConfig({
 	site: frontendUrl,
-	integrations: [
-		tailwind(),
-		image({
-			serviceEntryPoint: '@astrojs/image/sharp',
-		}),
-		sitemap(),
-	],
-	output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
-	adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
+	integrations: [tailwind(), sitemap()],
+	image: {
+		domains: ['cms.baukasten.matthiashacksteiner.net'],
+	},
+	// output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
+	// adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
 	// output: 'server',
 	// adapter: netlify(),
 });
