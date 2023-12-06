@@ -11,11 +11,13 @@ const { global, items, font, align, color, size, gap } = Astro.props;
 					items.map((item) => {
 						const link = item.link;
 						return (
-							<Link
-								global={global}
-								link={link}
-								class={`text font--${size} text--${color} text--${align} `}
-							/>
+							<li>
+								<Link
+									global={global}
+									link={link}
+									class={`text font--${size} text--${color} text--${align} `}
+								/>
+							</li>
 						);
 					})
 			}
