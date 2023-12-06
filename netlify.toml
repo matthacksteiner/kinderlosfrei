@@ -8,4 +8,4 @@
 
 [build.environment]
   NPM_FLAGS = "--force"
-  NODE_VERSION = "18"
+  NODE_VERSION = "21"
