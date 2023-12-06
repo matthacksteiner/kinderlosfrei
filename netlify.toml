@@ -5,3 +5,6 @@
 
 [build.processing.html]
   pretty_urls = false
+
+[build.environment]
+  NPM_FLAGS = "--force"
