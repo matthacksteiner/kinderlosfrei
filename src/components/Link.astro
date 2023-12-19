@@ -17,7 +17,11 @@ const currentLang = lang;
 			</a>
 		) : link.type === 'page' ? (
 			<a
-				href={link.hash ? `${currentLang ? `/${currentLang}/` : ''}${link.uri}#${link.hash}` : `${currentLang ? `/${currentLang}/` : ''}${link.uri}`}
+				href={
+					link.hash
+						? `${currentLang ? `/${currentLang}/` : ''}${link.uri}#${link.hash}`
+						: `${currentLang ? `/${currentLang}/` : ''}${link.uri}`
+				}
 				target={link.popup ? '_blank' : undefined}
 				rel={link.popup ? 'noopener' : undefined}
 				class={`${className}`}
@@ -36,7 +40,7 @@ const currentLang = lang;
 			</a>
 		) : link.type === 'email' ? (
 			<a
-				href={`mailto:${link.href}`}
+				href={`${link.href}`}
 				target="_blank"
 				rel="noopener"
 				class={`${className}`}
