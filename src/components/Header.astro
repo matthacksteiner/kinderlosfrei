@@ -41,7 +41,7 @@ const logoFile = global.logoFile;
 const currentLang = lang;
 const translations = global.translations;
 const path = Astro.url.pathname;
-const isHome = /^\/[a-zA-Z]{2}(\/)?$/.test(path) || path === '';
+const isHome = /^\/[a-zA-Z]{2}(\/)?$/.test(path) || path === '/';
 ---
 
 {
