@@ -16,10 +16,10 @@ export default defineConfig({
 	site: frontendUrl,
 	integrations: [tailwind(), sitemap()],
 	image: {
-		domains: ['cms.baukasten.matthiashacksteiner.net'],
+		domains: ['cms.baukasten.matthiashacksteiner.net', 'cms.baukasten.test'],
 	},
 	// output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
 	// adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
-	output: 'server',
-	adapter: netlify(),
+	// output: 'server',
+	// adapter: netlify(),
 });

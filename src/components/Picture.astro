@@ -1,23 +1,30 @@
 ---
 interface Props {
-	srcsetMobile: string;
-	srcset: string;
+	srcsetAvif: string;
+	srcsetMobileAvif: string;
+	srcsetWebp: string;
+	srcsetMobileWebp: string;
 	src: string;
 	alt: string;
+	class: string;
 	width: string;
 	height: string;
 }
 const {
 	src,
-	srcsetMobile,
-	srcset,
+	srcsetMobileAvif,
+	srcsetAvif,
+	srcsetMobileWebp,
+	srcsetWebp,
 	class: className,
 	...pictureProps
 } = Astro.props;
 ---
 
 <picture>
-	<source srcset={srcsetMobile} media="(max-width: 768px)" type="image/webp" />
-	<source srcset={srcset} media="(min-width: 769px)" type="image/webp" />
+	<source srcset={srcsetMobileAvif} media="(max-width: 768px)" type="image/avif" />
+	<source srcset={srcsetMobileWebp} media="(max-width: 768px)" type="image/webp" />
+	<source srcset={srcsetAvif} media="(min-width: 769px)" type="image/avif" />
+	<source srcset={srcsetWebp} media="(min-width: 769px)" type="image/webp" />
 	<img src={src} class={className} {...pictureProps} />
 </picture>
