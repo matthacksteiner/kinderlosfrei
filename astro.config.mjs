@@ -18,8 +18,8 @@ export default defineConfig({
 	image: {
 		domains: ['cms.baukasten.matthiashacksteiner.net', 'cms.baukasten.test'],
 	},
-	// output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
-	// adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
+	output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
+	adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
 	// output: 'server',
 	// adapter: netlify(),
 });

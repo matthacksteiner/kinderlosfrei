@@ -22,8 +22,16 @@ const {
 ---
 
 <picture>
-	<source srcset={srcsetMobileAvif} media="(max-width: 768px)" type="image/avif" />
-	<source srcset={srcsetMobileWebp} media="(max-width: 768px)" type="image/webp" />
+	<source
+		srcset={srcsetMobileAvif}
+		media="(max-width: 768px)"
+		type="image/avif"
+	/>
+	<source
+		srcset={srcsetMobileWebp}
+		media="(max-width: 768px)"
+		type="image/webp"
+	/>
 	<source srcset={srcsetAvif} media="(min-width: 769px)" type="image/avif" />
 	<source srcset={srcsetWebp} media="(min-width: 769px)" type="image/webp" />
 	<img src={src} class={className} {...pictureProps} />
