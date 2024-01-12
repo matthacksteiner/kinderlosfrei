@@ -1,6 +1,13 @@
 ---
 import Picture from '@components/Picture.astro';
-const { global, image, loading, class: className } = Astro.props;
+const {
+	global,
+	image,
+	ratioDesktop,
+	ratioMobile,
+	loading,
+	class: className,
+} = Astro.props;
 const baseSize = 16;
 const gridBlockMobile =
 	global.gridBlockMobile / baseSize
@@ -23,13 +30,15 @@ const captionAlign = image.captionalign;
 
 const pictureProps = {
 	src: image.url,
-	srcsetMobileAvif: image.srcsetMobileAvif,
-	srcsetAvif: image.srcsetAvif,
-	srcsetMobileWebp: image.srcsetMobileWebp,
-	srcsetWebp: image.srcsetWebp,
+	// srcsetMobileAvif: image.srcsetMobileAvif,
+	// srcsetAvif: image.srcsetAvif,
+	// srcsetMobileWebp: image.srcsetMobileWebp,
+	// srcsetWebp: image.srcsetWebp,
 	alt: image.alt,
 	width: image.width,
 	height: image.height,
+	ratioMobile: ratioMobile,
+	ratioDesktop: ratioDesktop,
 	loading: loading,
 	class: `${className} w-full object-cover`,
 };

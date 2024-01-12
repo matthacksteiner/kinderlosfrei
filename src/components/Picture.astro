@@ -1,27 +1,44 @@
 ---
+import { Cloudinary } from '@cloudinary/url-gen';
+
+const cld = new Cloudinary({
+	cloud: {
+		cloudName: import.meta.env.CLOUDINARY_CLOUD_NAME,
+	},
+});
+
+const { src, ...props } = Astro.props;
+
+// Remove unnecessary declarations and fix syntax errors
+let ratioMobile = props.ratioMobile
+	? props.ratioMobile.replace('/', ':')
+	: props.ratioMobile;
+let ratioDesktop = props.ratioDesktop
+	? props.ratioDesktop.replace('/', ':')
+	: props.ratioDesktop;
+
+let cldSrc = cld
+	.image(src)
+	.format('auto')
+	.delivery('q_auto')
+	// .resize(`c_crop,w_${props.width},h_${props.height}`);
+	.resize(`ar_${ratioDesktop},w_1840,c_crop`);
+
+if (src.startsWith('https://')) {
+	cldSrc.setDeliveryType('fetch');
+}
+
 interface Props {
-	srcsetAvif: string;
-	srcsetMobileAvif: string;
-	srcsetWebp: string;
-	srcsetMobileWebp: string;
 	src: string;
-	alt: string;
-	class: string;
 	width: string;
 	height: string;
+	alt: string;
+	ratioMobile: string;
+	ratioDesktop: string;
 }
-const {
-	src,
-	srcsetMobileAvif,
-	srcsetAvif,
-	srcsetMobileWebp,
-	srcsetWebp,
-	class: className,
-	...pictureProps
-} = Astro.props;
 ---
 
-<picture>
+<!-- <picture>
 	<source
 		srcset={srcsetMobileAvif}
 		media="(max-width: 768px)"
@@ -35,4 +52,5 @@ const {
 	<source srcset={srcsetAvif} media="(min-width: 769px)" type="image/avif" />
 	<source srcset={srcsetWebp} media="(min-width: 769px)" type="image/webp" />
 	<img src={src} class={className} {...pictureProps} />
-</picture>
+</picture> -->
+<img src={cldSrc.toURL()} loading="lazy" {...props} />
