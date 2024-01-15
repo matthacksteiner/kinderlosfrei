@@ -1,33 +1,15 @@
 ---
-import { Cloudinary } from '@cloudinary/url-gen';
-
-const cld = new Cloudinary({
-	cloud: {
-		cloudName: import.meta.env.CLOUDINARY_CLOUD_NAME,
-	},
-});
+const isNetlifyDev = process.env.NETLIFY_DEV === 'true';
+const baseUrl = isNetlifyDev
+	? 'http://localhost:8888'
+	: 'https://baukasten.netlify.app';
 
 const { src, ...props } = Astro.props;
+const ratioDesktop = eval(props.ratioDesktop);
+const ratioMobile = eval(props.ratioMobile);
 
-// Remove unnecessary declarations and fix syntax errors
-let ratioMobile = props.ratioMobile
-	? props.ratioMobile.replace('/', ':')
-	: props.ratioMobile;
-let ratioDesktop = props.ratioDesktop
-	? props.ratioDesktop.replace('/', ':')
-	: props.ratioDesktop;
-
-let cldSrc = cld
-	.image(src)
-	.format('auto')
-	.delivery('q_auto')
-	// .resize(`c_crop,w_${props.width},h_${props.height}`);
-	.resize(`ar_${ratioDesktop},w_1840,c_crop`);
-
-if (src.startsWith('https://')) {
-	cldSrc.setDeliveryType('fetch');
-}
-
+const imageWidthDesktop = 1840;
+const imageHeightDesktop = Math.round(imageWidthDesktop / ratioDesktop);
 interface Props {
 	src: string;
 	width: string;
@@ -38,19 +20,8 @@ interface Props {
 }
 ---
 
-<!-- <picture>
-	<source
-		srcset={srcsetMobileAvif}
-		media="(max-width: 768px)"
-		type="image/avif"
-	/>
-	<source
-		srcset={srcsetMobileWebp}
-		media="(max-width: 768px)"
-		type="image/webp"
-	/>
-	<source srcset={srcsetAvif} media="(min-width: 769px)" type="image/avif" />
-	<source srcset={srcsetWebp} media="(min-width: 769px)" type="image/webp" />
-	<img src={src} class={className} {...pictureProps} />
-</picture> -->
-<img src={cldSrc.toURL()} loading="lazy" {...props} />
+<img
+	src={`${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=webp`}
+	loading="lazy"
+	{...props}
+/>
