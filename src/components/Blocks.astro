@@ -13,7 +13,7 @@ import BlockIconList from '@blocks/BlockIconList.astro';
 import BlockMenu from '@blocks/BlockMenu.astro';
 import BlockColumns from '@blocks/BlockColumns.astro';
 import BlockGrid from '@blocks/BlockGrid.astro';
-const { blocks, global } = Astro.props;
+const { blocks, global, span } = Astro.props;
 const baseSize = 16;
 ---
 
@@ -145,6 +145,7 @@ const baseSize = 16;
 							toggle={block.content.toggle}
 							ratioMobile={block.content.ratiomobile}
 							ratioDesktop={block.content.ratio}
+							span={span}
 						/>
 					);
 				case 'slider':

@@ -8,10 +8,11 @@ const { src, ...props } = Astro.props;
 const ratioDesktop = eval(props.ratioDesktop);
 const ratioMobile = eval(props.ratioMobile);
 
-const imageWidthDesktop = 1840;
+const span = props.span;
+const imageWidthDesktop = Math.round((1840 / 12) * Number(span));
 const imageHeightDesktop = Math.round(imageWidthDesktop / ratioDesktop);
 
-const imageWidthMobile = 430;
+const imageWidthMobile = 335;
 const imageHeightMobile = Math.round(imageWidthMobile / ratioMobile);
 
 interface Props {
@@ -21,6 +22,7 @@ interface Props {
 	alt: string;
 	ratioMobile: string;
 	ratioDesktop: string;
+	span: string;
 	class: string;
 }
 ---
