@@ -28,7 +28,7 @@ const { columns, global, backgroundPadding } = Astro.props;
 
 				return (
 					<section key={index} class={colClass}>
-						<Blocks blocks={blocks} global={global} />
+						<Blocks blocks={blocks} global={global} span={span} />
 					</section>
 				);
 			})}

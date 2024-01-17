@@ -8,3 +8,10 @@
 
 [build.environment]
   NODE_VERSION = "21"
+
+[dev]
+  command = "astro dev"
+  targetPort = 4321
+
+[images]
+    remote_images = ["https://cms.baukasten.matthiashacksteiner.net/.*, http://cms.baukasten.test/.*"]

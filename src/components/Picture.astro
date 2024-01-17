@@ -1,38 +1,51 @@
 ---
+const isNetlifyDev = process.env.NETLIFY_DEV === 'true';
+const baseUrl = isNetlifyDev
+	? 'http://localhost:8888'
+	: 'https://baukasten.netlify.app';
+
+const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
+const ratioDesktop = eval(props.ratioDesktop);
+const ratioMobile = eval(props.ratioMobile);
+
+const span = props.span;
+const imageWidthDesktop = Math.round((1840 / 12) * Number(span));
+const imageHeightDesktop = Math.round(imageWidthDesktop / ratioDesktop);
+
+const imageWidthMobile = 335;
+const imageHeightMobile = Math.round(imageWidthMobile / ratioMobile);
+
 interface Props {
-	srcsetAvif: string;
-	srcsetMobileAvif: string;
-	srcsetWebp: string;
-	srcsetMobileWebp: string;
 	src: string;
-	alt: string;
-	class: string;
+	urlFocus: string;
+	urlFocusMobile: string;
 	width: string;
 	height: string;
+	alt: string;
+	ratioMobile: string;
+	ratioDesktop: string;
+	span: string;
+	positon: string;
+	class: string;
 }
-const {
-	src,
-	srcsetMobileAvif,
-	srcsetAvif,
-	srcsetMobileWebp,
-	srcsetWebp,
-	class: className,
-	...pictureProps
-} = Astro.props;
 ---
 
 <picture>
 	<source
-		srcset={srcsetMobileAvif}
+		srcset={`${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif} 1x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif} 2x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif} 3x`}
 		media="(max-width: 768px)"
 		type="image/avif"
 	/>
 	<source
-		srcset={srcsetMobileWebp}
-		media="(max-width: 768px)"
-		type="image/webp"
+		srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif}, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif} 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif} 3x`}
+		media="(min-width: 769px)"
+		type="image/avif"
 	/>
-	<source srcset={srcsetAvif} media="(min-width: 769px)" type="image/avif" />
-	<source srcset={srcsetWebp} media="(min-width: 769px)" type="image/webp" />
-	<img src={src} class={className} {...pictureProps} />
+	<img
+		src={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=jpg&q=80}`}
+		width={imageWidthDesktop}
+		height={imageHeightDesktop}
+		alt={props.alt}
+		class={props.class}
+	/>
 </picture>
