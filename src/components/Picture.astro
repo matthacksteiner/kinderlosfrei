@@ -1,9 +1,5 @@
 ---
-const isNetlifyDev = process.env.NETLIFY_DEV === 'true';
-const baseUrl = isNetlifyDev
-	? 'http://localhost:8888'
-	: 'https://baukasten.netlify.app';
-
+const baseUrl = 'https://baukasten.netlify.app';
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
 const ratioDesktop = eval(props.ratioDesktop);
 const ratioMobile = eval(props.ratioMobile);
