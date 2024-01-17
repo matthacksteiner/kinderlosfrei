@@ -19,7 +19,6 @@ export default defineConfig({
 		domains: [
 			'cms.baukasten.matthiashacksteiner.net',
 			'cms.baukasten.test',
-			'cloudinary.com',
 		],
 	},
 	output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
