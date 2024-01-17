@@ -8,8 +8,6 @@ const { src, ...props } = Astro.props;
 const ratioDesktop = eval(props.ratioDesktop);
 const ratioMobile = eval(props.ratioMobile);
 
-const positon = props.position;
-console.log("🚀 ~ positon:", positon)
 const span = props.span;
 const imageWidthDesktop = Math.round((1840 / 12) * Number(span));
 const imageHeightDesktop = Math.round(imageWidthDesktop / ratioDesktop);
@@ -32,17 +30,17 @@ interface Props {
 
 <picture>
 	<source
-		srcset={`${baseUrl}/.netlify/images?url=${src}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif&position=${positon} 1x, ${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif&position=${positon} 2x, ${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif&position=${positon} 3x`}
+		srcset={`${baseUrl}/.netlify/images?url=${src}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif} 1x, ${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif} 2x, ${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif} 3x`}
 		media="(max-width: 768px)"
 		type="image/avif"
 	/>
 	<source
-		srcset={`${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif&position=${positon}, ${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif&position=${positon} 2x, ${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif&position=${positon} 3x`}
+		srcset={`${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif}, ${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif} 2x, ${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif} 3x`}
 		media="(min-width: 769px)"
 		type="image/avif"
 	/>
 	<img
-		src={`${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=jpg&q=80&position=${positon}`}
+		src={`${baseUrl}/.netlify/images?url=${src}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=jpg&q=80}`}
 		width={imageWidthDesktop}
 		height={imageHeightDesktop}
 		alt={props.alt}

@@ -29,29 +29,6 @@ const fileTextAlign = image.filetextalign;
 const fileOverlay = image.fileoverlay;
 const captionAlign = image.captionalign;
 
-const focusX = image.focusX; // 0 - 100
-const focusY = image.focusY; // 0 - 100
-let position = '';
-
-// Calculate main position
-if (focusX < 30) {
-	position = 'left';
-} else if (focusX > 66) {
-	position = 'right';
-} else {
-	position = 'center';
-}
-
-if (focusY < 30) {
-	position = 'top';
-} else if (focusY > 60) {
-	position = 'bottom';
-} else if (focusY > focusX) {
-	position = 'top';
-} else {
-	position = 'center';
-}
-
 
 const pictureProps = {
 	src: image.url,
@@ -60,7 +37,6 @@ const pictureProps = {
 	ratioDesktop: ratioDesktop,
 	loading: loading,
 	span: span,
-	position: `${position}`,
 	class: `${className} w-full object-cover`,
 };
 ---

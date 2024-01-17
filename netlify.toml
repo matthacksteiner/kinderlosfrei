@@ -14,4 +14,4 @@
   targetPort = 4321
 
 [images]
-    remote_images = ["https://cms.baukasten.matthiashacksteiner.net/.*"]
+    remote_images = ["https://cms.baukasten.matthiashacksteiner.net/.*, http://cms.baukasten.test/.*"]
