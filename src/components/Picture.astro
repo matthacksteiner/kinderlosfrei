@@ -1,5 +1,11 @@
 ---
+// const isNetlifyDev = process.env.NETLIFY_DEV === 'true';
+// const baseUrl = isNetlifyDev
+// 	? 'http://localhost:8888'
+// 	: 'https://baukasten.netlify.app';
+
 const baseUrl = 'https://baukasten.netlify.app';
+
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
 const ratioDesktop = eval(props.ratioDesktop);
 const ratioMobile = eval(props.ratioMobile);
@@ -28,17 +34,17 @@ interface Props {
 
 <picture>
 	<source
-		srcset={`${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif} 1x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif} 2x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif} 3x`}
+		srcset={`${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 1x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 3x`}
 		media="(max-width: 768px)"
 		type="image/avif"
 	/>
 	<source
-		srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif}, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif} 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif} 3x`}
+		srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif 3x`}
 		media="(min-width: 769px)"
 		type="image/avif"
 	/>
 	<img
-		src={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=jpg&q=80}`}
+		src={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=jpg&q=80`}
 		width={imageWidthDesktop}
 		height={imageHeightDesktop}
 		alt={props.alt}
