@@ -7,6 +7,7 @@
 const baseUrl = 'https://baukasten.netlify.app';
 
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
+console.log('🚀 ~ props:', props);
 const ratioDesktop = eval(props.ratioDesktop);
 const ratioMobile = eval(props.ratioMobile);
 
@@ -29,6 +30,7 @@ interface Props {
 	span: string;
 	positon: string;
 	class: string;
+	loading: string;
 }
 ---
 
@@ -48,6 +50,7 @@ interface Props {
 		width={imageWidthDesktop}
 		height={imageHeightDesktop}
 		alt={props.alt}
+		loading={props.loading}
 		class={props.class}
 	/>
 </picture>
