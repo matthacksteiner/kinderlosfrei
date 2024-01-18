@@ -1,7 +1,15 @@
 ---
 import ImageComponent from '@components/ImageComponent.astro';
-const { global, image, link, toggle, ratioMobile, ratioDesktop, span } =
-	Astro.props;
+const {
+	global,
+	image,
+	link,
+	toggle,
+	ratioMobile,
+	ratioDesktop,
+	span,
+	backgroundContainer,
+} = Astro.props;
 ---
 
 <div class={`blocks blockImages`}>
@@ -20,6 +28,7 @@ const { global, image, link, toggle, ratioMobile, ratioDesktop, span } =
 							loading="lazy"
 							ratioMobile={ratioMobile}
 							ratioDesktop={ratioDesktop}
+							backgroundContainer={backgroundContainer}
 							span={span}
 						/>
 					</a>
@@ -31,6 +40,7 @@ const { global, image, link, toggle, ratioMobile, ratioDesktop, span } =
 							loading="lazy"
 							ratioMobile={ratioMobile}
 							ratioDesktop={ratioDesktop}
+							backgroundContainer={backgroundContainer}
 							span={span}
 						/>
 					</a>
@@ -43,6 +53,7 @@ const { global, image, link, toggle, ratioMobile, ratioDesktop, span } =
 						loading="lazy"
 						ratioMobile={ratioMobile}
 						ratioDesktop={ratioDesktop}
+						backgroundContainer={backgroundContainer}
 						span={span}
 					/>
 				</>

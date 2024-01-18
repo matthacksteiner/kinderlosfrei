@@ -13,7 +13,7 @@ import BlockIconList from '@blocks/BlockIconList.astro';
 import BlockMenu from '@blocks/BlockMenu.astro';
 import BlockColumns from '@blocks/BlockColumns.astro';
 import BlockGrid from '@blocks/BlockGrid.astro';
-const { blocks, global, span } = Astro.props;
+const { blocks, global, span, backgroundContainer } = Astro.props;
 const baseSize = 16;
 ---
 
@@ -146,6 +146,7 @@ const baseSize = 16;
 							ratioMobile={block.content.ratiomobile}
 							ratioDesktop={block.content.ratio}
 							span={span}
+							backgroundContainer={backgroundContainer}
 						/>
 					);
 				case 'slider':
@@ -168,7 +169,9 @@ const baseSize = 16;
 							viewDesktop={block.content.viewdesktop}
 							viewPaddingMobile={block.content.viewpaddingmobile}
 							viewPaddingDesktop={block.content.viewpaddingdesktop}
+							span={span}
 							global={global}
+							backgroundContainer={backgroundContainer}
 						/>
 					);
 				case 'divider':

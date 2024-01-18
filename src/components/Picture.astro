@@ -1,18 +1,25 @@
 ---
-// const isNetlifyDev = process.env.NETLIFY_DEV === 'true';
-// const baseUrl = isNetlifyDev
-// 	? 'http://localhost:8888'
-// 	: 'https://baukasten.netlify.app';
-
-const baseUrl = 'https://baukasten.netlify.app';
+const isNetlifyDev = process.env.NETLIFY_DEV === 'true';
+const baseUrl = isNetlifyDev
+	? 'http://localhost:8888'
+	: 'https://baukasten.netlify.app';
 
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
 const ratioDesktop = eval(props.ratioDesktop);
 const ratioMobile = eval(props.ratioMobile);
 
 const span = props.span;
-const imageWidthDesktop = Math.round((1840 / 12) * Number(span));
+const backgroundContainer = props.backgroundContainer;
+
+const imageWidthDesktop =
+	Math.round((backgroundContainer === 'container' ? 1840 : 2560) / 12) *
+	Number(span);
+const imageWidthDesktop1280 = Math.round(1280 / 12) * Number(span);
+const imageWidthDesktop1920 = Math.round(1840 / 12) * Number(span);
+
 const imageHeightDesktop = Math.round(imageWidthDesktop / ratioDesktop);
+const imageHeightDesktop1280 = Math.round(imageWidthDesktop1280 / ratioDesktop);
+const imageHeightDesktop1920 = Math.round(imageWidthDesktop1920 / ratioDesktop);
 
 const imageWidthMobile = 335;
 const imageHeightMobile = Math.round(imageWidthMobile / ratioMobile);
@@ -40,8 +47,19 @@ interface Props {
 		type="image/avif"
 	/>
 	<source
+		srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover&fm=avif, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover&fm=avif 3x`}
+		media="(min-width: 769px and max-width: 1280px)"
+		type="image/avif"
+	/>
+	<source
+		srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover&fm=avif, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover&fm=avif 3x`}
+		media="(min-width: 1281px and max-width: 1920px)"
+		type="image/avif"
+	/>
+
+	<source
 		srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif 3x`}
-		media="(min-width: 769px)"
+		media="(min-width: 1921px)"
 		type="image/avif"
 	/>
 	<img

@@ -18,6 +18,9 @@ const {
 	textcolor,
 	Level,
 	toggle,
+	ratioMobile,
+	ratioDesktop,
+	span
 } = Astro.props;
 const hasControl = (control) => controls && controls.includes(control);
 const arrows = hasControl('arrows');
@@ -57,6 +60,9 @@ const filetoggle = images.map((image) => image?.filetoggle);
 									image={image}
 									loading="eager"
 									class={`${full}`}
+									ratioMobile={ratioMobile}
+									ratioDesktop={ratioDesktop}
+									span={span}
 								/>
 							</div>
 						);

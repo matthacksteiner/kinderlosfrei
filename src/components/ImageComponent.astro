@@ -7,6 +7,7 @@ const {
 	ratioMobile,
 	loading,
 	span,
+	backgroundContainer,
 	class: className,
 } = Astro.props;
 const baseSize = 16;
@@ -29,7 +30,6 @@ const fileTextAlign = image.filetextalign;
 const fileOverlay = image.fileoverlay;
 const captionAlign = image.captionalign;
 
-
 const pictureProps = {
 	src: image.url,
 	urlFocus: image.urlFocus,
@@ -37,6 +37,7 @@ const pictureProps = {
 	alt: image.alt,
 	ratioMobile: ratioMobile,
 	ratioDesktop: ratioDesktop,
+	backgroundContainer: backgroundContainer,
 	loading: loading,
 	span: span,
 	class: `${className} w-full object-cover`,
