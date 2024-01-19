@@ -1,5 +1,4 @@
 [build]
-  # command = "npm run build:production"
   base = "/"
   publish = "dist"
 
@@ -12,6 +11,8 @@
 [dev]
   command = "astro dev"
   targetPort = 4321
+  autoLaunch = false
+
 
 [images]
-    remote_images = ["https://cms.baukasten.matthiashacksteiner.net/media/.*"]
+    remote_images = ["https://cms.baukasten.matthiashacksteiner.net/media/.*", "http://cms.baukasten.test/media/.*"]

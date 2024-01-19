@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
-
 const isNetlifyDev = import.meta.env.NETLIFY_DEV;
+const isProd = import.meta.env.MODE === 'production';
 const baseUrl = isNetlifyDev
 	? 'http://localhost:8888'
 	: 'https://baukasten.netlify.app';
@@ -13,32 +13,22 @@ const ratioMobile = eval(props.ratioMobile);
 const span = props.span;
 const backgroundContainer = props.backgroundContainer;
 
-const calculateImageWidth = (containerWidth) =>
+const imageWidth = (containerWidth) =>
 	Math.round(containerWidth / 12) * Number(span);
-const calculateImageHeight = (imageWidth, ratio) =>
-	Math.round(imageWidth / ratio);
+const imageHeight = (imageWidth, ratio) => Math.round(imageWidth / ratio);
 
-const imageWidthDesktop = calculateImageWidth(
+const imageWidthDesktop = imageWidth(
 	backgroundContainer === 'container' ? 1840 : 2560
 );
-const imageWidthDesktop1280 = calculateImageWidth(1280);
-const imageWidthDesktop1920 = calculateImageWidth(1840);
+const imageWidthDesktop1280 = imageWidth(1280);
+const imageWidthDesktop1920 = imageWidth(1840);
 
-const imageHeightDesktop = calculateImageHeight(
-	imageWidthDesktop,
-	ratioDesktop
-);
-const imageHeightDesktop1280 = calculateImageHeight(
-	imageWidthDesktop1280,
-	ratioDesktop
-);
-const imageHeightDesktop1920 = calculateImageHeight(
-	imageWidthDesktop1920,
-	ratioDesktop
-);
+const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktop);
+const imageHeightDesktop1280 = imageHeight(imageWidthDesktop1280, ratioDesktop);
+const imageHeightDesktop1920 = imageHeight(imageWidthDesktop1920, ratioDesktop);
 
 const imageWidthMobile = 335;
-const imageHeightMobile = calculateImageHeight(imageWidthMobile, ratioMobile);
+const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobile);
 
 interface Props {
 	src: string;
@@ -58,7 +48,7 @@ interface Props {
 ---
 
 {
-	import.meta.env.NETLIFY_DEV === 'true' ? (
+	isNetlifyDev || isProd ? (
 		<picture>
 			<source
 				srcset={`${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 1x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 3x`}
