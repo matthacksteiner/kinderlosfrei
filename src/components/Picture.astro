@@ -41,7 +41,7 @@ interface Props {
 ---
 
 {
-	import.meta.env.NETLIFY_DEV ? (
+	import.meta.env.NETLIFY_DEV === 'true' ? (
 		<picture>
 			<source
 				srcset={`${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 1x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 3x`}
