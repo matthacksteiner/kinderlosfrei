@@ -16,10 +16,7 @@ export default defineConfig({
 	site: frontendUrl,
 	integrations: [tailwind(), sitemap()],
 	image: {
-		domains: [
-			'cms.baukasten.matthiashacksteiner.net',
-			'cms.baukasten.test',
-		],
+		remotePatterns: [{ protocol: 'https' }],
 	},
 	output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
 	adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
