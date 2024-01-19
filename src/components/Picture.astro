@@ -1,9 +1,11 @@
 ---
 import { Image } from 'astro:assets';
+
 const isNetlifyDev = import.meta.env.NETLIFY_DEV;
 const baseUrl = isNetlifyDev
 	? 'http://localhost:8888'
 	: 'https://baukasten.netlify.app';
+
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
 const ratioDesktop = eval(props.ratioDesktop);
 const ratioMobile = eval(props.ratioMobile);
@@ -11,32 +13,46 @@ const ratioMobile = eval(props.ratioMobile);
 const span = props.span;
 const backgroundContainer = props.backgroundContainer;
 
-const imageWidthDesktop =
-	Math.round((backgroundContainer === 'container' ? 1840 : 2560) / 12) *
-	Number(span);
-const imageWidthDesktop1280 = Math.round(1280 / 12) * Number(span);
-const imageWidthDesktop1920 = Math.round(1840 / 12) * Number(span);
+const calculateImageWidth = (containerWidth) =>
+	Math.round(containerWidth / 12) * Number(span);
+const calculateImageHeight = (imageWidth, ratio) =>
+	Math.round(imageWidth / ratio);
 
-const imageHeightDesktop = Math.round(imageWidthDesktop / ratioDesktop);
-const imageHeightDesktop1280 = Math.round(imageWidthDesktop1280 / ratioDesktop);
-const imageHeightDesktop1920 = Math.round(imageWidthDesktop1920 / ratioDesktop);
+const imageWidthDesktop = calculateImageWidth(
+	backgroundContainer === 'container' ? 1840 : 2560
+);
+const imageWidthDesktop1280 = calculateImageWidth(1280);
+const imageWidthDesktop1920 = calculateImageWidth(1840);
+
+const imageHeightDesktop = calculateImageHeight(
+	imageWidthDesktop,
+	ratioDesktop
+);
+const imageHeightDesktop1280 = calculateImageHeight(
+	imageWidthDesktop1280,
+	ratioDesktop
+);
+const imageHeightDesktop1920 = calculateImageHeight(
+	imageWidthDesktop1920,
+	ratioDesktop
+);
 
 const imageWidthMobile = 335;
-const imageHeightMobile = Math.round(imageWidthMobile / ratioMobile);
+const imageHeightMobile = calculateImageHeight(imageWidthMobile, ratioMobile);
 
 interface Props {
 	src: string;
 	urlFocus: string;
 	urlFocusMobile: string;
-	width: string;
-	height: string;
+	width: number;
+	height: number;
 	alt: string;
 	ratioMobile: string;
 	ratioDesktop: string;
 	span: string;
 	positon: string;
 	class: string;
-	loading: string;
+	loading: 'eager' | 'lazy';
 	backgroundContainer: string;
 }
 ---
