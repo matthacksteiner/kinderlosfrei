@@ -52,25 +52,21 @@ interface Props {
 	isNetlifyDev || isProd ? (
 		<picture>
 			<source
-				srcset={`${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 1x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover&fm=avif 3x`}
+				srcset={`${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 1x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 3x`}
 				media="(max-width: 768px)"
-				type="image/avif"
 			/>
 			<source
-				srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover&fm=avif, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover&fm=avif 3x`}
+				srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover 3x`}
 				media="(min-width: 769px) and (max-width: 1280px)"
-				type="image/avif"
 			/>
 			<source
-				srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover&fm=avif, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover&fm=avif 3x`}
+				srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover 3x`}
 				media="(min-width: 1281px) and (max-width: 1920px)"
-				type="image/avif"
 			/>
 
 			<source
-				srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=avif 3x`}
+				srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover 3x`}
 				media="(min-width: 1921px)"
-				type="image/avif"
 			/>
 			<img
 				src={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=jpg&q=80`}
