@@ -1,11 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-const isNetlifyDev = import.meta.env.NETLIFY_DEV;
+const netlifyURL = import.meta.env.NETLIFY_URL;
 const isProd = import.meta.env.PROD;
 
-const baseUrl = isNetlifyDev
+const baseUrl = netlifyURL
 	? 'http://localhost:8888'
-	: 'https://baukasten.netlify.app';
+	: netlifyURL;
 
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
 const ratioDesktop = eval(props.ratioDesktop);
@@ -49,7 +49,7 @@ interface Props {
 ---
 
 {
-	isNetlifyDev || isProd ? (
+	netlifyURL || isProd ? (
 		<picture>
 			<source
 				srcset={`${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 1x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 3x`}
