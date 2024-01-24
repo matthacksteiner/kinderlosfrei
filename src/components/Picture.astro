@@ -3,9 +3,7 @@ import { Image } from 'astro:assets';
 const netlifyURL = import.meta.env.NETLIFY_URL;
 const isProd = import.meta.env.PROD;
 
-const baseUrl = netlifyURL
-	? 'http://localhost:8888'
-	: netlifyURL;
+const baseUrl = netlifyURL ? 'http://localhost:8888' : netlifyURL;
 
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
 const ratioDesktop = eval(props.ratioDesktop);
@@ -21,15 +19,15 @@ const imageHeight = (imageWidth, ratio) => Math.round(imageWidth / ratio);
 const imageWidthDesktop = imageWidth(
 	backgroundContainer === 'container' ? 1840 : 2560
 );
+
+const imageWidthMobile = 335;
+const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobile);
 const imageWidthDesktop1280 = imageWidth(1280);
 const imageWidthDesktop1920 = imageWidth(1840);
 
 const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktop);
 const imageHeightDesktop1280 = imageHeight(imageWidthDesktop1280, ratioDesktop);
 const imageHeightDesktop1920 = imageHeight(imageWidthDesktop1920, ratioDesktop);
-
-const imageWidthMobile = 335;
-const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobile);
 
 interface Props {
 	src: string;
