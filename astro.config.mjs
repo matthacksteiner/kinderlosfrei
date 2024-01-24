@@ -16,7 +16,7 @@ export default defineConfig({
 	site: frontendUrl,
 	integrations: [tailwind(), sitemap()],
 	image: {
-		remotePatterns: [{ protocol: 'https' }],
+		domains: [API_URL],
 	},
 	output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'static',
 	adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
