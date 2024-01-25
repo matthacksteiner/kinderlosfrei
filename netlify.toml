@@ -10,7 +10,7 @@ pretty_urls = false
 
 [dev]
 command = "astro dev"
-targetPort = 4_321
+targetPort = 4321
 autoLaunch = false
 
 [[plugins]]
