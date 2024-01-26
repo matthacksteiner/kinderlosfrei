@@ -25,7 +25,11 @@ const baseSize = 16;
 					return <BlockGrid grid={block} global={global} />;
 				case 'columns':
 					return (
-						<BlockColumns columns={block.content.columns} global={global} />
+						<BlockColumns
+							columns={block.content.columns}
+							global={global}
+							span={span}
+						/>
 					);
 				case 'video':
 					return (

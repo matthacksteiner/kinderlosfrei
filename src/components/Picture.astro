@@ -15,7 +15,9 @@ const ratioDesktop = eval(props.ratioDesktop);
 const ratioMobile = eval(props.ratioMobile);
 
 const span = props.span;
-const backgroundContainer = props.backgroundContainer;
+const backgroundContainer = props.backgroundContainer
+	? props.backgroundContainer
+	: 'container';
 
 const imageWidth = (containerWidth) =>
 	Math.round(containerWidth / 12) * Number(span);
