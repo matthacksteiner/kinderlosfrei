@@ -1,9 +1,5 @@
 ---
 import { Image } from 'astro:assets';
-const netlifyURL = import.meta.env.NETLIFY_URL;
-const baseUrl = netlifyURL ? 'http://localhost:8888' : netlifyURL;
-
-const netlifyDev = process.env.NETLIFY_DEV === 'true';
 const isProd = import.meta.env.PROD;
 
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
@@ -48,7 +44,7 @@ interface Props {
 ---
 
 {
-	netlifyDev || isProd ? (
+	isProd ? (
 		<picture>
 			<source
 				srcset={`${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 1x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 3x`}
