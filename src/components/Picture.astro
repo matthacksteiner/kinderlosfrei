@@ -1,10 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 const netlifyURL = import.meta.env.NETLIFY_URL;
+const baseUrl = netlifyURL ? 'http://localhost:8888' : netlifyURL;
+
 const netlifyDev = process.env.NETLIFY_DEV === 'true';
 const isProd = import.meta.env.PROD;
-
-const baseUrl = netlifyURL ? 'http://localhost:8888' : netlifyURL;
 
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
 const ratioDesktop = eval(props.ratioDesktop);
