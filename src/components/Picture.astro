@@ -11,8 +11,11 @@ const baseUrl = isProd
 	: netlifyUrl;
 
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
-const ratioDesktop = eval(props.ratioDesktop);
-const ratioMobile = eval(props.ratioMobile);
+
+const [numeratorMobile, denominatorMobile] = props.ratioMobile.split('/');
+const [numeratorDesktop, denominatorDesktop] = props.ratioDesktop.split('/');
+const ratioDesktop = Number(numeratorDesktop) / Number(denominatorDesktop);
+const ratioMobile = Number(numeratorMobile) / Number(denominatorMobile);
 
 const span = props.span;
 const backgroundContainer = props.backgroundContainer
