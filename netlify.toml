@@ -5,12 +5,12 @@ publish = "dist"
 [build.processing.html]
 pretty_urls = false
 
-  [build.environment]
-  NODE_VERSION = "21"
+[build.environment]
+NODE_VERSION = "21"
 
 [dev]
 command = "astro dev"
-targetPort = 4_321
+targetPort = 4321
 autoLaunch = false
 
 [[plugins]]
