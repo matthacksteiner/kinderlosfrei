@@ -11,9 +11,14 @@ const baseUrl = isProd
 	: netlifyUrl;
 
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
-
-const [numeratorMobile, denominatorMobile] = props.ratioMobile.split('/');
-const [numeratorDesktop, denominatorDesktop] = props.ratioDesktop.split('/');
+const [numeratorMobile, denominatorMobile] =
+	props.ratioMobile === 'original'
+		? [props.width, props.height]
+		: props.ratioMobile.split('/');
+const [numeratorDesktop, denominatorDesktop] =
+	props.ratioDesktop === 'original'
+		? [props.width, props.height]
+		: props.ratioDesktop.split('/');
 const ratioDesktop = Number(numeratorDesktop) / Number(denominatorDesktop);
 const ratioMobile = Number(numeratorMobile) / Number(denominatorMobile);
 
@@ -60,24 +65,50 @@ interface Props {
 	isProd || netlifyDev ? (
 		<picture>
 			<source
-				srcset={`${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 1x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${urlFocusMobile}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 3x`}
+				srcset={`${baseUrl}/.netlify/images?url=${
+					props.ratioMobile === 'original' ? src : urlFocusMobile
+				}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 1x, ${baseUrl}/.netlify/images?url=${
+					props.ratioMobile === 'original' ? src : urlFocusMobile
+				}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${
+					props.ratioMobile === 'original' ? src : urlFocusMobile
+				}&w=${imageWidthMobile}&h=${imageHeightMobile}&fit=cover 3x`}
 				media="(max-width: 768px)"
 			/>
 			<source
-				srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover 3x`}
+				srcset={`${baseUrl}/.netlify/images?url=${
+					props.ratioDesktop === 'original' ? src : urlFocus
+				}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover, ${baseUrl}/.netlify/images?url=${
+					props.ratioDesktop === 'original' ? src : urlFocus
+				}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${
+					props.ratioDesktop === 'original' ? src : urlFocus
+				}&w=${imageWidthDesktop1280}&h=${imageHeightDesktop1280}&fit=cover 3x`}
 				media="(min-width: 769px) and (max-width: 1280px)"
 			/>
 			<source
-				srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover 3x`}
+				srcset={`${baseUrl}/.netlify/images?url=${
+					props.ratioDesktop === 'original' ? src : urlFocus
+				}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover, ${baseUrl}/.netlify/images?url=${
+					props.ratioDesktop === 'original' ? src : urlFocus
+				}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${
+					props.ratioDesktop === 'original' ? src : urlFocus
+				}&w=${imageWidthDesktop1920}&h=${imageHeightDesktop1920}&fit=cover 3x`}
 				media="(min-width: 1281px) and (max-width: 1920px)"
 			/>
 
 			<source
-				srcset={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover 3x`}
+				srcset={`${baseUrl}/.netlify/images?url=${
+					props.ratioDesktop === 'original' ? src : urlFocus
+				}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover, ${baseUrl}/.netlify/images?url=${
+					props.ratioDesktop === 'original' ? src : urlFocus
+				}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${
+					props.ratioDesktop === 'original' ? src : urlFocus
+				}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover 3x`}
 				media="(min-width: 1921px)"
 			/>
 			<img
-				src={`${baseUrl}/.netlify/images?url=${urlFocus}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=jpg&q=80`}
+				src={`${baseUrl}/.netlify/images?url=${
+					props.ratioDesktop === 'original' ? src : urlFocus
+				}&w=${imageWidthDesktop}&h=${imageHeightDesktop}&fit=cover&fm=jpg&q=80`}
 				width={imageWidthDesktop}
 				height={imageHeightDesktop}
 				alt={props.alt}
@@ -88,15 +119,15 @@ interface Props {
 	) : (
 		<>
 			<Image
-				src={urlFocusMobile}
+				src={props.ratioMobile === 'original' ? src : urlFocusMobile}
+				{...props}
 				width={imageWidthMobile}
 				height={imageHeightMobile}
-				{...props}
 				class={`lg:hidden ${props.class}`}
 			/>
 
 			<Image
-				src={urlFocus}
+				src={props.ratioDesktop === 'original' ? src : urlFocus}
 				width={imageWidthDesktop}
 				height={imageHeightDesktop}
 				{...props}
