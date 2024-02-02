@@ -13,6 +13,7 @@ import BlockIconList from '@blocks/BlockIconList.astro';
 import BlockMenu from '@blocks/BlockMenu.astro';
 import BlockColumns from '@blocks/BlockColumns.astro';
 import BlockGrid from '@blocks/BlockGrid.astro';
+import BlockCode from '@blocks/BlockCode.astro';
 const { blocks, global, span, backgroundContainer } = Astro.props;
 const baseSize = 16;
 ---
@@ -31,6 +32,8 @@ const baseSize = 16;
 							span={span}
 						/>
 					);
+				case 'code':
+					return <BlockCode code={block.content.code} />;
 				case 'video':
 					return (
 						<BlockVideo

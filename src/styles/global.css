@@ -91,20 +91,19 @@ section {
 }
 
 .text--leftCenter {
-	@apply text-left mx-auto;
+	@apply mx-auto text-left;
 }
 
-
 .text--center {
-	@apply text-center mx-auto;
+	@apply mx-auto text-center;
 }
 
 .text--right {
-	@apply text-right ml-auto;
+	@apply ml-auto text-right;
 }
 
 .text--rightCenter {
-	@apply text-right mx-auto;
+	@apply mx-auto text-right;
 }
 
 .align-vert--start {
