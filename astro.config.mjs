@@ -20,26 +20,32 @@ import netlify from '@astrojs/netlify/functions';
 // https://astro.build/config
 export default defineConfig({
 	site: frontendUrl,
-	i18n: {
-		defaultLocale: defaultLanguage,
-		locales: [defaultLanguage, ...translations],
-		routing: {
-			prefixDefaultLocale: true,
-		},
-	},
+	i18n:
+		translations && translations.length > 0
+			? {
+					defaultLocale: defaultLanguage,
+					locales: [defaultLanguage, ...translations],
+					routing: {
+						prefixDefaultLocale: true,
+					},
+			  }
+			: undefined,
 	integrations: [
 		tailwind(),
 		sitemap({
-			i18n: {
-				defaultLocale: defaultLanguage,
-				locales: {
-					[defaultLanguage]: defaultLanguageLocale,
-					...translations.reduce((acc, lang, index) => {
-						acc[lang] = translationsLocales[index];
-						return acc;
-					}, {}),
-				},
-			},
+			i18n:
+				translations && translations.length > 0
+					? {
+							defaultLocale: defaultLanguage,
+							locales: {
+								[defaultLanguage]: defaultLanguageLocale,
+								...translations.reduce((acc, lang, index) => {
+									acc[lang] = translationsLocales[index];
+									return acc;
+								}, {}),
+							},
+					  }
+					: undefined,
 		}),
 	],
 	image: {

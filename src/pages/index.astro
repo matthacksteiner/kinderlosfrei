@@ -1,13 +1,6 @@
 ---
 import { getData, getGlobal, getLanguages } from '@lib/api.js';
 const languages = await getLanguages();
-const translations = languages.translations;
-const defaultLanguage = languages.defaultLang.code;
-
-// if (translations.length > 0) {
-// 	return Astro.redirect('/' + defaultLanguage + '/');
-// }
-
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 const data = await getData(`/home.json`);
@@ -15,11 +8,6 @@ const global = await getGlobal();
 const pageTitle = data.title;
 ---
 
-<!-- {
-	translations.length > 0 && (
-		<meta http-equiv="refresh" content={`0;url=/${defaultLanguage}`} />
-	)
-} -->
 <BaseLayout pageTitle={pageTitle} data={data} global={global}>
 	<Layouts layouts={data.layouts} data={data} global={global} />
 </BaseLayout>
