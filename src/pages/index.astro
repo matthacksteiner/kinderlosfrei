@@ -1,6 +1,5 @@
 ---
-import { getData, getGlobal, getLanguages } from '@lib/api.js';
-const languages = await getLanguages();
+import { getData, getGlobal } from '@lib/api.js';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 const data = await getData(`/home.json`);
