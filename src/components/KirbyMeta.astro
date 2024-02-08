@@ -5,7 +5,7 @@ const frontendURL = global.frontendUrl;
 const siteURL = global.siteUrl;
 let canonicalFrontend = data.meta.canonical.replace(siteURL, frontendURL);
 canonicalFrontend = canonicalFrontend.replace(/\/$/, '');
-const separators = data.meta.separators;
+const separators = data.meta.separators || '|';
 const siteTitle = global.siteTitle;
 const orgOrPerson = data.meta.org || data.meta.person;
 ---
