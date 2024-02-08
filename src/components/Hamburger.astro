@@ -9,14 +9,21 @@ const hamburgerFontColor = global.hamburgerFontColor;
 const hamburgerMenuColor = global.hamburgerMenuColor;
 const hamburgerMenuColorActive = global.hamburgerMenuColorActive;
 const hamburgerOverlay = global.hamburgerOverlay;
-
 const logoAlign = global.logoAlign;
+const path = Astro.url.pathname;
+const currentLang = Astro.currentLocale;
+const isHome =
+	path === '/' || path === `/${currentLang}` || path === `/${currentLang}/`;
 ---
 
 {
 	global.navHamburger ? (
 		<button
-			class={`c-hamburger c-hamburger--chop hamburgerColor--${hamburgerMenuColor} hamburgerColorActive--${hamburgerMenuColorActive} relative z-20 flex-grow ${
+			class={`${
+				isHome
+					? `hamburgerColor--${hamburgerMenuColor} hamburgerColorActive--${hamburgerMenuColorActive}`
+					: `hamburgerColor--${hamburgerMenuColorActive} hamburgerColorActive--${hamburgerMenuColorActive}`
+			} c-hamburger c-hamburger--chop relative z-20 flex-grow  ${
 				logoAlign === 'left' ? 'lg:hidden' : ''
 			}`}
 			aria-label="hamburger-button"

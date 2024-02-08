@@ -5,7 +5,6 @@ import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import KirbyMeta from '@components/KirbyMeta.astro';
 import { getFonts, getSizes } from '@lib/api.js';
-import { ViewTransitions } from 'astro:transitions';
 
 const { data, global, pageTitle } = Astro.props;
 const fonts = getFonts();
@@ -93,7 +92,6 @@ const searchConsoleCode = global.searchConsoleCode;
 				<meta name="google-site-verification" content={searchConsoleCode} />
 			)
 		}
-		<ViewTransitions />
 	</head>
 	<body
 		class="mx-auto items-center overflow-x-hidden selection:bg-secondary selection:text-white"
