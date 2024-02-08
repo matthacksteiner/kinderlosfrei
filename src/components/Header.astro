@@ -41,7 +41,7 @@ const logoFile = global.logoFile;
 const currentLang = lang;
 const translations = global.translations;
 const path = Astro.url.pathname;
-const isHome = path === '/' || path === `/${currentLang}`;
+const isHome = path === '/' || path === `/${currentLang}` || path === `/${currentLang}/`;
 ---
 
 {
