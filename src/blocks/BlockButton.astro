@@ -2,17 +2,17 @@
 import Link from '@components/Link.astro';
 const { link, global, align } = Astro.props;
 const baseSize = 16;
-const font = global.buttonFont;
+const buttonFont = global.buttonFont;
 const size = global.buttonFontSize;
-const padding = global.buttonPadding / baseSize + 'rem';
+const buttonPadding = global.buttonPadding / baseSize + 'rem';
 const bg = global.buttonBackgroundColor;
 const bgActive = global.buttonBackgroundColorActive;
 const color = global.buttonTextColor;
 const colorActive = global.buttonTextColorActive;
-const borderColor = global.buttonBorderColor;
-const borderColorActive = global.buttonBorderColorActive;
-const borderWidth = global.buttonBorderWidth / baseSize + 'rem';
-const borderRadius =
+const buttonBorderColor = global.buttonBorderColor;
+const buttonBorderColorActive = global.buttonBorderColorActive;
+const buttonBorderWidth = global.buttonBorderWidth / baseSize + 'rem';
+const buttonBorderRadius =
 	link.title && link.title.length === 1
 		? '50%'
 		: global.buttonBorderRadius / baseSize + 'rem';
@@ -21,7 +21,7 @@ const borderRadius =
 <div class="blockButton blocks flex flex-col">
 	<Link
 		link={link}
-		class={`button inline-block font--${size} text--${color} textActive--${colorActive} bg--${bg} bgActive--${bgActive} borderActive--${borderColorActive} ${
+		class={`button inline-block font--${size} buttonText--${color} buttonTextActive--${colorActive} buttonBg--${bg} buttonBgActive--${bgActive} buttonBorderActive--${buttonBorderColorActive} ${
 			align === 'start' || align === 'normal'
 				? 'mr-auto'
 				: align === 'center'
@@ -34,76 +34,102 @@ const borderRadius =
 <style
 	lang="css"
 	is:global
-	define:vars={{ font, padding, borderRadius, borderWidth, borderColor }}
+	define:vars={{
+		buttonFont,
+		buttonPadding,
+		buttonBorderRadius,
+		buttonBorderWidth,
+		buttonBorderColor,
+	}}
 >
 	.button {
-		@apply rounded-[var(--borderRadius)] border-[length:var(--borderWidth)] border-[color:var(--borderColor)];
-		padding: var(--padding) calc(var(--padding) * 2);
-		font-family: var(--font);
+		@apply rounded-[var(--buttonBorderRadius)] border-[length:var(--buttonBorderWidth)] border-[color:var(--borderColor)];
+		padding: var(--buttonPadding) calc(var(--buttonPadding) * 2);
+		font-family: var(--buttonFont);
 	}
 
-	.textActive--primary {
+	.buttonText--primary {
+		@apply text-primary;
+	}
+
+	.buttonText--secondary {
+		@apply text-secondary;
+	}
+
+	.buttonText--tertiary {
+		@apply text-tertiary;
+	}
+	.buttonText--black {
+		@apply text-black;
+	}
+	.buttonText--white {
+		@apply text-white;
+	}
+	.buttonText--transparent {
+		@apply text-transparent;
+	}
+	.buttonText--primary {
 		@apply hover:text-primary;
 	}
 
-	.textActive--secondary {
+	.buttonTextActive--secondary {
 		@apply hover:text-secondary;
 	}
 
-	.textActive--tertiary {
+	.buttonTextActive--tertiary {
 		@apply hover:text-tertiary;
 	}
-	.textActive--black {
+	.buttonTextActive--black {
 		@apply hover:text-black;
 	}
-	.textActive--white {
+	.buttonTextActive--white {
 		@apply hover:text-white;
 	}
-	.textActive--transparent {
+	.buttonTextActive--transparent {
 		@apply hover:text-transparent;
 	}
 
-	.bgActive--primary {
+	.buttonBgActive--primary {
 		@apply hover:bg-primary;
 	}
 
-	.bgActive--secondary {
+	.buttonBgActive--secondary {
 		@apply hover:bg-secondary;
 	}
 
-	.bgActive--tertiary {
+	.buttonBgActive--tertiary {
 		@apply hover:bg-tertiary;
 	}
 
-	.bgActive--black {
+	.buttonBgActive--black {
 		@apply hover:bg-black;
 	}
 
-	.bgActive--white {
+	.buttonBgActive--white {
 		@apply hover:bg-white;
 	}
 
-	.borderActive--primary {
+	.buttonBorderActive--primary {
 		@apply hover:border-primary;
 	}
 
-	.borderActive--secondary {
+	.buttonBorderActive--secondary {
 		@apply hover:border-secondary;
 	}
 
-	.borderActive--tertiary {
+	.buttonBorderActive--tertiary {
 		@apply hover:border-tertiary;
 	}
 
-	.borderActive--black {
+	.buttonBorderActive--black {
 		@apply hover:border-black;
 	}
 
-	.borderActive--white {
+	.buttonBorderActive--white {
 		@apply hover:border-white;
 	}
 
-	.borderActive--transparent {
+	.buttonBorderActive--transparent {
 		@apply hover:border-transparent;
 	}
 </style>
