@@ -5,7 +5,7 @@ import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import KirbyMeta from '@components/KirbyMeta.astro';
 import { getFonts, getSizes } from '@lib/api.js';
-import CookieConsent from '../components/CookieConsent.astro';
+import CookieConsent from '@components/CookieConsent.astro';
 
 const { data, global, pageTitle } = Astro.props;
 const fonts = getFonts();
@@ -56,6 +56,9 @@ const png512Src = global.favicon.png512Src;
 
 const searchConsoleToggle = global.searchConsoleToggle;
 const searchConsoleCode = global.searchConsoleCode;
+
+const googleAnalyticsToggle = global.googleAnalyticsToggle;
+const googleAnalyticsCode = global.googleAnalyticsCode;
 ---
 
 <!DOCTYPE html>
@@ -182,6 +185,14 @@ const searchConsoleCode = global.searchConsoleCode;
 				.querySelector('#manifestPlaceholder')
 				.setAttribute('href', manifestURL);
 		</script>
-			<CookieConsent />
+
+		{
+			googleAnalyticsToggle && (
+				<CookieConsent
+					googleAnalyticsToggle={googleAnalyticsToggle}
+					googleAnalyticsCode={googleAnalyticsCode}
+				/>
+			)
+		}
 	</body>
 </html>
