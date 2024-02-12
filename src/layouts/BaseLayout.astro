@@ -5,6 +5,7 @@ import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import KirbyMeta from '@components/KirbyMeta.astro';
 import { getFonts, getSizes } from '@lib/api.js';
+import CookieConsent from '../components/CookieConsent.astro';
 
 const { data, global, pageTitle } = Astro.props;
 const fonts = getFonts();
@@ -181,5 +182,6 @@ const searchConsoleCode = global.searchConsoleCode;
 				.querySelector('#manifestPlaceholder')
 				.setAttribute('href', manifestURL);
 		</script>
+			<CookieConsent />
 	</body>
 </html>
