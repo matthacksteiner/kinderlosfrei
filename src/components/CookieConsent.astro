@@ -55,7 +55,7 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 								gtag('config', code);
 							},
 							onReject: () => {
-								console.log('ga4 rejected');
+								window['ga-disable-' + code] = true;
 							},
 							cookies: [
 								{
