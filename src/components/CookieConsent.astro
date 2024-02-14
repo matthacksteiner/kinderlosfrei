@@ -1,5 +1,6 @@
 ---
 import 'vanilla-cookieconsent/dist/cookieconsent.css';
+import { Icon } from 'astro-icon';
 const { googleAnalyticsToggle, googleAnalyticsCode } = Astro.props;
 const toggle = googleAnalyticsToggle ? 'true' : 'false';
 ---
@@ -9,7 +10,15 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 	type="button"
 	data-cc="show-preferencesModal"
 	data-toggle={toggle}
-	data-code={googleAnalyticsCode}></button>
+	data-code={googleAnalyticsCode}
+	class="transition-all duration-300 ease-in-out"
+>
+	<Icon
+		name="cookie"
+		alt="Cookie Icon"
+		class="transition-all duration-300 ease-in-out"
+	/>
+</button>
 
 <script>
 	import { run } from 'vanilla-cookieconsent';
@@ -67,19 +76,19 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 				},
 			},
 			language: {
-				default: 'de',
+				default: 'en',
 				autoDetect: 'document',
 				translations: {
 					de: {
 						consentModal: {
 							title: 'Diese Seite verwendet Cookies!',
 							description:
-								'Wir verwenden Cookies, um Inhalte und Anzeigen zu personalisieren, Funktionen für soziale Medien anbieten zu können und die Zugriffe auf unserer Website zu analysieren. Außerdem geben wir Informationen zu Ihrer Verwendung unserer Website an unsere Partner für soziale Medien, Werbung und Analysen weiter.',
+								'Diese Website verwendet Cookies, einschließlich Google Analytics, um die Nutzung zu analysieren und Ihre Erfahrung zu verbessern.',
 							acceptAllBtn: 'Alle Cookies akzeptieren',
 							acceptNecessaryBtn: 'Alle Cookies ablehnen',
 							showPreferencesBtn: 'Cookie Einstellungen anzeigen',
 							footer:
-								'<a href="#link">Privacy Policy</a>\n<a href="#link">Terms and conditions</a>',
+								'<a href="/de/datenschutz">Datenschutzerklärung</a>\n<a href="/de/impressum">Impressum</a>',
 						},
 						preferencesModal: {
 							title: 'Cookie Einstellungen',
@@ -92,25 +101,20 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 								{
 									title: 'Cookie Verwendung',
 									description:
-										'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+										'Wir verwenden Cookies, um sicherzustellen, dass wir Ihnen die beste Erfahrung auf unserer Website bieten können. Durch die Nutzung unserer Website stimmen Sie der Verwendung von Cookies gemäß unserer Datenschutzrichtlinie zu. Diese Cookies umfassen auch solche von Google Analytics, um anonyme Informationen über die Nutzung unserer Website zu sammeln und zu analysieren. Sie können Ihre Cookie-Einstellungen jederzeit ändern.',
 								},
 								{
 									title:
 										'Technisch notwendige Cookies <span class="pm__badge">Immer aktiv</span>',
 									description:
-										'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+										'Diese Website verwendet technisch notwendige Cookies, um grundlegende Funktionen zu ermöglichen und die Sicherheit der Website zu gewährleisten.',
 									linkedCategory: 'necessary',
 								},
 								{
 									title: 'Analytics Cookies',
 									description:
-										'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+										'Diese Website verwendet Analytics-Cookies, um anonyme Informationen über die Nutzung der Website zu sammeln und die Benutzererfahrung zu verbessern.',
 									linkedCategory: 'analytics',
-								},
-								{
-									title: 'Mehr Informationen',
-									description:
-										'For any query in relation to my policy on cookies and your choices, please <a class="cc__link" href="#yourdomain.com">contact me</a>.',
 								},
 							],
 						},
@@ -119,43 +123,38 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 						consentModal: {
 							title: 'This page uses Cookies!',
 							description:
-								'Wir verwenden Cookies, um Inhalte und Anzeigen zu personalisieren, Funktionen für soziale Medien anbieten zu können und die Zugriffe auf unserer Website zu analysieren. Außerdem geben wir Informationen zu Ihrer Verwendung unserer Website an unsere Partner für soziale Medien, Werbung und Analysen weiter.',
-							acceptAllBtn: 'Alle Cookies akzeptieren',
-							acceptNecessaryBtn: 'Alle Cookies ablehnen',
-							showPreferencesBtn: 'Cookie Einstellungen anzeigen',
+								'This website uses cookies, including Google Analytics, to analyze usage and improve your experience.',
+							acceptAllBtn: 'Accept all cookies',
+							acceptNecessaryBtn: 'Reject all cookies',
+							showPreferencesBtn: 'Show cookie settings',
 							footer:
-								'<a href="#link">Privacy Policy</a>\n<a href="#link">Terms and conditions</a>',
+								'<a href="/en/data-protection">Data protection</a>\n<a href="/en/imprint">Imprint</a>',
 						},
 						preferencesModal: {
-							title: 'Cookie Einstellungen',
-							acceptAllBtn: 'Alle Cookies akzeptieren',
-							acceptNecessaryBtn: 'Alle Cookies ablehnen',
-							savePreferencesBtn: 'Einstellungen speichern',
-							closeIconLabel: 'Dialog schließen',
+							title: 'Cookie settings',
+							acceptAllBtn: 'Accept all cookies',
+							acceptNecessaryBtn: 'Reject all cookies',
+							savePreferencesBtn: 'Save settings',
+							closeIconLabel: 'Close dialogue',
 							serviceCounterLabel: 'Service|Services',
 							sections: [
 								{
-									title: 'Cookie Verwendung',
+									title: 'Cookie Usage',
 									description:
-										'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+										'We use cookies to ensure that we can provide you with the best experience on our website. By using our website, you agree to the use of cookies in accordance with our privacy policy. These cookies also include those from Google Analytics to collect and analyze anonymous information about the use of our website. You can change your cookie settings at any time.',
 								},
 								{
 									title:
-										'Technisch notwendige Cookies <span class="pm__badge">Immer aktiv</span>',
+										'Technically Necessary Cookies <span class="pm__badge">Always active</span>',
 									description:
-										'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+										'This website uses technically necessary cookies to enable basic functions and ensure the security of the website.',
 									linkedCategory: 'necessary',
 								},
 								{
 									title: 'Analytics Cookies',
 									description:
-										'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+										'This website uses analytics cookies to collect anonymous information about the usage of the website and to improve the user experience.',
 									linkedCategory: 'analytics',
-								},
-								{
-									title: 'Mehr Informationen',
-									description:
-										'For any query in relation to my policy on cookies and your choices, please <a class="cc__link" href="#yourdomain.com">contact me</a>.',
 								},
 							],
 						},
@@ -168,12 +167,12 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 
 <style>
 	#cookieButton {
-		position: fixed;
-		bottom: 20px;
-		left: 20px;
-		border-radius: 50%;
-		width: 50px;
-		height: 50px;
-		background-color: #000;
+		@apply fixed bottom-5 left-5 z-50 grid h-12 w-12 place-items-center rounded-[50%] bg-black opacity-50;
+	}
+	#cookieButton:hover {
+		@apply opacity-100;
+	}
+	#cookieButton svg {
+		@apply h-8 w-8 text-white;
 	}
 </style>
