@@ -12,6 +12,7 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 	data-toggle={toggle}
 	data-code={googleAnalyticsCode}
 	class="transition-all duration-300 ease-in-out"
+	aria-label="Cookie Preferences"
 >
 	<Icon
 		name="cookie"
@@ -21,9 +22,16 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 </button>
 
 <script>
+	declare global {
+		interface Window {
+			dataLayer: any[];
+		}
+	}
 	import { run } from 'vanilla-cookieconsent';
-	let toggle = document.querySelector('#cookieButton')?.dataset.toggle;
-	let code = document.querySelector('#cookieButton')?.dataset.code;
+	let toggle = (document.querySelector('#cookieButton') as HTMLButtonElement)
+		?.dataset.toggle;
+	let code = (document.querySelector('#cookieButton') as HTMLButtonElement)
+		?.dataset.code;
 	if (toggle === 'true') {
 		run({
 			guiOptions: {
@@ -65,6 +73,22 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 							},
 							onReject: () => {
 								window['ga-disable-' + code] = true;
+								const gaCookies = [
+									/^_ga/,
+								];
+								gaCookies.forEach((pattern) => {
+									document.cookie.split(';').forEach((cookie) => {
+										const eqPos = cookie.indexOf('=');
+										const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+										if (pattern.test(name)) {
+											document.cookie =
+												name +
+												'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=' +
+												location.hostname;
+										}
+									});
+								});
+
 							},
 							cookies: [
 								{

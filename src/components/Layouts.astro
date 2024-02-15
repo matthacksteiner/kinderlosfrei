@@ -295,7 +295,7 @@ const { global, layouts } = Astro.props;
 	if (arrowButton) {
 		arrowButton.addEventListener('click', () => {
 			const currentColumns = arrowButton.closest('.columns');
-			const nextColumns = currentColumns.nextElementSibling as HTMLElement;
+			const nextColumns = currentColumns?.nextElementSibling as HTMLElement;
 			let distanceToScroll;
 			if (nextColumns && nextColumns.classList.contains('columns')) {
 				const headerHeight = header?.offsetHeight || 0;
