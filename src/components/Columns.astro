@@ -27,7 +27,7 @@ const { columns, global, backgroundPadding, backgroundContainer } = Astro.props;
 				${blocks.length > 0 ? 'col-span-6' : 'hidden lg:block'} `;
 
 				return (
-					<section key={index} class={colClass}>
+					<section data-key={index} class={colClass}>
 						<Blocks
 							blocks={blocks}
 							global={global}

@@ -23,11 +23,11 @@ const orgOrPerson = data.meta.org || data.meta.person;
 
 {
 	Object.entries(socialMeta).map(([key, value]) => (
-		<meta
-			property={key === 'og:url' ? 'og:url' : key}
-			content={key === 'og:url' ? canonicalFrontend : value.toString()}
-		/>
-	))
+  <meta
+    property={key === 'og:url' ? 'og:url' : key}
+    content={key === 'og:url' ? canonicalFrontend : (value as string).toString()}
+  />
+))
 }
 
 <script define:vars={{ orgOrPerson }}>

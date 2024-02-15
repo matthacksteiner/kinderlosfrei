@@ -119,17 +119,17 @@ const isHome =
 	const body = document.querySelector('body');
 
 	hamburger?.addEventListener('click', () => {
-		menu.classList.toggle('expanded');
-		hamburger.classList.toggle('active');
-		body.style.overflowY =
-			body.style.overflowY === 'hidden' ? 'auto' : 'hidden';
+		menu?.classList.toggle('expanded');
+		hamburger?.classList.toggle('active');
+		body && (body.style.overflowY =
+			body && body.style.overflowY === 'hidden' ? 'auto' : 'hidden');
 	});
 
 	navLinks.forEach((link) => {
 		link.addEventListener('click', () => {
-			menu.classList.remove('expanded');
-			hamburger.classList.remove('active');
-			body.style.overflowY = 'auto';
+			menu?.classList.remove('expanded');
+			hamburger?.classList.remove('active');
+			body && (body.style.overflowY = body.style.overflowY === 'hidden' ? 'auto' : 'hidden');
 		});
 	});
 </script>
