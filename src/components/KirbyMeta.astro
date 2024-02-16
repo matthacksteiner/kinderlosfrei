@@ -1,6 +1,7 @@
 ---
 const { data, global, pageTitle } = Astro.props;
 const socialMeta = data.meta.social;
+const kirbyUrl = global.kirbyUrl;
 const frontendURL = global.frontendUrl;
 const siteURL = global.siteUrl;
 let canonicalFrontend = data.meta.canonical.replace(siteURL, frontendURL);
@@ -20,15 +21,17 @@ const orgOrPerson = data.meta.org || data.meta.person;
 <meta name="description" content={data.meta.description} />
 <meta name="robots" content={data.meta.robots} />
 <meta name="canonical" content={canonicalFrontend} />
-
 {
 	Object.entries(socialMeta).map(([key, value]) => (
-  <meta
-    property={key === 'og:url' ? 'og:url' : key}
-    content={key === 'og:url' ? canonicalFrontend : (value as string).toString()}
-  />
-))
+		<meta
+			property={key === 'og:url' ? 'og:url' : key}
+			content={
+				key === 'og:url' ? canonicalFrontend : (value as string).toString()
+			}
+		/>
+	))
 }
+<link rel="sitemap" href={kirbyUrl + '/sitemap.xml'} />
 
 <script define:vars={{ orgOrPerson }}>
 	if (!orgOrPerson) return;

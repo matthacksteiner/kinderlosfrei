@@ -14,7 +14,6 @@ const frontendUrl = data.frontendUrl.endsWith('/')
 	? data.frontendUrl
 	: data.frontendUrl + '/';
 import tailwind from '@astrojs/tailwind';
-import sitemap from '@astrojs/sitemap';
 import netlify from '@astrojs/netlify/functions';
 
 // https://astro.build/config
@@ -30,24 +29,7 @@ export default defineConfig({
 					},
 			  }
 			: undefined,
-	integrations: [
-		tailwind(),
-		sitemap({
-			i18n:
-				translations && translations.length > 0
-					? {
-							defaultLocale: defaultLanguage,
-							locales: {
-								[defaultLanguage]: defaultLanguageLocale,
-								...translations.reduce((acc, lang, index) => {
-									acc[lang] = translationsLocales[index];
-									return acc;
-								}, {}),
-							},
-					  }
-					: undefined,
-		}),
-	],
+	integrations: [tailwind()],
 	image: {
 		domains: [API_URL],
 	},
