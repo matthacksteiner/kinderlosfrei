@@ -4,7 +4,7 @@ const robotsTxt = `
 User-agent: *
 Allow: /
 
-Sitemap: ${new URL('sitemap.xml', import.meta.env.SITE).href}
+Sitemap: ${new URL('sitemap.xml', import.meta.env.KIRBY_URL).href}
 `.trim();
 
 export const GET: APIRoute = () => {
