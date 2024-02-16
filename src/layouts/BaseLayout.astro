@@ -180,9 +180,8 @@ const googleAnalyticsCode = global.googleAnalyticsCode;
 			const stringManifest = JSON.stringify(myDynamicManifest);
 			const blob = new Blob([stringManifest], { type: 'application/json' });
 			const manifestURL = URL.createObjectURL(blob);
-			document
-				.querySelector('#manifestPlaceholder')
-				.setAttribute('href', manifestURL);
+			const doc = document.querySelector('#manifestPlaceholder');
+			doc?.setAttribute('href', manifestURL);
 		</script>
 
 		{
