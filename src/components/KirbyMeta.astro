@@ -6,6 +6,7 @@ const frontendURL = global.frontendUrl;
 const siteURL = global.siteUrl;
 let canonicalFrontend = data.meta.canonical.replace(siteURL, frontendURL);
 canonicalFrontend = canonicalFrontend.replace(/\/$/, '');
+const canonicalUrl = new URL(Astro.url.pathname, canonicalFrontend);
 const separators = data.meta.separators || '|';
 const siteTitle = global.siteTitle;
 const orgOrPerson = data.meta.org || data.meta.person;
@@ -20,7 +21,7 @@ const orgOrPerson = data.meta.org || data.meta.person;
 </title>
 <meta name="description" content={data.meta.description} />
 <meta name="robots" content={data.meta.robots} />
-<meta name="canonical" content={canonicalFrontend} />
+<link rel="canonical" href={canonicalUrl} />
 {
 	Object.entries(socialMeta).map(([key, value]) => (
 		<meta
