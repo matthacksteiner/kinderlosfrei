@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import ImageComponent from '@components/ImageComponent.astro';
 
 const {
@@ -49,7 +50,7 @@ const filetoggle = images.map((image) => image?.filetoggle);
 					if (isSvg) {
 						return (
 							<div class={`swiper-slide ${overlay}`}>
-								<img src={image.url} width={image.width} height={image.height} alt={image.alt} class={`${full} w-full`} />
+								<Image src={image.url} width={image.width} height={image.height} alt={image.alt} class={`${full} w-full`} />
 							</div>
 						);
 					} else {
@@ -80,7 +81,7 @@ const filetoggle = images.map((image) => image?.filetoggle);
 		}
 		{
 			(dots || line) && (
-				<div class={`swiper-pagination swiper-pagination--${color}`} />
+				<div class={`swiper-pagination swiper-pagination--${color} `} />
 			)
 		}
 		<div
@@ -129,24 +130,25 @@ const filetoggle = images.map((image) => image?.filetoggle);
 			if (time) {
 				const swiperSlider = blockSlider.querySelector(
 					'.swiperSlider'
-				) as HTMLElement;
+				);
 				const swiper = new Swiper(swiperSlider, {
 					autoplay: {
 						delay: parseInt(time),
 					},
+					centeredSlidesBounds: true,
 					slidesPerView: parseInt(viewMobile),
 					spaceBetween: parseInt(viewPaddingMobile),
 					loop: true,
 					navigation: {
 						nextEl: blockSlider.querySelector(
 							'.swiper-button-next'
-						) as HTMLElement,
+						),
 						prevEl: blockSlider.querySelector(
 							'.swiper-button-prev'
-						) as HTMLElement,
+						),
 					},
 					pagination: {
-						el: blockSlider.querySelector('.swiper-pagination') as HTMLElement,
+						el: blockSlider.querySelector('.swiper-pagination'),
 						type: line ? 'progressbar' : 'bullets',
 						clickable: true,
 					},

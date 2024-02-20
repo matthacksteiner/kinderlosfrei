@@ -1,8 +1,9 @@
 ---
+import { Image } from 'astro:assets';
 const { image, widthMobile, widthDesktop } = Astro.props;
 ---
 
-<img
+<Image
 	src={image.url}
 	alt={image.alt}
 	width={image.width}
