@@ -49,7 +49,7 @@ const filetoggle = images.map((image) => image?.filetoggle);
 					if (isSvg) {
 						return (
 							<div class={`swiper-slide ${overlay}`}>
-								<img src={image.url} alt={image.alt} class={`${full}`} />
+								<img src={image.url} width={image.width} height={image.height} alt={image.alt} class={`${full} w-full`} />
 							</div>
 						);
 					} else {

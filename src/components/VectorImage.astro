@@ -1,10 +1,12 @@
 ---
-let { image, widthMobile, widthDesktop } = Astro.props;
+const { image, widthMobile, widthDesktop } = Astro.props;
 ---
 
 <img
 	src={image.url}
 	alt={image.alt}
+	width={image.width}
+	height={image.height}
 	class={`widthMobile--${widthMobile || '100'} widthDesktop--${
 		widthDesktop || '100'
 	}`}
