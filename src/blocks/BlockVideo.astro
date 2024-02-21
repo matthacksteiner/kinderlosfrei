@@ -70,7 +70,7 @@ const vimeoPlayer = isVimeo
 				)
 			) : (
 				<video
-					src={file.url}
+					preload="none"
 					muted={muted || autoplay}
 					autoplay={autoplay}
 					loop={loop}
@@ -78,7 +78,9 @@ const vimeoPlayer = isVimeo
 					playsinline={autoplay}
 					poster={thumb}
 					class={`${full} ${cursor} w-full`}
-				/>
+				>
+					<source data-src={file.url} type="video/mp4" />
+				</video>
 			)
 		}
 		<div
@@ -122,4 +124,33 @@ const vimeoPlayer = isVimeo
 			});
 		});
 	}
+	document.addEventListener('DOMContentLoaded', function () {
+		let lazyVideos = [].slice.call(document.querySelectorAll('video'));
+
+		if ('IntersectionObserver' in window) {
+			let lazyVideoObserver = new IntersectionObserver(function (entries) {
+				entries.forEach(function (video) {
+					if (video.isIntersecting) {
+						for (let source in video.target.children) {
+							let videoSource = video.target.children[source];
+							if (
+								typeof videoSource.tagName === 'string' &&
+								videoSource.tagName === 'SOURCE'
+							) {
+								videoSource.src = videoSource.dataset.src;
+							}
+						}
+
+						video.target.load();
+						video.target.classList.remove('lazy');
+						lazyVideoObserver.unobserve(video.target);
+					}
+				});
+			});
+
+			lazyVideos.forEach(function (lazyVideo) {
+				lazyVideoObserver.observe(lazyVideo);
+			});
+		}
+	});
 </script>
