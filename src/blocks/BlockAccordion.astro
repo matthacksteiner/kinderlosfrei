@@ -64,7 +64,7 @@ const {
 			let panel = this.nextElementSibling as HTMLElement;
 
 			if (panel?.style.maxHeight) {
-				panel.style.maxHeight = null;
+				panel.style.maxHeight = '';
 			} else {
 				panel.style.maxHeight = panel.scrollHeight + padding + 'px';
 			}
@@ -76,7 +76,7 @@ const {
 			el.classList.remove('active');
 			const nextSibling = el.nextElementSibling;
 			if (nextSibling instanceof HTMLElement) {
-				nextSibling.style.maxHeight = null;
+				nextSibling.style.maxHeight = '';
 			}
 		}
 	}
