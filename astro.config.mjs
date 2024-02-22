@@ -31,5 +31,6 @@ export default defineConfig({
 		domains: [API_URL],
 	},
 	output: process.env.PUBLIC_ENV === 'preview' ? 'server' : 'hybrid',
-	adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
+	// adapter: process.env.PUBLIC_ENV === 'preview' ? netlify() : undefined,
+	adapter: netlify(),
 });
