@@ -1,5 +1,5 @@
 [build]
-#command = "astro build"
+b#command = "astro build"
 base = "/"
 publish = "dist"
 
@@ -20,8 +20,8 @@ package = "./plugins/netlify-import-env"
 [images]
 remote_images = [ "https://cms.baukasten.matthiashacksteiner.net/media/.*" ]
 
-[[redirects]]
-  from = "/"
-  to = "/de"
-  status = 301
-  force = true
+# [[redirects]]
+#   from = "/"
+#   to = "/de"
+#   status = 302
+#   conditions = {Language = ["de"]}
