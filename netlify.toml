@@ -23,5 +23,5 @@ remote_images = [ "https://cms.baukasten.matthiashacksteiner.net/media/.*" ]
 [[redirects]]
   from = "/"
   to = "/de"
-  status = 302
-  conditions = {Language = ["de"]}
+  status = 301
+  force = true
