@@ -59,18 +59,29 @@ export async function getFonts() {
       font-display: swap;
     }`;
 	}
-	return `${global.font
-		.map((item) => {
-			return `@font-face {
-        font-family: '${item.name}';
-        src: url('${item.url2}') format('woff2'),
-             url('${item.url1}') format('woff');
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-      }`;
-		})
-		.join('')}`;
+
+	// Fetch font data and convert it to Base64
+	const fontPromises = global.font.map(async (item) => {
+		const response = await fetch(item.url1);
+		const fontBinaryData = await response.blob();
+		const encodedFontData = btoa(
+			new Uint8Array(await fontBinaryData.arrayBuffer()).reduce(
+				(data, byte) => data + String.fromCharCode(byte),
+				''
+			)
+		);
+
+		return `@font-face {
+          font-family: '${item.name}';
+          src: url(data:font/woff2;base64,${encodedFontData}) format('woff2'),
+               url('${item.url1}') format('woff');
+          font-weight: normal;
+          font-style: normal;
+          font-display: swap;
+        }`;
+	});
+
+	return (await Promise.all(fontPromises)).join('');
 }
 
 // export all font sizes
