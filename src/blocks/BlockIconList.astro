@@ -4,7 +4,7 @@ const { items, font, color, size, align, iconSize, iconGap, iconListGap } =
 ---
 
 <div class="blockIconlist blocks">
-	<ul class="list flex flex-col">
+	<ul class="list flex flex-col" style={`row-gap: ${iconGap}`}>
 		{
 			items.map((item) => (
 				<li>
@@ -13,9 +13,14 @@ const { items, font, color, size, align, iconSize, iconGap, iconListGap } =
 						target="_blank"
 						rel="noopener"
 						class="link flex items-end"
+						style={`row-gap: ${iconListGap}px;`}
 					>
 						{item.icon && (
-							<div set:html={item.icon.source} class={`icon text--${color}`} />
+							<div
+								set:html={item.icon.source}
+								class={`icon text--${color}`}
+								style={`height: ${iconSize}px; width: ${iconSize}px;`}
+							/>
 						)}
 						<span class={`text font--${size} text--${color} text--${align}`}>
 							{item.text}
@@ -27,30 +32,8 @@ const { items, font, color, size, align, iconSize, iconGap, iconListGap } =
 	</ul>
 </div>
 
-<style
-	set:html={`
-	:root {
-		--iconSize: ${iconSize}px;
-		--iconGap: ${iconGap}px;
-        --iconListGap: ${iconListGap}px;
-	}
-  `}
-></style>
-
 <style lang="css" define:vars={font}>
 	.blockIconlist {
 		font-family: var(--font);
-	}
-
-	.list {
-		@apply gap-y-[var(--iconGap)];
-	}
-
-	.link {
-		@apply gap-x-[var(--iconListGap)];
-	}
-
-	.icon {
-		@apply h-[var(--iconSize)] w-[var(--iconSize)];
 	}
 </style>
