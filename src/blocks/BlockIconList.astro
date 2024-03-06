@@ -12,7 +12,7 @@ const { items, font, color, size, align, iconSize, iconGap, iconListGap } =
 						href={item.url}
 						target="_blank"
 						rel="noopener"
-						class="link flex items-end"
+						class="link flex"
 						style={`column-gap: ${iconListGap}px;`}
 					>
 						{item.icon && (
@@ -35,5 +35,10 @@ const { items, font, color, size, align, iconSize, iconGap, iconListGap } =
 <style lang="css" define:vars={font}>
 	.blockIconlist {
 		font-family: var(--font);
+	}
+	.link,
+	.icon,
+	.text {
+		@apply flex items-center;
 	}
 </style>
