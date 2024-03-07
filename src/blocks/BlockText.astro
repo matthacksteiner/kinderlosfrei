@@ -87,12 +87,15 @@ const {
 
 	kirbyText.forEach((el) => {
 		const headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+		el.innerHTML = el.innerHTML.replace(/CO2/g, 'CO<sub>2</sub>');
 		headings.forEach((heading) => {
 			const size = el.dataset[`${heading}size`];
-			const headingEl = el.querySelector(heading);
-			if (headingEl) {
-				headingEl.classList.add(`font--${size}`);
-			}
+			const headingEls = el.querySelectorAll(heading);
+			headingEls.forEach((headingEl) => {
+				if (headingEl) {
+					headingEl.classList.add(`font--${size}`);
+				}
+			});
 		});
 	});
 
