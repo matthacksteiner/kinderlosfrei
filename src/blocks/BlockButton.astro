@@ -1,6 +1,6 @@
 ---
 import Link from '@components/Link.astro';
-const { link, global, align } = Astro.props;
+const { link, global, align, className } = Astro.props;
 const baseSize = 16;
 const buttonFont = global.buttonFont;
 const size = global.buttonFontSize;
@@ -18,7 +18,7 @@ const buttonBorderRadius =
 		: global.buttonBorderRadius / baseSize + 'rem';
 ---
 
-<div class="blockButton blocks flex flex-col">
+<div class={`blockButton blocks flex flex-col ${className}`}>
 	<Link
 		link={link}
 		class={`button inline-block font--${size} buttonText--${color} buttonTextActive--${colorActive} buttonBg--${bg} buttonBgActive--${bgActive} buttonBorderActive--${buttonBorderColorActive} ${

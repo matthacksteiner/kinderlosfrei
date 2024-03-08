@@ -56,7 +56,11 @@ const isHome =
 		>
 			<div class="container flex items-center justify-between">
 				{logoAlign === 'center' ? (
-					<Button link={logoCta} global={global} />
+					<Button
+						link={logoCta}
+						global={global}
+						className={'hidden md:block'}
+					/>
 				) : null}
 				<div id="logo" class={`relative z-20 max-md:py-4`}>
 					<a
