@@ -90,7 +90,6 @@ export async function getSizes() {
 	const global = await getGlobal();
 	return `${global.fontSize
 		.map((item) => {
-			console.log(item);
 			return `
       .font--${item.name} {
         font-size: ${item.sizeMobile / baseFontSize}rem;
