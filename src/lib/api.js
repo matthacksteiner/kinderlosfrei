@@ -90,15 +90,23 @@ export async function getSizes() {
 	const global = await getGlobal();
 	return `${global.fontSize
 		.map((item) => {
+			console.log(item);
 			return `
       .font--${item.name} {
         font-size: ${item.sizeMobile / baseFontSize}rem;
         line-height: ${item.lineHeightMobile / item.sizeMobile};
-      }
-      @media (min-width: 768px) {
-        .font--${item.name} {
-          font-size: ${item.sizeDesktop / baseFontSize}rem;
-          line-height: ${item.lineHeightDesktop / item.sizeDesktop};
+		letter-spacing: ${item.letterSpacingMobile / item.sizeMobile}em;
+		text-transform: ${item.transform};
+		text-decoration: ${item.decoration};
+	}
+	@media (min-width: 768px) {
+		.font--${item.name} {
+			font-size: ${item.sizeDesktop / baseFontSize}rem;
+			line-height: ${item.lineHeightDesktop / item.sizeDesktop};
+			letter-spacing: ${item.letterSpacingDesktop / item.sizeDesktop}em;
+			text-transform: ${item.transform};
+			text-decoration: ${item.decoration};
+
         }
       }`;
 		})
