@@ -4,6 +4,7 @@ const { slug } = Astro.params;
 const currentPath = slug ? slug : '';
 const currentLang = data.lang;
 const translations = global.translations;
+const logoAlign = global.logoAlign;
 ---
 
 {
@@ -29,9 +30,9 @@ const translations = global.translations;
 					href={href}
 					target={target}
 					rel={rel}
-					class={`nav-link max-lg:mb-8 lg:mr-16 2xl:mr-24 ${
-						isActive ? 'active' : ''
-					} ${isLast ? 'last:mr-0' : ''}`}
+					class={`nav-link max-lg:mb-8 ${
+						logoAlign === 'center' ? 'lg:my-2' : 'lg:mr-16 2xl:mr-24'
+					} ${isActive ? 'active' : ''} ${isLast ? 'last:mr-0' : ''}`}
 				>
 					{item.title}
 				</a>
