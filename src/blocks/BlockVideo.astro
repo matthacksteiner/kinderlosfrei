@@ -53,7 +53,7 @@ const vimeoPlayer = isVimeo
 					/>
 				) : isVimeo ? (
 					<iframe
-						src={`${vimeoPlayer}?autoplay=${autoplay ? 1 : 0}&loop=${
+						src={`${vimeoPlayer}?dnt=1?autoplay=${autoplay ? 1 : 0}&loop=${
 							loop ? 1 : 0
 						}&muted=${muted || autoplay ? 1 : 0}&controls=${controls ? 1 : 0}`}
 						frameborder="0"
