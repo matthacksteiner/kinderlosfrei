@@ -38,10 +38,10 @@ const imageWidthDesktop = imageWidth(
 );
 const imageWidthMobile = 390;
 const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobile);
-
-const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktop);
 const imageWidthDesktop1280 = imageWidth(1280);
 const imageWidthDesktop1920 = imageWidth(1840);
+
+const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktop);
 const imageHeightDesktop1280 = imageHeight(imageWidthDesktop1280, ratioDesktop);
 const imageHeightDesktop1920 = imageHeight(imageWidthDesktop1920, ratioDesktop);
 
@@ -62,7 +62,13 @@ interface Props {
 }
 
 const generateSrcSet = (source, width, height) => {
-	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover 1x, ${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover 2x, ${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover 3x`;
+	const srcSetValues = [1, 2, 3].map((value) => {
+		const multipliedWidth = width * value;
+		const multipliedHeight = height * value;
+		return `${baseUrl}/.netlify/images?url=${source}&w=${multipliedWidth}&h=${multipliedHeight}&fit=cover ${value}x`;
+	});
+
+	return srcSetValues.join(', ');
 };
 
 const generateImgSrc = (source, width, height) => {
