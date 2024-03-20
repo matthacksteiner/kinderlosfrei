@@ -8,7 +8,6 @@ import { getFonts, getSizes } from '@lib/api.js';
 import CookieConsent from '@components/CookieConsent.astro';
 
 const { data, global, pageTitle } = Astro.props;
-const API_URL = import.meta.env.KIRBY_URL;
 const fonts = getFonts();
 const sizes = getSizes();
 const lang = data.lang;
@@ -91,7 +90,6 @@ const googleAnalyticsCode = global.googleAnalyticsCode;
 		<style set:html={fonts}></style>
 		<style set:html={sizes}></style>
 		<link rel="sitemap" href="/sitemap-index.xml" />
-		<!-- <link rel="sitemap" href={API_URL + '/sitemap.xml'} /> -->
 		{
 			searchConsoleToggle && (
 				<meta name="google-site-verification" content={searchConsoleCode} />
