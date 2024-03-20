@@ -8,6 +8,7 @@ const {
 	controls,
 	color,
 	time,
+	effect,
 	viewMobile,
 	viewDesktop,
 	viewPaddingMobile,
@@ -36,6 +37,7 @@ const filetoggle = images.map((image) => image?.filetoggle);
 	class="blockSlider blocks"
 	data-controls={controls}
 	data-time={time}
+	data-effect={effect}
 	data-viewmobile={viewMobile}
 	data-viewdesktop={viewDesktop}
 	data-viewpaddingmobile={viewPaddingMobile}
@@ -49,7 +51,7 @@ const filetoggle = images.map((image) => image?.filetoggle);
 					const toggle = image?.filetoggle;
 					if (isSvg) {
 						return (
-							<div class={`swiper-slide ${overlay}`}>
+							<div class={`swiper-slide ${overlay} absolute`}>
 								<Image src={image.url} width={image.width} height={image.height} alt={image.alt} class={`${full} w-full`} />
 							</div>
 						);
@@ -104,9 +106,10 @@ const filetoggle = images.map((image) => image?.filetoggle);
 </section>
 
 <script>
-	import Swiper, { Navigation, Autoplay, Pagination } from 'swiper';
+	import Swiper, { Navigation, Autoplay, Pagination, EffectFade } from 'swiper';
 	import 'swiper/css/bundle';
-	Swiper.use([Navigation, Autoplay, Pagination]);
+	import 'swiper/css/effect-fade';
+	Swiper.use([Navigation, Autoplay, Pagination, EffectFade]);
 
 	const blockSliders = document.querySelectorAll('.blockSlider');
 
@@ -115,6 +118,7 @@ const filetoggle = images.map((image) => image?.filetoggle);
 			const controls = blockSlider?.dataset.controls;
 			const line = controls?.includes('line');
 			const time = blockSlider?.dataset.time;
+			const effect = blockSlider?.dataset.effect;
 			const viewMobile = blockSlider?.dataset.viewmobile
 				? blockSlider.dataset.viewmobile
 				: '1';
@@ -136,8 +140,10 @@ const filetoggle = images.map((image) => image?.filetoggle);
 						delay: parseInt(time),
 					},
 					centeredSlidesBounds: true,
+					loop: true,
 					slidesPerView: parseInt(viewMobile),
 					spaceBetween: parseInt(viewPaddingMobile),
+					effect: effect === 'fade' ? 'fade' : 'slide',
 					navigation: {
 						nextEl: blockSlider.querySelector(
 							'.swiper-button-next'
