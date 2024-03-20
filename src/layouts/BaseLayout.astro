@@ -90,7 +90,8 @@ const googleAnalyticsCode = global.googleAnalyticsCode;
 		<meta name="theme-color" content={`${colorPrimary}`} />
 		<style set:html={fonts}></style>
 		<style set:html={sizes}></style>
-		<link rel="sitemap" href={API_URL + '/sitemap.xml'} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		<!-- <link rel="sitemap" href={API_URL + '/sitemap.xml'} /> -->
 		{
 			searchConsoleToggle && (
 				<meta name="google-site-verification" content={searchConsoleCode} />
