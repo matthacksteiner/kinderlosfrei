@@ -2,12 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-section {
-	@apply relative;
+@layer base {
+	::selection {
+		@apply bg-primary text-white;
+	}
 }
 
-::selection {
-	@apply bg-secondary text-primary;
+section {
+	@apply relative;
 }
 
 .h-screenHalf {
