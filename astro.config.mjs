@@ -3,13 +3,13 @@ dotenv.config();
 import { defineConfig } from 'astro/config';
 const API_URL = process.env.KIRBY_URL;
 const response = await fetch(API_URL + '/global.json');
-const data = await response.json();
-const defaultLanguage = data.defaultLang.code;
-const translations = data.translations.map((lang) => lang.code);
-
-const frontendUrl = data.frontendUrl.endsWith('/')
-	? data.frontendUrl
-	: data.frontendUrl + '/';
+const global = await response.json();
+const defaultLanguage = global.defaultLang.code;
+const translations = global.translations.map((lang) => lang.code);
+const prefixDefaultLocale = global.prefixDefaultLocale;
+const frontendUrl = global.frontendUrl.endsWith('/')
+	? global.frontendUrl
+	: global.frontendUrl + '/';
 import tailwind from '@astrojs/tailwind';
 import netlify from '@astrojs/netlify/functions';
 
@@ -22,7 +22,7 @@ export default defineConfig({
 					defaultLocale: defaultLanguage,
 					locales: [defaultLanguage, ...translations],
 					routing: {
-						prefixDefaultLocale: true,
+						prefixDefaultLocale: prefixDefaultLocale,
 					},
 			  }
 			: undefined,

@@ -7,6 +7,7 @@ const translations = global.translations;
 const currentLang = lang;
 const headerFont = global.headerFont;
 const headerFontSize = global.headerFontSize;
+const prefixDefaultLocale = global.prefixDefaultLocale;
 ---
 
 {
@@ -21,7 +22,13 @@ const headerFontSize = global.headerFontSize;
 					const lang = language.code;
 					return (
 						<li>
-							<a href={`/${lang}`}>{language.code}</a>
+							{prefixDefaultLocale && lang === defaultLang.code ? (
+								<a href="/">{language.code}</a>
+							) : (
+								<a href={`/${lang === defaultLang.code ? '' : lang}`}>
+									{language.code}
+								</a>
+							)}
 						</li>
 					);
 				})}
