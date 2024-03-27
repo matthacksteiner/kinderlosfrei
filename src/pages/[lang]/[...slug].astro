@@ -7,6 +7,8 @@ const API_URL = import.meta.env.KIRBY_URL;
 export async function getStaticPaths() {
 	const API_URL = import.meta.env.KIRBY_URL as string;
 	const languages = await getLanguages();
+	const defaultLang = languages.defaultLang.code;
+	const prefixDefaultLocale = languages.prefixDefaultLocale;
 	const allLang = languages.allLang.map((lang: { code: string }) => lang.code);
 
 	const paths: { params: { lang: string; slug: string } }[] = [];
@@ -32,6 +34,7 @@ const pagesResponse = await fetch(API_URL + '/' + lang + '/' + slug + '.json');
 if (!pagesResponse) throw Astro.redirect('/404');
 const data = await pagesResponse.json();
 const global = await getData(`/${lang}/global.json`);
+const prefixDefaultLocale = global.prefixDefaultLocale;
 const pageTitle = data.title;
 ---
 
