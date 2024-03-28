@@ -7,31 +7,28 @@ const API_URL = import.meta.env.KIRBY_URL;
 export async function getStaticPaths() {
 	const API_URL = import.meta.env.KIRBY_URL as string;
 	const languages = await getLanguages();
-	const allLang = languages.allLang.map((lang: { code: string }) => lang.code);
-
-	const paths: { params: { lang: string; slug: string } }[] = [];
-	for (const lang of allLang) {
-		const pagesResponse = await fetch(API_URL + '/' + lang + '/index.json');
-		const data = (await pagesResponse.json()) as { uri: string }[];
-		paths.push(
-			...data
-				.filter((item: { uri: string }) => item.uri !== 'home')
-				.map((item: { uri: string }) => ({
-					params: {
-						lang: lang,
-						slug: item.uri,
-					},
-				}))
-		);
-	}
+	const allLang = languages.allLang.map(({ code }) => code);
+	const paths = (
+		await Promise.all(
+			allLang.map(async (lang) => {
+				const pagesResponse = await fetch(API_URL + '/' + lang + '/index.json');
+				const data = (await pagesResponse.json()) as { uri: string }[];
+				return data
+					.filter(({ uri }) => uri !== 'home')
+					.map(({ uri }) => ({
+						params: { lang, slug: uri },
+					}));
+			})
+		)
+	).flat();
 	return paths;
 }
 
 const { lang, slug } = Astro.params;
+const global = await getData(`/${lang}/global.json`);
 const pagesResponse = await fetch(API_URL + '/' + lang + '/' + slug + '.json');
 if (!pagesResponse) throw Astro.redirect('/404');
 const data = await pagesResponse.json();
-const global = await getData(`/${lang}/global.json`);
 const pageTitle = data.title;
 ---
 

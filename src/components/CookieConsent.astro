@@ -73,9 +73,7 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 							},
 							onReject: () => {
 								window['ga-disable-' + code] = true;
-								const gaCookies = [
-									/^_ga/,
-								];
+								const gaCookies = [/^_ga/];
 								gaCookies.forEach((pattern) => {
 									document.cookie.split(';').forEach((cookie) => {
 										const eqPos = cookie.indexOf('=');
@@ -88,7 +86,6 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 										}
 									});
 								});
-
 							},
 							cookies: [
 								{
@@ -100,7 +97,7 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 				},
 			},
 			language: {
-				default: 'en',
+				default: 'de',
 				autoDetect: 'document',
 				translations: {
 					de: {

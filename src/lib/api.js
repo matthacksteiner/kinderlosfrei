@@ -40,6 +40,7 @@ export async function getLanguages() {
 		translations: global.translations,
 		defaultLang: global.defaultLang,
 		allLang: global.allLang,
+		prefixDefaultLocale: global.prefixDefaultLocale,
 	};
 }
 
