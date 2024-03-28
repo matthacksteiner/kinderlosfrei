@@ -41,8 +41,10 @@ const logoAlign = global.logoAlign;
 const logoFile = global.logoFile;
 const logoCta = global.logoCta;
 const currentLang = lang;
+const defaultLang = global.defaultLang.code;
 const translations = global.translations;
 const path = Astro.url.pathname;
+const prefixDefaultLocale = global.prefixDefaultLocale;
 const isHome =
 	path === '/' || path === `/${currentLang}` || path === `/${currentLang}/`;
 ---
@@ -64,7 +66,12 @@ const isHome =
 				) : null}
 				<div id="logo" class={`relative z-20 max-md:py-4`}>
 					<a
-						href={`${translations.length < 1 ? '/' : '/' + currentLang}`}
+						href={`${
+							translations.length < 1 ||
+							(!prefixDefaultLocale && defaultLang === currentLang)
+								? '/'
+								: '/' + currentLang
+						}`}
 						aria-label="Zurück zur Homepage"
 					>
 						{logoFile.src ? (
