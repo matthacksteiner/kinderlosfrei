@@ -1,0 +1,38 @@
+---
+import ImageComponent from '@components/ImageComponent.astro';
+const { data, global } = Astro.props;
+const items = data.items;
+const settings = data.settings;
+const ratio = settings.ratio;
+const span = settings.span;
+const spanMobile = settings.spanMobile;
+const ratioMobile = settings.ratioMobile;
+---
+
+<section class="section container">
+	<h1 class="mt-20">{data.title}</h1>
+	<div class="grid-default">
+		{
+			items.map((item) => {
+				const image = item.thumbnail;
+				return (
+					<div class={`col-span-${spanMobile} lg:col-span-${span}`}>
+						<a href={item.uri}>
+							<ImageComponent
+								global={global}
+								image={image}
+								loading="lazy"
+								ratioMobile={ratioMobile}
+								ratioDesktop={ratio}
+								backgroundContainer="container"
+								span={span}
+							/>
+						</a>
+						<h2>{item.title}</h2>
+						<p>{item.description}</p>
+					</div>
+				);
+			})
+		}
+	</div>
+</section>

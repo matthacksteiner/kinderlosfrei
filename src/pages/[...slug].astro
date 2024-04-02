@@ -1,6 +1,7 @@
 ---
 import { getGlobal } from '@lib/api.js';
 import BaseLayout from '@layouts/BaseLayout.astro';
+import Templates from '@components/Templates.astro';
 import Layouts from '@components/Layouts.astro';
 const API_URL = import.meta.env.KIRBY_URL;
 
@@ -15,11 +16,15 @@ export async function getStaticPaths() {
 				params: {
 					slug: item.uri,
 				},
+				props: {
+					template: item.intendedTemplate,
+				},
 			};
 		});
 }
 
 const { slug } = Astro.params;
+const { template } = Astro.props;
 const pagesResponse = await fetch(API_URL + '/' + slug + '.json');
 if (!pagesResponse) throw Astro.redirect('/404');
 const data = await pagesResponse.json();
@@ -28,5 +33,16 @@ const pageTitle = data.title;
 ---
 
 <BaseLayout pageTitle={pageTitle} data={data} global={global}>
-	<Layouts layouts={data.layouts} data={data} global={global} />
+	{
+		template === 'section' ? (
+			<Templates
+				layouts={data.layouts}
+				data={data}
+				global={global}
+				template={template}
+			/>
+		) : (
+			<Layouts layouts={data.layouts} data={data} global={global} />
+		)
+	}
 </BaseLayout>
