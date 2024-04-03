@@ -1,16 +1,67 @@
 ---
 import ImageComponent from '@components/ImageComponent.astro';
 const { data, global } = Astro.props;
-const items = data.items;
-const settings = data.settings;
-const ratio = settings.ratio;
-const span = settings.span;
-const spanMobile = settings.spanMobile;
+const baseSize = 16;
+const { items, settings } = data;
+const {
+	ratio,
+	grid: { span, gap },
+	main,
+	title,
+	text,
+} = settings;
+const {
+	level: MainLevel,
+	font: mainFont,
+	color: mainColor,
+	size: mainSize,
+	align: mainAlign,
+	spacing: {
+		mainspacingtop,
+		mainspacingbottom,
+		mainspacingmobiletop,
+		mainspacingmobilebottom,
+	},
+} = main;
+const {
+	level: TitleLevel,
+	font: titleFont,
+	color: titleColor,
+	size: titleSize,
+	align: titleAlign,
+} = title;
+const {
+	font: textFont,
+	color: textColor,
+	size: textSize,
+	align: textAlign,
+} = text;
 const ratioMobile = settings.ratioMobile;
+const spanMobile = settings.grid.spanMobile;
+const gapMobile = gap / baseSize + 'rem';
+const mainSpacingTop = mainspacingtop / baseSize + 'rem';
+const mainSpacingBottom = mainspacingbottom / baseSize + 'rem';
+const mainSpacingTopMobile = mainspacingmobiletop / baseSize + 'rem';
+const mainSpacingBottomMobile = mainspacingmobilebottom / baseSize + 'rem';
+const gridBlockMobile =
+	global.gridBlockMobile / baseSize
+		? global.gridBlockMobile / baseSize + 'rem'
+		: '16px';
+const gridBlockDesktop =
+	global.gridBlockDesktop / baseSize
+		? global.gridBlockDesktop / baseSize + 'rem'
+		: '16px';
 ---
 
 <section class="section container">
-	<h1 class="mt-20">{data.title}</h1>
+	{
+		data.title && (
+			<MainLevel
+				class={`mainTitle text--${mainColor} font--${mainSize} text--${mainAlign} pt-`}
+				set:html={data.title}
+			/>
+		)
+	}
 	<div class="grid-default">
 		{
 			items.map((item) => {
@@ -28,11 +79,55 @@ const ratioMobile = settings.ratioMobile;
 								span={span}
 							/>
 						</a>
-						<h2>{item.title}</h2>
-						<p>{item.description}</p>
+
+						<TitleLevel
+							class={`title text--${titleColor} font--${titleSize} text--${titleAlign}`}
+							set:html={item.title}
+						/>
+
+						<p
+							class={`text text--${textColor} font--${textSize} text--${textAlign}`}
+							set:html={item.description}
+						/>
 					</div>
 				);
 			})
 		}
 	</div>
 </section>
+
+<style
+	lang="css"
+	define:vars={{
+		mainFont,
+		mainSpacingTop,
+		mainSpacingBottom,
+		mainSpacingTopMobile,
+		mainSpacingBottomMobile,
+		gap,
+		gapMobile,
+		gridBlockMobile,
+		gridBlockDesktop,
+		titleFont,
+		textFont,
+	}}
+>
+	.mainTitle {
+		@apply pb-[var(--mainSpacingBottomMobile)] pt-[var(--mainSpacingTopMobile)] lg:pb-[var(--mainSpacingBottom)] lg:pt-[var(--mainSpacingTop)];
+
+		font-family: var(--mainFont);
+	}
+
+	.title {
+		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
+		font-family: var(--titleFont);
+	}
+
+	.text {
+		font-family: var(--textFont);
+	}
+
+	.grid-default {
+		@apply gap-y-[var(--gapMobile)] lg:gap-y-[var(--gap)];
+	}
+</style>
