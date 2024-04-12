@@ -8,6 +8,7 @@ export async function getStaticPaths() {
 	const API_URL = import.meta.env.KIRBY_URL;
 	const pagesResponse = await fetch(API_URL + '/index.json');
 	const data = await pagesResponse.json();
+
 	return data.map((item) => {
 		return {
 			params: {

@@ -4,6 +4,7 @@ export async function getStaticPaths({ paginate }) {
 	const pagesResponse = await fetch(API_URL + '/index.json');
 	const data = await pagesResponse.json();
 	const sections = data.filter((item) => item.intendedTemplate === 'section');
+	const sectionsSlug = sections.map((section) => section.uri);
 	let allItems = [];
 	for (const section of sections) {
 		const itemsResponse = await fetch(API_URL + `/${section.uri}.json`);
@@ -11,12 +12,17 @@ export async function getStaticPaths({ paginate }) {
 		allItems = allItems.concat(itemsData.items);
 	}
 
-	return paginate(allItems, { pageSize: 2 });
+	return sectionsSlug.flatMap((section) => {
+		const filteredItems = allItems.filter((item) => item.parent === section);
+		return paginate(filteredItems, { params: { section }, pageSize: 1 });
+	});
 }
 
 const { page } = Astro.props;
+const params = Astro.params;
 ---
 
+<h1>Page {page.currentPage} - {page.lastPage}</h1>
 {
 	page.data.map((item) => (
 		<p>
@@ -24,8 +30,6 @@ const { page } = Astro.props;
 		</p>
 	))
 }
-
-<h1>Page {page.currentPage} - {page.lastPage}</h1>
 
 {page.prev ? <a href={page.prev}>Previous</a> : null}
 {page.next ? <a href={page.next}>Next</a> : null}
