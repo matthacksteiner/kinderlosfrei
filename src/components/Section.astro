@@ -1,8 +1,9 @@
 ---
 import ImageComponent from '@components/ImageComponent.astro';
-const { data, global } = Astro.props;
+const { data, global, page } = Astro.props;
 const baseSize = 16;
-const { items, settings } = data;
+const { settings } = data;
+const items = page.data;
 const {
 	ratio,
 	grid: { span, gap },

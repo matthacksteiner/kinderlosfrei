@@ -1,4 +1,8 @@
 ---
+import { getGlobal, getData } from '@lib/api.js';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '@components/Section.astro';
+
 export async function getStaticPaths({ paginate }) {
 	const API_URL = import.meta.env.KIRBY_URL;
 	const pagesResponse = await fetch(API_URL + '/index.json');
@@ -20,16 +24,11 @@ export async function getStaticPaths({ paginate }) {
 
 const { page } = Astro.props;
 const params = Astro.params;
+const global = await getGlobal();
+const section = params.section;
+const data = await getData(`/${section}.json`);
 ---
 
-<h1>Page {page.currentPage} - {page.lastPage}</h1>
-{
-	page.data.map((item) => (
-		<p>
-			<a href={item.uri}>{item.title}</a>
-		</p>
-	))
-}
-
-{page.prev ? <a href={page.prev}>Previous</a> : null}
-{page.next ? <a href={page.next}>Next</a> : null}
+<BaseLayout data={data} global={global}>
+	<Section data={data} page={page} global={global} />
+</BaseLayout>
