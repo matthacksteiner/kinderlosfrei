@@ -18,7 +18,7 @@ export async function getStaticPaths({ paginate }) {
 
 	return sectionsSlug.flatMap((section) => {
 		const filteredItems = allItems.filter((item) => item.parent === section);
-		return paginate(filteredItems, { params: { section }, pageSize: 1 });
+		return paginate(filteredItems, { params: { section }, pageSize: 2 });
 	});
 }
 
@@ -27,8 +27,9 @@ const params = Astro.params;
 const global = await getGlobal();
 const section = params.section;
 const data = await getData(`/${section}.json`);
+const pageTitle = data.title;
 ---
 
-<BaseLayout data={data} global={global}>
+<BaseLayout pageTitle={pageTitle} data={data} global={global}>
 	<Section data={data} page={page} global={global} />
 </BaseLayout>
