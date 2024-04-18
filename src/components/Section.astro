@@ -1,5 +1,7 @@
 ---
 import ImageComponent from '@components/ImageComponent.astro';
+import Pagination from '@components/Pagination.astro';
+
 const { data, global, page } = Astro.props;
 const baseSize = 16;
 const { settings } = data;
@@ -53,6 +55,8 @@ const gridBlockDesktop =
 	global.gridBlockDesktop / baseSize
 		? global.gridBlockDesktop / baseSize + 'rem'
 		: '16px';
+const pathname = new URL(Astro.request.url).pathname.split('/');
+const firstPath = pathname[1];
 ---
 
 <section class="section container">
@@ -96,6 +100,16 @@ const gridBlockDesktop =
 			})
 		}
 	</div>
+	<Pagination
+		global={global}
+		length={page.lastPage}
+		currentUrl={page.url.current}
+		currentPage={page.currentPage}
+		firstUrl={`/${firstPath}`}
+		prevUrl={page.url.prev}
+		nextUrl={page.url.next}
+		lastUrl={`/${firstPath}/${page.lastPage}`}
+	/>
 </section>
 
 <style
