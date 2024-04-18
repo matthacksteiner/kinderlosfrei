@@ -10,16 +10,17 @@ export async function getStaticPaths({ paginate }) {
 	const sections = data.filter((item) => item.intendedTemplate === 'section');
 	const sectionsSlug = sections.map((section) => section.uri);
 	let allItems = [];
+	const global = await getGlobal();
 	for (const section of sections) {
 		const itemsResponse = await fetch(API_URL + `/${section.uri}.json`);
 		const itemsData = await itemsResponse.json();
-		const pageSize = itemsData.settings.grid.elements; // 10
 		allItems = allItems.concat(itemsData.items);
 	}
 
 	return sectionsSlug.flatMap((section) => {
+		const elements = global.paginationElements;
 		const filteredItems = allItems.filter((item) => item.parent === section);
-		return paginate(filteredItems, { params: { section }, pageSize: 2 });
+		return paginate(filteredItems, { params: { section }, pageSize: 1 });
 	});
 }
 
