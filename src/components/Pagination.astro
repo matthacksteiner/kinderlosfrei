@@ -29,25 +29,6 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 ---
 
 <nav aria-label="Section pages" class="pagination pagination-default">
-	<!-- {
-		firstUrl == currentUrl ? (
-			<span
-				class={`pagination__link font--${size} paginationText--${color} paginationTextHover--${colorHover} paginationBg--${bg} paginationBgHover--${bgHover} paginationBorderHover--${paginationBorderColorHover} disabled`}
-			>
-				<span>&#8592;</span>
-				<span>&#8592;</span>
-			</span>
-		) : (
-			<a
-				href={firstUrl}
-				class={`pagination__link font--${size} paginationText--${color} paginationTextHover--${colorHover} paginationBg--${bg} paginationBgHover--${bgHover} paginationBorderHover--${paginationBorderColorHover}`}
-			>
-				<span>&#8592;</span>
-				<span>&#8592;</span>
-			</a>
-		)
-	} -->
-
 	{
 		prevUrl ? (
 			<a
@@ -57,11 +38,7 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 				<span>&#8592;</span>
 			</a>
 		) : (
-			<span
-				class={`pagination__link font--${size} paginationText--${color} paginationTextHover--${colorHover} paginationBg--${bg} paginationBgHover--${bgHover} paginationBoder--${paginationBorderColor} paginationBorderHover--${paginationBorderColorHover} disabled`}
-			>
-				<span>&#8592;</span>
-			</span>
+			''
 		)
 	}
 
@@ -82,11 +59,7 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 
 	{
 		!nextUrl ? (
-			<span
-				class={`pagination__link font--${size} paginationText--${color} paginationTextHover--${colorHover} paginationBg--${bg} paginationBgHover--${bgHover} paginationBoder--${paginationBorderColor} paginationBorderHover--${paginationBorderColorHover} disabled`}
-			>
-				<span>&#8594;</span>
-			</span>
+			''
 		) : (
 			<a
 				href={nextUrl}
@@ -96,25 +69,6 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 			</a>
 		)
 	}
-
-	<!-- {
-		lastUrl == currentUrl ? (
-			<span
-				class={`pagination__link font--${size} paginationText--${color} paginationTextHover--${colorHover} paginationBg--${bg} paginationBgHover--${bgHover} paginationBorderHover--${paginationBorderColorHover} disabled`}
-			>
-				<span>&#8594;</span>
-				<span>&#8594;</span>
-			</span>
-		) : (
-			<a
-				href={lastUrl}
-				class={`pagination__link font--${size} paginationText--${color} paginationTextHover--${colorHover} paginationBg--${bg} paginationBgHover--${bgHover} paginationBorderHover--${paginationBorderColorHover}`}
-			>
-				<span>&#8594;</span>
-				<span>&#8594;</span>
-			</a>
-		)
-	} -->
 </nav>
 
 <style
@@ -288,8 +242,5 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 
 	.paginationBorderActive--transparent {
 		@apply border-transparent;
-	}
-	.disabled {
-		@apply text-gray-400;
 	}
 </style>
