@@ -2,15 +2,16 @@
 import { getGlobal, getData } from '@lib/api.js';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Section from '@components/Section.astro';
+const global = await getGlobal();
+const elements = global.paginationElements;
 
-export async function getStaticPaths({ paginate }) {
+export async function getStaticPaths({ paginate, elements }) {
 	const API_URL = import.meta.env.KIRBY_URL;
 	const pagesResponse = await fetch(API_URL + '/index.json');
 	const data = await pagesResponse.json();
 	const sections = data.filter((item) => item.intendedTemplate === 'section');
 	const sectionsSlug = sections.map((section) => section.uri);
 	let allItems = [];
-	const global = await getGlobal();
 	for (const section of sections) {
 		const itemsResponse = await fetch(API_URL + `/${section.uri}.json`);
 		const itemsData = await itemsResponse.json();
@@ -18,16 +19,15 @@ export async function getStaticPaths({ paginate }) {
 	}
 
 	return sectionsSlug.flatMap((section) => {
-		const elements = global.paginationElements;
+		console.log(elements);
 		const filteredItems = allItems.filter((item) => item.parent === section);
-		return paginate(filteredItems, { params: { section }, pageSize: 2 });
+		return paginate(filteredItems, { params: { section }, pageSize: elements });
 	});
 }
 
 const { page } = Astro.props;
 const params = Astro.params;
 const section = params.section;
-const global = await getGlobal();
 const data = await getData(`/${section}.json`);
 const pageTitle = data.title;
 ---
