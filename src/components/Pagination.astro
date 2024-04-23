@@ -5,6 +5,8 @@ const paginationFont = global.paginationFont;
 const size = global.paginationFontSize;
 const paginationPadding = global.paginationPadding / baseSize + 'rem';
 const paginationMargin = global.paginationMargin / baseSize + 'rem';
+const paginationTop = global.paginationTop / baseSize + 'rem';
+const paginationBottom = global.paginationBottom / baseSize + 'rem';
 const bg = global.paginationBackgroundColor;
 const bgHover = global.paginationBackgroundColorHover;
 const bgActive = global.paginationBackgroundColorActive;
@@ -80,13 +82,15 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 		paginationFont,
 		paginationPadding,
 		paginationMargin,
+		paginationTop,
+		paginationBottom,
 		paginationBorderRadius,
 		paginationBorderWidth,
 		paginationBorderColor,
 	}}
 >
 	.pagination {
-		@apply flex gap-x-[var(--paginationMargin)];
+		@apply mb-[var(--paginationBottom)] mt-[var(--paginationTop)] flex gap-x-[var(--paginationMargin)];
 	}
 
 	.pagination__link {
