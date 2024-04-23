@@ -1,14 +1,5 @@
 ---
-const {
-	global,
-	length,
-	currentUrl,
-	currentPage,
-	firstUrl,
-	prevUrl,
-	nextUrl,
-	lastUrl,
-} = Astro.props;
+const { global, length, currentPage, firstUrl, prevUrl, nextUrl } = Astro.props;
 const baseSize = 16;
 const paginationFont = global.paginationFont;
 const size = global.paginationFontSize;
@@ -33,7 +24,10 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 		prevUrl ? (
 			<a
 				href={prevUrl}
-				class={`pagination__link font--${size} paginationText--${color} paginationTextHover--${colorHover} paginationBg--${bg} paginationBgHover--${bgHover} paginationBoder--${paginationBorderColor} paginationBorderHover--${paginationBorderColorHover}`}
+				class={`pagination__link font--${size}
+				paginationText--${color} paginagtionBg--${bg} paginationBoder--${paginationBorderColor}
+				paginationTextHover--${colorHover} paginationBgHover--${bgHover} paginationBorderHover--${paginationBorderColorHover}
+				`}
 			>
 				<span>&#8592;</span>
 			</a>
@@ -46,11 +40,16 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 		paginationList.map((num) => (
 			<a
 				href={`${firstUrl}${num == 1 ? '' : '/' + num}`}
-				class={`pagination__link font--${size}
-				paginationTextActive--${colorActive} paginationTextHover--${colorHover}
-				paginationBgActive--${bgActive} paginationBgHover--${bgHover}
-				paginationBorderActive--${paginationBorderColorActive} paginationBorderHover--${paginationBorderColorHover}
-				${currentPage == num ? 'active' : ''}`}
+				class={`
+				pagination__link font--${size}
+				paginationText--${color} paginagtionBg--${bg} paginationBoder--${paginationBorderColor}
+				paginationTextHover--${colorHover} paginationBgHover--${bgHover} paginationBorderHover--${paginationBorderColorHover}
+
+				${
+					currentPage == num
+						? `paginationTextActive--${colorActive} paginationBgActive--${bgActive} paginationBorderActive--${paginationBorderColorActive} active`
+						: ''
+				}`}
 			>
 				{num}
 			</a>
@@ -63,7 +62,10 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 		) : (
 			<a
 				href={nextUrl}
-				class={`pagination__link font--${size} paginationText--${color} paginationTextHover--${colorHover} paginationBg--${bg} paginationBgHover--${bgHover} paginationBoder--${paginationBorderColor} paginationBorderHover--${paginationBorderColorHover}`}
+				class={`pagination__link font--${size}
+				paginationText--${color} paginagtionBg--${bg} paginationBoder--${paginationBorderColor}
+				paginationTextHover--${colorHover} paginationBgHover--${bgHover} paginationBorderHover--${paginationBorderColorHover}
+				`}
 			>
 				<span>&#8594;</span>
 			</a>
@@ -93,6 +95,7 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 		font-family: var(--paginationFont);
 	}
 
+	/* bg */
 	.paginationText--primary {
 		@apply text-primary;
 	}
@@ -104,17 +107,45 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 	.paginationText--tertiary {
 		@apply text-tertiary;
 	}
+
 	.paginationText--black {
 		@apply text-black;
 	}
+
 	.paginationText--white {
 		@apply text-white;
 	}
+
 	.paginationText--transparent {
 		@apply text-transparent;
 	}
-	.paginationTextActive--primary {
+
+	.paginationTextHover--primary {
 		@apply hover:text-primary;
+	}
+
+	.paginationTextHover--secondary {
+		@apply hover:text-secondary;
+	}
+
+	.paginationTextHover--tertiary {
+		@apply hover:text-tertiary;
+	}
+
+	.paginationTextHover--black {
+		@apply hover:text-black;
+	}
+
+	.paginationTextHover--white {
+		@apply hover:text-white;
+	}
+
+	.paginationTextHover--transparent {
+		@apply hover:text-transparent;
+	}
+
+	.paginationTextActive--primary {
+		@apply text-primary;
 	}
 
 	.paginationTextActive--secondary {
@@ -124,14 +155,42 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 	.paginationTextActive--tertiary {
 		@apply text-tertiary;
 	}
+
 	.paginationTextActive--black {
 		@apply text-black;
 	}
+
 	.paginationTextActive--white {
 		@apply text-white;
 	}
+
 	.paginationTextActive--transparent {
 		@apply text-transparent;
+	}
+
+	/* bg */
+	.paginationBg--primary {
+		@apply bg-primary;
+	}
+
+	.paginationBg--secondary {
+		@apply bg-secondary;
+	}
+
+	.paginationBg--tertiary {
+		@apply bg-tertiary;
+	}
+
+	.paginationBg--black {
+		@apply bg-black;
+	}
+
+	.paginationBg--white {
+		@apply bg-white;
+	}
+
+	.paginationBg--transparent {
+		@apply bg-transparent;
 	}
 
 	.paginationBgHover--primary {
@@ -154,29 +213,10 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 		@apply hover:bg-white;
 	}
 
-	.paginationBorderHover--primary {
-		@apply hover:border-primary;
+	.paginationBgHover--transparent {
+		@apply hover:bg-transparent;
 	}
 
-	.paginationBorderHover--secondary {
-		@apply hover:border-secondary;
-	}
-
-	.paginationBorderHover--tertiary {
-		@apply hover:border-tertiary;
-	}
-
-	.paginationBorderHover--black {
-		@apply hover:border-black;
-	}
-
-	.paginationBorderHover--white {
-		@apply hover:border-white;
-	}
-
-	.paginationBorderHover--transparent {
-		@apply hover:border-transparent;
-	}
 	.paginationBgActive--primary {
 		@apply bg-primary;
 	}
@@ -197,6 +237,35 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 		@apply bg-white;
 	}
 
+	.paginationBgActive--transparent {
+		@apply bg-transparent;
+	}
+
+	/* border */
+	.paginationBoder--primary {
+		@apply border-primary;
+	}
+
+	.paginationBoder--secondary {
+		@apply border-secondary;
+	}
+
+	.paginationBoder--tertiary {
+		@apply border-tertiary;
+	}
+
+	.paginationBoder--black {
+		@apply border-black;
+	}
+
+	.paginationBoder--white {
+		@apply border-white;
+	}
+
+	.paginationBoder--transparent {
+		@apply border-transparent;
+	}
+
 	.paginationBorderHover--primary {
 		@apply hover:border-primary;
 	}
@@ -220,6 +289,7 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 	.paginationBorderHover--transparent {
 		@apply hover:border-transparent;
 	}
+
 	.paginationBorderActive--primary {
 		@apply border-primary;
 	}
