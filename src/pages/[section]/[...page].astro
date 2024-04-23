@@ -5,7 +5,7 @@ import Section from '@components/Section.astro';
 const global = await getGlobal();
 const elements = global.paginationElements;
 
-export async function getStaticPaths({ paginate, elements }) {
+export async function getStaticPaths({ paginate }) {
 	const API_URL = import.meta.env.KIRBY_URL;
 	const pagesResponse = await fetch(API_URL + '/index.json');
 	const data = await pagesResponse.json();

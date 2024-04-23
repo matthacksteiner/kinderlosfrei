@@ -1,23 +1,42 @@
 ---
-import { getGlobal, getData } from '@lib/api.js';
+import { getGlobal, getData, getLanguages } from '@lib/api.js';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 
 export async function getStaticPaths() {
 	const API_URL = import.meta.env.KIRBY_URL;
-	const pagesResponse = await fetch(API_URL + '/index.json');
-	const data = await pagesResponse.json();
+	const languages = await getLanguages();
+	const allLang = languages.allLang.map(({ code }) => code);
 
-	return data.map((item) => {
-		return {
-			params: {
-				slug: item.uri === 'home' ? undefined : item.uri,
-			},
-		};
-	});
+	if (allLang.length < 2) {
+		const pagesResponse = await fetch(API_URL + '/index.json');
+		const data = await pagesResponse.json();
+		return data.map((item) => {
+			return {
+				params: {
+					slug: item.uri === 'home' ? undefined : item.uri,
+				},
+			};
+		});
+	} else {
+		const paths = (
+			await Promise.all(
+				allLang.map(async (lang) => {
+					const pagesResponse = await fetch(
+						API_URL + '/' + lang + '/index.json'
+					);
+					const data = await pagesResponse.json();
+					return data.map(({ uri }) => ({
+						params: { lang, slug: uri },
+					}));
+				})
+			)
+		).flat();
+		return paths;
+	}
 }
 
-const { slug } = Astro.params;
+const { lang, slug } = Astro.params;
 const global = await getGlobal();
 const data = await getData(`/${slug === undefined ? 'home' : slug}.json`);
 const pageTitle = data.title;
