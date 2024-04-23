@@ -1,1 +1,20 @@
-<meta http-equiv="refresh" content="0;url=/de/" />
+---
+import { getGlobal, getData, getLanguages } from '@lib/api.js';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Layouts from '@components/Layouts.astro';
+const languages = await getLanguages();
+const allLang = languages.allLang.map(({ code }) => code);
+const currentLang = Astro.currentLocale;
+console.log('🚀 ~ currentLang:', currentLang);
+
+const data =
+	allLang.length < 2
+		? await getData(`/home.json`)
+		: await getData(`/home.json`);
+const global = await getGlobal();
+const pageTitle = data.title;
+---
+
+<BaseLayout pageTitle={pageTitle} data={data} global={global}>
+	<Layouts layouts={data.layouts} data={data} global={global} />
+</BaseLayout>

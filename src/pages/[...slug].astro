@@ -14,20 +14,23 @@ export async function getStaticPaths() {
 		return data.map((item) => {
 			return {
 				params: {
-					slug: item.uri === 'home' ? undefined : item.uri,
+					slug: item.uri,
 				},
 			};
 		});
 	} else {
 		const paths = (
 			await Promise.all(
-				allLang.map(async (lang) => {
+				allLang.map(async (language) => {
 					const pagesResponse = await fetch(
-						API_URL + '/' + lang + '/index.json'
+						API_URL + '/' + language + '/index.json'
 					);
 					const data = await pagesResponse.json();
 					return data.map(({ uri }) => ({
-						params: { lang, slug: uri },
+						params: {
+							slug: language + '/' + uri,
+						},
+						props: { language },
 					}));
 				})
 			)
@@ -36,9 +39,14 @@ export async function getStaticPaths() {
 	}
 }
 
-const { lang, slug } = Astro.params;
-const global = await getGlobal();
-const data = await getData(`/${slug === undefined ? 'home' : slug}.json`);
+const { slug } = Astro.params;
+const language = Astro.props;
+const global = language?.lang
+	? await getData(`/${language.lang}/global.json`)
+	: await getGlobal();
+const data = language?.lang
+	? await getData(`/${language.lang}/${slug}.json`)
+	: await getData(`/${slug === undefined ? 'home' : slug}.json`);
 const pageTitle = data.title;
 ---
 
