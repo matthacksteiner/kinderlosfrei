@@ -19,9 +19,8 @@ export async function getStaticPaths({ paginate, elements }) {
 	}
 
 	return sectionsSlug.flatMap((section) => {
-		console.log(elements);
 		const filteredItems = allItems.filter((item) => item.parent === section);
-		return paginate(filteredItems, { params: { section }, pageSize: elements });
+		return paginate(filteredItems, { params: { section }, pageSize: 1 });
 	});
 }
 
