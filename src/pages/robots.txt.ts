@@ -15,6 +15,7 @@ const robotsTxt = async (frontendUrl: string) =>
 	`
 User-agent: *
 Allow: /
+Disallow: /preview
 
 Sitemap: ${new URL('sitemap-index.xml', frontendUrl).href}
 `.trim();
