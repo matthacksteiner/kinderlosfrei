@@ -1,0 +1,37 @@
+---
+import { getData, getLanguages } from '@lib/api.js';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Layouts from '@components/Layouts.astro';
+
+export async function getStaticPaths() {
+	const API_URL = import.meta.env.KIRBY_URL;
+	const languages = await getLanguages();
+	const allLang = languages.allLang.map(({ code }) => code);
+
+	let paths: { params: { lang: string; slug: string } }[] = [];
+
+	for (const lang of allLang) {
+		const pagesResponse = await fetch(API_URL + '/' + lang + '/index.json');
+		const data = await pagesResponse.json();
+		paths.push(
+			...data.map((item) => ({
+				params: {
+					lang: lang,
+					slug: item.uri,
+				},
+			}))
+		);
+	}
+
+	return paths;
+}
+
+const { lang, slug } = Astro.params;
+const global = await getData(`/${lang}/global.json`);
+const data = await getData(`/${lang}/${slug}.json`);
+const pageTitle = data.title;
+---
+
+<BaseLayout pageTitle={pageTitle} data={data} global={global}>
+	<Layouts layouts={data.layouts} data={data} global={global} />
+</BaseLayout>

@@ -2,7 +2,7 @@
 import ImageComponent from '@components/ImageComponent.astro';
 import Pagination from '@components/Pagination.astro';
 
-const { data, global, page } = Astro.props;
+const { data, global, page, mulilang } = Astro.props;
 const baseSize = 16;
 const { settings } = data;
 const items = page.data;
@@ -56,7 +56,9 @@ const gridBlockDesktop =
 		? global.gridBlockDesktop / baseSize + 'rem'
 		: '16px';
 const pathname = new URL(Astro.request.url).pathname.split('/');
-const firstPath = pathname[1];
+const translations = global.translations.map((lang) => lang.code);
+const firstPath =
+	translations.length > 0 ? pathname[1] + '/' + pathname[2] : pathname[1];
 ---
 
 <section class="section container">
