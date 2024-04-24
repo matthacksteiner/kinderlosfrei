@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { defineConfig } from 'astro/config';
+import icon from 'astro-icon';
 const API_URL = process.env.KIRBY_URL;
 const response = await fetch(API_URL + '/global.json');
 const global = await response.json();
@@ -26,7 +27,7 @@ export default defineConfig({
 					},
 			  }
 			: undefined,
-	integrations: [tailwind()],
+	integrations: [tailwind(), icon()],
 	image: {
 		domains: [API_URL],
 	},
