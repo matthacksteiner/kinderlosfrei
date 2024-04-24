@@ -41,9 +41,8 @@ const { lang, section } = Astro.params;
 const data = await getData(`/${lang}/${section}.json`);
 const global = await getData(`/${lang}/global.json`);
 const pageTitle = data.title;
-const multilang = true;
 ---
 
 <BaseLayout pageTitle={pageTitle} data={data} global={global}>
-	<Section data={data} page={page} global={global} multilang={multilang} />
+	<Section data={data} page={page} global={global} />
 </BaseLayout>

@@ -17,7 +17,7 @@ export async function getStaticPaths() {
 }
 const { slug } = Astro.params;
 const global = await getGlobal();
-const data = await getData(`/${slug === undefined ? 'home' : slug}.json`);
+const data = await getData(`/${slug}.json`);
 const pageTitle = data.title;
 ---
 
