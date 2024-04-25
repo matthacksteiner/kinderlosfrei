@@ -162,11 +162,9 @@ const isHome =
 		@apply bg-black;
 	}
 
-	#logo,
-	svg#fallback {
-		@apply w-[var(--logoMobile)] md:w-[var(--logoDesktop)];
+	[data-icon='fallback'] {
+		@apply h-auto w-[var(--logoMobile)]  md:w-[var(--logoDesktop)];
 	}
-
 	.header--active #logo,
 	.header--active svg#fallback {
 		@apply w-[var(--logoMobileActive)] md:w-[var(--logoDesktopActive)];
