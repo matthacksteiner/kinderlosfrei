@@ -14,6 +14,9 @@ const { image, widthMobile, widthDesktop } = Astro.props;
 />
 
 <style lang="css">
+	.widthMobile--auto {
+		@apply w-auto;
+	}
 	.widthMobile--20 {
 		@apply w-1/5;
 	}
@@ -31,6 +34,9 @@ const { image, widthMobile, widthDesktop } = Astro.props;
 	}
 	.widthMobile--100 {
 		@apply w-full;
+	}
+	.widthDesktop--auto {
+		@apply lg:w-auto;
 	}
 	.widthDesktop--20 {
 		@apply lg:w-1/5;
