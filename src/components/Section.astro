@@ -30,6 +30,7 @@ const {
 const layouts = data.layouts;
 const ratioMobile = settings.ratioMobile;
 const spanMobile = settings.grid.spanMobile;
+const gapDesktop = gap / baseSize + 'rem';
 const gapMobile = gap / baseSize + 'rem';
 const gridBlockMobile =
 	global.gridBlockMobile / baseSize
@@ -101,7 +102,7 @@ const firstPath =
 <style
 	lang="css"
 	define:vars={{
-		gap,
+		gapDesktop,
 		gapMobile,
 		gridBlockMobile,
 		gridBlockDesktop,
@@ -119,6 +120,6 @@ const firstPath =
 	}
 
 	.grid-default {
-		@apply gap-y-[var(--gapMobile)] lg:gap-y-[var(--gap)];
+		@apply gap-y-[var(--gapMobile)] lg:gap-y-[var(--gapDesktop,)];
 	}
 </style>
