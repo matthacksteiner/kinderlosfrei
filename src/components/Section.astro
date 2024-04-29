@@ -1,4 +1,5 @@
 ---
+import Layouts from '@components/Layouts.astro';
 import ImageComponent from '@components/ImageComponent.astro';
 import Pagination from '@components/Pagination.astro';
 
@@ -9,23 +10,9 @@ const items = page.data;
 const {
 	ratio,
 	grid: { span, gap },
-	main,
 	title,
 	text,
 } = settings;
-const {
-	level: MainLevel,
-	font: mainFont,
-	color: mainColor,
-	size: mainSize,
-	align: mainAlign,
-	spacing: {
-		mainspacingtop,
-		mainspacingbottom,
-		mainspacingmobiletop,
-		mainspacingmobilebottom,
-	},
-} = main;
 
 const {
 	level: TitleLevel,
@@ -40,13 +27,10 @@ const {
 	size: textSize,
 	align: textAlign,
 } = text;
+const layouts = data.layouts;
 const ratioMobile = settings.ratioMobile;
 const spanMobile = settings.grid.spanMobile;
 const gapMobile = gap / baseSize + 'rem';
-const mainSpacingTop = mainspacingtop / baseSize + 'rem';
-const mainSpacingBottom = mainspacingbottom / baseSize + 'rem';
-const mainSpacingTopMobile = mainspacingmobiletop / baseSize + 'rem';
-const mainSpacingBottomMobile = mainspacingmobilebottom / baseSize + 'rem';
 const gridBlockMobile =
 	global.gridBlockMobile / baseSize
 		? global.gridBlockMobile / baseSize + 'rem'
@@ -61,15 +45,9 @@ const firstPath =
 	translations.length > 0 ? pathname[1] + '/' + pathname[2] : pathname[1];
 ---
 
+{layouts && <Layouts layouts={data.layouts} data={data} global={global} />}
+
 <section class="section container">
-	{
-		data.title && (
-			<MainLevel
-				class={`mainTitle text--${mainColor} font--${mainSize} text--${mainAlign} pt-`}
-				set:html={data.title}
-			/>
-		)
-	}
 	<div class="grid-default">
 		{
 			items.map((item) => {
@@ -117,11 +95,6 @@ const firstPath =
 <style
 	lang="css"
 	define:vars={{
-		mainFont,
-		mainSpacingTop,
-		mainSpacingBottom,
-		mainSpacingTopMobile,
-		mainSpacingBottomMobile,
 		gap,
 		gapMobile,
 		gridBlockMobile,
@@ -130,12 +103,6 @@ const firstPath =
 		textFont,
 	}}
 >
-	.mainTitle {
-		@apply pb-[var(--mainSpacingBottomMobile)] pt-[var(--mainSpacingTopMobile)] lg:pb-[var(--mainSpacingBottom)] lg:pt-[var(--mainSpacingTop)];
-
-		font-family: var(--mainFont);
-	}
-
 	.title {
 		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
 		font-family: var(--titleFont);
