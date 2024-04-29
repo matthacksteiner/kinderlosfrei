@@ -4,9 +4,13 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 
 export async function getStaticPaths() {
+	const global = await getData(`/global.json`);
+	const prefixDefaultLocale = global.prefixDefaultLocale;
 	const API_URL = import.meta.env.KIRBY_URL;
 	const languages = await getLanguages();
-	const allLang = languages.allLang.map(({ code }) => code);
+	const allLang = !prefixDefaultLocale
+		? languages.translations.map(({ code }) => code)
+		: languages.allLang.map(({ code }) => code);
 
 	let paths: { params: { lang: string; slug: string } }[] = [];
 
