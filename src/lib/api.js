@@ -82,26 +82,50 @@ export async function getFonts() {
 export async function getSizes() {
 	const baseFontSize = 16;
 	const global = await getGlobal();
-	return `${global.fontSize
+
+	return global.fontSize
 		.map((item) => {
+			const sizeMobile = item.sizeMobile || baseFontSize;
+			const lineHeightMobile = item.lineHeightMobile || sizeMobile;
+			const letterSpacingMobile = item.letterSpacingMobile || 0;
+
+			const sizeDesktop = item.sizeDesktop || sizeMobile;
+			const lineHeightDesktop = item.lineHeightDesktop || lineHeightMobile;
+			const letterSpacingDesktop =
+				item.letterSpacingDesktop || letterSpacingMobile;
+
+			const sizeDesktopXl = item.sizeDesktopXl || sizeDesktop;
+			const lineHeightDesktopXl = item.lineHeightDesktopXl || lineHeightDesktop;
+			const letterSpacingDesktopXl =
+				item.letterSpacingDesktopXl || letterSpacingDesktop;
+
 			return `
-      .font--${item.name} {
-        font-size: ${item.sizeMobile / baseFontSize}rem;
-        line-height: ${item.lineHeightMobile / item.sizeMobile};
-		letter-spacing: ${item.letterSpacingMobile / item.sizeMobile}em;
-		text-transform: ${item.transform};
-		text-decoration: ${item.decoration};
-	}
-	@media (min-width: 768px) {
-		.font--${item.name} {
-			font-size: ${item.sizeDesktop / baseFontSize}rem;
-			line-height: ${item.lineHeightDesktop / item.sizeDesktop};
-			letter-spacing: ${item.letterSpacingDesktop / item.sizeDesktop}em;
+		  .font--${item.name} {
+			font-size: ${sizeMobile / baseFontSize}rem;
+			line-height: ${lineHeightMobile / sizeMobile};
+			letter-spacing: ${letterSpacingMobile / sizeMobile}em;
 			text-transform: ${item.transform};
 			text-decoration: ${item.decoration};
-
-        }
-      }`;
+		  }
+		  @media (min-width: 768px) and (max-width: 1919px) {
+			.font--${item.name} {
+			  font-size: ${sizeDesktop / baseFontSize}rem;
+			  line-height: ${lineHeightDesktop / sizeDesktop};
+			  letter-spacing: ${letterSpacingDesktop / sizeDesktop}em;
+			  text-transform: ${item.transform};
+			  text-decoration: ${item.decoration};
+			}
+		  }
+		  @media (min-width: 1920px) {
+			.font--${item.name} {
+			  font-size: ${sizeDesktopXl / baseFontSize}rem;
+			  line-height: ${lineHeightDesktopXl / sizeDesktopXl};
+			  letter-spacing: ${letterSpacingDesktopXl / sizeDesktopXl}em;
+			  text-transform: ${item.transform};
+			  text-decoration: ${item.decoration};
+			}
+		  }
+		`;
 		})
-		.join('')}`;
+		.join('');
 }
