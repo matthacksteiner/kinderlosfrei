@@ -29,7 +29,7 @@ const arrows = hasControl('arrows');
 const dots = hasControl('dots');
 const line = hasControl('line');
 const full = hasControl('full') ? 'h-screen' : null;
-const overlay = hasControl('overlay') ? 'overlay' : null;
+const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 const filetoggle = images.map((image) => image?.filetoggle);
 ---
 
@@ -48,7 +48,6 @@ const filetoggle = images.map((image) => image?.filetoggle);
 			{
 				images?.map((image) => {
 					const isSvg = image.url.endsWith('.svg');
-					const toggle = image?.filetoggle;
 					if (isSvg) {
 						return (
 							<div class={`swiper-slide ${overlay} absolute`}>
