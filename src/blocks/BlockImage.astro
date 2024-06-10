@@ -1,63 +1,21 @@
 ---
 import ImageComponent from '@components/ImageComponent.astro';
-const {
-	global,
-	image,
-	link,
-	toggle,
-	ratioMobile,
-	ratioDesktop,
-	span,
-	backgroundContainer,
-} = Astro.props;
+const { global, image, ratioMobile, ratioDesktop, span, backgroundContainer } =
+	Astro.props;
 ---
 
 <div class={`blocks blockImages`}>
 	{
-		image && image.url ? (
-			toggle ? (
-				link.type === 'url' ? (
-					<a
-						href={link.href}
-						target={link.popup ? '_blank' : undefined}
-						rel={link.popup ? 'noopener' : undefined}
-					>
-						<ImageComponent
-							global={global}
-							image={image}
-							loading="lazy"
-							ratioMobile={ratioMobile}
-							ratioDesktop={ratioDesktop}
-							backgroundContainer={backgroundContainer}
-							span={span}
-						/>
-					</a>
-				) : link.type === 'page' ? (
-					<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
-						<ImageComponent
-							global={global}
-							image={image}
-							loading="lazy"
-							ratioMobile={ratioMobile}
-							ratioDesktop={ratioDesktop}
-							backgroundContainer={backgroundContainer}
-							span={span}
-						/>
-					</a>
-				) : null
-			) : (
-				<>
-					<ImageComponent
-						global={global}
-						image={image}
-						loading="lazy"
-						ratioMobile={ratioMobile}
-						ratioDesktop={ratioDesktop}
-						backgroundContainer={backgroundContainer}
-						span={span}
-					/>
-				</>
-			)
-		) : null
+		(
+			<ImageComponent
+				global={global}
+				image={image}
+				loading="lazy"
+				ratioMobile={ratioMobile}
+				ratioDesktop={ratioDesktop}
+				backgroundContainer={backgroundContainer}
+				span={span}
+			/>
+		)
 	}
 </div>

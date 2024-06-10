@@ -22,7 +22,7 @@ const {
 	toggle,
 	ratioMobile,
 	ratioDesktop,
-	span
+	span,
 } = Astro.props;
 const hasControl = (control) => controls && controls.includes(control);
 const arrows = hasControl('arrows');
@@ -30,7 +30,6 @@ const dots = hasControl('dots');
 const line = hasControl('line');
 const full = hasControl('full') ? 'h-screen' : null;
 const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
-const filetoggle = images.map((image) => image?.filetoggle);
 ---
 
 <section
@@ -51,7 +50,13 @@ const filetoggle = images.map((image) => image?.filetoggle);
 					if (isSvg) {
 						return (
 							<div class={`swiper-slide ${overlay} absolute`}>
-								<Image src={image.url} width={image.width} height={image.height} alt={image.alt} class={`${full} w-full`} />
+								<Image
+									src={image.url}
+									width={image.width}
+									height={image.height}
+									alt={image.alt}
+									class={`${full} w-full`}
+								/>
 							</div>
 						);
 					} else {
@@ -131,9 +136,7 @@ const filetoggle = images.map((image) => image?.filetoggle);
 				? blockSlider.dataset.viewpaddingdesktop
 				: '0';
 			if (time) {
-				const swiperSlider = blockSlider.querySelector(
-					'.swiperSlider'
-				);
+				const swiperSlider = blockSlider.querySelector('.swiperSlider');
 				const swiper = new Swiper(swiperSlider, {
 					autoplay: {
 						delay: parseInt(time),
@@ -144,12 +147,8 @@ const filetoggle = images.map((image) => image?.filetoggle);
 					spaceBetween: parseInt(viewPaddingMobile),
 					effect: effect === 'fade' ? 'fade' : 'slide',
 					navigation: {
-						nextEl: blockSlider.querySelector(
-							'.swiper-button-next'
-						),
-						prevEl: blockSlider.querySelector(
-							'.swiper-button-prev'
-						),
+						nextEl: blockSlider.querySelector('.swiper-button-next'),
+						prevEl: blockSlider.querySelector('.swiper-button-prev'),
 					},
 					pagination: {
 						el: blockSlider.querySelector('.swiper-pagination'),
@@ -168,18 +167,6 @@ const filetoggle = images.map((image) => image?.filetoggle);
 	});
 </script>
 
-{
-	filetoggle.map((toggle) =>
-		toggle ? (
-			<style lang="css" is:global>
-				:root {
-					--swiper-pagination-bottom: 12%;
-				}
-			</style>
-		) : null
-	)
-}
-
 <style
 	lang="css"
 	is:global
@@ -191,7 +178,7 @@ const filetoggle = images.map((image) => image?.filetoggle);
 		font-family: var(--font);
 	}
 	.overlay:before {
-		@apply absolute z-10 left-0 top-0 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
+		@apply absolute left-0 top-0 z-10 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
 	}
 
 	.swiper-pagination--primary .swiper-pagination-bullet-active,
