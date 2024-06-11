@@ -1,6 +1,8 @@
 ---
 import Picture from '@components/Picture.astro';
 import ImageCaption from '@components/ImageCaption.astro';
+const { lang } = Astro.params;
+const currentLang = lang;
 
 const {
 	global,
@@ -38,18 +40,22 @@ const pictureProps = {
 	position: 'relative',
 	class: `${className} w-full object-cover`,
 };
+
+const link = image.linkexternal;
 ---
 
 {
 	image.linktoggle ? (
 		<a
 			href={
-				image.linkexternal.type === 'url'
-					? image.linkexternal.href
-					: image.linkexternal.uri
+				link.type === 'url'
+					? link.href
+					: link.hash
+					? `${currentLang ? `/${currentLang}/` : ''}${link.uri}#${link.hash}`
+					: `${currentLang ? `/${currentLang}/` : ''}${link.uri}`
 			}
-			target={image.linkexternal.popup ? '_blank' : undefined}
-			rel={image.linkexternal.popup ? 'noopener' : undefined}
+			target={link.popup ? '_blank' : undefined}
+			rel={link.popup ? 'noopener' : undefined}
 		>
 			<div
 				class={`relative ${
