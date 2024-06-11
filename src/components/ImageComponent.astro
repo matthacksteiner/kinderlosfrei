@@ -1,5 +1,7 @@
 ---
 import Picture from '@components/Picture.astro';
+import ImageCaption from '@components/ImageCaption.astro';
+
 const {
 	global,
 	image,
@@ -10,6 +12,7 @@ const {
 	backgroundContainer,
 	class: className,
 } = Astro.props;
+
 const baseSize = 16;
 const gridBlockMobile =
 	global.gridBlockMobile / baseSize
@@ -19,16 +22,6 @@ const gridBlockDesktop =
 	global.gridBlockDesktop / baseSize
 		? global.gridBlockDesktop / baseSize + 'rem'
 		: '16px';
-
-const fileCaption = image.filecaption;
-const fileToggle = image.filetoggle;
-const Filelevel = image.filelevel;
-const fileTextFont = image.filetextfont;
-const fileTextSize = image.filetextsize;
-const fileTextColor = image.filetextcolor;
-const fileTextAlign = image.filetextalign;
-const fileOverlay = image.fileoverlay;
-const captionAlign = image.captionalign;
 
 const pictureProps = {
 	src: image.url,
@@ -42,60 +35,44 @@ const pictureProps = {
 	backgroundContainer: backgroundContainer,
 	loading: loading,
 	span: span,
-	positon: 'relative',
+	position: 'relative',
 	class: `${className} w-full object-cover`,
 };
 ---
 
 {
-	captionAlign === 'center' ? (
-		<div>
-			<div class={`relative  ${fileOverlay === 'overlay' ? 'overlay' : null}`}>
+	image.linktoggle ? (
+		<a
+			href={
+				image.linkexternal.type === 'url'
+					? image.linkexternal.href
+					: image.linkexternal.uri
+			}
+			target={image.linkexternal.popup ? '_blank' : undefined}
+			rel={image.linkexternal.popup ? 'noopener' : undefined}
+		>
+			<div
+				class={`relative ${
+					image.captionoverlay === 'overlay' ? 'overlay' : ''
+				}`}
+			>
 				<Picture {...pictureProps} />
-				{fileToggle ? (
-					<div class="text-content absolute left-2/4 top-2/4 z-[1] w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
-						<Filelevel
-							set:html={fileCaption}
-							class:list={[
-								`caption font--${fileTextSize}`,
-								`text--${fileTextColor}`,
-								`text--${fileTextAlign}`,
-							]}
-						/>
-					</div>
-				) : null}
+				{image.captiontoggle ? <ImageCaption {...image} /> : null}
 			</div>
-		</div>
+		</a>
 	) : (
-		<div>
-			<div class={`relative ${fileOverlay === 'overlay' ? 'overlay' : null}`}>
-				<Picture {...pictureProps} />
-			</div>
-			{fileToggle ? (
-				<div class="text-content z-[1]">
-					<Filelevel
-						set:html={fileCaption}
-						class:list={[
-							`caption font--${fileTextSize}`,
-							`text--${fileTextColor}`,
-							`text--${fileTextAlign}`,
-						]}
-					/>
-				</div>
-			) : null}
+		<div
+			class={`relative ${image.captionoverlay === 'overlay' ? 'overlay' : ''}`}
+		>
+			<Picture {...pictureProps} />
+			{image.captiontoggle ? <ImageCaption {...image} /> : null}
 		</div>
 	)
 }
 
-<style
-	lang="css"
-	define:vars={{ fileTextFont, gridBlockMobile, gridBlockDesktop }}
->
+<style lang="css" define:vars={{ gridBlockMobile, gridBlockDesktop }}>
 	.text-content {
 		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
-	}
-	.caption {
-		font-family: var(--fileTextFont);
 	}
 	.overlay:before {
 		@apply absolute left-0 top-0 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];

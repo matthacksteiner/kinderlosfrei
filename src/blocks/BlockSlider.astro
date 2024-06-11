@@ -22,15 +22,15 @@ const {
 	toggle,
 	ratioMobile,
 	ratioDesktop,
-	span
+	span,
 } = Astro.props;
+
 const hasControl = (control) => controls && controls.includes(control);
 const arrows = hasControl('arrows');
 const dots = hasControl('dots');
 const line = hasControl('line');
 const full = hasControl('full') ? 'h-screen' : null;
 const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
-const filetoggle = images.map((image) => image?.filetoggle);
 ---
 
 <section
@@ -51,7 +51,13 @@ const filetoggle = images.map((image) => image?.filetoggle);
 					if (isSvg) {
 						return (
 							<div class={`swiper-slide ${overlay} absolute`}>
-								<Image src={image.url} width={image.width} height={image.height} alt={image.alt} class={`${full} w-full`} />
+								<Image
+									src={image.url}
+									width={image.width}
+									height={image.height}
+									alt={image.alt}
+									class={`${full} w-full`}
+								/>
 							</div>
 						);
 					} else {
@@ -89,138 +95,123 @@ const filetoggle = images.map((image) => image?.filetoggle);
 			class="slide-content absolute left-2/4 top-2/4 z-[1] w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4"
 		>
 			{
-				toggle ? (
-					<Level
-						set:html={text}
-						class:list={[
-							`title font--${size}`,
-							`text--${textcolor}`,
-							`text--${align}`,
-						]}
-					/>
-				) : null
+				toggle && (
+					<div>
+						<Level
+							set:html={text}
+							class={`title font--${size} text--${textcolor} text--${align}`}
+						/>
+					</div>
+				)
 			}
 		</div>
 	</div>
-</section>
 
-<script>
-	import Swiper, { Navigation, Autoplay, Pagination, EffectFade } from 'swiper';
-	import 'swiper/css/bundle';
-	import 'swiper/css/effect-fade';
-	Swiper.use([Navigation, Autoplay, Pagination, EffectFade]);
+	<script>
+		import Swiper, {
+			Navigation,
+			Autoplay,
+			Pagination,
+			EffectFade,
+		} from 'swiper';
+		import 'swiper/css/bundle';
+		import 'swiper/css/effect-fade';
+		Swiper.use([Navigation, Autoplay, Pagination, EffectFade]);
 
-	const blockSliders = document.querySelectorAll('.blockSlider');
+		const blockSliders = document.querySelectorAll('.blockSlider');
 
-	blockSliders.forEach((blockSlider) => {
-		if (blockSlider instanceof HTMLElement) {
-			const controls = blockSlider?.dataset.controls;
-			const line = controls?.includes('line');
-			const time = blockSlider?.dataset.time;
-			const effect = blockSlider?.dataset.effect;
-			const viewMobile = blockSlider?.dataset.viewmobile
-				? blockSlider.dataset.viewmobile
-				: '1';
-			const viewDesktop = blockSlider?.dataset.viewdesktop
-				? blockSlider.dataset.viewdesktop
-				: '1';
-			const viewPaddingMobile = blockSlider?.dataset.viewpaddingmobile
-				? blockSlider.dataset.viewpaddingmobile
-				: '0';
-			const viewPaddingDesktop = blockSlider?.dataset.viewpaddingdesktop
-				? blockSlider.dataset.viewpaddingdesktop
-				: '0';
-			if (time) {
-				const swiperSlider = blockSlider.querySelector(
-					'.swiperSlider'
-				);
-				const swiper = new Swiper(swiperSlider, {
-					autoplay: {
-						delay: parseInt(time),
-					},
-					centeredSlidesBounds: true,
-					loop: true,
-					slidesPerView: parseInt(viewMobile),
-					spaceBetween: parseInt(viewPaddingMobile),
-					effect: effect === 'fade' ? 'fade' : 'slide',
-					navigation: {
-						nextEl: blockSlider.querySelector(
-							'.swiper-button-next'
-						),
-						prevEl: blockSlider.querySelector(
-							'.swiper-button-prev'
-						),
-					},
-					pagination: {
-						el: blockSlider.querySelector('.swiper-pagination'),
-						type: line ? 'progressbar' : 'bullets',
-						clickable: true,
-					},
-					breakpoints: {
-						1024: {
-							slidesPerView: parseInt(viewDesktop),
-							spaceBetween: parseInt(viewPaddingDesktop),
+		blockSliders.forEach((blockSlider) => {
+			if (blockSlider instanceof HTMLElement) {
+				const controls = blockSlider?.dataset.controls;
+				const line = controls?.includes('line');
+				const time = blockSlider?.dataset.time;
+				const effect = blockSlider?.dataset.effect;
+				const viewMobile = blockSlider?.dataset.viewmobile
+					? blockSlider.dataset.viewmobile
+					: '1';
+				const viewDesktop = blockSlider?.dataset.viewdesktop
+					? blockSlider.dataset.viewdesktop
+					: '1';
+				const viewPaddingMobile = blockSlider?.dataset.viewpaddingmobile
+					? blockSlider.dataset.viewpaddingmobile
+					: '0';
+				const viewPaddingDesktop = blockSlider?.dataset.viewpaddingdesktop
+					? blockSlider.dataset.viewpaddingdesktop
+					: '0';
+				if (time) {
+					const swiperSlider = blockSlider.querySelector('.swiperSlider');
+					const swiper = new Swiper(swiperSlider, {
+						autoplay: {
+							delay: parseInt(time),
 						},
-					},
-				});
-			}
-		}
-	});
-</script>
-
-{
-	filetoggle.map((toggle) =>
-		toggle ? (
-			<style lang="css" is:global>
-				:root {
-					--swiper-pagination-bottom: 12%;
+						centeredSlidesBounds: true,
+						loop: true,
+						slidesPerView: parseInt(viewMobile),
+						spaceBetween: parseInt(viewPaddingMobile),
+						effect: effect === 'fade' ? 'fade' : 'slide',
+						navigation: {
+							nextEl: blockSlider.querySelector('.swiper-button-next'),
+							prevEl: blockSlider.querySelector('.swiper-button-prev'),
+						},
+						pagination: {
+							el: blockSlider.querySelector('.swiper-pagination'),
+							type: line ? 'progressbar' : 'bullets',
+							clickable: true,
+						},
+						breakpoints: {
+							1024: {
+								slidesPerView: parseInt(viewDesktop),
+								spaceBetween: parseInt(viewPaddingDesktop),
+							},
+						},
+					});
 				}
-			</style>
-		) : null
-	)
-}
+			}
+		});
+	</script>
 
-<style
-	lang="css"
-	is:global
-	define:vars={{
-		font,
-	}}
->
-	.title {
-		font-family: var(--font);
-	}
-	.overlay:before {
-		@apply absolute z-10 left-0 top-0 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
-	}
+	<style
+		lang="css"
+		is:global
+		define:vars={{
+			font,
+		}}
+	>
+		.title {
+			font-family: var(--font);
+		}
+		.overlay:before {
+			@apply absolute left-0 top-0 z-10 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
+		}
 
-	.swiper-pagination--primary .swiper-pagination-bullet-active,
-	.swiper-pagination--primary .swiper-pagination-progressbar-fill {
-		@apply bg-primary;
-	}
+		.swiper-pagination--primary .swiper-pagination-bullet-active,
+		.swiper-pagination--primary .swiper-pagination-progressbar-fill {
+			@apply bg-primary;
+		}
 
-	.swiper-pagination--secondary .swiper-pagination-bullet-active,
-	.swiper-pagination--secondary .swiper-pagination-progressbar-fill {
-		@apply bg-secondary;
-	}
+		.swiper-pagination--secondary .swiper-pagination-bullet-active,
+		.swiper-pagination--secondary .swiper-pagination-progressbar-fill {
+			@apply bg-secondary;
+		}
 
-	.swiper-pagination--tertiary .swiper-pagination-bullet-active,
-	.swiper-pagination--tertiary .swiper-pagination-progressbar-fill {
-		@apply bg-tertiary;
-	}
+		.swiper-pagination--tertiary .swiper-pagination-bullet-active,
+		.swiper-pagination--tertiary .swiper-pagination-progressbar-fill {
+			@apply bg-tertiary;
+		}
 
-	.swiper-pagination--black .swiper-pagination-bullet-active,
-	.swiper-pagination--black .swiper-pagination-progressbar-fill {
-		@apply bg-black;
-	}
+		.swiper-pagination--black .swiper-pagination-bullet-active,
+		.swiper-pagination--black .swiper-pagination-progressbar-fill {
+			@apply bg-black;
+		}
 
-	.swiper-pagination--white .swiper-pagination-bullet-active,
-	.swiper-pagination--white .swiper-pagination-progressbar-fill {
-		@apply bg-white;
-	}
+		.swiper-pagination--white .swiper-pagination-bullet-active,
+		.swiper-pagination--white .swiper-pagination-progressbar-fill {
+			@apply bg-white;
+		}
 
-	.swiper-pagination--transparent .swiper-pagination-bullet-active,
-	.swiper-pagination--transparent .swiper-pagination-progressbar-fill {
-		@apply bg-transparent;
-	}
-</style>
+		.swiper-pagination--transparent .swiper-pagination-bullet-active,
+		.swiper-pagination--transparent .swiper-pagination-progressbar-fill {
+			@apply bg-transparent;
+		}
+	</style>
+</section>
