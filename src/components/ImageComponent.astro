@@ -57,7 +57,9 @@ const pictureProps = {
 				}`}
 			>
 				<Picture {...pictureProps} />
-				{image.captiontoggle ? <ImageCaption {...image} /> : null}
+				{image.captiontoggle ? (
+					<ImageCaption {...image} global={global} />
+				) : null}
 			</div>
 		</a>
 	) : (
@@ -65,7 +67,7 @@ const pictureProps = {
 			class={`relative ${image.captionoverlay === 'overlay' ? 'overlay' : ''}`}
 		>
 			<Picture {...pictureProps} />
-			{image.captiontoggle ? <ImageCaption {...image} /> : null}
+			{image.captiontoggle ? <ImageCaption {...image} global={global} /> : null}
 		</div>
 	)
 }

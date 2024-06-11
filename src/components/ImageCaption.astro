@@ -1,5 +1,6 @@
 ---
 const {
+	global,
 	captiontitle: captionTitle,
 	captiontextfont: captionTextFont,
 	captiontextsize: captionTextSize,
@@ -7,6 +8,16 @@ const {
 	captiontextalign: captionTextAlign,
 	captionalign: captionAlign,
 } = Astro.props;
+
+const baseSize = 16;
+const gridBlockMobile =
+	global.gridBlockMobile / baseSize
+		? global.gridBlockMobile / baseSize + 'rem'
+		: '16px';
+const gridBlockDesktop =
+	global.gridBlockDesktop / baseSize
+		? global.gridBlockDesktop / baseSize + 'rem'
+		: '16px';
 ---
 
 {
@@ -36,3 +47,9 @@ const {
 		</div>
 	)
 }
+
+<style lang="css" define:vars={{ gridBlockMobile, gridBlockDesktop }}>
+	.text-content {
+		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
+	}
+</style>
