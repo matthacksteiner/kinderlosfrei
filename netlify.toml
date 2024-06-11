@@ -1,5 +1,5 @@
 [build]
-#command = "astro build"
+command = "astro build"
 base = "/"
 publish = "dist"
 
@@ -7,7 +7,7 @@ publish = "dist"
 pretty_urls = false
 
 [build.environment]
-NODE_VERSION = "21"
+NODE_VERSION = "20"
 
 [dev]
 command = "astro dev"
