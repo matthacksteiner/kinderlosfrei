@@ -50,7 +50,7 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 					const isSvg = image.url.endsWith('.svg');
 					if (isSvg) {
 						return (
-							<div class={`swiper-slide ${overlay} absolute`}>
+							<div class={`swiper-slide ${overlay}`}>
 								<Image
 									src={image.url}
 									width={image.width}
