@@ -82,6 +82,7 @@ const isHome =
 									logoFile.alt ? `${logoFile.alt}` : `Logo ${global.siteTitle}`
 								}
 								class="transition-all duration-300 ease-in-out"
+								aria-label={global.siteTitle}
 							/>
 						) : (
 							<Icon
@@ -89,6 +90,7 @@ const isHome =
 								id="fallback"
 								alt={`Logo ${global.siteTitle}`}
 								class="transition-all duration-300 ease-in-out"
+								aria-label={global.siteTitle}
 							/>
 						)}
 					</a>
