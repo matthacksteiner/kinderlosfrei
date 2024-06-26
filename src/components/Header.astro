@@ -75,8 +75,8 @@ const isHome =
 						aria-label="Zurück zur Homepage"
 					>
 						{logoFile.src ? (
-							<Fragment
-								set:html={logoFile.source}
+							<img
+								src={logoFile.src}
 								id="logo"
 								alt={
 									logoFile.alt ? `${logoFile.alt}` : `Logo ${global.siteTitle}`
