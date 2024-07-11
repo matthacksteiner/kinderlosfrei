@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import ImageComponent from '@components/ImageComponent.astro';
 
 const {
@@ -46,36 +45,19 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 	<div class="swiper swiperSlider">
 		<div class="swiper-wrapper items-center">
 			{
-				images?.map((image) => {
-					const isSvg = image.url.endsWith('.svg');
-					if (isSvg) {
-						return (
-							<div class={`swiper-slide ${overlay}`}>
-								<Image
-									src={image.url}
-									width={image.width}
-									height={image.height}
-									alt={image.alt}
-									class={`${full} w-full`}
-								/>
-							</div>
-						);
-					} else {
-						return (
-							<div class={`swiper-slide ${overlay}`}>
-								<ImageComponent
-									global={global}
-									image={image}
-									loading="eager"
-									class={`${full}`}
-									ratioMobile={ratioMobile}
-									ratioDesktop={ratioDesktop}
-									span={span}
-								/>
-							</div>
-						);
-					}
-				})
+				images?.map((image) => (
+					<div class={`swiper-slide ${overlay}`}>
+						<ImageComponent
+							global={global}
+							image={image}
+							loading="lazy"
+							class={`${full}`}
+							ratioMobile={ratioMobile}
+							ratioDesktop={ratioDesktop}
+							span={span}
+						/>
+					</div>
+				))
 			}
 		</div>
 		{
