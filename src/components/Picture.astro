@@ -57,6 +57,7 @@ interface Props {
 	ratioDesktop: string;
 	span: string;
 	positon: string;
+	id: string;
 	class: string;
 	loading: 'eager' | 'lazy';
 	backgroundContainer: string;
@@ -122,6 +123,7 @@ const generateImgSrc = (source, width, height) => {
 				height={imageHeightDesktop}
 				alt={props.alt}
 				loading={props.loading}
+				id={props.id}
 				class={props.class}
 			/>
 		</picture>

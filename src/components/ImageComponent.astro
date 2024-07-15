@@ -14,7 +14,6 @@ const {
 	backgroundContainer,
 	class: className,
 } = Astro.props;
-
 const baseSize = 16;
 const gridBlockMobile =
 	global.gridBlockMobile / baseSize
@@ -32,13 +31,14 @@ const pictureProps = {
 	width: image.width,
 	height: image.height,
 	alt: image.alt,
+	id: image.identifier,
 	ratioMobile: ratioMobile,
 	ratioDesktop: ratioDesktop,
 	backgroundContainer: backgroundContainer,
 	loading: loading,
 	span: span,
 	position: 'relative',
-	class: `${className} w-full object-cover`,
+	class: `${className} ${image.classes} w-full object-cover`,
 };
 
 const link = image.linkexternal;

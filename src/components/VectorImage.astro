@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 const { image, widthMobile, widthDesktop } = Astro.props;
+const classes = image.classes;
 ---
 
 <Image
@@ -8,9 +9,10 @@ const { image, widthMobile, widthDesktop } = Astro.props;
 	alt={image.alt}
 	width={image.width}
 	height={image.height}
+	id={image.identifier}
 	class={`widthMobile--${widthMobile || '100'} widthDesktop--${
 		widthDesktop || '100'
-	}`}
+	} ${classes}`}
 />
 
 <style lang="css">
