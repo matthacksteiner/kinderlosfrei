@@ -6,6 +6,7 @@ import BlockTitle from '@blocks/BlockTitle.astro';
 import BlockSlider from '@blocks/BlockSlider.astro';
 import BlockButton from '@blocks/BlockButton.astro';
 import BlockAccordion from '@blocks/BlockAccordion.astro';
+import BlockQuoteSlider from '@blocks/BlockQuoteSlider.astro';
 import BlockLine from '@blocks/BlockLine.astro';
 import BlockVector from '@blocks/BlockVector.astro';
 import BlockVideo from '@blocks/BlockVideo.astro';
@@ -71,6 +72,23 @@ const baseSize = 16;
 							borderStyle={block.content.borderstyle}
 							borderWidth={block.content.borderwidth}
 							borderColor={block.content.bordercolor}
+						/>
+					);
+				case 'quoteSlider':
+					return (
+						<BlockQuoteSlider
+							items={block.content.acc}
+							titleFont={block.content.titlefont}
+							titleColor={block.content.titlecolor}
+							titleSize={block.content.titlesize}
+							textFont={block.content.textfont}
+							textColor={block.content.textcolor}
+							textSize={block.content.textsize}
+							textAlign={block.content.textalign}
+							titleAlign={block.content.titlealign}
+							controls={block.content.controls}
+							color={block.content.color}
+							time={block.content.time}
 						/>
 					);
 				case 'accordion':

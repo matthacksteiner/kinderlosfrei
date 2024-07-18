@@ -28,6 +28,7 @@ const hasControl = (control) => controls && controls.includes(control);
 const arrows = hasControl('arrows');
 const dots = hasControl('dots');
 const line = hasControl('line');
+const autoplay = hasControl('autoplay');
 const full = hasControl('full') ? 'h-screen' : null;
 const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 ---
@@ -107,6 +108,7 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 				const controls = blockSlider?.dataset.controls;
 				const line = controls?.includes('line');
 				const time = blockSlider?.dataset.time;
+				const autoplay = controls?.includes('autoplay');
 				const effect = blockSlider?.dataset.effect;
 				const viewMobile = blockSlider?.dataset.viewmobile
 					? blockSlider.dataset.viewmobile
@@ -123,9 +125,11 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 				if (time) {
 					const swiperSlider = blockSlider.querySelector('.swiperSlider');
 					const swiper = new Swiper(swiperSlider, {
-						autoplay: {
-							delay: parseInt(time),
-						},
+						...(autoplay && {
+							autoplay: {
+								delay: parseInt(time),
+							},
+						}),
 						centeredSlidesBounds: true,
 						loop: true,
 						slidesPerView: parseInt(viewMobile),
