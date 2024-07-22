@@ -1,10 +1,24 @@
 ---
-const { items, font, color, size, align, iconSize, iconGap, iconListGap } =
-	Astro.props;
+const {
+	items,
+	font,
+	color,
+	size,
+	align,
+	iconSize,
+	iconGap,
+	iconListGap,
+	iconDirection,
+} = Astro.props;
 ---
 
 <div class="blockIconlist blocks">
-	<ul class="list flex flex-col" style={`row-gap: ${iconGap}px`}>
+	<ul
+		class={`list flex ${
+			iconDirection === 'Horizontal' ? 'flex-row' : 'flex-col'
+		}`}
+		style={`row-gap: ${iconGap}px`}
+	>
 		{
 			items.map((item) => (
 				<li>
