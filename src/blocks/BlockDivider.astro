@@ -1,10 +1,21 @@
 ---
 const {
+	global,
 	spacingMobileTop,
 	spacingMobileBottom,
 	spacingDesktopTop,
 	spacingDesktopBottom,
 } = Astro.props;
+
+const baseSize = 16;
+const gridBlockMobile =
+	global.gridBlockMobile / baseSize
+		? global.gridBlockMobile / baseSize + 'rem'
+		: '16px';
+const gridBlockDesktop =
+	global.gridBlockDesktop / baseSize
+		? global.gridBlockDesktop / baseSize + 'rem'
+		: '16px';
 ---
 
 <div class="blockDivider blocks"></div>
@@ -16,9 +27,11 @@ const {
 		spacingDesktopTop,
 		spacingMobileBottom,
 		spacingMobileTop,
+		gridBlockMobile,
+		gridBlockDesktop,
 	}}
 >
 	.blockDivider {
-		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
+		@apply -my-[var(--gridBlockMobile)] pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:-my-[var(--gridBlockDesktop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
 	}
 </style>
