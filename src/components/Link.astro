@@ -17,11 +17,18 @@ const currentLang = lang;
 			</a>
 		) : link.type === 'page' ? (
 			<a
-				href={
+				href={`${currentLang ? `/${currentLang}/` : ''}${link.uri}`}
+				target={link.popup ? '_blank' : undefined}
+				rel={link.popup ? 'noopener' : undefined}
+				class={`${className}`}
+			>
+				{link.title ? link.title : link.uri}
+			</a>
+		) : link.type === 'anchor' ? (
+			<a
+				href={`${currentLang ? `/${currentLang}/` : ''}${link.uri}#${
 					link.hash
-						? `${currentLang ? `/${currentLang}/` : ''}${link.uri}#${link.hash}`
-						: `${currentLang ? `/${currentLang}/` : ''}${link.uri}`
-				}
+				}`}
 				target={link.popup ? '_blank' : undefined}
 				rel={link.popup ? 'noopener' : undefined}
 				class={`${className}`}
