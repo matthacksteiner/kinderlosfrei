@@ -2,18 +2,76 @@
 import { Image } from 'astro:assets';
 const { image, widthMobile, widthDesktop } = Astro.props;
 const classes = image.classes;
+const link = image.linkexternal;
 ---
 
-<Image
-	src={image.url}
-	alt={image.alt}
-	width={image.width}
-	height={image.height}
-	id={image.identifier}
-	class={`widthMobile--${widthMobile || '100'} widthDesktop--${
-		widthDesktop || '100'
-	} ${classes}`}
-/>
+{
+	image ? (
+		image.linktoggle ? (
+			link.type === 'url' ? (
+				<a
+					href={link.href}
+					target={link.popup ? '_blank' : undefined}
+					rel={link.popup ? 'noopener' : undefined}
+				>
+					<Image
+						src={image.url}
+						alt={image.alt}
+						width={image.width}
+						height={image.height}
+						id={image.identifier}
+						class={`widthMobile--${widthMobile || '100'} widthDesktop--${
+							widthDesktop || '100'
+						} ${classes}`}
+					/>
+				</a>
+			) : link.type === 'page' ? (
+				<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
+					<Image
+						src={image.url}
+						alt={image.alt}
+						width={image.width}
+						height={image.height}
+						id={image.identifier}
+						class={`widthMobile--${widthMobile || '100'} widthDesktop--${
+							widthDesktop || '100'
+						} ${classes}`}
+					/>
+				</a>
+			) : link.type === 'file' ? (
+				<a
+					href={image.url}
+					target={link.popup ? '_blank' : undefined}
+					rel={link.popup ? 'noopener' : undefined}
+				>
+					<Image
+						src={image.url}
+						alt={image.alt}
+						width={image.width}
+						height={image.height}
+						id={image.identifier}
+						class={`widthMobile--${widthMobile || '100'} widthDesktop--${
+							widthDesktop || '100'
+						} ${classes}`}
+					/>
+				</a>
+			) : null
+		) : (
+			<>
+				<Image
+					src={image.url}
+					alt={image.alt}
+					width={image.width}
+					height={image.height}
+					id={image.identifier}
+					class={`widthMobile--${widthMobile || '100'} widthDesktop--${
+						widthDesktop || '100'
+					} ${classes}`}
+				/>
+			</>
+		)
+	) : null
+}
 
 <style lang="css">
 	.widthMobile--auto {
