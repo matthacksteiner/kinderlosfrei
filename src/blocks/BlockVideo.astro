@@ -26,11 +26,6 @@ const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
 const isVimeo = url.includes('vimeo.com');
 const thumb = thumbnail ? thumbnail.url : null;
 const cursor = thumbnail ? 'cursor-pointer' : null;
-if (source === 'video') {
-	const identifier = file.identifier;
-	const classes = file.classes;
-}
-
 const youtubeNoCookies = isYoutube
 	? url
 			.replace(
@@ -75,14 +70,14 @@ const vimeoPlayer = isVimeo
 			) : (
 				<video
 					preload="none"
-					id={`${identifier}`}
+					id={`${file.identifier}`}
 					muted={muted || autoplay}
 					autoplay={autoplay}
 					loop={loop}
 					controls={controls}
 					playsinline={autoplay}
 					poster={thumb}
-					class={`${full} ${cursor} ${classes} w-full`}
+					class={`${full} ${cursor} ${file.classes} w-full`}
 				>
 					<source data-src={file.url} type="video/mp4" />
 				</video>
