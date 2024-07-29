@@ -5,6 +5,8 @@ const {
 	file,
 	options,
 	thumbnail,
+	ratioDesktop,
+	ratioMobile,
 	text,
 	font,
 	size,
@@ -24,8 +26,11 @@ const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
 const isVimeo = url.includes('vimeo.com');
 const thumb = thumbnail ? thumbnail.url : null;
 const cursor = thumbnail ? 'cursor-pointer' : null;
-const identifier = file.identifier;
-const classes = file.classes;
+if (source === 'video') {
+	const identifier = file.identifier;
+	const classes = file.classes;
+}
+
 const youtubeNoCookies = isYoutube
 	? url
 			.replace(
@@ -102,9 +107,16 @@ const vimeoPlayer = isVimeo
 	</div>
 </div>
 
-<style lang="css" define:vars={{ font }}>
+<style lang="css" define:vars={{ ratioDesktop, ratioMobile, font }}>
 	.title {
 		font-family: var(--font);
+	}
+
+	iframe {
+		@apply aspect-[var(--ratioMobile)] h-auto w-full lg:aspect-[var(--ratioDesktop)];
+	}
+	video {
+		@apply w-full;
 	}
 </style>
 
