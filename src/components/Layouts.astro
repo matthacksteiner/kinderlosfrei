@@ -10,6 +10,7 @@ const { global, layouts } = Astro.props;
 			const columns = layout.content.columns;
 			const anchor = layout.anchor;
 			const classes = layout.classes;
+			const attributes = layout.attributes;
 			const backgroundColor = layout.backgroundColor || 'transparent';
 			const backgroundPadding = layout.backgroundPadding || 'both';
 			const backgroundContainer = layout.backgroundContainer;
@@ -38,6 +39,7 @@ const { global, layouts } = Astro.props;
 								? 'h-screenHalf flex'
 								: 'auto'
 						} ${classes}`}
+					{...(attributes ?? {})}
 				>
 					<div
 						class={`grid-default bg--${backgroundContainerColor} ${backgroundContainer} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom}
