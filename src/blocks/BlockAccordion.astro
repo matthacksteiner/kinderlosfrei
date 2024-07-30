@@ -15,7 +15,7 @@ const {
 } = Astro.props;
 ---
 
-<div id={metadata?.identifier ?? ''} class={`blocks blockAccordion ${metadata?.classes ?? ''}`} {...metadata.attributesObject}>
+<div id={metadata?.identifier ?? ''} class={`blocks blockAccordion ${metadata?.classes ?? ''}`} {...metadata.attributes}>
 	{
 		Array.isArray(items) && items.length > 0
 			? items.map((item) => (
