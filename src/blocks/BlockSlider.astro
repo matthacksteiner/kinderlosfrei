@@ -22,6 +22,7 @@ const {
 	ratioMobile,
 	ratioDesktop,
 	span,
+	metadata,
 } = Astro.props;
 
 const hasControl = (control) => controls && controls.includes(control);
@@ -34,7 +35,9 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 ---
 
 <section
-	class="blockSlider blocks"
+	id={metadata?.identifier ?? ''}
+	class={`blockSlider blocks ${metadata?.classes ?? ''}`}
+	{...metadata?.attributes ?? ''}
 	data-controls={controls}
 	data-time={time}
 	data-effect={effect}

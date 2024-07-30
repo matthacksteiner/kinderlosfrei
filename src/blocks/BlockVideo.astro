@@ -14,6 +14,7 @@ const {
 	textcolor,
 	Level,
 	toggle,
+	metadata,
 } = Astro.props;
 const hasOption = (option) => options.includes(option);
 
@@ -39,7 +40,11 @@ const vimeoPlayer = isVimeo
 	: null;
 ---
 
-<div class="blockVideo blocks">
+<div
+	id={metadata?.identifier ?? ''}
+	class={`blockVideo blocks ${metadata?.classes ?? ''}`}
+	{...metadata?.attributes ?? ''}
+>
 	<div class="video-container">
 		{
 			source === 'remote' ? (

@@ -1,9 +1,13 @@
 ---
 import Link from '@components/Link.astro';
-const { global, items, font, align, color, size, gap } = Astro.props;
+const { global, items, font, align, color, size, gap, metadata } = Astro.props;
 ---
 
-<div class="blockMenu blocks">
+<div
+	id={metadata?.identifier ?? ''}
+	class={`blockMenu blocks ${metadata?.classes ?? ''}`}
+	{...metadata?.attributes ?? ''}
+>
 	<nav>
 		<ul class="list flex flex-col">
 			{

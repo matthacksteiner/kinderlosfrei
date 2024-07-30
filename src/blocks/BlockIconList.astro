@@ -9,10 +9,15 @@ const {
 	iconGap,
 	iconListGap,
 	iconDirection,
+	metadata,
 } = Astro.props;
 ---
 
-<div class="blockIconlist blocks">
+<div
+	id={metadata?.identifier ?? ''}
+	class={`blockIconlist blocks ${metadata?.classes ?? ''}`}
+	{...metadata?.attributes ?? ''}
+>
 	<ul
 		class={`list flex ${
 			iconDirection === 'Horizontal' ? 'flex-row' : 'flex-col'

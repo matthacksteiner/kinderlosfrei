@@ -11,10 +11,11 @@ const {
 	textAlign,
 	borderWidth,
 	borderColor,
+	metadata,
 } = Astro.props;
 ---
 
-<div class={`blocks blockAccordion`}>
+<div id={metadata?.identifier ?? ''} class={`blocks blockAccordion ${metadata?.classes ?? ''}`} {...metadata.attributesObject}>
 	{
 		Array.isArray(items) && items.length > 0
 			? items.map((item) => (

@@ -1,10 +1,21 @@
 ---
 import ImageComponent from '@components/ImageComponent.astro';
-const { global, image, ratioMobile, ratioDesktop, span, backgroundContainer } =
-	Astro.props;
+const {
+	global,
+	image,
+	ratioMobile,
+	ratioDesktop,
+	span,
+	backgroundContainer,
+	metadata,
+} = Astro.props;
 ---
 
-<div class={`blocks blockImages`}>
+<div
+	id={metadata?.identifier ?? ''}
+	class={`blocks blockImages ${metadata?.classes ?? ''}`}
+	{...metadata?.attributes ?? ''}
+>
 	{
 		(
 			<ImageComponent

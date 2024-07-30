@@ -1,5 +1,5 @@
 ---
-const { text, font, size, align, color, headlines } = Astro.props;
+const { text, font, size, align, color, headlines, metadata } = Astro.props;
 const h1Font = headlines.h1.font;
 const h2Font = headlines.h2.font;
 const h3Font = headlines.h3.font;
@@ -17,7 +17,11 @@ const {
 } = headlines;
 ---
 
-<div class={`blockText blocks relative`}>
+<div
+	id={metadata?.identifier ?? ''}
+	class={`blockText blocks relative ${metadata?.classes ?? ''}`}
+	{...metadata?.attributes ?? ''}
+>
 	<div
 		set:html={text}
 		class={`kirby-text font--${size} text--${color} text--${align} w-fit`}
