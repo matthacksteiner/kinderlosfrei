@@ -10,10 +10,10 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"@astrojs/netlify": "^5.4.0",
+		"@astrojs/netlify": "^5.5.0",
 		"@astrojs/tailwind": "^5.1.0",
 		"@iarna/toml": "^2.2.5",
-		"astro": "^4.12.2",
+		"astro": "^4.13.1",
 		"astro-icon": "^1.1.0",
 		"dotenv": "^16.3.1",
 		"swiper": "^9.2.3",

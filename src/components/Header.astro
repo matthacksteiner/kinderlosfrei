@@ -21,7 +21,6 @@ const logoDesktop =
 	global.logoDesktop / baseSize
 		? global.logoDesktop / baseSize + 'rem'
 		: '25rem';
-
 const logoDesktopActive =
 	global.logoDesktopActive / baseSize
 		? global.logoDesktopActive / baseSize + 'rem'
@@ -83,6 +82,8 @@ const isHome =
 								}
 								class="transition-all duration-300 ease-in-out"
 								aria-label={global.siteTitle}
+								width={logoDesktop}
+								height="auto"
 							/>
 						) : (
 							<Icon
