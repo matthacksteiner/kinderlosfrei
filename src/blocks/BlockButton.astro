@@ -19,21 +19,36 @@ const buttonBorderRadius =
 ---
 
 <div
-	id={metadata?.identifier ?? ''}
-	class={`blockButton blocks flex flex-col ${className} ${
-		metadata?.classes ?? ''
-	}`}
-	{...metadata?.attributes ?? ''}
+	id={metadata?.identifier}
+	class:list={[
+		'blockButton',
+		'blocks',
+		'flex',
+		'flex-col',
+		className,
+		metadata?.classes,
+	]}
+	{...metadata?.attributes}
 >
 	<Link
 		link={link}
-		class={`button inline-block font--${size} buttonText--${color} buttonTextActive--${colorActive} buttonBg--${bg} buttonBgActive--${bgActive} buttonBorderActive--${buttonBorderColorActive} ${
+		class:list={[
+			'button',
+			'inline-block',
+			`font--${size}`,
+			`buttonText--${color}`,
+			`buttonTextActive--${colorActive}`,
+			`buttonBg--${bg}`,
+			`buttonBgActive--${bgActive}`,
+			`buttonBorderActive--${buttonBorderColorActive}`,
+			'transition-all',
+			'duration-300',
 			align === 'start' || align === 'normal'
 				? 'mr-auto'
 				: align === 'center'
 				? 'mx-auto'
-				: align === 'end' && 'ml-auto'
-		}  transition-all duration-300`}
+				: align === 'end' && 'ml-auto',
+		]}
 	/>
 </div>
 

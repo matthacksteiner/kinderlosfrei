@@ -1,7 +1,7 @@
 ---
 import Columns from '@components/Columns.astro';
 import ScrollButton from '@components/ScrollButton.astro';
-const { global, layouts } = Astro.props;
+const { global, layouts, class: className } = Astro.props;
 ---
 
 {
@@ -31,19 +31,32 @@ const { global, layouts } = Astro.props;
 			return (
 				<section
 					{...sectionProps}
-					class={`columns bg--${backgroundColor} align-vert--${backgroundAlignVertical} align-hor--${backgroundAlignHorizontal}
-						${
-							backgroundHeight === 'full'
-								? 'flex min-h-screen'
-								: backgroundHeight === 'half'
-								? 'h-screenHalf flex'
-								: 'auto'
-						} ${classes}`}
+					class:list={[
+						className,
+						'columns',
+						`bg--${backgroundColor}`,
+						`align-vert--${backgroundAlignVertical}`,
+						`align-hor--${backgroundAlignHorizontal}`,
+						backgroundHeight === 'full'
+							? 'flex min-h-screen'
+							: backgroundHeight === 'half'
+							? 'h-screenHalf flex'
+							: 'auto',
+						classes,
+					]}
 					{...(attributes ?? {})}
 				>
 					<div
-						class={`grid-default bg--${backgroundContainerColor} ${backgroundContainer} spacingMobileTop--${spacingMobileTop} spacingMobileBottom--${spacingMobileBottom} spacingDesktopTop--${spacingDesktopTop} spacingDesktopBottom--${spacingDesktopBottom}
-						align-vert--${backgroundAlignItemsVertical}`}
+						class:list={[
+							'grid-default',
+							`bg--${backgroundContainerColor}`,
+							backgroundContainer,
+							`spacingMobileTop--${spacingMobileTop}`,
+							`spacingMobileBottom--${spacingMobileBottom}`,
+							`spacingDesktopTop--${spacingDesktopTop}`,
+							`spacingDesktopBottom--${spacingDesktopBottom}`,
+							`align-vert--${backgroundAlignItemsVertical}`,
+						]}
 					>
 						<Columns
 							columns={columns}

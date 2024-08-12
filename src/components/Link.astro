@@ -11,7 +11,7 @@ const currentLang = lang;
 				href={link.href}
 				target={link.popup ? '_blank' : undefined}
 				rel={link.popup ? 'noopener' : undefined}
-				class={`${className}`}
+				class:list={[className]}
 			>
 				{link.title ? link.title : link.href}
 			</a>
@@ -24,7 +24,7 @@ const currentLang = lang;
 				}
 				target={link.popup ? '_blank' : undefined}
 				rel={link.popup ? 'noopener' : undefined}
-				class={`${className}`}
+				class:list={[className]}
 			>
 				{link.title ? link.title : link.uri}
 			</a>
@@ -34,7 +34,7 @@ const currentLang = lang;
 				download
 				target="_blank"
 				rel="noopener"
-				class={`${className}`}
+				class:list={[className]}
 			>
 				{link.title ? link.title : 'Download File'}
 			</a>
@@ -43,7 +43,7 @@ const currentLang = lang;
 				href={`${link.href}`}
 				target="_blank"
 				rel="noopener"
-				class={`${className}`}
+				class:list={[className]}
 			>
 				{link.title ? link.title : link.href}
 			</a>
@@ -52,7 +52,7 @@ const currentLang = lang;
 				href={`tel:${link.href}`}
 				target="_blank"
 				rel="noopener"
-				class={`${className}`}
+				class:list={[className]}
 			>
 				{link.title ? link.title : link.href}
 			</a>

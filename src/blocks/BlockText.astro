@@ -18,13 +18,19 @@ const {
 ---
 
 <div
-	id={metadata?.identifier ?? ''}
-	class={`blockText blocks relative ${metadata?.classes ?? ''}`}
-	{...metadata?.attributes ?? ''}
+	id={metadata?.identifier}
+	class:list={['blockText', 'blocks', 'relative', metadata?.classes]}
+	{...metadata?.attributes}
 >
 	<div
 		set:html={text}
-		class={`kirby-text font--${size} text--${color} text--${align} w-fit`}
+		class:list={[
+			'kirby-text',
+			`font--${size}`,
+			`text--${color}`,
+			`text--${align}`,
+			'w-fit',
+		]}
 		data-h1Size={h1Size}
 		data-h2Size={h2Size}
 		data-h3Size={h3Size}

@@ -13,7 +13,15 @@ const prefixDefaultLocale = global.prefixDefaultLocale;
 {
 	translations.length > 0 && (
 		<ul
-			class={`lang ${className} font--${headerFontSize} flex gap-8 uppercase lg:gap-4`}
+			class:list={[
+				'lang',
+				className,
+				`font--${headerFontSize}`,
+				'flex',
+				'gap-8',
+				'uppercase',
+				'lg:gap-4',
+			]}
 		>
 			{allLangs
 				.filter((language) => language.code !== currentLang)

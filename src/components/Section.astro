@@ -21,13 +21,15 @@ const {
 	size: titleSize,
 	align: titleAlign,
 } = title;
+
 const {
 	font: textFont,
 	color: textColor,
 	size: textSize,
 	align: textAlign,
 } = text;
-const layouts = data.layouts;
+const layoutPre = data.layoutPre;
+const layoutPost = data.layoutPost;
 const ratioMobile = settings.ratioMobile;
 const spanMobile = settings.grid.spanMobile;
 const gapDesktop = gap / baseSize + 'rem';
@@ -52,7 +54,7 @@ const firstPath =
 		: pathname[1] + '/' + pathname[2];
 ---
 
-{layouts && <Layouts layouts={data.layouts} data={data} global={global} />}
+{layoutPre && <Layouts layouts={layoutPre} global={global} class="layoutPre" />}
 
 <section class="section container">
 	<div class="grid-default">
@@ -60,7 +62,7 @@ const firstPath =
 			items.map((item) => {
 				const image = item.thumbnail;
 				return (
-					<div class={`col-span-${spanMobile} lg:col-span-${span}`}>
+					<div class:list={[`col-span-${spanMobile}`, `lg:col-span-${span}`]}>
 						<a href={item.uri}>
 							<ImageComponent
 								global={global}
@@ -74,12 +76,22 @@ const firstPath =
 						</a>
 
 						<TitleLevel
-							class={`title text--${titleColor} font--${titleSize} text--${titleAlign}`}
+							class:list={[
+								'title',
+								`text--${titleColor}`,
+								`font--${titleSize}`,
+								`text--${titleAlign}`,
+							]}
 							set:html={item.title}
 						/>
 
 						<p
-							class={`text text--${textColor} font--${textSize} text--${textAlign}`}
+							class:list={[
+								'text',
+								`text--${textColor}`,
+								`font--${textSize}`,
+								`text--${textAlign}`,
+							]}
 							set:html={item.description}
 						/>
 					</div>
@@ -98,6 +110,12 @@ const firstPath =
 		lastUrl={`/${firstPath}/${page.lastPage}`}
 	/>
 </section>
+
+{
+	layoutPost && (
+		<Layouts layouts={layoutPost} global={global} class="layoutPost" />
+	)
+}
 
 <style
 	lang="css"

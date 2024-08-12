@@ -51,9 +51,21 @@ const isHome =
 {
 	headerActive === true ? (
 		<header
-			class={`${
-				isHome ? '' : 'header--active'
-			} bg--${headerBackground} text--${headerColor} textActive--${headerColorActive} bgActive--${headerBackgroundActive} fixed z-20 w-full py-4 transition-all duration-300 ease-in-out md:py-8`}
+			class:list={[
+				!isHome && 'header--active',
+				`bg--${headerBackground}`,
+				`text--${headerColor}`,
+				`textActive--${headerColorActive}`,
+				`bgActive--${headerBackgroundActive}`,
+				'fixed',
+				'z-20',
+				'w-full',
+				'py-4',
+				'transition-all',
+				'duration-300',
+				'ease-in-out',
+				'md:py-8',
+			]}
 		>
 			<div class="container flex items-center justify-between">
 				{logoAlign === 'center' ? (
@@ -63,7 +75,7 @@ const isHome =
 						className={'hidden md:block'}
 					/>
 				) : null}
-				<div id="logo" class={`relative z-20 max-md:py-4`}>
+				<div id="logo" class:list={['relative', 'z-20', 'max-md:py-4']}>
 					<a
 						href={`${
 							translations.length < 1 ||
@@ -97,7 +109,14 @@ const isHome =
 					</a>
 				</div>
 				<nav
-					class={`nav-list font--${headerFontSize}  flex transition-all duration-300 ease-in-out`}
+					class:list={[
+						'nav-list',
+						`font--${headerFontSize}`,
+						'flex',
+						'transition-all',
+						'duration-300',
+						'ease-in-out',
+					]}
 				>
 					<Hamburger global={global} data={data} />
 					<Navigation global={global} data={data} />

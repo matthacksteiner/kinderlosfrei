@@ -20,9 +20,11 @@ const link = image.linkexternal;
 						width={image.width}
 						height={image.height}
 						id={image.identifier}
-						class={`widthMobile--${widthMobile || '100'} widthDesktop--${
-							widthDesktop || '100'
-						} ${classes}`}
+						class:list={[
+							`widthMobile--${widthMobile || '100'}`,
+							`widthDesktop--${widthDesktop || '100'}`,
+							classes,
+						]}
 					/>
 				</a>
 			) : link.type === 'page' ? (
@@ -33,9 +35,11 @@ const link = image.linkexternal;
 						width={image.width}
 						height={image.height}
 						id={image.identifier}
-						class={`widthMobile--${widthMobile || '100'} widthDesktop--${
-							widthDesktop || '100'
-						} ${classes}`}
+						class:list={[
+							`widthMobile--${widthMobile || '100'}`,
+							`widthDesktop--${widthDesktop || '100'}`,
+							classes,
+						]}
 					/>
 				</a>
 			) : link.type === 'file' ? (
@@ -50,9 +54,11 @@ const link = image.linkexternal;
 						width={image.width}
 						height={image.height}
 						id={image.identifier}
-						class={`widthMobile--${widthMobile || '100'} widthDesktop--${
-							widthDesktop || '100'
-						} ${classes}`}
+						class:list={[
+							`widthMobile--${widthMobile || '100'}`,
+							`widthDesktop--${widthDesktop || '100'}`,
+							classes,
+						]}
 					/>
 				</a>
 			) : null
@@ -64,9 +70,11 @@ const link = image.linkexternal;
 					width={image.width}
 					height={image.height}
 					id={image.identifier}
-					class={`widthMobile--${widthMobile || '100'} widthDesktop--${
-						widthDesktop || '100'
-					} ${classes}`}
+					class:list={[
+						`widthMobile--${widthMobile || '100'}`,
+						`widthDesktop--${widthDesktop || '100'}`,
+						classes,
+					]}
 				/>
 			</>
 		)

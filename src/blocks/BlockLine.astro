@@ -3,11 +3,13 @@ const { borderStyle, borderWidth, borderColor, metadata } = Astro.props;
 ---
 
 <div
-	id={metadata?.identifier ?? ''}
-	class={`blockLine blocks ${metadata?.classes ?? ''}`}
-	{...metadata?.attributes ?? ''}
+	id={metadata?.identifier}
+	class:list={['blockLine', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
 >
-	<hr class={`borderColor--${borderColor} borderStyle--${borderStyle}`} />
+	<hr
+		class:list={[`borderColor--${borderColor}`, `borderStyle--${borderStyle}`]}
+	/>
 </div>
 
 <style lang="css" define:vars={{ borderWidth }}>

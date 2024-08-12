@@ -34,9 +34,13 @@ const logoAlign = global.logoAlign;
 					href={href}
 					target={target}
 					rel={rel}
-					class={`nav-link max-lg:mb-8 ${
-						logoAlign === 'center' ? 'lg:my-2' : 'lg:mr-16 2xl:mr-24'
-					} ${isActive ? 'active' : ''} ${isLast ? 'last:mr-0' : ''}`}
+					class:list={[
+						'nav-link',
+						'max-lg:mb-8',
+						logoAlign === 'center' ? 'lg:my-2' : 'lg:mr-16 2xl:mr-24',
+						isActive && 'active',
+						isLast && 'last:mr-0',
+					]}
 				>
 					{item.title}
 				</a>

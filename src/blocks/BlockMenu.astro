@@ -4,12 +4,12 @@ const { global, items, font, align, color, size, gap, metadata } = Astro.props;
 ---
 
 <div
-	id={metadata?.identifier ?? ''}
-	class={`blockMenu blocks ${metadata?.classes ?? ''}`}
-	{...metadata?.attributes ?? ''}
+	id={metadata?.identifier}
+	class:list={['blockMenu', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
 >
 	<nav>
-		<ul class="list flex flex-col">
+		<ul class:list={['list', 'flex', 'flex-col']}>
 			{
 				items &&
 					items.map((item) => {
@@ -19,7 +19,12 @@ const { global, items, font, align, color, size, gap, metadata } = Astro.props;
 								<Link
 									global={global}
 									link={link}
-									class={`text font--${size} text--${color} text--${align} `}
+									class:list={[
+										`text`,
+										`font--${size}`,
+										`text--${color}`,
+										`text--${align}`,
+									]}
 								/>
 							</li>
 						);

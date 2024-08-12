@@ -41,9 +41,9 @@ const vimeoPlayer = isVimeo
 ---
 
 <div
-	id={metadata?.identifier ?? ''}
-	class={`blockVideo blocks ${metadata?.classes ?? ''}`}
-	{...metadata?.attributes ?? ''}
+	id={metadata?.identifier}
+	class:list={['blockVideo', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
 >
 	<div class="video-container">
 		{
@@ -82,7 +82,7 @@ const vimeoPlayer = isVimeo
 					controls={controls}
 					playsinline={autoplay}
 					poster={thumb}
-					class={`${full} ${cursor} ${file.classes} w-full`}
+					class:list={[full, cursor, file.classes, 'w-full']}
 				>
 					<source data-src={file.url} type="video/mp4" />
 				</video>

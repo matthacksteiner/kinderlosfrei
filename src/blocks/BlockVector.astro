@@ -4,11 +4,13 @@ const { image, widthMobile, widthDesktop, widthAlign, metadata } = Astro.props;
 ---
 
 <div
-	id={metadata?.identifier ?? ''}
-	class={`blockVector blocks ${metadata?.classes ?? ''}`}
-	{...metadata?.attributes ?? ''}
+	id={metadata?.identifier}
+	class:list={['blockVector', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
 >
-	<div class={`flex flex-col align-vert--${widthAlign || 'center'}`}>
+	<div
+		class:list={['flex', 'flex-col', `align-vert--${widthAlign || 'center'}`]}
+	>
 		<VectorImage
 			image={image}
 			widthMobile={widthMobile}

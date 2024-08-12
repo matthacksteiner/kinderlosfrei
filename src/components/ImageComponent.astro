@@ -58,9 +58,10 @@ const link = image.linkexternal;
 			rel={link.popup ? 'noopener' : undefined}
 		>
 			<div
-				class={`relative ${
-					image.captionoverlay === 'overlay' ? 'overlay' : ''
-				}`}
+				class:list={[
+					'relative',
+					image.captionoverlay === 'overlay' && 'overlay',
+				]}
 			>
 				<Picture {...pictureProps} />
 				{image.captiontoggle ? (
@@ -70,7 +71,7 @@ const link = image.linkexternal;
 		</a>
 	) : (
 		<div
-			class={`relative ${image.captionoverlay === 'overlay' ? 'overlay' : ''}`}
+			class:list={['relative', image.captionoverlay === 'overlay' && 'overlay']}
 		>
 			<Picture {...pictureProps} />
 			{image.captiontoggle ? <ImageCaption {...image} global={global} /> : null}

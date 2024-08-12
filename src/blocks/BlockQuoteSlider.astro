@@ -21,9 +21,9 @@ const autoplay = hasControl('autoplay');
 ---
 
 <sections
-	id={metadata?.identifier ?? ''}
-	class={`blocks blockQuoteSlider ${metadata?.classes ?? ''}`}
-	{...metadata?.attributes ?? ''}
+	id={metadata?.identifier}
+	class:list={['blocks', 'blockQuoteSlider', metadata?.classes]}
+	{...metadata?.attributes}
 	data-controls={controls}
 	data-time={time}
 >
@@ -31,17 +31,31 @@ const autoplay = hasControl('autoplay');
 		<div class="swiper-wrapper items-center">
 			{
 				items?.map((item) => (
-					<div class={`swiper-slide`}>
+					<div class:list={['swiper-slide']}>
 						<blockquote>
 							<div
 								set:html={item.text}
-								class={`quote kirby-text font--${textSize} text--${textColor} text--${textAlign} pt-4`}
+								class:list={[
+									'quote',
+									'kirby-text',
+									`font--${textSize}`,
+									`text--${textColor}`,
+									`text--${textAlign}`,
+									'pt-4',
+								]}
 							/>
 						</blockquote>
 						<p>
 							<div
 								set:html={item.author}
-								class={`author kirby-text font--${titleSize} text--${titleColor} text--${titleAlign} pt-4`}
+								class:list={[
+									'author',
+									'kirby-text',
+									`font--${titleSize}`,
+									`text--${titleColor}`,
+									`text--${titleAlign}`,
+									'pt-4',
+								]}
 							/>
 						</p>
 					</div>
@@ -50,12 +64,22 @@ const autoplay = hasControl('autoplay');
 		</div>
 	</div>
 	<div class="swiper-controls">
-		{dots && <div class={`swiper-pagination swiper-pagination--${color}`} />}
+		{
+			dots && (
+				<div
+					class:list={['swiper-pagination', `swiper-pagination--${color}`]}
+				/>
+			)
+		}
 		{
 			arrows && (
 				<nav class="swiper-nav">
-					<button class={`text--${color} swiper-left`}>&#10094;</button>
-					<button class={`text--${color} swiper-right`}>&#10095;</button>
+					<button class:list={[`text--${color}`, 'swiper-left']}>
+						&#10094;
+					</button>
+					<button class:list={[`text--${color}`, 'swiper-right']}>
+						&#10095;
+					</button>
 				</nav>
 			)
 		}

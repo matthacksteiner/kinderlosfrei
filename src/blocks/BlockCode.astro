@@ -3,9 +3,9 @@ const { code, metadata } = Astro.props;
 ---
 
 <div
-	id={metadata?.identifier ?? ''}
-	class={`blockCode blocks ${metadata?.classes ?? ''}`}
-	{...metadata?.attributes ?? ''}
+	id={metadata?.identifier}
+	class:list={['blockCode', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
 >
 	<Fragment set:html={code} />
 </div>

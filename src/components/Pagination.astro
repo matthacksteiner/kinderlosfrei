@@ -26,10 +26,16 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 		prevUrl ? (
 			<a
 				href={prevUrl}
-				class={`pagination__link font--${size}
-				paginationText--${color} paginagtionBg--${bg} paginationBoder--${paginationBorderColor}
-				paginationTextHover--${colorHover} paginationBgHover--${bgHover} paginationBorderHover--${paginationBorderColorHover}
-				`}
+				class:list={[
+					'pagination__link',
+					`font--${size}`,
+					`paginationText--${color}`,
+					`paginagtionBg--${bg}`,
+					`paginationBoder--${paginationBorderColor}`,
+					`paginationTextHover--${colorHover}`,
+					`paginationBgHover--${bgHover}`,
+					`paginationBorderHover--${paginationBorderColorHover}`,
+				]}
 			>
 				<span>&#8592;</span>
 			</a>
@@ -42,16 +48,18 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 		paginationList.map((num) => (
 			<a
 				href={`${firstUrl}${num == 1 ? '' : '/' + num}`}
-				class={`
-				pagination__link font--${size}
-				paginationText--${color} paginagtionBg--${bg} paginationBoder--${paginationBorderColor}
-				paginationTextHover--${colorHover} paginationBgHover--${bgHover} paginationBorderHover--${paginationBorderColorHover}
-
-				${
-					currentPage == num
-						? `paginationTextActive--${colorActive} paginationBgActive--${bgActive} paginationBorderActive--${paginationBorderColorActive} active`
-						: ''
-				}`}
+				class:list={[
+					'pagination__link',
+					`font--${size}`,
+					`paginationText--${color}`,
+					`paginagtionBg--${bg}`,
+					`paginationBoder--${paginationBorderColor}`,
+					`paginationTextHover--${colorHover}`,
+					`paginationBgHover--${bgHover}`,
+					`paginationBorderHover--${paginationBorderColorHover}`,
+					currentPage == num &&
+						`paginationTextActive--${colorActive} paginationBgActive--${bgActive} paginationBorderActive--${paginationBorderColorActive} active`,
+				]}
 			>
 				{num}
 			</a>
@@ -64,10 +72,16 @@ const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 		) : (
 			<a
 				href={nextUrl}
-				class={`pagination__link font--${size}
-				paginationText--${color} paginagtionBg--${bg} paginationBoder--${paginationBorderColor}
-				paginationTextHover--${colorHover} paginationBgHover--${bgHover} paginationBorderHover--${paginationBorderColorHover}
-				`}
+				class:list={[
+					'pagination__link',
+					`font--${size}`,
+					`paginationText--${color}`,
+					`paginagtionBg--${bg}`,
+					`paginationBoder--${paginationBorderColor}`,
+					`paginationTextHover--${colorHover}`,
+					`paginationBgHover--${bgHover}`,
+					`paginationBorderHover--${paginationBorderColorHover}`,
+				]}
 			>
 				<span>&#8594;</span>
 			</a>

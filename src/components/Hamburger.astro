@@ -19,32 +19,54 @@ const isHome =
 {
 	global.navHamburger ? (
 		<button
-			class={`${
+			class:list={[
 				isHome
 					? `hamburgerColor--${hamburgerMenuColor} hamburgerColorActive--${hamburgerMenuColorActive}`
-					: `hamburgerColor--${hamburgerMenuColorActive} hamburgerColorActive--${hamburgerMenuColorActive}`
-			} c-hamburger c-hamburger--chop relative z-20 flex-grow  ${
-				logoAlign === 'left' ? 'lg:hidden' : ''
-			}`}
+					: `hamburgerColor--${hamburgerMenuColorActive} hamburgerColorActive--${hamburgerMenuColorActive}`,
+				'c-hamburger',
+				'c-hamburger--chop',
+				'relative',
+				'z-20',
+				'flex-grow',
+				logoAlign === 'left' && 'lg:hidden',
+			]}
 			aria-label="hamburger-button"
 			type="button"
-		>
-			<div class={`c-hamburger-inner`}>
-				<span class="c-hamburger-bar" />
-				<span class="c-hamburger-bar" />
-				<span class="c-hamburger-bar" />
-			</div>
-		</button>
+		/>
 	) : null
 }
 <div
-	class={`mobile-nav-list flex flex-col items-center invisible text--${hamburgerFontColor} bg--${hamburgerOverlay} font--${hamburgerFontSize} top-0 left-0  mr-24 flex min-h-full w-full flex-col justify-center text-center opacity-0 transition-opacity delay-100 duration-300 ease-in-out placeholder:pointer-events-none fixed ${
-		logoAlign === 'left' ? 'lg:hidden' : ''
-	}`}
+	class:list={[
+		'mobile-nav-list',
+		'flex',
+		'flex-col',
+		'items-center',
+		'invisible',
+		`text--${hamburgerFontColor}`,
+		`bg--${hamburgerOverlay}`,
+		`font--${hamburgerFontSize}`,
+		'top-0',
+		'left-0',
+		'mr-24',
+		'min-h-full',
+		'w-full',
+		'justify-center',
+		'text-center',
+		'opacity-0',
+		'transition-opacity',
+		'delay-100',
+		'duration-300',
+		'ease-in-out',
+		'placeholder:pointer-events-none',
+		'fixed',
+		logoAlign === 'left' && 'lg:hidden',
+	]}
 >
-	<NavLinks links={global.navHamburger} global={global} data={data} />
-	<LanguagePicker global={global} font={hamburgerFont} class="lg:hidden" />
 </div>
+
+<NavLinks links={global.navHamburger} global={global} data={data} />
+<LanguagePicker global={global} font={hamburgerFont} class="lg:hidden" />
+
 
 <style lang="css" define:vars={{ hamburgerFont }}>
 	.mobile-nav-list {
@@ -121,15 +143,18 @@ const isHome =
 	hamburger?.addEventListener('click', () => {
 		menu?.classList.toggle('expanded');
 		hamburger?.classList.toggle('active');
-		body && (body.style.overflowY =
-			body && body.style.overflowY === 'hidden' ? 'auto' : 'hidden');
+		body &&
+			(body.style.overflowY =
+				body && body.style.overflowY === 'hidden' ? 'auto' : 'hidden');
 	});
 
 	navLinks.forEach((link) => {
 		link.addEventListener('click', () => {
 			menu?.classList.remove('expanded');
 			hamburger?.classList.remove('active');
-			body && (body.style.overflowY = body.style.overflowY === 'hidden' ? 'auto' : 'hidden');
+			body &&
+				(body.style.overflowY =
+					body.style.overflowY === 'hidden' ? 'auto' : 'hidden');
 		});
 	});
 </script>

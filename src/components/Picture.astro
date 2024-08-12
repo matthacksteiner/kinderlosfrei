@@ -124,7 +124,7 @@ const generateImgSrc = (source, width, height) => {
 				alt={props.alt}
 				loading={props.loading}
 				id={props.id}
-				class={props.class}
+				class:list={[props.class]}
 			/>
 		</picture>
 	) : (
@@ -134,7 +134,7 @@ const generateImgSrc = (source, width, height) => {
 				{...props}
 				width={imageWidthMobile}
 				height={imageHeightMobile}
-				class={`lg:hidden ${props.class}`}
+				class:list={['lg:hidden', props.class]}
 			/>
 
 			<Image
@@ -142,7 +142,7 @@ const generateImgSrc = (source, width, height) => {
 				width={imageWidthDesktop}
 				height={imageHeightDesktop}
 				{...props}
-				class={`hidden lg:block ${props.class}`}
+				class:list={['hidden', 'lg:block', props.class]}
 			/>
 		</>
 	)

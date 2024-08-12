@@ -35,9 +35,9 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 ---
 
 <section
-	id={metadata?.identifier ?? ''}
-	class={`blockSlider blocks ${metadata?.classes ?? ''}`}
-	{...metadata?.attributes ?? ''}
+	id={metadata?.identifier}
+	class:list={['blockSlider', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
 	data-controls={controls}
 	data-time={time}
 	data-effect={effect}
@@ -50,12 +50,12 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 		<div class="swiper-wrapper items-center">
 			{
 				images?.map((image) => (
-					<div class={`swiper-slide ${overlay}`}>
+					<div class:list={['swiper-slide', overlay]}>
 						<ImageComponent
 							global={global}
 							image={image}
 							loading="lazy"
-							class={`${full}`}
+							class:list={[full]}
 							ratioMobile={ratioMobile}
 							ratioDesktop={ratioDesktop}
 							span={span}
@@ -67,14 +67,16 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 		{
 			arrows && (
 				<nav>
-					<div class={`text--${color} swiper-button-next`} />
-					<div class={`text--${color} swiper-button-prev`} />
+					<div class:list={[`text--${color}`, 'swiper-button-next']} />
+					<div class:list={[`text--${color}`, 'swiper-button-prev']} />
 				</nav>
 			)
 		}
 		{
 			(dots || line) && (
-				<div class={`swiper-pagination swiper-pagination--${color} `} />
+				<div
+					class:list={['swiper-pagination', `swiper-pagination--${color}`]}
+				/>
 			)
 		}
 		<div
@@ -85,122 +87,122 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 					<div>
 						<Level
 							set:html={text}
-							class={`title font--${size} text--${textcolor} text--${align}`}
+							class:list={[
+								`title`,
+								`font--${size}`,
+								`text--${textcolor}`,
+								`text--${align}`,
+							]}
 						/>
 					</div>
 				)
 			}
 		</div>
 	</div>
-
-	<script>
-		import Swiper, {
-			Navigation,
-			Autoplay,
-			Pagination,
-			EffectFade,
-		} from 'swiper';
-		import 'swiper/css/bundle';
-		import 'swiper/css/effect-fade';
-		Swiper.use([Navigation, Autoplay, Pagination, EffectFade]);
-
-		const blockSliders = document.querySelectorAll('.blockSlider');
-
-		blockSliders.forEach((blockSlider) => {
-			if (blockSlider instanceof HTMLElement) {
-				const controls = blockSlider?.dataset.controls;
-				const line = controls?.includes('line');
-				const time = blockSlider?.dataset.time;
-				const autoplay = controls?.includes('autoplay');
-				const effect = blockSlider?.dataset.effect;
-				const viewMobile = blockSlider?.dataset.viewmobile
-					? blockSlider.dataset.viewmobile
-					: '1';
-				const viewDesktop = blockSlider?.dataset.viewdesktop
-					? blockSlider.dataset.viewdesktop
-					: '1';
-				const viewPaddingMobile = blockSlider?.dataset.viewpaddingmobile
-					? blockSlider.dataset.viewpaddingmobile
-					: '0';
-				const viewPaddingDesktop = blockSlider?.dataset.viewpaddingdesktop
-					? blockSlider.dataset.viewpaddingdesktop
-					: '0';
-				if (time) {
-					const swiperSlider = blockSlider.querySelector('.swiperSlider');
-					const swiper = new Swiper(swiperSlider, {
-						...(autoplay && {
-							autoplay: {
-								delay: parseInt(time),
-							},
-						}),
-						centeredSlidesBounds: true,
-						loop: true,
-						slidesPerView: parseInt(viewMobile),
-						spaceBetween: parseInt(viewPaddingMobile),
-						effect: effect === 'fade' ? 'fade' : 'slide',
-						navigation: {
-							nextEl: blockSlider.querySelector('.swiper-button-next'),
-							prevEl: blockSlider.querySelector('.swiper-button-prev'),
-						},
-						pagination: {
-							el: blockSlider.querySelector('.swiper-pagination'),
-							type: line ? 'progressbar' : 'bullets',
-							clickable: true,
-						},
-						breakpoints: {
-							1024: {
-								slidesPerView: parseInt(viewDesktop),
-								spaceBetween: parseInt(viewPaddingDesktop),
-							},
-						},
-					});
-				}
-			}
-		});
-	</script>
-
-	<style
-		lang="css"
-		is:global
-		define:vars={{
-			font,
-		}}
-	>
-		.title {
-			font-family: var(--font);
-		}
-		.overlay:before {
-			@apply absolute left-0 top-0 z-10 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
-		}
-
-		.swiper-pagination--primary .swiper-pagination-bullet-active,
-		.swiper-pagination--primary .swiper-pagination-progressbar-fill {
-			@apply bg-primary;
-		}
-
-		.swiper-pagination--secondary .swiper-pagination-bullet-active,
-		.swiper-pagination--secondary .swiper-pagination-progressbar-fill {
-			@apply bg-secondary;
-		}
-
-		.swiper-pagination--tertiary .swiper-pagination-bullet-active,
-		.swiper-pagination--tertiary .swiper-pagination-progressbar-fill {
-			@apply bg-tertiary;
-		}
-
-		.swiper-pagination--black .swiper-pagination-bullet-active,
-		.swiper-pagination--black .swiper-pagination-progressbar-fill {
-			@apply bg-black;
-		}
-
-		.swiper-pagination--white .swiper-pagination-bullet-active,
-		.swiper-pagination--white .swiper-pagination-progressbar-fill {
-			@apply bg-white;
-		}
-
-		.swiper-pagination--transparent .swiper-pagination-bullet-active,
-		.swiper-pagination--transparent .swiper-pagination-progressbar-fill {
-			@apply bg-transparent;
-		}
-	</style>
 </section>
+
+<script>
+	import Swiper, { Navigation, Autoplay, Pagination, EffectFade } from 'swiper';
+	import 'swiper/css/bundle';
+	import 'swiper/css/effect-fade';
+	Swiper.use([Navigation, Autoplay, Pagination, EffectFade]);
+
+	const blockSliders = document.querySelectorAll('.blockSlider');
+
+	blockSliders.forEach((blockSlider) => {
+		if (blockSlider instanceof HTMLElement) {
+			const controls = blockSlider?.dataset.controls;
+			const line = controls?.includes('line');
+			const time = blockSlider?.dataset.time;
+			const autoplay = controls?.includes('autoplay');
+			const effect = blockSlider?.dataset.effect;
+			const viewMobile = blockSlider?.dataset.viewmobile
+				? blockSlider.dataset.viewmobile
+				: '1';
+			const viewDesktop = blockSlider?.dataset.viewdesktop
+				? blockSlider.dataset.viewdesktop
+				: '1';
+			const viewPaddingMobile = blockSlider?.dataset.viewpaddingmobile
+				? blockSlider.dataset.viewpaddingmobile
+				: '0';
+			const viewPaddingDesktop = blockSlider?.dataset.viewpaddingdesktop
+				? blockSlider.dataset.viewpaddingdesktop
+				: '0';
+			if (time) {
+				const swiperSlider = blockSlider.querySelector('.swiperSlider');
+				const swiper = new Swiper(swiperSlider, {
+					...(autoplay && {
+						autoplay: {
+							delay: parseInt(time),
+						},
+					}),
+					centeredSlidesBounds: true,
+					loop: true,
+					slidesPerView: parseInt(viewMobile),
+					spaceBetween: parseInt(viewPaddingMobile),
+					effect: effect === 'fade' ? 'fade' : 'slide',
+					navigation: {
+						nextEl: blockSlider.querySelector('.swiper-button-next'),
+						prevEl: blockSlider.querySelector('.swiper-button-prev'),
+					},
+					pagination: {
+						el: blockSlider.querySelector('.swiper-pagination'),
+						type: line ? 'progressbar' : 'bullets',
+						clickable: true,
+					},
+					breakpoints: {
+						1024: {
+							slidesPerView: parseInt(viewDesktop),
+							spaceBetween: parseInt(viewPaddingDesktop),
+						},
+					},
+				});
+			}
+		}
+	});
+</script>
+
+<style
+	lang="css"
+	is:global
+	define:vars={{
+		font,
+	}}
+>
+	.title {
+		font-family: var(--font);
+	}
+	.overlay:before {
+		@apply absolute left-0 top-0 z-10 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
+	}
+
+	.swiper-pagination--primary .swiper-pagination-bullet-active,
+	.swiper-pagination--primary .swiper-pagination-progressbar-fill {
+		@apply bg-primary;
+	}
+
+	.swiper-pagination--secondary .swiper-pagination-bullet-active,
+	.swiper-pagination--secondary .swiper-pagination-progressbar-fill {
+		@apply bg-secondary;
+	}
+
+	.swiper-pagination--tertiary .swiper-pagination-bullet-active,
+	.swiper-pagination--tertiary .swiper-pagination-progressbar-fill {
+		@apply bg-tertiary;
+	}
+
+	.swiper-pagination--black .swiper-pagination-bullet-active,
+	.swiper-pagination--black .swiper-pagination-progressbar-fill {
+		@apply bg-black;
+	}
+
+	.swiper-pagination--white .swiper-pagination-bullet-active,
+	.swiper-pagination--white .swiper-pagination-progressbar-fill {
+		@apply bg-white;
+	}
+
+	.swiper-pagination--transparent .swiper-pagination-bullet-active,
+	.swiper-pagination--transparent .swiper-pagination-progressbar-fill {
+		@apply bg-transparent;
+	}
+</style>

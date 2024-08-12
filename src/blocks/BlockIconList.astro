@@ -14,14 +14,16 @@ const {
 ---
 
 <div
-	id={metadata?.identifier ?? ''}
-	class={`blockIconlist blocks ${metadata?.classes ?? ''}`}
-	{...metadata?.attributes ?? ''}
+	id={metadata?.identifier}
+	class:list={['blockIconlist', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
 >
 	<ul
-		class={`list flex ${
-			iconDirection === 'Horizontal' ? 'flex-row' : 'flex-col'
-		}`}
+		class:list={[
+			'list',
+			'flex',
+			iconDirection === 'Horizontal' ? 'flex-row' : 'flex-col',
+		]}
 		style={`row-gap: ${iconGap}px`}
 	>
 		{
@@ -31,18 +33,25 @@ const {
 						href={item.url}
 						target="_blank"
 						rel="noopener"
-						class="link flex"
+						class:list={['link', 'flex']}
 						style={`column-gap: ${iconListGap}px;`}
 						aria-label="icon list item"
 					>
 						{item.icon && (
 							<div
 								set:html={item.icon.source}
-								class={`icon text--${color}`}
+								class:list={['icon', `text--${color}`]}
 								style={`height: ${iconSize}px; width: ${iconSize}px;`}
 							/>
 						)}
-						<span class={`text font--${size} text--${color} text--${align}`}>
+						<span
+							class:list={[
+								'text',
+								`font--${size}`,
+								`text--${color}`,
+								`text--${align}`,
+							]}
+						>
 							{item.text}
 						</span>
 					</a>

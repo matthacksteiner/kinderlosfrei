@@ -5,9 +5,29 @@ const logoAlign = global.logoAlign;
 ---
 
 <div
-	class={`nav-links--desktop hidden lg:flex lg:bg-transparent top-0 left-0 z-10 min-h-full w-full justify-center text-center opacity-0 transition-opacity  duration-300 ease-in-out placeholder:pointer-events-none  visible flex-row lg:justify-end lg:opacity-100 ${
-		logoAlign === 'center' ? 'lg:hidden' : ''
-	}`}
+	class:list={[
+		'nav-links--desktop',
+		'hidden',
+		'lg:flex',
+		'lg:bg-transparent',
+		'top-0',
+		'left-0',
+		'z-10',
+		'min-h-full',
+		'w-full',
+		'justify-center',
+		'text-center',
+		'opacity-0',
+		'transition-opacity',
+		'duration-300',
+		'ease-in-out',
+		'placeholder:pointer-events-none',
+		'visible',
+		'flex-row',
+		'lg:justify-end',
+		'lg:opacity-100',
+		logoAlign === 'center' ? 'lg:hidden' : '',
+	]}
 >
 	<NavLinks links={global.navHeader} global={global} data={data} />
 </div>
