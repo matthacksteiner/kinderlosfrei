@@ -32,7 +32,13 @@ const isHome =
 			]}
 			aria-label="hamburger-button"
 			type="button"
-		/>
+		>
+			<div class={`c-hamburger-inner`}>
+				<span class="c-hamburger-bar" />
+				<span class="c-hamburger-bar" />
+				<span class="c-hamburger-bar" />
+			</div>
+		</button>
 	) : null
 }
 <div
@@ -62,11 +68,9 @@ const isHome =
 		logoAlign === 'left' && 'lg:hidden',
 	]}
 >
+	<NavLinks links={global.navHamburger} global={global} data={data} />
+	<LanguagePicker global={global} font={hamburgerFont} class="lg:hidden" />
 </div>
-
-<NavLinks links={global.navHamburger} global={global} data={data} />
-<LanguagePicker global={global} font={hamburgerFont} class="lg:hidden" />
-
 
 <style lang="css" define:vars={{ hamburgerFont }}>
 	.mobile-nav-list {
