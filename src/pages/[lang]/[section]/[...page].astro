@@ -5,13 +5,18 @@ import Section from '@components/Section.astro';
 
 export async function getStaticPaths({ paginate }) {
 	const API_URL = import.meta.env.KIRBY_URL;
+
 	const global = await getData(`/global.json`);
+	const elements = global.paginationElements;
+
 	const prefixDefaultLocale = global.prefixDefaultLocale;
 	const languages = await getLanguages();
 	const allLang = !prefixDefaultLocale
 		? languages.translations.map(({ code }) => code)
 		: languages.allLang.map(({ code }) => code);
-	let paths = [];
+
+	let paths: Array<{ params: { lang: string; section: string }; props?: any }> =
+		[];
 
 	for (const lang of allLang) {
 		const pagesResponse = await fetch(API_URL + '/' + lang + '/index.json');
@@ -22,7 +27,6 @@ export async function getStaticPaths({ paginate }) {
 			const itemsResponse = await fetch(
 				API_URL + '/' + lang + `/${section.uri}.json`
 			);
-
 			const itemsData = await itemsResponse.json();
 			const filteredItems = itemsData.items.filter(
 				(item) => item.parent === section.uri
@@ -31,7 +35,7 @@ export async function getStaticPaths({ paginate }) {
 			paths.push(
 				...paginate(filteredItems, {
 					params: { lang, section: section.uri },
-					pageSize: 2,
+					pageSize: elements,
 				})
 			);
 		}
