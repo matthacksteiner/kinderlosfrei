@@ -41,7 +41,7 @@ const vimeoPlayer = isVimeo
 ---
 
 <div
-	id={metadata?.identifier}
+	id={metadata?.identifier || undefined}
 	class:list={['blockVideo', 'blocks', metadata?.classes]}
 	{...metadata?.attributes}
 >

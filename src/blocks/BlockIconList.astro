@@ -14,7 +14,7 @@ const {
 ---
 
 <div
-	id={metadata?.identifier}
+	id={metadata?.identifier || undefined}
 	class:list={['blockIconlist', 'blocks', metadata?.classes]}
 	{...metadata?.attributes}
 >

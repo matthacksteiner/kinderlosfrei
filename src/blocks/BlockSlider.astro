@@ -35,7 +35,7 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 ---
 
 <section
-	id={metadata?.identifier}
+	id={metadata?.identifier || undefined}
 	class:list={['blockSlider', 'blocks', metadata?.classes]}
 	{...metadata?.attributes}
 	data-controls={controls}

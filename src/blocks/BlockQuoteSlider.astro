@@ -21,7 +21,7 @@ const autoplay = hasControl('autoplay');
 ---
 
 <sections
-	id={metadata?.identifier}
+	id={metadata?.identifier || undefined}
 	class:list={['blocks', 'blockQuoteSlider', metadata?.classes]}
 	{...metadata?.attributes}
 	data-controls={controls}

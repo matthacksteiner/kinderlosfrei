@@ -3,7 +3,7 @@ const { title, font, size, align, color, Level, metadata } = Astro.props;
 ---
 
 <div
-	id={metadata?.identifier}
+	id={metadata?.identifier || undefined}
 	class:list={['blockTitle', 'blocks', metadata?.classes]}
 	{...metadata?.attributes}
 >

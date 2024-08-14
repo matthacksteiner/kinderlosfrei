@@ -3,7 +3,7 @@ const { borderStyle, borderWidth, borderColor, metadata } = Astro.props;
 ---
 
 <div
-	id={metadata?.identifier}
+	id={metadata?.identifier || undefined}
 	class:list={['blockLine', 'blocks', metadata?.classes]}
 	{...metadata?.attributes}
 >
