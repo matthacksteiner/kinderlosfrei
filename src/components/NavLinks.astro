@@ -1,7 +1,7 @@
 ---
 const { data, global, links } = Astro.props;
-const { slug, lang } = Astro.params;
-const currentPath = slug ? slug : '';
+const { lang } = Astro.params;
+const path = Astro.url.pathname;
 const currentLang = data.lang;
 const translations = global.translations;
 const logoAlign = global.logoAlign;
@@ -26,7 +26,7 @@ const logoAlign = global.logoAlign;
 			const target = isUrl ? `${isPopup ? '_blank' : '_self'}` : undefined;
 			const rel = isUrl ? `${isPopup ? 'noopener noreferrer' : ''}` : undefined;
 
-			const isActive = currentPath === item.uri;
+			const isActive = path.includes(item.uri);
 			const isLast = translations.length === 0;
 
 			return (
