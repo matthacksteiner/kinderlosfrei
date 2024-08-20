@@ -99,6 +99,8 @@ export async function getSizes() {
 			const letterSpacingDesktopXl =
 				item.letterSpacingDesktopXl || letterSpacingDesktop;
 
+			const minSizeDesktop = sizeDesktop - sizeDesktop * 0.4;
+
 			return `
 		  .font--${item.name} {
 			font-size: ${sizeMobile / baseFontSize}rem;
@@ -107,9 +109,11 @@ export async function getSizes() {
 			text-transform: ${item.transform};
 			text-decoration: ${item.decoration};
 		  }
-		  @media (min-width: 768px) and (max-width: 1919px) {
+		   @media (min-width: 768px) and (max-width: 1919px) {
 			.font--${item.name} {
-			  font-size: ${sizeDesktop / baseFontSize}rem;
+			  font-size: clamp(${minSizeDesktop / baseFontSize}rem,
+				${minSizeDesktop / baseFontSize}rem + 1vw,
+				${sizeDesktop / baseFontSize}rem);
 			  line-height: ${lineHeightDesktop / sizeDesktop};
 			  letter-spacing: ${letterSpacingDesktop / sizeDesktop}em;
 			  text-transform: ${item.transform};
