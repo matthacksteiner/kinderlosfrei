@@ -56,6 +56,7 @@ const link = image.linkexternal;
 			}
 			target={link.popup ? '_blank' : undefined}
 			rel={link.popup ? 'noopener' : undefined}
+			aria-label={`Mehr zu ${image.alt}`}
 		>
 			<div
 				class:list={[
