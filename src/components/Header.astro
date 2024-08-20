@@ -38,6 +38,8 @@ const logoMobileActive =
 
 const logoAlign = global.logoAlign;
 const logoFile = global.logoFile;
+const logoWidth = global.logoFile.width;
+const logoHeight = global.logoFile.height;
 const logoCta = global.logoCta;
 const currentLang = lang;
 const defaultLang = global.defaultLang.code;
@@ -94,8 +96,8 @@ const isHome =
 								}
 								class="transition-all duration-300 ease-in-out"
 								aria-label={global.siteTitle}
-								width={logoDesktop}
-								height="auto"
+								width={logoWidth}
+								height={logoHeight}
 							/>
 						) : (
 							<Icon
