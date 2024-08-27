@@ -60,6 +60,7 @@ const firstPath =
 	<div class="grid-default">
 		{
 			items
+				.filter((item) => item.status === 'listed')
 				.sort((a, b) => a.position - b.position)
 				.map((item) => {
 					const image = item.thumbnail;
