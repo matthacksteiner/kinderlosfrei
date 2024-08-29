@@ -1,22 +1,86 @@
 ---
 export const prerender = false;
 
-import { getGlobal } from '@lib/api.js';
+import { getData, getGlobal } from '@lib/api.js';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
+import Section from '@components/Section.astro';
+
 const API_URL = import.meta.env.KIRBY_URL;
 
+const initialGlobal = await getGlobal();
+const prefixDefaultLocale = initialGlobal.prefixDefaultLocale;
+const defaultLang = initialGlobal.defaultLang;
+const currentLang = Astro.currentLocale;
 const { slug } = Astro.params;
-const pagesResponse = await fetch(
-	API_URL + '/' + `${slug === undefined ? 'home' : slug}` + '.json'
-);
-if (!pagesResponse) throw Astro.redirect('/404');
+
+let endpoint;
+if (prefixDefaultLocale && currentLang === defaultLang) {
+	endpoint = 'home';
+} else {
+	endpoint = slug && slug !== currentLang ? slug : 'home';
+}
+
+const pagesResponse = await fetch(API_URL + '/' + `${endpoint}` + '.json');
+
+if (!pagesResponse.ok) throw Astro.redirect('/404');
 const data = await pagesResponse.json();
 
-const global = await getGlobal();
+const global = currentLang
+	? await getData(`/${currentLang}/global.json`)
+	: await getData(`/global.json`);
+
 const pageTitle = data.title;
+
+// Additional logic to handle sections and items if needed
+let sectionData = null;
+let items = [];
+
+if (data.intendedTemplate === 'section') {
+	const itemsResponse = await fetch(API_URL + `/${endpoint}.json`);
+	const itemsData = await itemsResponse.json();
+	items = itemsData.items;
+	sectionData = data;
+}
+
+// Prepare pagination information (if applicable)
+const pageSize = global.paginationElements;
+const currentPage = 1; // Modify this as needed if you have dynamic page numbers
+const lastPage = Math.ceil(items.length / pageSize);
+const paginatedItems = items.slice(0, pageSize); // Adjust pagination logic as needed
+
+// Pagination URLs
+const currentUrl = `${endpoint}`;
+const prevUrl = currentPage > 1 ? `${endpoint}/page/${currentPage - 1}` : null;
+const nextUrl =
+	currentPage < lastPage ? `${endpoint}/page/${currentPage + 1}` : null;
+const pageUrls = {
+	current: currentUrl,
+	prev: prevUrl,
+	next: nextUrl,
+};
 ---
 
 <BaseLayout pageTitle={pageTitle} data={data} global={global}>
-	<Layouts layouts={data.layouts} data={data} global={global} />
+	{
+		sectionData ? (
+			<>
+				<h1 class="fixed z-50 bg-white">
+					Pagination is currently not working in Preview Mode
+				</h1>
+				<Section
+					data={sectionData}
+					global={global}
+					page={{
+						data: paginatedItems,
+						url: pageUrls,
+						currentPage,
+						lastPage,
+					}}
+				/>
+			</>
+		) : (
+			<Layouts layouts={data.layouts} data={data} global={global} />
+		)
+	}
 </BaseLayout>
