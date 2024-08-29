@@ -8,14 +8,16 @@ const API_URL = import.meta.env.KIRBY_URL;
 
 const initialGlobal = await getGlobal();
 const prefixDefaultLocale = initialGlobal.prefixDefaultLocale;
-
+const defaultLang = initialGlobal.defaultLang;
 const currentLang = Astro.currentLocale;
 const { slug } = Astro.params;
 
-const endpoint =
-	!slug || (slug === currentLang && prefixDefaultLocale === false)
-		? 'home'
-		: slug;
+let endpoint;
+if (prefixDefaultLocale && currentLang === defaultLang) {
+	endpoint = 'home';
+} else {
+	endpoint = slug && slug !== currentLang ? slug : 'home';
+}
 
 const pagesResponse = await fetch(API_URL + '/' + `${endpoint}` + '.json');
 
