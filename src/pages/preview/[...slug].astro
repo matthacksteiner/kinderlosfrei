@@ -1,19 +1,31 @@
 ---
 export const prerender = false;
 
-import { getGlobal } from '@lib/api.js';
+import { getData, getGlobal } from '@lib/api.js';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 const API_URL = import.meta.env.KIRBY_URL;
 
+const initialGlobal = await getGlobal();
+const prefixDefaultLocale = initialGlobal.prefixDefaultLocale;
+
+const currentLang = Astro.currentLocale;
 const { slug } = Astro.params;
-const pagesResponse = await fetch(
-	API_URL + '/' + `${slug === undefined ? 'home' : slug}` + '.json'
-);
+
+const endpoint =
+	!slug || (slug === currentLang && prefixDefaultLocale === false)
+		? 'home'
+		: slug;
+
+const pagesResponse = await fetch(API_URL + '/' + `${endpoint}` + '.json');
+
 if (!pagesResponse) throw Astro.redirect('/404');
 const data = await pagesResponse.json();
 
-const global = await getGlobal();
+const global = currentLang
+	? await getData(`/${currentLang}/global.json`)
+	: await getData(`/global.json`);
+
 const pageTitle = data.title;
 ---
 
