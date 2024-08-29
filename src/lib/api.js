@@ -133,3 +133,7 @@ export async function getSizes() {
 		})
 		.join('');
 }
+
+export function toRem(value) {
+	return value / 16 + 'rem';
+}

@@ -1,4 +1,5 @@
 ---
+import { toRem } from '@lib/api.js';
 import Picture from '@components/Picture.astro';
 import ImageCaption from '@components/ImageCaption.astro';
 const { lang } = Astro.params;
@@ -14,15 +15,8 @@ const {
 	backgroundContainer,
 	class: className,
 } = Astro.props;
-const baseSize = 16;
-const gridBlockMobile =
-	global.gridBlockMobile / baseSize
-		? global.gridBlockMobile / baseSize + 'rem'
-		: '16px';
-const gridBlockDesktop =
-	global.gridBlockDesktop / baseSize
-		? global.gridBlockDesktop / baseSize + 'rem'
-		: '16px';
+const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
+const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
 
 const pictureProps = {
 	src: image.url,

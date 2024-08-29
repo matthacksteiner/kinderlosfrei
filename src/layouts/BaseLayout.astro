@@ -1,4 +1,6 @@
 ---
+import { toRem } from '@lib/api.js';
+
 import '@styles/global.css';
 import '@styles/custom.css';
 import Header from '@components/Header.astro';
@@ -20,31 +22,12 @@ const colorWhite = global.colorWhite;
 const colorTransparent = global.colorTransparent;
 const colorBackground = global.colorBackground;
 
-const baseSize = 16;
-const gridGapMobile =
-	global.gridGapMobile / baseSize
-		? global.gridGapMobile / baseSize + 'rem'
-		: '20px';
-const gridMarginMobile =
-	global.gridMarginMobile / baseSize
-		? global.gridMarginMobile / baseSize + 'rem'
-		: '20px';
-const gridGapDesktop =
-	global.gridGapDesktop / baseSize
-		? global.gridGapDesktop / baseSize + 'rem'
-		: '40px';
-const gridMarginDesktop =
-	global.gridMarginDesktop / baseSize
-		? global.gridMarginDesktop / baseSize + 'rem'
-		: '40px';
-const gridBlockMobile =
-	global.gridBlockMobile / baseSize
-		? global.gridBlockMobile / baseSize + 'rem'
-		: '16px';
-const gridBlockDesktop =
-	global.gridBlockDesktop / baseSize
-		? global.gridBlockDesktop / baseSize + 'rem'
-		: '16px';
+const gridGapMobile = toRem(global.gridGapMobile) || '1.25rem';
+const gridMarginMobile = toRem(global.gridMarginMobile) || '1.25rem';
+const gridGapDesktop = toRem(global.gridGapDesktop) || '2.5rem';
+const gridMarginDesktop = toRem(global.gridMarginDesktop) || '2.5rem';
+const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
+const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
 
 const url = Astro.url.origin;
 const description = data.meta.description;

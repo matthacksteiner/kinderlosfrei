@@ -1,12 +1,12 @@
 ---
+import { toRem } from '@lib/api.js';
 const { global, length, currentPage, firstUrl, prevUrl, nextUrl } = Astro.props;
-const baseSize = 16;
 const paginationFont = global.paginationFont;
 const size = global.paginationFontSize;
-const paginationPadding = global.paginationPadding / baseSize + 'rem';
-const paginationMargin = global.paginationMargin / baseSize + 'rem';
-const paginationTop = global.paginationTop / baseSize + 'rem';
-const paginationBottom = global.paginationBottom / baseSize + 'rem';
+const paginationPadding = toRem(global.paginationPadding);
+const paginationMargin = toRem(global.paginationMargin);
+const paginationTop = toRem(global.paginationTop);
+const paginationBottom = toRem(global.paginationBottom);
 const bg = global.paginationBackgroundColor;
 const bgHover = global.paginationBackgroundColorHover;
 const bgActive = global.paginationBackgroundColorActive;
@@ -16,8 +16,8 @@ const colorActive = global.paginationTextColorActive;
 const paginationBorderColor = global.paginationBorderColor;
 const paginationBorderColorHover = global.paginationBorderColorHover;
 const paginationBorderColorActive = global.paginationBorderColorActive;
-const paginationBorderWidth = global.paginationBorderWidth / baseSize + 'rem';
-const paginationBorderRadius = global.paginationBorderRadius / baseSize + 'rem';
+const paginationBorderWidth = toRem(global.paginationBorderWidth);
+const paginationBorderRadius = toRem(global.paginationBorderRadius);
 const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
 ---
 

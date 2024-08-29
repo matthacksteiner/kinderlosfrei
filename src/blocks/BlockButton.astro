@@ -1,21 +1,21 @@
 ---
+import { toRem } from '@lib/api.js';
 import Link from '@components/Link.astro';
 const { link, global, align, className, metadata } = Astro.props;
-const baseSize = 16;
 const buttonFont = global.buttonFont;
 const size = global.buttonFontSize;
-const buttonPadding = global.buttonPadding / baseSize + 'rem';
+const buttonPadding = toRem(global.buttonPadding);
 const bg = global.buttonBackgroundColor;
 const bgActive = global.buttonBackgroundColorActive;
 const color = global.buttonTextColor;
 const colorActive = global.buttonTextColorActive;
 const buttonBorderColor = global.buttonBorderColor;
 const buttonBorderColorActive = global.buttonBorderColorActive;
-const buttonBorderWidth = global.buttonBorderWidth / baseSize + 'rem';
+const buttonBorderWidth = toRem(global.buttonBorderWidth);
 const buttonBorderRadius =
 	link.title && link.title.length === 1
 		? '50%'
-		: global.buttonBorderRadius / baseSize + 'rem';
+		: toRem(global.buttonBorderRadius);
 ---
 
 <div

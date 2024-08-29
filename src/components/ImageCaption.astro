@@ -1,4 +1,5 @@
 ---
+import { toRem } from '@lib/api.js';
 const {
 	global,
 	captiontitle: captionTitle,
@@ -9,15 +10,8 @@ const {
 	captionalign: captionAlign,
 } = Astro.props;
 
-const baseSize = 16;
-const gridBlockMobile =
-	global.gridBlockMobile / baseSize
-		? global.gridBlockMobile / baseSize + 'rem'
-		: '16px';
-const gridBlockDesktop =
-	global.gridBlockDesktop / baseSize
-		? global.gridBlockDesktop / baseSize + 'rem'
-		: '16px';
+const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
+const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
 ---
 
 {

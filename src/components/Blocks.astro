@@ -1,4 +1,5 @@
 ---
+import { toRem } from '@lib/api.js';
 import BlockText from '@blocks/BlockText.astro';
 import BlockDivider from '@blocks/BlockDivider.astro';
 import BlockImage from '@blocks/BlockImage.astro';
@@ -16,7 +17,6 @@ import BlockColumns from '@blocks/BlockColumns.astro';
 import BlockGrid from '@blocks/BlockGrid.astro';
 import BlockCode from '@blocks/BlockCode.astro';
 const { blocks, global, span, backgroundContainer } = Astro.props;
-const baseSize = 16;
 ---
 
 {
@@ -218,18 +218,10 @@ const baseSize = 16;
 					return (
 						<BlockDivider
 							global={global}
-							spacingMobileTop={
-								block.content.spacingmobiletop / baseSize + 'rem'
-							}
-							spacingMobileBottom={
-								block.content.spacingmobilebottom / baseSize + 'rem'
-							}
-							spacingDesktopTop={
-								block.content.spacingdesktoptop / baseSize + 'rem'
-							}
-							spacingDesktopBottom={
-								block.content.spacingdesktopbottom / baseSize + 'rem'
-							}
+							spacingMobileTop={toRem(block.content.spacingmobiletop)}
+							spacingMobileBottom={toRem(block.content.spacingmobilebottom)}
+							spacingDesktopTop={toRem(block.content.spacingdesktoptop)}
+							spacingDesktopBottom={toRem(block.content.spacingdesktopbottom)}
 						/>
 					);
 

@@ -1,10 +1,10 @@
 ---
+import { toRem } from '@lib/api.js';
 import Layouts from '@components/Layouts.astro';
 import ImageComponent from '@components/ImageComponent.astro';
 import Pagination from '@components/Pagination.astro';
 
 const { data, global, page } = Astro.props;
-const baseSize = 16;
 const { settings } = data;
 const items = page.data;
 const {
@@ -32,16 +32,11 @@ const layoutPre = data.layoutPre;
 const layoutPost = data.layoutPost;
 const ratioMobile = settings.ratioMobile;
 const spanMobile = settings.grid.spanMobile;
-const gapDesktop = gap / baseSize + 'rem';
-const gapMobile = gap / baseSize + 'rem';
-const gridBlockMobile =
-	global.gridBlockMobile / baseSize
-		? global.gridBlockMobile / baseSize + 'rem'
-		: '16px';
-const gridBlockDesktop =
-	global.gridBlockDesktop / baseSize
-		? global.gridBlockDesktop / baseSize + 'rem'
-		: '16px';
+const gapDesktop = toRem(gap);
+const gapMobile = toRem(gap);
+const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
+const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
+
 const pathname = new URL(Astro.request.url).pathname.split('/');
 const translations = global.translations.map((lang) => lang.code);
 const prefixDefaultLocale = global.prefixDefaultLocale;

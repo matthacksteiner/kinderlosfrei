@@ -1,4 +1,5 @@
 ---
+import { toRem } from '@lib/api.js';
 import Button from '@blocks/BlockButton.astro';
 import Hamburger from '@components/Hamburger.astro';
 import Navigation from '@components/Navigation.astro';
@@ -6,7 +7,6 @@ import LanguagePicker from './LanguagePicker.astro';
 import { Icon } from 'astro-icon/components';
 
 const { global, data, lang } = Astro.props;
-const baseSize = 16;
 
 const headerActive = global.headerActive;
 const headerColor = global.headerColor;
@@ -17,24 +17,11 @@ const headerBackgroundActive = global.headerBackgroundActive;
 const headerFont = global.headerFont;
 const headerFontSize = global.headerFontSize;
 
-const logoDesktop =
-	global.logoDesktop / baseSize
-		? global.logoDesktop / baseSize + 'rem'
-		: '25rem';
-const logoDesktopActive =
-	global.logoDesktopActive / baseSize
-		? global.logoDesktopActive / baseSize + 'rem'
-		: '12.5rem';
+const logoDesktop = toRem(global.logoDesktop) || '25rem';
+const logoDesktopActive = toRem(global.logoDesktopActive) || '12.5rem';
 
-const logoMobile =
-	global.logoMobile / baseSize
-		? global.logoMobile / baseSize + 'rem'
-		: '12.5rem';
-
-const logoMobileActive =
-	global.logoMobileActive / baseSize
-		? global.logoMobileActive / baseSize + 'rem'
-		: '6.25rem';
+const logoMobile = toRem(global.logoMobile) || '12.5rem';
+const logoMobileActive = toRem(global.logoMobileActive) || '6.25rem';
 
 const logoAlign = global.logoAlign;
 const logoFile = global.logoFile;
