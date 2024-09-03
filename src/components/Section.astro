@@ -5,6 +5,7 @@ import ImageComponent from '@components/ImageComponent.astro';
 import Pagination from '@components/Pagination.astro';
 
 const { data, global, page } = Astro.props;
+const { lang } = Astro.params;
 const { settings } = data;
 const items = page.data;
 const {
@@ -61,7 +62,7 @@ const firstPath =
 					const image = item.thumbnail;
 					return (
 						<div class:list={[`col-span-${spanMobile}`, `lg:col-span-${span}`]}>
-							<a href={item.uri}>
+							<a href={lang ? `/${lang}/${item.uri}` : '/' + item.uri}>
 								<ImageComponent
 									global={global}
 									image={image}
