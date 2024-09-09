@@ -1,5 +1,5 @@
 [build]
-command = "astro build"
+command = "bun run build"
 base = "/"
 publish = "dist"
 
