@@ -109,7 +109,9 @@ const isHome =
 				>
 					<Hamburger global={global} data={data} />
 					<Navigation global={global} data={data} />
-					<LanguagePicker global={global} class="hidden lg:flex" />
+					{logoAlign !== 'center' ? (
+						<LanguagePicker global={global} class="hidden lg:flex" />
+					) : null}
 				</nav>
 			</div>
 		</header>

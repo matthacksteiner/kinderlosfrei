@@ -9,6 +9,7 @@ const hamburgerFontColor = global.hamburgerFontColor;
 const hamburgerMenuColor = global.hamburgerMenuColor;
 const hamburgerMenuColorActive = global.hamburgerMenuColorActive;
 const hamburgerOverlay = global.hamburgerOverlay;
+const logoCta = global.logoCta;
 const logoAlign = global.logoAlign;
 const path = Astro.url.pathname;
 const currentLang = Astro.currentLocale;
@@ -69,7 +70,11 @@ const isHome =
 	]}
 >
 	<NavLinks links={global.navHamburger} global={global} data={data} />
-	<LanguagePicker global={global} font={hamburgerFont} class="lg:hidden" />
+	<LanguagePicker
+		global={global}
+		font={hamburgerFont}
+		class:list={[logoCta === 'center' ? 'lg:hidden' : '', 'mt-8']}
+	/>
 </div>
 
 <style lang="css" define:vars={{ hamburgerFont }}>
