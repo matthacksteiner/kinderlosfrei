@@ -2,6 +2,7 @@
 import { toRem } from '@lib/api.js';
 import Picture from '@components/Picture.astro';
 import ImageCaption from '@components/ImageCaption.astro';
+import ImageCopyright from './ImageCopyright.astro';
 const { lang } = Astro.params;
 const currentLang = lang;
 
@@ -63,6 +64,7 @@ const link = image.linkexternal;
 				{image.captiontoggle ? (
 					<ImageCaption {...image} global={global} />
 				) : null}
+				{image.copyrighttoggle ? <ImageCopyright {...image} /> : null}
 			</div>
 		</a>
 	) : (
@@ -71,6 +73,7 @@ const link = image.linkexternal;
 		>
 			<Picture {...pictureProps} />
 			{image.captiontoggle ? <ImageCaption {...image} global={global} /> : null}
+			{image.copyrighttoggle ? <ImageCopyright {...image} /> : null}
 		</div>
 	)
 }
