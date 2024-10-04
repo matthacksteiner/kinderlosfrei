@@ -28,7 +28,6 @@ switch (copyrightPosition) {
 ---
 
 <div
-	id="copyContainer"
 	class:list={[
 		'absolute',
 		'inline-flex',
@@ -44,31 +43,36 @@ switch (copyrightPosition) {
 		`bg--${copyrightBackgroundColor}`,
 		`font--${copyrightTextSize}`,
 		positionClasses,
+		'copy-container',
 	]}
 	style={`font-family: ${copyrightTextFont};`}
 >
-	<div id="copySymbol" class="copySymbol pointer-events-none">©</div>
-	<div id="copyText" class="copyText pointer-events-none hidden px-1">
+	<div class="copy-symbol pointer-events-none">©</div>
+	<div class="copy-text pointer-events-none hidden px-1">
 		{copyrightTitle}
 	</div>
 </div>
 
 <script>
 	document.addEventListener('DOMContentLoaded', () => {
-		const copySymbol = document.getElementById('copySymbol');
-		const copyText = document.getElementById('copyText');
-		const copyContainer = document.getElementById('copyContainer');
+		// Select all copyright containers
+		const copyContainers = document.querySelectorAll('.copy-container');
 
-		if (copySymbol && copyText && copyContainer) {
-			copyContainer.addEventListener('click', () => {
-				if (copySymbol.classList.contains('hidden')) {
-					copySymbol.classList.remove('hidden');
-					copyText.classList.add('hidden');
-				} else {
-					copySymbol.classList.add('hidden');
-					copyText.classList.remove('hidden');
-				}
-			});
-		}
+		copyContainers.forEach((container) => {
+			const copySymbol = container.querySelector('.copy-symbol');
+			const copyText = container.querySelector('.copy-text');
+
+			if (copySymbol && copyText) {
+				container.addEventListener('click', () => {
+					if (copySymbol.classList.contains('hidden')) {
+						copySymbol.classList.remove('hidden');
+						copyText.classList.add('hidden');
+					} else {
+						copySymbol.classList.add('hidden');
+						copyText.classList.remove('hidden');
+					}
+				});
+			}
+		});
 	});
 </script>
