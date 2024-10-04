@@ -1,12 +1,11 @@
 ---
-import { toRem } from '@lib/api.js';
-
+import { getFonts, getSizes } from '@lib/api.js';
+import { toRem } from '@lib/helpers.js';
 import '@styles/global.css';
 import '@styles/custom.css';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import KirbyMeta from '@components/KirbyMeta.astro';
-import { getFonts, getSizes } from '@lib/api.js';
 import CookieConsent from '@components/CookieConsent.astro';
 
 const { data, global, pageTitle } = Astro.props;

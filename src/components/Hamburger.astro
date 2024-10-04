@@ -13,17 +13,13 @@ const logoCta = global.logoCta;
 const logoAlign = global.logoAlign;
 const path = Astro.url.pathname;
 const currentLang = Astro.currentLocale;
-const isHome =
-	path === '/' || path === `/${currentLang}` || path === `/${currentLang}/`;
 ---
 
 {
 	global.navHamburger ? (
 		<button
 			class:list={[
-				isHome
-					? `hamburgerColor--${hamburgerMenuColor} hamburgerColorActive--${hamburgerMenuColorActive}`
-					: `hamburgerColor--${hamburgerMenuColorActive} hamburgerColorActive--${hamburgerMenuColorActive}`,
+				`hamburgerColor--${hamburgerMenuColor} hamburgerColorActive--${hamburgerMenuColorActive}`,
 				'c-hamburger',
 				'c-hamburger--chop',
 				'relative',

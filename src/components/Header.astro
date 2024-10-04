@@ -1,5 +1,5 @@
 ---
-import { toRem } from '@lib/api.js';
+import { toRem } from '@lib/helpers.js';
 import Button from '@blocks/BlockButton.astro';
 import Hamburger from '@components/Hamburger.astro';
 import Navigation from '@components/Navigation.astro';
@@ -31,17 +31,13 @@ const logoCta = global.logoCta;
 const currentLang = lang;
 const defaultLang = global.defaultLang.code;
 const translations = global.translations;
-const path = Astro.url.pathname;
 const prefixDefaultLocale = global.prefixDefaultLocale;
-const isHome =
-	path === '/' || path === `/${currentLang}` || path === `/${currentLang}/`;
 ---
 
 {
 	headerActive === true ? (
 		<header
 			class:list={[
-				!isHome && 'header--active',
 				`bg--${headerBackground}`,
 				`text--${headerColor}`,
 				`textActive--${headerColorActive}`,
@@ -189,7 +185,7 @@ const isHome =
 	}
 </style>
 
-<script define:vars={{ isHome }}>
+<script>
 	const header = document.querySelector('header');
 	const hamburger = document.querySelector('.c-hamburger-inner');
 	const colorElement = document.querySelector('.c-hamburger');
@@ -199,7 +195,7 @@ const isHome =
 			.find((className) => className.includes('hamburgerColorActive--'))
 			.replace('Active', '');
 
-	if (isHome && header) {
+	if (header) {
 		window.onscroll = function () {
 			if (
 				document.body.scrollTop > 80 ||
