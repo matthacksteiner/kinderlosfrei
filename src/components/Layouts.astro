@@ -6,7 +6,7 @@ const { global, layouts, class: className } = Astro.props;
 
 {
 	layouts &&
-		layouts.map((layout) => {
+		layouts.map((layout, index) => {
 			const columns = layout.content.columns;
 			const anchor = layout.anchor;
 			const classes = layout.classes;
@@ -28,6 +28,7 @@ const { global, layouts, class: className } = Astro.props;
 			const spacingDesktopTop = layout.spacingDesktopTop;
 			const spacingDesktopBottom = layout.spacingDesktopBottom;
 			const sectionProps = anchor ? { id: anchor } : {};
+			const isAboveTheFold = index < 3;
 			return (
 				<section
 					{...sectionProps}
@@ -63,6 +64,7 @@ const { global, layouts, class: className } = Astro.props;
 							global={global}
 							backgroundPadding={backgroundPadding}
 							backgroundContainer={backgroundContainer}
+							loading={isAboveTheFold ? 'eager' : 'lazy'}
 						/>
 					</div>
 					<ScrollButton
