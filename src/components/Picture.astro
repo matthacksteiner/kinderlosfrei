@@ -34,13 +34,13 @@ const imageWidth = (containerWidth) =>
 const imageHeight = (imageWidth, ratio) => Math.round(imageWidth / ratio);
 
 const imageWidthDesktop = imageWidth(
-	backgroundContainer === 'container' ? 1840 : 2560
+	backgroundContainer === 'container' ? 1920 : 2560
 );
 
 const imageWidthMobile = 390;
 const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobile);
 const imageWidthDesktop1280 = imageWidth(1280);
-const imageWidthDesktop1920 = imageWidth(1840);
+const imageWidthDesktop1920 = imageWidth(1920);
 
 const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktop);
 const imageHeightDesktop1280 = imageHeight(imageWidthDesktop1280, ratioDesktop);
