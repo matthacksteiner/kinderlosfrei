@@ -1,10 +1,10 @@
 ---
 import Columns from '@blocks/BlockColumns.astro';
-const { grid, global } = Astro.props;
+const { grid, global, span } = Astro.props;
 const grids = grid.content.grid;
 const title = grid.content.title;
 ---
 
 <section id={`${title}`} class="blockGrid blocks">
-	{grids.map((grid) => <Columns {...grid} global={global} />)}
+	{grids.map((grid) => <Columns {...grid} global={global} span={span} />)}
 </section>

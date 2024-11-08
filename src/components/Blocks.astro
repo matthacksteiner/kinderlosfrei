@@ -24,7 +24,7 @@ const { blocks, global, span, backgroundContainer, loading } = Astro.props;
 		blocks.map((block) => {
 			switch (block.type) {
 				case 'grid':
-					return <BlockGrid grid={block} global={global} />;
+					return <BlockGrid grid={block} global={global} span={span} />;
 				case 'columns':
 					return (
 						<BlockColumns

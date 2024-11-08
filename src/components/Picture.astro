@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+
 const isProd = import.meta.env.PROD;
 const netlifyDev = import.meta.env.NETLIFY_DEV;
 const netlifyUrl = import.meta.env.NETLIFY_URL;
@@ -25,6 +26,10 @@ const sourceMobile = props.ratioMobile === 'original' ? src : urlFocusMobile;
 const sourceDesktop = props.ratioDesktop === 'original' ? src : urlFocus;
 
 const span = props.span;
+const gridMarginTotal = 2;
+const gridMarginDesktop = props.gridMarginDesktop * gridMarginTotal;
+const gridMarginMobile = props.gridMarginMobile * gridMarginTotal;
+
 const backgroundContainer = props.backgroundContainer
 	? props.backgroundContainer
 	: 'container';
@@ -34,13 +39,12 @@ const imageWidth = (containerWidth) =>
 const imageHeight = (imageWidth, ratio) => Math.round(imageWidth / ratio);
 
 const imageWidthDesktop = imageWidth(
-	backgroundContainer === 'container' ? 1920 : 2560
+	backgroundContainer === 'container' ? 1920 - gridMarginDesktop : 2560
 );
-
-const imageWidthMobile = 390;
+const imageWidthMobile = 390 - gridMarginMobile;
 const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobile);
 const imageWidthDesktop1280 = imageWidth(1280);
-const imageWidthDesktop1920 = imageWidth(1920);
+const imageWidthDesktop1920 = imageWidth(1920 - gridMarginDesktop);
 
 const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktop);
 const imageHeightDesktop1280 = imageHeight(imageWidthDesktop1280, ratioDesktop);

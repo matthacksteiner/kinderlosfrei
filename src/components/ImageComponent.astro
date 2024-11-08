@@ -18,7 +18,6 @@ const {
 } = Astro.props;
 const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
 const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
-
 const pictureProps = {
 	src: image.url,
 	urlFocus: image.urlFocus,
@@ -33,10 +32,13 @@ const pictureProps = {
 	backgroundContainer: backgroundContainer,
 	loading: loading,
 	span: span,
+	gridGapMobile: global.gridGapMobile,
+	gridMarginMobile: global.gridMarginMobile,
+	gridGapDesktop: global.gridGapDesktop,
+	gridMarginDesktop: global.gridMarginDesktop,
 	position: 'relative',
 	class: `${className} ${image.classes} w-full object-cover`,
 };
-
 const link = image.linkexternal;
 ---
 

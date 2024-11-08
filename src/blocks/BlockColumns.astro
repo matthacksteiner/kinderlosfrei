@@ -1,6 +1,6 @@
 ---
 import Blocks from '@components/Blocks.astro';
-const { columns, global } = Astro.props;
+const { columns, global, span: spanParent } = Astro.props;
 ---
 
 <section class="blockColumns blocks grid-default">
@@ -8,9 +8,10 @@ const { columns, global } = Astro.props;
 		columns && (
 			<>
 				{columns.map((column, index) => {
-					const span = column.span;
+					const spanChild = column.span;
+					const span = spanChild / (12 / spanParent);
 					const blocks = column.blocks;
-					const colClass = `column lg:col-span-${span}
+					const colClass = `column lg:col-span-${spanChild}
 
 				${blocks.length > 0 ? 'col-span-6' : 'hidden lg:block'} `;
 
