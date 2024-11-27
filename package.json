@@ -13,7 +13,7 @@
 		"@astrojs/netlify": "^5.5.4",
 		"@astrojs/tailwind": "^5.1.2",
 		"@iarna/toml": "^2.2.5",
-		"astro": "^4.16.8",
+		"astro": "^4.16.16",
 		"astro-icon": "^1.1.0",
 		"dotenv": "^16.3.1",
 		"swiper": "^9.2.3",
