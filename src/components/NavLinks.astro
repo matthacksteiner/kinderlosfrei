@@ -10,6 +10,8 @@ const logoAlign = global.logoAlign;
 {
 	links &&
 		links.map((item) => {
+			if (!item) return null;
+
 			const isUrl = item.type === 'url';
 			const isPopup = item.popup === true;
 
