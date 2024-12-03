@@ -145,6 +145,7 @@ const generateImgSrc = (source, width, height) => {
 				width={imageWidthMobile}
 				height={imageHeightMobile}
 				alt={props.alt || altFallback}
+				loading={props.loading}
 				class:list={['lg:hidden', props.class]}
 			/>
 
@@ -153,6 +154,7 @@ const generateImgSrc = (source, width, height) => {
 				width={imageWidthDesktop}
 				height={imageHeightDesktop}
 				alt={props.alt || altFallback}
+				loading={props.loading}
 				{...props}
 				class:list={['hidden', 'lg:block', props.class]}
 			/>
