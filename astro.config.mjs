@@ -31,7 +31,6 @@ export default defineConfig({
 	image: {
 		domains: [API_URL],
 	},
-	output: 'hybrid',
 	adapter: netlify({
 		imageCDN: false,
 	}),
