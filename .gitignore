@@ -24,3 +24,6 @@ pnpm-debug.log*
 # Local Netlify folder
 .netlify
 bun.lockb
+
+# Ignore renamed language folder
+src/pages/_[lang]

@@ -7,7 +7,7 @@ publish = "dist"
 pretty_urls = false
 
 [build.environment]
-NODE_VERSION = "20"
+NODE_VERSION = "23"
 
 [dev]
 command = "astro dev"

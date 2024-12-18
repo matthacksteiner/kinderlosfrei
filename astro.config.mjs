@@ -2,6 +2,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { defineConfig } from 'astro/config';
 import icon from 'astro-icon';
+import tailwind from '@astrojs/tailwind';
+import netlify from '@astrojs/netlify';
+import langFolderRename from './plugins/lang-folder-rename/langFolderRename.js';
+
 const API_URL = process.env.KIRBY_URL;
 const response = await fetch(API_URL + '/global.json');
 const global = await response.json();
@@ -11,8 +15,6 @@ const prefixDefaultLocale = global.prefixDefaultLocale;
 const frontendUrl = global.frontendUrl.endsWith('/')
 	? global.frontendUrl
 	: global.frontendUrl + '/';
-import tailwind from '@astrojs/tailwind';
-import netlify from '@astrojs/netlify';
 
 // https://astro.build/config
 export default defineConfig({
@@ -27,7 +29,7 @@ export default defineConfig({
 					},
 			  }
 			: undefined,
-	integrations: [tailwind(), icon()],
+	integrations: [tailwind(), icon(), langFolderRename()],
 	image: {
 		domains: [API_URL],
 	},
