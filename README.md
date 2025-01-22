@@ -2,6 +2,8 @@
 
 Template: https://github.com/matthacksteiner/baukasten
 
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/matthacksteiner/baukasten)
+
 ## Update von Template Origin
 
 `git remote add template https://github.com/matthacksteiner/baukasten`
