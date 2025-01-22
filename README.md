@@ -2,7 +2,7 @@
 
 Template: https://github.com/matthacksteiner/baukasten
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/matthacksteiner/baukasten)
+![GitHub release](https://img.shields.io/github/v/release/matthacksteiner/baukasten?include_prereleases&sort=semver)
 
 ## Update von Template Origin
 
