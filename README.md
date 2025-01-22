@@ -26,4 +26,4 @@ This project uses semantic versioning for automatic version management. The vers
 
 ![GitHub release](https://img.shields.io/github/v/release/matthacksteiner/baukasten?display_name=tag)
 
-Current version: v1.1.4
+Current version: v1.1.6
