@@ -34,6 +34,20 @@ jobs:
         run: |
           echo "New version: ${{ steps.version.outputs.version }}"
 
+      - name: Update README version
+        if: github.event_name == 'push'
+        run: |
+          sed -i "s/Current version: v.*$/Current version: v${{ steps.version.outputs.version }}/" README.md
+
+      - name: Commit README changes
+        if: github.event_name == 'push'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "docs: Update version in README [skip ci]" || echo "No changes to commit"
+          git push
+
       - name: Create GitHub Release
         if: github.event_name == 'push'
         env:
