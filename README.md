@@ -2,8 +2,6 @@
 
 Template: https://github.com/matthacksteiner/baukasten
 
-Current version: v0.0.0
-
 ## Update von Template Origin
 
 `git remote add template https://github.com/matthacksteiner/baukasten`
@@ -25,3 +23,7 @@ This project uses semantic versioning for automatic version management. The vers
 - `fix:` in commit message: Increments patch version (e.g., 1.0.0 -> 1.0.1)
 
 > **Info:** If no pattern is found, the version is incremented by 0.0.1.
+
+![GitHub release](https://img.shields.io/github/v/release/matthacksteiner/baukasten?display_name=tag)
+
+Current version: v1.1.4
