@@ -2,15 +2,25 @@
 
 This project is based on the [Baukasten](https://github.com/matthacksteiner/baukasten) template.
 
-**Template Release:** v1.1.8
+**Template Release:** v0.0.0
 
 ## Update von Template Origin
 
-run the script `update-template-version.sh` to fetch and merge the latest changes from the template repository. use git-bash or WSL on Windows.
+### automated
+
+run the script `update-template-version.sh` to fetch and merge the latest changes from the template repository.
+use git-bash or WSL on Windows.
+
+### manual
+
+1. `git remote add template https://github.com/matthacksteiner/baukasten`
+2. `git fetch --all`
+3. `git merge template/main --allow-unrelated-histories`
+4. `git ls-remote --tags template | grep -v '{}' | cut -d'/' -f3 | sort -V | tail -n1 | xargs -I {} sed -i 's/\*\*Template Release:\*\* .*/\*\*Template Release:\*\* {}/' README.md`
 
 ## Installation
 
-Anleitung siehe https://github.com/matthacksteiner/cms.baukasten
+Setup: https://github.com/matthacksteiner/cms.baukasten
 
 ## Semantic Versioning
 
