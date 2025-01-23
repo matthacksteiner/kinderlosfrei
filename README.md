@@ -1,14 +1,12 @@
 # baukasten
 
-Template: https://github.com/matthacksteiner/baukasten
+This project is based on the [Baukasten](https://github.com/matthacksteiner/baukasten) template.
+
+**Template Release:** v1.1.8
 
 ## Update von Template Origin
 
-`git remote add template https://github.com/matthacksteiner/baukasten`
-
-`git fetch --all`
-
-`git merge template/main --allow-unrelated-histories`
+run the script `update-template-version.sh` to fetch and merge the latest changes from the template repository. use git-bash or WSL on Windows.
 
 ## Installation
 
