@@ -18,7 +18,7 @@ const paginationBorderColorHover = global.paginationBorderColorHover;
 const paginationBorderColorActive = global.paginationBorderColorActive;
 const paginationBorderWidth = toRem(global.paginationBorderWidth);
 const paginationBorderRadius = toRem(global.paginationBorderRadius);
-const paginationList = Array.from({ length: `${length}` }, (_, i) => i + 1);
+const paginationList = Array.from({ length: Number(length) }, (_, i) => i + 1);
 ---
 
 <nav aria-label="Section pages" class="pagination pagination-default">

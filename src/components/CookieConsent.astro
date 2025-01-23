@@ -14,11 +14,7 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 	class="transition-all duration-300 ease-in-out"
 	aria-label="Cookie Preferences"
 >
-	<Icon
-		name="cookie"
-		alt="Cookie Icon"
-		class="transition-all duration-300 ease-in-out"
-	/>
+	<Icon name="cookie" class="transition-all duration-300 ease-in-out" />
 </button>
 
 <script>
@@ -65,8 +61,8 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 
 								// Initialize Google Analytics
 								window.dataLayer = window.dataLayer || [];
-								function gtag() {
-									dataLayer.push(arguments);
+								function gtag(...args: any[]) {
+									window.dataLayer.push(args);
 								}
 								gtag('js', new Date());
 								gtag('config', code);

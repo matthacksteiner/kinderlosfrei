@@ -16,7 +16,7 @@ const { columns, global, span: spanParent } = Astro.props;
 				${blocks.length > 0 ? 'col-span-6' : 'hidden lg:block'} `;
 
 					return (
-						<section key={index} class={colClass}>
+						<section class={colClass}>
 							<Blocks
 								blocks={blocks}
 								global={global}
