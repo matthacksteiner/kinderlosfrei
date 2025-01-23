@@ -49,10 +49,11 @@ echo "Updating README.md with template version ${TEMPLATE_VERSION}..."
 # Create a temporary file
 tmp_file=$(mktemp)
 
-# Use awk with a more flexible pattern matching
+# Use awk with a more specific pattern matching
 awk -v ver="$TEMPLATE_VERSION" '
     {
-        if ($0 ~ /\*\*Template Release:\*\*/) {
+        # Only replace the first occurrence of **Template Release:** that is at the start of a line
+        if ($0 ~ /^[[:space:]]*\*\*Template Release:\*\*/) {
             print "**Template Release:** " ver
         } else {
             print $0
