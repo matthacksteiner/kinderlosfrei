@@ -16,7 +16,7 @@ import BlockMenu from '@blocks/BlockMenu.astro';
 import BlockColumns from '@blocks/BlockColumns.astro';
 import BlockGrid from '@blocks/BlockGrid.astro';
 import BlockCode from '@blocks/BlockCode.astro';
-const { blocks, global, span, backgroundContainer, loading } = Astro.props;
+const { blocks, global, span, backgroundContainer } = Astro.props;
 ---
 
 {
@@ -183,7 +183,6 @@ const { blocks, global, span, backgroundContainer, loading } = Astro.props;
 							ratioMobile={block.content.ratiomobile}
 							ratioDesktop={block.content.ratio}
 							span={span}
-							loading={loading}
 							backgroundContainer={backgroundContainer}
 							metadata={block.content.metadata}
 						/>
@@ -211,7 +210,6 @@ const { blocks, global, span, backgroundContainer, loading } = Astro.props;
 							viewPaddingDesktop={block.content.viewpaddingdesktop}
 							span={span}
 							global={global}
-							loading={loading}
 							backgroundContainer={backgroundContainer}
 							metadata={block.content.metadata}
 						/>

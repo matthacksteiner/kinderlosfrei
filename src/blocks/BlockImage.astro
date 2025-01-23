@@ -6,7 +6,6 @@ const {
 	ratioMobile,
 	ratioDesktop,
 	span,
-	loading,
 	backgroundContainer,
 	metadata,
 } = Astro.props;
@@ -22,7 +21,7 @@ const {
 			<ImageComponent
 				global={global}
 				image={image}
-				loading={loading}
+				loading="auto"
 				ratioMobile={ratioMobile}
 				ratioDesktop={ratioDesktop}
 				backgroundContainer={backgroundContainer}

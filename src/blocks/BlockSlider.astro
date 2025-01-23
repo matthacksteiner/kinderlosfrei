@@ -22,7 +22,6 @@ const {
 	ratioMobile,
 	ratioDesktop,
 	span,
-	loading,
 	metadata,
 } = Astro.props;
 
@@ -55,7 +54,7 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 						<ImageComponent
 							global={global}
 							image={image}
-							loading={loading}
+							loading="auto"
 							class:list={[full]}
 							ratioMobile={ratioMobile}
 							ratioDesktop={ratioDesktop}
