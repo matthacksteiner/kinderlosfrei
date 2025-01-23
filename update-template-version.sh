@@ -49,14 +49,15 @@ echo "Updating README.md with template version ${TEMPLATE_VERSION}..."
 # Create a temporary file
 tmp_file=$(mktemp)
 
-# Use awk for cross-platform compatibility
-awk -v ver="$TEMPLATE_VERSION" '{
-    if ($0 ~ /\*\*Template Release:\*\* [0-9.]+/) {
-        print "**Template Release:** " ver
-    } else {
-        print $0
-    }
-}' README.md > "$tmp_file"
+# Use awk with a more flexible pattern matching
+awk -v ver="$TEMPLATE_VERSION" '
+    {
+        if ($0 ~ /\*\*Template Release:\*\*/) {
+            print "**Template Release:** " ver
+        } else {
+            print $0
+        }
+    }' README.md > "$tmp_file"
 
 # Copy the temp file back to README.md
 cp "$tmp_file" README.md
