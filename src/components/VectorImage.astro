@@ -1,87 +1,63 @@
 ---
 import { Image } from 'astro:assets';
 const { image, widthMobile, widthDesktop } = Astro.props;
+const classes = image?.classes;
+const link = image?.linkexternal;
+
+const imageProps = {
+	src: image?.url,
+	alt: image?.alt,
+	width: image?.width,
+	height: image?.height,
+	id: image?.identifier,
+	'class:list': [
+		`widthMobile--${widthMobile || '100'}`,
+		`widthDesktop--${widthDesktop || '100'}`,
+		classes,
+	].filter(Boolean),
+};
 ---
 
 {
-	image
-		? (() => {
-				const classes = image.classes;
-				const link = image.linkexternal;
+	() => {
+		if (!image) return null;
 
-				return image.linktoggle ? (
-					link.type === 'url' ? (
-						<a
-							href={link.href}
-							target={link.popup ? '_blank' : undefined}
-							rel={link.popup ? 'noopener' : undefined}
-						>
-							<Image
-								src={image.url}
-								alt={image.alt}
-								width={image.width}
-								height={image.height}
-								id={image.identifier}
-								class:list={[
-									`widthMobile--${widthMobile || '100'}`,
-									`widthDesktop--${widthDesktop || '100'}`,
-									classes,
-								]}
-							/>
-						</a>
-					) : link.type === 'page' ? (
-						<a href={link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`}>
-							<Image
-								src={image.url}
-								alt={image.alt}
-								width={image.width}
-								height={image.height}
-								id={image.identifier}
-								class:list={[
-									`widthMobile--${widthMobile || '100'}`,
-									`widthDesktop--${widthDesktop || '100'}`,
-									classes,
-								]}
-							/>
-						</a>
-					) : link.type === 'file' ? (
-						<a
-							href={image.url}
-							target={link.popup ? '_blank' : undefined}
-							rel={link.popup ? 'noopener' : undefined}
-						>
-							<Image
-								src={image.url}
-								alt={image.alt}
-								width={image.width}
-								height={image.height}
-								id={image.identifier}
-								class:list={[
-									`widthMobile--${widthMobile || '100'}`,
-									`widthDesktop--${widthDesktop || '100'}`,
-									classes,
-								]}
-							/>
-						</a>
-					) : null
-				) : (
-					<>
-						<Image
-							src={image.url}
-							alt={image.alt}
-							width={image.width}
-							height={image.height}
-							id={image.identifier}
-							class:list={[
-								`widthMobile--${widthMobile || '100'}`,
-								`widthDesktop--${widthDesktop || '100'}`,
-								classes,
-							]}
-						/>
-					</>
-				);
-		  })()
-		: null
+		if (!image.linktoggle) {
+			return <Image {...imageProps} />;
+		}
+
+		if (!link) return null;
+
+		let href, target, rel;
+
+		switch (link.type) {
+			case 'url':
+				href = link.href;
+				target = link.popup ? '_blank' : undefined;
+				rel = link.popup ? 'noopener' : undefined;
+				break;
+
+			case 'page':
+				href = link.hash ? `${link.uri}#${link.hash}` : `${link.uri}`;
+				break;
+
+			case 'file':
+				href = image.url;
+				target = link.popup ? '_blank' : undefined;
+				rel = link.popup ? 'noopener' : undefined;
+				break;
+
+			default:
+				return null;
+		}
+
+		// Render image wrapped in link
+		return (
+			<a href={href} target={target} rel={rel}>
+				<Image {...imageProps} />
+			</a>
+		);
+	}
 }
 
 <style lang="css">
