@@ -16,6 +16,7 @@ import BlockMenu from '@blocks/BlockMenu.astro';
 import BlockColumns from '@blocks/BlockColumns.astro';
 import BlockGrid from '@blocks/BlockGrid.astro';
 import BlockCode from '@blocks/BlockCode.astro';
+import BlockGallery from '@blocks/BlockGallery.astro';
 const { blocks, global, span, backgroundContainer } = Astro.props;
 ---
 
@@ -208,6 +209,23 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							viewDesktop={block.content.viewdesktop}
 							viewPaddingMobile={block.content.viewpaddingmobile}
 							viewPaddingDesktop={block.content.viewpaddingdesktop}
+							span={span}
+							global={global}
+							backgroundContainer={backgroundContainer}
+							metadata={block.content.metadata}
+						/>
+					);
+				case 'gallery':
+					return (
+						<BlockGallery
+							images={block.content.images}
+							layoutType={block.content.layouttype}
+							viewMobile={block.content.viewmobile}
+							viewDesktop={block.content.viewdesktop}
+							viewPaddingMobile={block.content.viewpaddingmobile}
+							viewPaddingDesktop={block.content.viewpaddingdesktop}
+							ratioMobile={block.content.ratiomobile}
+							ratioDesktop={block.content.ratio}
 							span={span}
 							global={global}
 							backgroundContainer={backgroundContainer}

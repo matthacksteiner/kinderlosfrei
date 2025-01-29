@@ -1,0 +1,70 @@
+---
+import ImageComponent from '@components/ImageComponent.astro';
+
+const {
+	global,
+	images,
+	layoutType,
+	viewMobile,
+	viewDesktop,
+	viewPaddingMobile,
+	viewPaddingDesktop,
+	ratioMobile,
+	ratioDesktop,
+	span,
+	metadata,
+} = Astro.props;
+const paddingDesktop = viewPaddingDesktop ? `${viewPaddingDesktop}px` : '0';
+const paddingMobile = viewPaddingMobile ? `${viewPaddingMobile}px` : '0';
+const gridClasses = {
+	masonry: `columns-1 md:columns-2 lg:columns-3 gap-[${paddingMobile}] md:gap-[${paddingDesktop}]`,
+	grid: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-[${paddingMobile}] md:gap-[${paddingDesktop}]`,
+	flex: `flex flex-wrap gap-[${paddingMobile}] md:gap-[${paddingDesktop}]`,
+};
+const layoutClass = gridClasses[layoutType] || gridClasses.grid;
+---
+
+<section
+	id={metadata?.identifier || undefined}
+	class:list={['blockGallery', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
+	data-layouttype={layoutType}
+	data-viewmobile={viewMobile}
+	data-viewdesktop={viewDesktop}
+	data-viewpaddingmobile={viewPaddingMobile}
+	data-viewpaddingdesktop={viewPaddingDesktop}
+>
+	<div class:list={[layoutClass]}>
+		{
+			images?.map((image) => (
+				<div class="gallery-item">
+					<ImageComponent
+						global={global}
+						image={image}
+						loading="lazy"
+						ratioMobile={ratioMobile}
+						ratioDesktop={ratioDesktop}
+						span={span}
+					/>
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<script>
+	// If using masonry layout, you might want to add Masonry.js here
+	if (document.querySelector('.blockGallery[data-layouttype="masonry"]')) {
+		// Initialize masonry layout if needed
+	}
+</script>
+
+<style lang="css" is:global>
+	.blockGallery[data-layouttype='masonry'] .gallery-item {
+		@apply mb-4 break-inside-avoid;
+	}
+
+	.blockGallery[data-layouttype='flex'] .gallery-item {
+		@apply flex-grow basis-full md:basis-[calc(50%-1rem)] lg:basis-[calc(33.333%-1rem)];
+	}
+</style>
