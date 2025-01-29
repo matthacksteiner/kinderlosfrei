@@ -27,14 +27,16 @@ export default function langFolderRename() {
 						if (fs.existsSync(langFolder) && !fs.existsSync(noLangFolder)) {
 							fs.renameSync(langFolder, noLangFolder);
 							logger.info(
-								'Renamed [lang] folder to _[lang] due to no translations'
+								'NO translations found. Renamed [lang] folder to _[lang]'
 							);
 						}
 					} else {
 						// Rename back to [lang] if translations exist and _[lang] exists
 						if (fs.existsSync(noLangFolder) && !fs.existsSync(langFolder)) {
 							fs.renameSync(noLangFolder, langFolder);
-							logger.info('Renamed _[lang] folder back to [lang]');
+							logger.info(
+								'Translation found. Renamed _[lang] folder back to [lang]'
+							);
 						}
 					}
 				} catch (error) {
