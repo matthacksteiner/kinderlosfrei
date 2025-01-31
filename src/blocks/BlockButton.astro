@@ -1,20 +1,49 @@
 ---
 import { toRem } from '@lib/helpers.js';
 import Link from '@components/Link.astro';
-const { link, global, align, className, metadata } = Astro.props;
-const buttonFont = global.buttonFont;
-const size = global.buttonFontSize;
-const buttonPadding = toRem(global.buttonPadding);
-const bg = global.buttonBackgroundColor;
-const bgActive = global.buttonBackgroundColorActive;
-const color = global.buttonTextColor;
-const colorActive = global.buttonTextColorActive;
-const buttonBorderColor = global.buttonBorderColor;
-const buttonBorderColorActive = global.buttonBorderColorActive;
-const buttonBorderWidth = toRem(global.buttonBorderWidth);
+const {
+	link,
+	global,
+	align,
+	className,
+	buttonLocal,
+	buttonSettings,
+	buttonColors,
+	metadata,
+} = Astro.props;
+const buttonFont = buttonLocal ? buttonSettings.buttonfont : global.buttonFont;
+const size = buttonLocal
+	? buttonSettings.buttonfontsize
+	: global.buttonFontSize;
+const buttonPadding = buttonLocal
+	? toRem(buttonSettings.buttonpadding)
+	: toRem(global.buttonPadding);
+const color = buttonLocal
+	? buttonColors.buttontextcolor
+	: global.buttonTextColor;
+const colorActive = buttonLocal
+	? buttonColors.buttontextcoloractive
+	: global.buttonTextColorActive;
+const buttonBorderColor = buttonLocal
+	? buttonColors.buttonbordercolor
+	: global.buttonBorderColor;
+const bg = buttonLocal
+	? buttonColors.buttonbackgroundcolor
+	: global.buttonBackgroundColor;
+const bgActive = buttonLocal
+	? buttonColors.buttonbackgroundcoloractive
+	: global.buttonBackgroundColorActive;
+const buttonBorderColorActive = buttonLocal
+	? buttonColors.buttonbordercoloractive
+	: global.buttonBorderColorActive;
+const buttonBorderWidth = buttonLocal
+	? toRem(buttonSettings.buttonborderwidth)
+	: toRem(global.buttonBorderWidth);
 const buttonBorderRadius =
 	link.title && link.title.length === 1
 		? '50%'
+		: buttonLocal
+		? toRem(buttonSettings.buttonborderradius)
 		: toRem(global.buttonBorderRadius);
 ---
 
@@ -40,6 +69,7 @@ const buttonBorderRadius =
 			`buttonTextActive--${colorActive}`,
 			`buttonBg--${bg}`,
 			`buttonBgActive--${bgActive}`,
+			`buttonBorder--${buttonBorderColor}`,
 			`buttonBorderActive--${buttonBorderColorActive}`,
 			'transition-all',
 			'duration-300',
@@ -60,11 +90,10 @@ const buttonBorderRadius =
 		buttonPadding,
 		buttonBorderRadius,
 		buttonBorderWidth,
-		buttonBorderColor,
 	}}
 >
 	.button {
-		@apply rounded-[var(--buttonBorderRadius)] border-[length:var(--buttonBorderWidth)] border-[color:var(--borderColor)];
+		@apply rounded-[var(--buttonBorderRadius)] border-[length:var(--buttonBorderWidth)];
 		padding: var(--buttonPadding) calc(var(--buttonPadding) * 2);
 		font-family: var(--buttonFont);
 	}
@@ -109,6 +138,24 @@ const buttonBorderRadius =
 	.buttonTextActive--transparent {
 		@apply hover:text-transparent;
 	}
+	.buttonBg--primary {
+		@apply bg-primary;
+	}
+	.buttonBg--secondary {
+		@apply bg-secondary;
+	}
+	.buttonBg--tertiary {
+		@apply bg-tertiary;
+	}
+	.buttonBg--black {
+		@apply bg-black;
+	}
+	.buttonBg--white {
+		@apply bg-white;
+	}
+	.buttonBg--transparent {
+		@apply bg-transparent;
+	}
 
 	.buttonBgActive--primary {
 		@apply hover:bg-primary;
@@ -128,6 +175,25 @@ const buttonBorderRadius =
 
 	.buttonBgActive--white {
 		@apply hover:bg-white;
+	}
+
+	.buttonBorder--primary {
+		@apply border-primary;
+	}
+	.buttonBorder--secondary {
+		@apply border-secondary;
+	}
+	.buttonBorder--tertiary {
+		@apply border-tertiary;
+	}
+	.buttonBorder--black {
+		@apply border-black;
+	}
+	.buttonBorder--white {
+		@apply border-white;
+	}
+	.buttonBorder--transparent {
+		@apply border-transparent;
 	}
 
 	.buttonBorderActive--primary {
