@@ -11,38 +11,48 @@ const {
 	buttonColors,
 	metadata,
 } = Astro.props;
-const buttonFont = buttonLocal ? buttonSettings.buttonfont : global.buttonFont;
-const size = buttonLocal
-	? buttonSettings.buttonfontsize
-	: global.buttonFontSize;
-const buttonPadding = buttonLocal
-	? toRem(buttonSettings.buttonpadding)
-	: toRem(global.buttonPadding);
-const color = buttonLocal
-	? buttonColors.buttontextcolor
-	: global.buttonTextColor;
-const colorActive = buttonLocal
-	? buttonColors.buttontextcoloractive
-	: global.buttonTextColorActive;
-const buttonBorderColor = buttonLocal
-	? buttonColors.buttonbordercolor
-	: global.buttonBorderColor;
-const bg = buttonLocal
-	? buttonColors.buttonbackgroundcolor
-	: global.buttonBackgroundColor;
-const bgActive = buttonLocal
-	? buttonColors.buttonbackgroundcoloractive
-	: global.buttonBackgroundColorActive;
-const buttonBorderColorActive = buttonLocal
-	? buttonColors.buttonbordercoloractive
-	: global.buttonBorderColorActive;
-const buttonBorderWidth = buttonLocal
-	? toRem(buttonSettings.buttonborderwidth)
-	: toRem(global.buttonBorderWidth);
+const buttonFont =
+	buttonLocal && buttonSettings ? buttonSettings.buttonfont : global.buttonFont;
+const size =
+	buttonLocal && buttonSettings
+		? buttonSettings.buttonfontsize
+		: global.buttonFontSize;
+const buttonPadding =
+	buttonLocal && buttonSettings
+		? toRem(buttonSettings.buttonpadding)
+		: toRem(global.buttonPadding);
+const color =
+	buttonLocal && buttonColors
+		? buttonColors.buttontextcolor
+		: global.buttonTextColor;
+const colorActive =
+	buttonLocal && buttonColors
+		? buttonColors.buttontextcoloractive
+		: global.buttonTextColorActive;
+const buttonBorderColor =
+	buttonLocal && buttonColors
+		? buttonColors.buttonbordercolor
+		: global.buttonBorderColor;
+const bg =
+	buttonLocal && buttonColors
+		? buttonColors.buttonbackgroundcolor
+		: global.buttonBackgroundColor;
+const bgActive =
+	buttonLocal && buttonColors
+		? buttonColors.buttonbackgroundcoloractive
+		: global.buttonBackgroundColorActive;
+const buttonBorderColorActive =
+	buttonLocal && buttonColors
+		? buttonColors.buttonbordercoloractive
+		: global.buttonBorderColorActive;
+const buttonBorderWidth =
+	buttonLocal && buttonSettings
+		? toRem(buttonSettings.buttonborderwidth)
+		: toRem(global.buttonBorderWidth);
 const buttonBorderRadius =
 	link.title && link.title.length === 1
 		? '50%'
-		: buttonLocal
+		: buttonLocal && buttonSettings
 		? toRem(buttonSettings.buttonborderradius)
 		: toRem(global.buttonBorderRadius);
 ---
