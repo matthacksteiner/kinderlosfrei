@@ -98,128 +98,159 @@ const buttonBorderRadius =
 		font-family: var(--buttonFont);
 	}
 
-	.buttonText--primary {
-		@apply text-primary;
+	.buttonText {
+		&--primary {
+			@apply text-primary;
+		}
+
+		&--secondary {
+			@apply text-secondary;
+		}
+
+		&--tertiary {
+			@apply text-tertiary;
+		}
+
+		&--black {
+			@apply text-black;
+		}
+
+		&--white {
+			@apply text-white;
+		}
+
+		&--transparent {
+			@apply text-transparent;
+		}
 	}
 
-	.buttonText--secondary {
-		@apply text-secondary;
+	.buttonTextActive {
+		&--primary {
+			@apply hover:text-primary;
+		}
+
+		&--secondary {
+			@apply hover:text-secondary;
+		}
+
+		&--tertiary {
+			@apply hover:text-tertiary;
+		}
+
+		&--black {
+			@apply hover:text-black;
+		}
+
+		&--white {
+			@apply hover:text-white;
+		}
+
+		&--transparent {
+			@apply hover:text-transparent;
+		}
 	}
 
-	.buttonText--tertiary {
-		@apply text-tertiary;
-	}
-	.buttonText--black {
-		@apply text-black;
-	}
-	.buttonText--white {
-		@apply text-white;
-	}
-	.buttonText--transparent {
-		@apply text-transparent;
-	}
-	.buttonTextActive--primary {
-		@apply hover:text-primary;
-	}
-	.buttonTextActive--secondary {
-		@apply hover:text-secondary;
+	.buttonBg {
+		&--primary {
+			@apply bg-primary;
+		}
+
+		&--secondary {
+			@apply bg-secondary;
+		}
+
+		&--tertiary {
+			@apply bg-tertiary;
+		}
+
+		&--black {
+			@apply bg-black;
+		}
+
+		&--white {
+			@apply bg-white;
+		}
+
+		&--transparent {
+			@apply bg-transparent;
+		}
 	}
 
-	.buttonTextActive--tertiary {
-		@apply hover:text-tertiary;
-	}
-	.buttonTextActive--black {
-		@apply hover:text-black;
-	}
-	.buttonTextActive--white {
-		@apply hover:text-white;
-	}
-	.buttonTextActive--transparent {
-		@apply hover:text-transparent;
-	}
-	.buttonBg--primary {
-		@apply bg-primary;
-	}
-	.buttonBg--secondary {
-		@apply bg-secondary;
-	}
-	.buttonBg--tertiary {
-		@apply bg-tertiary;
-	}
-	.buttonBg--black {
-		@apply bg-black;
-	}
-	.buttonBg--white {
-		@apply bg-white;
-	}
-	.buttonBg--transparent {
-		@apply bg-transparent;
+	.buttonBgActive {
+		&--primary {
+			@apply hover:bg-primary;
+		}
+
+		&--secondary {
+			@apply hover:bg-secondary;
+		}
+
+		&--tertiary {
+			@apply hover:bg-tertiary;
+		}
+
+		&--black {
+			@apply hover:bg-black;
+		}
+
+		&--white {
+			@apply hover:bg-white;
+		}
+
+		&--transparent {
+			@apply hover:bg-transparent;
+		}
 	}
 
-	.buttonBgActive--primary {
-		@apply hover:bg-primary;
+	.buttonBorder {
+		&--primary {
+			@apply border-primary;
+		}
+
+		&--secondary {
+			@apply border-secondary;
+		}
+
+		&--tertiary {
+			@apply border-tertiary;
+		}
+
+		&--black {
+			@apply border-black;
+		}
+
+		&--white {
+			@apply border-white;
+		}
+
+		&--transparent {
+			@apply border-transparent;
+		}
 	}
 
-	.buttonBgActive--secondary {
-		@apply hover:bg-secondary;
-	}
+	.buttonBorderActive {
+		&--primary {
+			@apply hover:border-primary;
+		}
 
-	.buttonBgActive--tertiary {
-		@apply hover:bg-tertiary;
-	}
+		&--secondary {
+			@apply hover:border-secondary;
+		}
 
-	.buttonBgActive--black {
-		@apply hover:bg-black;
-	}
+		&--tertiary {
+			@apply hover:border-tertiary;
+		}
 
-	.buttonBgActive--white {
-		@apply hover:bg-white;
-	}
+		&--black {
+			@apply hover:border-black;
+		}
 
-	.buttonBgActive--transparent {
-		@apply hover:bg-transparent;
-	}
+		&--white {
+			@apply hover:border-white;
+		}
 
-	.buttonBorder--primary {
-		@apply border-primary;
-	}
-	.buttonBorder--secondary {
-		@apply border-secondary;
-	}
-	.buttonBorder--tertiary {
-		@apply border-tertiary;
-	}
-	.buttonBorder--black {
-		@apply border-black;
-	}
-	.buttonBorder--white {
-		@apply border-white;
-	}
-	.buttonBorder--transparent {
-		@apply border-transparent;
-	}
-
-	.buttonBorderActive--primary {
-		@apply hover:border-primary;
-	}
-
-	.buttonBorderActive--secondary {
-		@apply hover:border-secondary;
-	}
-
-	.buttonBorderActive--tertiary {
-		@apply hover:border-tertiary;
-	}
-
-	.buttonBorderActive--black {
-		@apply hover:border-black;
-	}
-
-	.buttonBorderActive--white {
-		@apply hover:border-white;
-	}
-
-	.buttonBorderActive--transparent {
-		@apply hover:border-transparent;
+		&--transparent {
+			@apply hover:border-transparent;
+		}
 	}
 </style>

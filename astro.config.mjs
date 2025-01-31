@@ -29,7 +29,15 @@ export default defineConfig({
 					},
 			  }
 			: undefined,
-	integrations: [tailwind(), icon(), langFolderRename()],
+	integrations: [
+		tailwind({
+			// Enable CSS nesting
+			nesting: true,
+		}),
+		,
+		icon(),
+		langFolderRename(),
+	],
 	image: {
 		domains: [API_URL],
 	},
