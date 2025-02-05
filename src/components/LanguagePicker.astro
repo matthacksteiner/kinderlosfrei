@@ -5,54 +5,121 @@ import { Icon } from 'astro-icon/components';
 const defaultLang = global.defaultLang;
 const allLangs = global.allLang;
 const translations = global.translations;
-const currentLang = lang;
 const headerFont = global.headerFont;
 const headerFontSize = global.headerFontSize;
 const prefixDefaultLocale = global.prefixDefaultLocale;
+
+const headerColor = global.headerColor;
+const headerBackground = global.headerBackground;
+
+// Determine the currently selected language; if none is provided, use the default.
+const currentLang = lang || defaultLang.code;
+const selectedLang =
+	allLangs.find((l) => l.code === currentLang) || defaultLang;
 ---
 
 {
 	translations.length > 0 && (
-		<ul
-			class:list={[
-				'lang',
-				className,
-				`font--${headerFontSize}`,
-				'flex',
-				'items-center',
-				'uppercase',
-			]}
-		>
-			<Icon
-				name="language"
-				id="language"
-				aria-label="Language"
-				class="mr-2 w-4"
-			/>
+		<details class:list={['relative', className]}>
+			<summary class="flex cursor-pointer list-none items-center focus:outline-none">
+				<Icon name="language" aria-hidden="true" class="mr-2 h-4 w-4" />
+				<span class={`uppercase font--${headerFontSize} font-${headerFont}`}>
+					{selectedLang.code}
+				</span>
 
-			{allLangs
-				.filter((language) => language.code !== currentLang)
-				.filter((language) => lang || language.code !== defaultLang.code)
-				.map((language) => {
-					const lang = language.code;
-					return (
-						<li class="mr-8 last:mr-0 lg:mr-4 lg:last:mr-0">
-							{prefixDefaultLocale && lang === defaultLang.code ? (
-								<a href="/">{language.code}</a>
-							) : (
-								<a href={`/${lang === defaultLang.code ? '' : lang}`}>
+				<Icon
+					name="chevron-down"
+					aria-hidden="true"
+					class="chevron ml-2 h-4 w-4 transition-transform duration-200"
+				/>
+			</summary>
+
+			<ul
+				class:list={[
+					`bg--${headerBackground}`,
+					`text--${headerColor}`,
+					`absolute`,
+					`right-0`,
+					`top-6`,
+					`z-10`,
+					`mt-2`,
+					`py-2`,
+					`w-16`,
+					`rounded`,
+					`shadow-lg`,
+					`flex`,
+					`flex-col`,
+					`gap-2`,
+					`uppercase`,
+					`items-center`,
+				]}
+			>
+				{allLangs
+					// Remove the currently selected language from the options.
+					.filter((language) => language.code !== selectedLang.code)
+					.map((language) => {
+						const langCode = language.code;
+						// Construct the URL for the language.
+						const href =
+							prefixDefaultLocale && langCode === defaultLang.code
+								? '/'
+								: `/${langCode === defaultLang.code ? '' : langCode}`;
+						return (
+							<li>
+								<a href={href} class="block hover:opacity-50">
 									{language.code}
 								</a>
-							)}
-						</li>
-					);
-				})}
-		</ul>
+							</li>
+						);
+					})}
+			</ul>
+		</details>
 	)
 }
 
-<style lang="css" define:vars={{ headerFont }}>
-	.langDesktop {
-		font-family: var(--headerFont);
+<style>
+	details[open] .chevron {
+		transform: rotate(180deg);
+	}
+	.menu--active {
+		&.textActive--primary {
+			@apply text-primary;
+		}
+
+		&.textActive--secondary {
+			@apply text-secondary;
+		}
+
+		&.textActive--tertiary {
+			@apply text-tertiary;
+		}
+
+		&.textActive--white {
+			@apply text-white;
+		}
+
+		&.textActive--black {
+			@apply text-black;
+		}
+
+		&.bgActive--primary {
+			@apply bg-primary;
+		}
+
+		&.bgActive--secondary {
+			@apply bg-secondary;
+		}
+
+		&.bgActive--tertiary {
+			@apply bg-tertiary;
+		}
+
+		&.bgActive--white {
+			@apply bg-white;
+		}
+
+		&.bgActive--black {
+			@apply bg-black;
+		}
 	}
 </style>
