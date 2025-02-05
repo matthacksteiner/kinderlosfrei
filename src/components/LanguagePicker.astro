@@ -1,6 +1,7 @@
 ---
 const { global, class: className, ...rest } = Astro.props;
 const { lang } = Astro.params;
+import { Icon } from 'astro-icon/components';
 const defaultLang = global.defaultLang;
 const allLangs = global.allLang;
 const translations = global.translations;
@@ -18,18 +19,24 @@ const prefixDefaultLocale = global.prefixDefaultLocale;
 				className,
 				`font--${headerFontSize}`,
 				'flex',
-				'gap-8',
+				'items-center',
 				'uppercase',
-				'lg:gap-4',
 			]}
 		>
+			<Icon
+				name="language"
+				id="language"
+				aria-label="Language"
+				class="mr-2 w-4"
+			/>
+
 			{allLangs
 				.filter((language) => language.code !== currentLang)
 				.filter((language) => lang || language.code !== defaultLang.code)
 				.map((language) => {
 					const lang = language.code;
 					return (
-						<li>
+						<li class="mr-8 last:mr-0 lg:mr-4 lg:last:mr-0">
 							{prefixDefaultLocale && lang === defaultLang.code ? (
 								<a href="/">{language.code}</a>
 							) : (
