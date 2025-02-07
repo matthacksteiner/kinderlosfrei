@@ -86,7 +86,6 @@ const prefixDefaultLocale = global.prefixDefaultLocale;
 							<Icon
 								name="fallback"
 								id="fallback"
-								alt={`Logo ${global.siteTitle}`}
 								class="transition-all duration-300 ease-in-out"
 								aria-label={global.siteTitle}
 							/>
@@ -191,10 +190,11 @@ const prefixDefaultLocale = global.prefixDefaultLocale;
 	const hamburger = document.querySelector('.c-hamburger-inner');
 	const colorElement = document.querySelector('.c-hamburger');
 	const colorClass =
-		colorElement &&
-		Array.from(colorElement.classList)
-			.find((className) => className.includes('hamburgerColorActive--'))
-			.replace('Active', '');
+		(colorElement &&
+			Array.from(colorElement.classList)
+				.find((className) => className.includes('hamburgerColorActive--'))
+				?.replace('Active', '')) ||
+		'';
 
 	if (header) {
 		window.onscroll = function () {
@@ -203,12 +203,12 @@ const prefixDefaultLocale = global.prefixDefaultLocale;
 				document.documentElement.scrollTop > 80
 			) {
 				header.classList.add('header--active');
-				if (colorClass) {
+				if (colorClass && hamburger) {
 					hamburger.classList.add(colorClass);
 				}
 			} else {
 				header.classList.remove('header--active');
-				if (colorClass) {
+				if (colorClass && hamburger) {
 					hamburger.classList.remove(colorClass);
 				}
 			}
