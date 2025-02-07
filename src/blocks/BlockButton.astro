@@ -102,6 +102,9 @@ const buttonBorderRadius =
 		buttonBorderWidth,
 	}}
 >
+	.blockButton + .blockButton {
+		@apply !mt-0;
+	}
 	.button {
 		@apply rounded-[var(--buttonBorderRadius)] border-[length:var(--buttonBorderWidth)];
 		padding: var(--buttonPadding) calc(var(--buttonPadding) * 2);
