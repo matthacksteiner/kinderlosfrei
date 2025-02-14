@@ -46,6 +46,7 @@ const getCommonClasses = (item, isActive, isLast) => [
 						link={{ ...item }}
 						global={global}
 						className={getCommonClasses(item, isActive, isLast).join(' ')}
+						data-astro-prefetch
 					>
 						{item.title}
 					</Button>
@@ -58,6 +59,7 @@ const getCommonClasses = (item, isActive, isLast) => [
 					target={target}
 					rel={rel}
 					class:list={getCommonClasses(item, isActive, isLast)}
+					data-astro-prefetch
 				>
 					{item.title}
 				</a>

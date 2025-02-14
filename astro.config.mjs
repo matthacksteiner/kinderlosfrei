@@ -18,6 +18,9 @@ const frontendUrl = global.frontendUrl.endsWith('/')
 
 // https://astro.build/config
 export default defineConfig({
+	prefetch: {
+		prerender: true,
+	},
 	site: frontendUrl,
 	i18n:
 		translations && translations.length > 0
