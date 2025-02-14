@@ -61,46 +61,51 @@ const imageProps = {
 }
 
 <style lang="css">
-	.widthMobile--auto {
-		@apply w-auto;
+	.widthMobile {
+		&--auto {
+			@apply w-auto;
+		}
+		&--20 {
+			@apply w-1/5;
+		}
+		&--33 {
+			@apply w-1/3;
+		}
+		&--50 {
+			@apply w-1/2;
+		}
+		&--66 {
+			@apply w-2/3;
+		}
+		&--75 {
+			@apply w-3/4;
+		}
+		&--100 {
+			@apply w-full;
+		}
 	}
-	.widthMobile--20 {
-		@apply w-1/5;
-	}
-	.widthMobile--33 {
-		@apply w-1/3;
-	}
-	.widthMobile--50 {
-		@apply w-1/2;
-	}
-	.widthMobile--66 {
-		@apply w-2/3;
-	}
-	.widthMobile--75 {
-		@apply w-3/4;
-	}
-	.widthMobile--100 {
-		@apply w-full;
-	}
-	.widthDesktop--auto {
-		@apply lg:w-auto;
-	}
-	.widthDesktop--20 {
-		@apply lg:w-1/5;
-	}
-	.widthDesktop--33 {
-		@apply lg:w-1/3;
-	}
-	.widthDesktop--50 {
-		@apply lg:w-1/2;
-	}
-	.widthDesktop--66 {
-		@apply lg:w-2/3;
-	}
-	.widthDesktop--75 {
-		@apply lg:w-3/4;
-	}
-	.widthDesktop--100 {
-		@apply lg:w-full;
+
+	.widthDesktop {
+		&--auto {
+			@apply lg:w-auto;
+		}
+		&--20 {
+			@apply lg:w-1/5;
+		}
+		&--33 {
+			@apply lg:w-1/3;
+		}
+		&--50 {
+			@apply lg:w-1/2;
+		}
+		&--66 {
+			@apply lg:w-2/3;
+		}
+		&--75 {
+			@apply lg:w-3/4;
+		}
+		&--100 {
+			@apply lg:w-full;
+		}
 	}
 </style>

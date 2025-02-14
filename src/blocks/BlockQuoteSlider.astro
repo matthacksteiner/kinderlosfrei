@@ -125,15 +125,60 @@ const autoplay = hasControl('autoplay');
 </script>
 
 <style lang="css" define:vars={{ titleFont, textFont }}>
-	.swiper-controls {
-		@apply mt-4 flex h-24 flex-col justify-between;
-	}
-	.swiper-nav {
-		@apply flex justify-center gap-8 text-4xl;
-	}
+	.swiper {
+		&-controls {
+			@apply mt-4 flex h-24 flex-col justify-between;
+		}
 
-	.swiper-pagination {
-		@apply relative bottom-auto top-auto;
+		&-nav {
+			@apply flex justify-center gap-8 text-4xl;
+		}
+
+		&-pagination {
+			@apply relative bottom-auto top-auto;
+
+			&--primary {
+				.swiper-pagination-bullet-active,
+				.swiper-pagination-progressbar-fill {
+					@apply bg-primary;
+				}
+			}
+
+			&--secondary {
+				.swiper-pagination-bullet-active,
+				.swiper-pagination-progressbar-fill {
+					@apply bg-secondary;
+				}
+			}
+
+			&--tertiary {
+				.swiper-pagination-bullet-active,
+				.swiper-pagination-progressbar-fill {
+					@apply bg-tertiary;
+				}
+			}
+
+			&--black {
+				.swiper-pagination-bullet-active,
+				.swiper-pagination-progressbar-fill {
+					@apply bg-black;
+				}
+			}
+
+			&--white {
+				.swiper-pagination-bullet-active,
+				.swiper-pagination-progressbar-fill {
+					@apply bg-white;
+				}
+			}
+
+			&--transparent {
+				.swiper-pagination-bullet-active,
+				.swiper-pagination-progressbar-fill {
+					@apply bg-transparent;
+				}
+			}
+		}
 	}
 
 	.author {
@@ -141,34 +186,5 @@ const autoplay = hasControl('autoplay');
 	}
 	.quote {
 		font-family: var(--textFont);
-	}
-	.swiper-pagination--primary .swiper-pagination-bullet-active,
-	.swiper-pagination--primary .swiper-pagination-progressbar-fill {
-		@apply bg-primary;
-	}
-
-	.swiper-pagination--secondary .swiper-pagination-bullet-active,
-	.swiper-pagination--secondary .swiper-pagination-progressbar-fill {
-		@apply bg-secondary;
-	}
-
-	.swiper-pagination--tertiary .swiper-pagination-bullet-active,
-	.swiper-pagination--tertiary .swiper-pagination-progressbar-fill {
-		@apply bg-tertiary;
-	}
-
-	.swiper-pagination--black .swiper-pagination-bullet-active,
-	.swiper-pagination--black .swiper-pagination-progressbar-fill {
-		@apply bg-black;
-	}
-
-	.swiper-pagination--white .swiper-pagination-bullet-active,
-	.swiper-pagination--white .swiper-pagination-progressbar-fill {
-		@apply bg-white;
-	}
-
-	.swiper-pagination--transparent .swiper-pagination-bullet-active,
-	.swiper-pagination--transparent .swiper-pagination-progressbar-fill {
-		@apply bg-transparent;
 	}
 </style>

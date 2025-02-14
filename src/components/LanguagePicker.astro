@@ -82,44 +82,40 @@ const selectedLang =
 		transform: rotate(180deg);
 	}
 	.menu--active {
-		&.textActive--primary {
-			@apply text-primary;
+		&.textActive {
+			&--primary {
+				@apply text-primary;
+			}
+			&--secondary {
+				@apply text-secondary;
+			}
+			&--tertiary {
+				@apply text-tertiary;
+			}
+			&--white {
+				@apply text-white;
+			}
+			&--black {
+				@apply text-black;
+			}
 		}
 
-		&.textActive--secondary {
-			@apply text-secondary;
-		}
-
-		&.textActive--tertiary {
-			@apply text-tertiary;
-		}
-
-		&.textActive--white {
-			@apply text-white;
-		}
-
-		&.textActive--black {
-			@apply text-black;
-		}
-
-		&.bgActive--primary {
-			@apply bg-primary;
-		}
-
-		&.bgActive--secondary {
-			@apply bg-secondary;
-		}
-
-		&.bgActive--tertiary {
-			@apply bg-tertiary;
-		}
-
-		&.bgActive--white {
-			@apply bg-white;
-		}
-
-		&.bgActive--black {
-			@apply bg-black;
+		&.bgActive {
+			&--primary {
+				@apply bg-primary;
+			}
+			&--secondary {
+				@apply bg-secondary;
+			}
+			&--tertiary {
+				@apply bg-tertiary;
+			}
+			&--white {
+				@apply bg-white;
+			}
+			&--black {
+				@apply bg-black;
+			}
 		}
 	}
 </style>

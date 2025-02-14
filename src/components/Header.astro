@@ -129,44 +129,48 @@ const prefixDefaultLocale = global.prefixDefaultLocale;
 	.header--active {
 		@apply py-0 shadow-lg lg:py-4;
 
-		&.textActive--primary {
-			@apply text-primary;
+		&.textActive {
+			&--primary {
+				@apply text-primary;
+			}
+
+			&--secondary {
+				@apply text-secondary;
+			}
+
+			&--tertiary {
+				@apply text-tertiary;
+			}
+
+			&--white {
+				@apply text-white;
+			}
+
+			&--black {
+				@apply text-black;
+			}
 		}
 
-		&.textActive--secondary {
-			@apply text-secondary;
-		}
+		&.bgActive {
+			&--primary {
+				@apply bg-primary;
+			}
 
-		&.textActive--tertiary {
-			@apply text-tertiary;
-		}
+			&--secondary {
+				@apply bg-secondary;
+			}
 
-		&.textActive--white {
-			@apply text-white;
-		}
+			&--tertiary {
+				@apply bg-tertiary;
+			}
 
-		&.textActive--black {
-			@apply text-black;
-		}
+			&--white {
+				@apply bg-white;
+			}
 
-		&.bgActive--primary {
-			@apply bg-primary;
-		}
-
-		&.bgActive--secondary {
-			@apply bg-secondary;
-		}
-
-		&.bgActive--tertiary {
-			@apply bg-tertiary;
-		}
-
-		&.bgActive--white {
-			@apply bg-white;
-		}
-
-		&.bgActive--black {
-			@apply bg-black;
+			&--black {
+				@apply bg-black;
+			}
 		}
 
 		#logo,

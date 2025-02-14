@@ -83,57 +83,63 @@ const logoAlign = global.logoAlign;
 	.active {
 		@apply font-semibold;
 	}
-	.hamburgerColor--primary {
-		--hamburger-color: var(--colorPrimary);
-		--hamburger-color-hover: var(--colorPrimary);
+
+	.hamburgerColor {
+		&--primary {
+			--hamburger-color: var(--colorPrimary);
+			--hamburger-color-hover: var(--colorPrimary);
+		}
+
+		&--secondary {
+			--hamburger-color: var(--colorSecondary);
+			--hamburger-color-hover: var(--colorSecondary);
+		}
+
+		&--tertiary {
+			--hamburger-color: var(--colorTertiary);
+			--hamburger-color-hover: var(--colorTertiary);
+		}
+
+		&--white {
+			--hamburger-color: var(--colorWhite);
+			--hamburger-color-hover: var(--colorWhite);
+		}
+
+		&--black {
+			--hamburger-color: var(--colorBlack);
+			--hamburger-color-hover: var(--colorBlack);
+		}
+
+		&--transparent {
+			--hamburger-color: var(--colorTransparent);
+			--hamburger-color-hover: var(--colorTransparent);
+		}
 	}
 
-	.hamburgerColor--secondary {
-		--hamburger-color: var(--colorSecondary);
-		--hamburger-color-hover: var(--colorSecondary);
-	}
+	.hamburgerColorActive {
+		&--primary {
+			--hamburger-color-active: var(--colorPrimary);
+		}
 
-	.hambugerColor--tertiary {
-		--hamburger-color: var(--colorTertiary);
-		--hamburger-color-hover: var(--colorTertiary);
-	}
+		&--secondary {
+			--hamburger-color-active: var(--colorSecondary);
+		}
 
-	.hamburgerColor--white {
-		--hamburger-color: var(--colorWhite);
-		--hamburger-color-hover: var(--colorWhite);
-	}
+		&--tertiary {
+			--hamburger-color-active: var(--colorTertiary);
+		}
 
-	.hamburgerColor--black {
-		--hamburger-color: var(--colorBlack);
-		--hamburger-color-hover: var(--colorBlack);
-	}
+		&--white {
+			--hamburger-color-active: var(--colorWhite);
+		}
 
-	.hamburgerColor--transparent {
-		--hamburger-color: var(--colorTransparent);
-		--hamburger-color-hover: var(--colorTransparent);
-	}
+		&--black {
+			--hamburger-color-active: var(--colorBlack);
+		}
 
-	.hamburgerColorActive--primary {
-		--hamburger-color-active: var(--colorPrimary);
-	}
-
-	.hamburgerColorActive--secondary {
-		--hamburger-color-active: var(--colorSecondary);
-	}
-
-	.hamburgerColorActive--tertiary {
-		--hamburger-color-active: var(--colorTertiary);
-	}
-
-	.hamburgerColorActive--white {
-		--hamburger-color-active: var(--colorWhite);
-	}
-
-	.hamburgerColorActive--black {
-		--hamburger-color-active: var(--colorBlack);
-	}
-	.hamburgerColorActive--transparent {
-		--hamburger-color-active: var(--colorTransparent);
+		&--transparent {
+			--hamburger-color-active: var(--colorTransparent);
+		}
 	}
 </style>
 

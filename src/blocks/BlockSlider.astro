@@ -172,37 +172,53 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 	.title {
 		font-family: var(--font);
 	}
-	.overlay:before {
-		@apply absolute left-0 top-0 z-10 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
+	.overlay {
+		&:before {
+			@apply absolute left-0 top-0 z-10 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
+		}
 	}
 
-	.swiper-pagination--primary .swiper-pagination-bullet-active,
-	.swiper-pagination--primary .swiper-pagination-progressbar-fill {
-		@apply bg-primary;
-	}
+	.swiper-pagination {
+		&--primary {
+			.swiper-pagination-bullet-active,
+			.swiper-pagination-progressbar-fill {
+				@apply bg-primary;
+			}
+		}
 
-	.swiper-pagination--secondary .swiper-pagination-bullet-active,
-	.swiper-pagination--secondary .swiper-pagination-progressbar-fill {
-		@apply bg-secondary;
-	}
+		&--secondary {
+			.swiper-pagination-bullet-active,
+			.swiper-pagination-progressbar-fill {
+				@apply bg-secondary;
+			}
+		}
 
-	.swiper-pagination--tertiary .swiper-pagination-bullet-active,
-	.swiper-pagination--tertiary .swiper-pagination-progressbar-fill {
-		@apply bg-tertiary;
-	}
+		&--tertiary {
+			.swiper-pagination-bullet-active,
+			.swiper-pagination-progressbar-fill {
+				@apply bg-tertiary;
+			}
+		}
 
-	.swiper-pagination--black .swiper-pagination-bullet-active,
-	.swiper-pagination--black .swiper-pagination-progressbar-fill {
-		@apply bg-black;
-	}
+		&--black {
+			.swiper-pagination-bullet-active,
+			.swiper-pagination-progressbar-fill {
+				@apply bg-black;
+			}
+		}
 
-	.swiper-pagination--white .swiper-pagination-bullet-active,
-	.swiper-pagination--white .swiper-pagination-progressbar-fill {
-		@apply bg-white;
-	}
+		&--white {
+			.swiper-pagination-bullet-active,
+			.swiper-pagination-progressbar-fill {
+				@apply bg-white;
+			}
+		}
 
-	.swiper-pagination--transparent .swiper-pagination-bullet-active,
-	.swiper-pagination--transparent .swiper-pagination-progressbar-fill {
-		@apply bg-transparent;
+		&--transparent {
+			.swiper-pagination-bullet-active,
+			.swiper-pagination-progressbar-fill {
+				@apply bg-transparent;
+			}
+		}
 	}
 </style>
