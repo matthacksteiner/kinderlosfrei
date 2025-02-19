@@ -17,6 +17,7 @@ import BlockColumns from '@blocks/BlockColumns.astro';
 import BlockGrid from '@blocks/BlockGrid.astro';
 import BlockCode from '@blocks/BlockCode.astro';
 import BlockButtonBar from '@blocks/BlockButtonBar.astro';
+import BlockCard from '@blocks/BlockCard.astro';
 const { blocks, global, span, backgroundContainer } = Astro.props;
 ---
 
@@ -240,7 +241,35 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							spacingDesktopBottom={toRem(block.content.spacingdesktopbottom)}
 						/>
 					);
-
+				case 'card':
+					return (
+						<BlockCard
+							title={block.content.title}
+							text={block.content.text}
+							image={block.content.image}
+							hovertoggle={block.content.hovertoggle}
+							hovertext={block.content.hovertext}
+							level={block.content.level}
+							titlefont={block.content.titlefont}
+							titlesize={block.content.titlesize}
+							titlealign={block.content.titlealign}
+							textfont={block.content.textfont}
+							textsize={block.content.textsize}
+							textalign={block.content.textalign}
+							widthmobile={block.content.widthmobile}
+							widthdesktop={block.content.widthdesktop}
+							widthalign={block.content.widthalign}
+							cardbackgroundcolor={block.content.cardbackgroundcolor}
+							cardbackgroundcoloractive={
+								block.content.cardbackgroundcoloractive
+							}
+							cardtextcolor={block.content.cardtextcolor}
+							cardtextcoloractive={block.content.cardtextcoloractive}
+							cardbordercolor={block.content.cardbordercolor}
+							cardbordercoloractive={block.content.cardbordercoloractive}
+							metadata={block.content.metadata}
+						/>
+					);
 				default:
 					return null;
 			}
