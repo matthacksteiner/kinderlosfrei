@@ -35,6 +35,7 @@ const {
 	cardBorderPaddingMobile,
 	metadata,
 } = Astro.props;
+console.log('🚀 ~ aspectRatio:', aspectRatio);
 const cardBorderRadiusRem = cardBorderRadius ? toRem(cardBorderRadius) : '0';
 const cardBorderWidthRem = cardBorderWidth ? toRem(cardBorderWidth) : '0';
 const cardBorderPaddingDesktopRem = cardBorderPaddingDesktop
@@ -56,6 +57,7 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 		`cardTextActive--${cardTextColorActive}`,
 		`cardBorder--${cardBorderColor}`,
 		`cardBorderActive--${cardBorderColorActive}`,
+		`cardAspectRatio--${aspectRatio}`,
 		'transition-all',
 		'duration-300',
 		'relative',
@@ -287,6 +289,38 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 		}
 		&--transparent {
 			@apply hover:border-transparent;
+		}
+	}
+	.cardAspectRatio {
+		&--1\/1 {
+			@apply aspect-[1/1];
+		}
+		&--3\/2 {
+			@apply aspect-[3/2];
+		}
+		&--4\/3 {
+			@apply aspect-[4/3];
+		}
+		&--5\/4 {
+			@apply aspect-[5/4];
+		}
+		&--16\/9 {
+			@apply aspect-[16/9];
+		}
+		&--21\/9 {
+			@apply aspect-[21/9];
+		}
+		&--2\/3 {
+			@apply aspect-[2/3];
+		}
+		&--3\/4 {
+			@apply aspect-[3/4];
+		}
+		&--4\/5 {
+			@apply aspect-[4/5];
+		}
+		&--1\/2 {
+			@apply aspect-[1/2];
 		}
 	}
 </style>
