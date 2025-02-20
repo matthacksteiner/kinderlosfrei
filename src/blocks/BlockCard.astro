@@ -65,7 +65,7 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 	]}
 	{...metadata?.attributes}
 >
-	<div class:list={['card-content', 'h-full', 'w-full']}>
+	<div class:list={['card-content', 'h-full', 'w-full', 'flex', 'flex-col']}>
 		{
 			title && (
 				<Level
@@ -93,12 +93,15 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 		}
 		{
 			image && (
-				<VectorImage
-					image={image}
-					noLink="true"
-					widthMobile={widthMobile}
-					widthDesktop={widthDesktop}
-				/>
+				<div class="card-image w-full">
+					<VectorImage
+						image={image}
+						noLink="true"
+						widthMobile={widthMobile}
+						widthDesktop={widthDesktop}
+						widthAlign={widthAlign}
+					/>
+				</div>
 			)
 		}
 		{

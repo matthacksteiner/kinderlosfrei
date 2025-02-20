@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-const { image, widthMobile, widthDesktop, noLink } = Astro.props;
+const { image, widthMobile, widthDesktop, noLink, widthAlign } = Astro.props;
 const classes = image?.classes;
 const link = image?.linkexternal;
 const imageProps = {
@@ -12,6 +12,11 @@ const imageProps = {
 	'class:list': [
 		`widthMobile--${widthMobile || '100'}`,
 		`widthDesktop--${widthDesktop || '100'}`,
+		widthAlign === 'start' || widthAlign === 'normal'
+			? 'mr-auto'
+			: widthAlign === 'center'
+			? 'mx-auto'
+			: widthAlign === 'end' && 'ml-auto',
 		classes,
 	].filter(Boolean),
 };
