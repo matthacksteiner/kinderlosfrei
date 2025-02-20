@@ -1,3 +1,269 @@
 ---
+import { toRem } from '@lib/helpers.js';
 import VectorImage from '@components/VectorImage.astro';
+import Link from '@components/Link.astro';
+
+const {
+	title,
+	text,
+	image,
+	hovertoggle,
+	hovertext,
+	linkToggle,
+	link,
+	aspectRatio,
+	justify,
+	level: Level,
+	titleFont,
+	titleSize,
+	titleAlign,
+	textFont,
+	textSize,
+	textAlign,
+	widthMobile,
+	widthDesktop,
+	widthAlign,
+	cardBackgroundColor,
+	cardBackgroundColorActive,
+	cardTextColor,
+	cardTextColorActive,
+	cardBorderColor,
+	cardBorderColorActive,
+	cardBorderWidth,
+	cardBorderRadius,
+	cardBorderPaddingDesktop,
+	cardBorderPaddingMobile,
+	metadata,
+} = Astro.props;
+const cardBorderRadiusRem = cardBorderRadius ? toRem(cardBorderRadius) : '0';
+const cardBorderWidthRem = cardBorderWidth ? toRem(cardBorderWidth) : '0';
+const cardBorderPaddingDesktopRem = cardBorderPaddingDesktop
+	? toRem(cardBorderPaddingDesktop)
+	: '0';
+const cardBorderPaddingMobileRem = cardBorderPaddingMobile
+	? toRem(cardBorderPaddingMobile)
+	: '0';
 ---
+
+<div
+	id={metadata?.identifier || undefined}
+	class:list={[
+		'blockCard',
+		'blocks',
+		`cardBg--${cardBackgroundColor}`,
+		`cardBgActive--${cardBackgroundColorActive}`,
+		`cardText--${cardTextColor}`,
+		`cardTextActive--${cardTextColorActive}`,
+		`cardBorder--${cardBorderColor}`,
+		`cardBorderActive--${cardBorderColorActive}`,
+		'transition-all',
+		'duration-300',
+		'relative',
+		'overflow-hidden',
+
+		metadata?.classes,
+	]}
+	{...metadata?.attributes}
+>
+	<div class:list={['card-content', 'h-full', 'w-full']}>
+		{
+			title && (
+				<Level
+					class:list={[
+						'card-title',
+						`font--${titleSize}`,
+						`text--${titleAlign}`,
+					]}
+					set:html={title}
+				/>
+			)
+		}
+		{
+			text && (
+				<div
+					class:list={[
+						'card-text',
+						'mt-2',
+						`font--${textSize}`,
+						`text--${textAlign}`,
+					]}
+					set:html={text}
+				/>
+			)
+		}
+		{
+			image && (
+				<VectorImage
+					image={image}
+					noLink="true"
+					widthMobile={widthMobile}
+					widthDesktop={widthDesktop}
+				/>
+			)
+		}
+		{
+			hovertoggle && hovertext && (
+				<div class="card-hover-text bg-black/50 absolute inset-0 flex items-center justify-center p-4 text-white opacity-0 transition-opacity duration-300 hover:opacity-100">
+					<div set:html={hovertext} />
+				</div>
+			)
+		}
+	</div>
+</div>
+
+<style
+	lang="css"
+	define:vars={{
+		titleFont,
+		textFont,
+		widthMobile,
+		widthDesktop,
+		cardBorderWidthRem,
+		cardBorderRadiusRem,
+		aspectRatio,
+		cardBorderPaddingDesktopRem,
+		cardBorderPaddingMobileRem,
+	}}
+>
+	.blockCard {
+		@apply rounded-[var(--cardBorderRadiusRem)] border-[length:var(--cardBorderWidthRem)];
+		padding: var(--cardBorderPaddingDesktopRem);
+	}
+	.card-content {
+		@apply aspect-square;
+	}
+
+	.card-title {
+		font-family: var(--titleFont);
+	}
+
+	.card-text {
+		font-family: var(--textFont);
+	}
+
+	.cardText {
+		&--primary {
+			@apply text-primary;
+		}
+		&--secondary {
+			@apply text-secondary;
+		}
+		&--tertiary {
+			@apply text-tertiary;
+		}
+		&--black {
+			@apply text-black;
+		}
+		&--white {
+			@apply text-white;
+		}
+		&--transparent {
+			@apply text-transparent;
+		}
+	}
+
+	.cardTextActive {
+		&--primary {
+			@apply hover:text-primary;
+		}
+		&--secondary {
+			@apply hover:text-secondary;
+		}
+		&--tertiary {
+			@apply hover:text-tertiary;
+		}
+		&--black {
+			@apply hover:text-black;
+		}
+		&--white {
+			@apply hover:text-white;
+		}
+		&--transparent {
+			@apply hover:text-transparent;
+		}
+	}
+
+	.cardBg {
+		&--primary {
+			@apply bg-primary;
+		}
+		&--secondary {
+			@apply bg-secondary;
+		}
+		&--tertiary {
+			@apply bg-tertiary;
+		}
+		&--black {
+			@apply bg-black;
+		}
+		&--white {
+			@apply bg-white;
+		}
+		&--transparent {
+			@apply bg-transparent;
+		}
+	}
+
+	.cardBgActive {
+		&--primary {
+			@apply hover:bg-primary;
+		}
+		&--secondary {
+			@apply hover:bg-secondary;
+		}
+		&--tertiary {
+			@apply hover:bg-tertiary;
+		}
+		&--black {
+			@apply hover:bg-black;
+		}
+		&--white {
+			@apply hover:bg-white;
+		}
+		&--transparent {
+			@apply hover:bg-transparent;
+		}
+	}
+
+	.cardBorder {
+		&--primary {
+			@apply border-primary;
+		}
+		&--secondary {
+			@apply border-secondary;
+		}
+		&--tertiary {
+			@apply border-tertiary;
+		}
+		&--black {
+			@apply border-black;
+		}
+		&--white {
+			@apply border-white;
+		}
+		&--transparent {
+			@apply border-transparent;
+		}
+	}
+
+	.cardBorderActive {
+		&--primary {
+			@apply hover:border-primary;
+		}
+		&--secondary {
+			@apply hover:border-secondary;
+		}
+		&--tertiary {
+			@apply hover:border-tertiary;
+		}
+		&--black {
+			@apply hover:border-black;
+		}
+		&--white {
+			@apply hover:border-white;
+		}
+		&--transparent {
+			@apply hover:border-transparent;
+		}
+	}
+</style>

@@ -249,24 +249,32 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							image={block.content.image}
 							hovertoggle={block.content.hovertoggle}
 							hovertext={block.content.hovertext}
+							linkToggle={block.content.linktoggle}
+							link={block.content.linkobject}
+							aspectRatio={block.content.aspectratio}
+							justify={block.content.justify}
 							level={block.content.level}
-							titlefont={block.content.titlefont}
-							titlesize={block.content.titlesize}
-							titlealign={block.content.titlealign}
-							textfont={block.content.textfont}
-							textsize={block.content.textsize}
-							textalign={block.content.textalign}
-							widthmobile={block.content.widthmobile}
-							widthdesktop={block.content.widthdesktop}
-							widthalign={block.content.widthalign}
-							cardbackgroundcolor={block.content.cardbackgroundcolor}
-							cardbackgroundcoloractive={
+							titleFont={block.content.titlefont}
+							titleSize={block.content.titlesize}
+							titleAlign={block.content.titlealign}
+							textFont={block.content.textfont}
+							textSize={block.content.textsize}
+							textAlign={block.content.textalign}
+							widthMobile={block.content.widthmobile}
+							widthDesktop={block.content.widthdesktop}
+							widthAlign={block.content.widthalign}
+							cardBackgroundColor={block.content.cardbackgroundcolor}
+							cardBackgroundColorActive={
 								block.content.cardbackgroundcoloractive
 							}
-							cardtextcolor={block.content.cardtextcolor}
-							cardtextcoloractive={block.content.cardtextcoloractive}
-							cardbordercolor={block.content.cardbordercolor}
-							cardbordercoloractive={block.content.cardbordercoloractive}
+							cardTextColor={block.content.cardtextcolor}
+							cardTextColorActive={block.content.cardtextcoloractive}
+							cardBorderColor={block.content.cardbordercolor}
+							cardBorderColorActive={block.content.cardbordercoloractive}
+							cardBorderWidth={block.content.cardborderwidth}
+							cardBorderRadius={block.content.cardborderradius}
+							cardBorderPaddingDesktop={block.content.cardborderpaddingdesktop}
+							cardBorderPaddingMobile={block.content.cardborderpaddingmobile}
 							metadata={block.content.metadata}
 						/>
 					);

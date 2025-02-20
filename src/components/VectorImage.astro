@@ -1,9 +1,8 @@
 ---
 import { Image } from 'astro:assets';
-const { image, widthMobile, widthDesktop } = Astro.props;
+const { image, widthMobile, widthDesktop, noLink } = Astro.props;
 const classes = image?.classes;
 const link = image?.linkexternal;
-
 const imageProps = {
 	src: image?.url,
 	alt: image?.alt,
@@ -22,7 +21,7 @@ const imageProps = {
 	() => {
 		if (!image) return null;
 
-		if (!image.linktoggle) {
+		if (!image.linktoggle || noLink) {
 			return <Image {...imageProps} />;
 		}
 
