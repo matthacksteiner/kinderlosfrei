@@ -35,7 +35,7 @@ const {
 	cardBorderPaddingMobile,
 	metadata,
 } = Astro.props;
-console.log('🚀 ~ aspectRatio:', aspectRatio);
+console.log('🚀 ~ link:', link);
 const cardBorderRadiusRem = cardBorderRadius ? toRem(cardBorderRadius) : '0';
 const cardBorderWidthRem = cardBorderWidth ? toRem(cardBorderWidth) : '0';
 const cardBorderPaddingDesktopRem = cardBorderPaddingDesktop
@@ -51,6 +51,7 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 	class:list={[
 		'blockCard',
 		'blocks',
+		'group',
 		`cardBg--${cardBackgroundColor}`,
 		`cardBgActive--${cardBackgroundColorActive}`,
 		`cardText--${cardTextColor}`,
@@ -85,51 +86,63 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 			},
 		]}
 	>
-		{
-			title && (
-				<Level
-					class:list={[
-						'card-title',
-						`font--${titleSize}`,
-						`text--${titleAlign}`,
-						justify === 'one' && 'mb-auto',
-					]}
-					set:html={title}
-				/>
-			)
-		}
-		{
-			text && (
-				<div
-					class:list={[
-						'card-text',
-						'mt-2',
-						`font--${textSize}`,
-						`text--${textAlign}`,
-					]}
-					set:html={text}
-				/>
-			)
-		}
-		{
-			image && (
-				<div
-					class:list={['card-image', 'w-full', justify === 'two' && 'mt-auto']}
-				>
-					<VectorImage
-						image={image}
-						noLink="true"
-						widthMobile={widthMobile}
-						widthDesktop={widthDesktop}
-						widthAlign={widthAlign}
+		<div
+			class="card-main-content transition-opacity duration-300"
+			class:list={[hovertoggle && 'group-hover:opacity-0']}
+		>
+			{
+				title && (
+					<Level
+						class:list={[
+							'card-title',
+							`font--${titleSize}`,
+							`text--${titleAlign}`,
+							justify === 'one' && 'mb-auto',
+						]}
+						set:html={title}
 					/>
-				</div>
-			)
-		}
+				)
+			}
+			{
+				text && (
+					<div
+						class:list={[
+							'card-text',
+							'mt-2',
+							`font--${textSize}`,
+							`text--${textAlign}`,
+						]}
+						set:html={text}
+					/>
+				)
+			}
+			{
+				image && (
+					<div
+						class:list={[
+							'card-image',
+							'w-full',
+							justify === 'two' && 'mt-auto',
+						]}
+					>
+						<VectorImage
+							image={image}
+							noLink="true"
+							widthMobile={widthMobile}
+							widthDesktop={widthDesktop}
+							widthAlign={widthAlign}
+						/>
+					</div>
+				)
+			}
+		</div>
 		{
 			hovertoggle && hovertext && (
-				<div class="card-hover-text bg-black/50 absolute inset-0 flex items-center justify-center p-4 text-white opacity-0 transition-opacity duration-300 hover:opacity-100">
-					<div set:html={hovertext} />
+				<div class="card-hover-text absolute inset-0 flex items-start p-4 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+					<div
+						set:html={hovertext}
+						class:list={[`font--${titleSize}`, `text--${titleAlign}`]}
+					/>
 				</div>
 			)
 		}
@@ -153,9 +166,6 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 	.blockCard {
 		@apply rounded-[var(--cardBorderRadiusRem)] border-[length:var(--cardBorderWidthRem)];
 		padding: var(--cardBorderPaddingDesktopRem);
-	}
-	.card-content {
-		@apply aspect-square;
 	}
 
 	.card-title {
