@@ -1,61 +1,48 @@
 ---
-const { link, class: className } = Astro.props;
+const { link, class: className, ...rest } = Astro.props;
 const { lang } = Astro.params;
 const currentLang = lang;
+
+if (!link) {
+	throw new Error('Missing link prop in Link.astro');
+}
+
+let href = '';
+switch (link.type) {
+	case 'url':
+		href = link.href;
+		break;
+	case 'page':
+		href = link.hash
+			? `${currentLang ? `/${currentLang}/` : ''}${link.uri}#${link.hash}`
+			: `${currentLang ? `/${currentLang}/` : ''}${link.uri}`;
+		break;
+	case 'file':
+		href = link.href;
+		break;
+	case 'email':
+		href = link.href;
+		break;
+	case 'tel':
+		href = `tel:${link.href}`;
+		break;
+	default:
+		href = link.href;
+}
+
+const attributes = {
+	href,
+	...(link.popup ? { target: '_blank', rel: 'noopener' } : {}),
+	...(link.type === 'file' ? { download: '' } : {}),
+};
+
+const defaultContent = link.title
+	? link.title
+	: link.type === 'page'
+	? link.uri
+	: link.href;
 ---
 
-{
-	link ? (
-		link.type === 'url' ? (
-			<a
-				href={link.href}
-				target={link.popup ? '_blank' : undefined}
-				rel={link.popup ? 'noopener' : undefined}
-				class:list={[className]}
-			>
-				{link.title ? link.title : link.href}
-			</a>
-		) : link.type === 'page' ? (
-			<a
-				href={
-					link.hash
-						? `${currentLang ? `/${currentLang}/` : ''}${link.uri}#${link.hash}`
-						: `${currentLang ? `/${currentLang}/` : ''}${link.uri}`
-				}
-				target={link.popup ? '_blank' : undefined}
-				rel={link.popup ? 'noopener' : undefined}
-				class:list={[className]}
-			>
-				{link.title ? link.title : link.uri}
-			</a>
-		) : link.type === 'file' ? (
-			<a
-				href={link.href}
-				download
-				target="_blank"
-				rel="noopener"
-				class:list={[className]}
-			>
-				{link.title ? link.title : 'Download File'}
-			</a>
-		) : link.type === 'email' ? (
-			<a
-				href={`${link.href}`}
-				target="_blank"
-				rel="noopener"
-				class:list={[className]}
-			>
-				{link.title ? link.title : link.href}
-			</a>
-		) : link.type === 'tel' ? (
-			<a
-				href={`tel:${link.href}`}
-				target="_blank"
-				rel="noopener"
-				class:list={[className]}
-			>
-				{link.title ? link.title : link.href}
-			</a>
-		) : null
-	) : null
-}
+<a {...attributes} {...rest} class:list={[className]}>
+	<slot>{defaultContent}</slot>
+</a>

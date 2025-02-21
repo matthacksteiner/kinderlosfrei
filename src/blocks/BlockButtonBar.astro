@@ -1,5 +1,4 @@
 ---
-import { toRem } from '@lib/helpers.js';
 import BlockButton from './BlockButton.astro';
 
 const {
@@ -25,6 +24,10 @@ const {
 			'justify-around': adjust === 'space-around',
 			'justify-between': adjust === 'space-between',
 			'justify-evenly': adjust === 'space-evenly',
+			'justify-start': adjust === 'start',
+			'justify-center': adjust === 'center',
+			'justify-end': adjust === 'end',
+			'justify-normal': !adjust || adjust === 'normal',
 		},
 		metadata?.classes,
 	]}

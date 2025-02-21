@@ -3,8 +3,7 @@ import { toRem } from '@lib/helpers.js';
 import Picture from '@components/Picture.astro';
 import ImageCaption from '@components/ImageCaption.astro';
 import ImageCopyright from './ImageCopyright.astro';
-const { lang } = Astro.params;
-const currentLang = lang;
+import Link from '@components/Link.astro';
 
 const {
 	global,
@@ -37,7 +36,7 @@ const pictureProps = {
 	gridMarginMobile: global.gridMarginMobile,
 	gridGapDesktop: global.gridGapDesktop,
 	gridMarginDesktop: global.gridMarginDesktop,
-	position: 'relative',
+	positon: 'relative',
 	class: `${className} ${image.classes} w-full object-cover`,
 	thumbhash: image.thumbhash,
 };
@@ -47,18 +46,7 @@ const link = image.linkexternal;
 
 {
 	image.linktoggle ? (
-		<a
-			href={
-				link.type === 'url'
-					? link.href
-					: link.hash
-					? `${currentLang ? `/${currentLang}/` : ''}${link.uri}#${link.hash}`
-					: `${currentLang ? `/${currentLang}/` : ''}${link.uri}`
-			}
-			target={link.popup ? '_blank' : undefined}
-			rel={link.popup ? 'noopener' : undefined}
-			aria-label={`Mehr zu ${image.alt}`}
-		>
+		<Link link={link} aria-label={`Mehr zu ${image.alt}`}>
 			<div
 				class:list={[
 					'relative',
@@ -71,7 +59,7 @@ const link = image.linkexternal;
 				) : null}
 				{image.copyrighttoggle ? <ImageCopyright {...image} /> : null}
 			</div>
-		</a>
+		</Link>
 	) : (
 		<div
 			class:list={['relative', image.captionoverlay === 'overlay' && 'overlay']}
