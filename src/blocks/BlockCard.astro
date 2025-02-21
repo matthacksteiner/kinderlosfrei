@@ -116,7 +116,7 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 						)}
 					</div>
 					{hovertoggle && hovertext && (
-						<div class="card-hover-text absolute inset-0 flex items-start p-4 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+						<div class="card-hover-text absolute inset-0 flex items-start  opacity-0 transition-opacity duration-300 group-hover:opacity-100">
 							<div
 								set:html={hovertext}
 								class:list={[`font--${titleSize}`, `text--${titleAlign}`]}
@@ -199,6 +199,11 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 
 	.card-text {
 		font-family: var(--textFont);
+	}
+
+	.card-hover-text {
+		padding: var(--cardBorderPaddingDesktopRem);
+		font-family: var(--titleFont);
 	}
 
 	.cardText {
