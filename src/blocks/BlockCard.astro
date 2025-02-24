@@ -1,7 +1,7 @@
 ---
 import { toRem } from '@lib/helpers.js';
-import VectorImage from '@components/VectorImage.astro';
 import Link from '@components/Link.astro';
+import CardContent from '@components/CardContent.astro';
 
 const {
 	title,
@@ -36,140 +36,75 @@ const {
 	metadata,
 } = Astro.props;
 
-const cardBorderRadiusRem = cardBorderRadius ? toRem(cardBorderRadius) : '0';
-const cardBorderWidthRem = cardBorderWidth ? toRem(cardBorderWidth) : '0';
-const cardBorderPaddingDesktopRem = cardBorderPaddingDesktop
-	? toRem(cardBorderPaddingDesktop)
-	: '0';
-const cardBorderPaddingMobileRem = cardBorderPaddingMobile
-	? toRem(cardBorderPaddingMobile)
-	: '0';
+// Convert measurements to rem
+const dimensions = {
+	borderRadius: toRem(cardBorderRadius || 0),
+	borderWidth: toRem(cardBorderWidth || 0),
+	paddingDesktop: toRem(cardBorderPaddingDesktop || 0),
+	paddingMobile: toRem(cardBorderPaddingMobile || 0),
+};
+
+const cardClasses = [
+	'blockCard',
+	'blocks',
+	'group',
+	`cardBg--${cardBackgroundColor}`,
+	`cardBgActive--${cardBackgroundColorActive}`,
+	`cardText--${cardTextColor}`,
+	`cardTextActive--${cardTextColorActive}`,
+	`cardBorder--${cardBorderColor}`,
+	`cardBorderActive--${cardBorderColorActive}`,
+	`cardAspectRatio--${aspectRatio}`,
+	'transition-all',
+	'duration-300',
+	'relative',
+	'overflow-hidden',
+	metadata?.classes,
+];
 ---
 
 <div
 	id={metadata?.identifier || undefined}
-	class:list={[
-		'blockCard',
-		'blocks',
-		'group',
-		`cardBg--${cardBackgroundColor}`,
-		`cardBgActive--${cardBackgroundColorActive}`,
-		`cardText--${cardTextColor}`,
-		`cardTextActive--${cardTextColorActive}`,
-		`cardBorder--${cardBorderColor}`,
-		`cardBorderActive--${cardBorderColorActive}`,
-		`cardAspectRatio--${aspectRatio}`,
-		'transition-all',
-		'duration-300',
-		'relative',
-		'overflow-hidden',
-		metadata?.classes,
-	]}
+	class:list={cardClasses}
 	{...metadata?.attributes}
 >
 	{
 		linkToggle ? (
 			<Link link={link}>
-				<>
-					<div
-						class="card-main-content block transition-opacity duration-300"
-						class:list={[hovertoggle && 'group-hover:opacity-0']}
-					>
-						{title && (
-							<Level
-								class:list={[
-									'card-title',
-									`font--${titleSize}`,
-									`text--${titleAlign}`,
-									justify === 'one' && 'mb-auto',
-								]}
-								set:html={title}
-							/>
-						)}
-						{text && (
-							<div
-								class:list={[
-									'card-text',
-									'mt-2',
-									`font--${textSize}`,
-									`text--${textAlign}`,
-								]}
-								set:html={text}
-							/>
-						)}
-						{image && (
-							<div
-								class:list={[
-									'card-image',
-									'w-full',
-									justify === 'two' && 'mt-auto',
-								]}
-							>
-								<VectorImage
-									image={image}
-									noLink="true"
-									widthMobile={widthMobile}
-									widthDesktop={widthDesktop}
-									widthAlign={widthAlign}
-								/>
-							</div>
-						)}
-					</div>
-					{hovertoggle && hovertext && (
-						<div class="card-hover-text absolute inset-0 flex items-start  opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-							<div
-								set:html={hovertext}
-								class:list={[`font--${titleSize}`, `text--${titleAlign}`]}
-							/>
-						</div>
-					)}
-				</>
+				<CardContent
+					{title}
+					{text}
+					{image}
+					{Level}
+					{titleSize}
+					{titleAlign}
+					{textSize}
+					{textAlign}
+					{justify}
+					{hovertoggle}
+					{hovertext}
+					{widthMobile}
+					{widthDesktop}
+					{widthAlign}
+				/>
 			</Link>
 		) : (
-			<div
-				class="card-main-content transition-opacity duration-300"
-				class:list={[hovertoggle && 'group-hover:opacity-0']}
-			>
-				{title && (
-					<Level
-						class:list={[
-							'card-title',
-							`font--${titleSize}`,
-							`text--${titleAlign}`,
-							justify === 'one' && 'mb-auto',
-						]}
-						set:html={title}
-					/>
-				)}
-				{text && (
-					<div
-						class:list={[
-							'card-text',
-							'mt-2',
-							`font--${textSize}`,
-							`text--${textAlign}`,
-						]}
-						set:html={text}
-					/>
-				)}
-				{image && (
-					<div
-						class:list={[
-							'card-image',
-							'w-full',
-							justify === 'two' && 'mt-auto',
-						]}
-					>
-						<VectorImage
-							image={image}
-							noLink="true"
-							widthMobile={widthMobile}
-							widthDesktop={widthDesktop}
-							widthAlign={widthAlign}
-						/>
-					</div>
-				)}
-			</div>
+			<CardContent
+				{title}
+				{text}
+				{image}
+				{Level}
+				{titleSize}
+				{titleAlign}
+				{textSize}
+				{textAlign}
+				{justify}
+				{hovertoggle}
+				{hovertext}
+				{widthMobile}
+				{widthDesktop}
+				{widthAlign}
+			/>
 		)
 	}
 </div>
