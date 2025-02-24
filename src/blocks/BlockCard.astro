@@ -1,7 +1,7 @@
 ---
 import { toRem } from '@lib/helpers.js';
-import VectorImage from '@components/VectorImage.astro';
 import Link from '@components/Link.astro';
+import CardContent from '@components/CardContent.astro';
 
 const {
 	title,
@@ -70,106 +70,48 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 	{
 		linkToggle ? (
 			<Link link={link}>
-				<>
-					<div
-						class="card-main-content flex h-full flex-col transition-opacity duration-300"
-						class:list={[hovertoggle && 'group-hover:opacity-0']}
-					>
-						{title && (
-							<Level
-								class:list={[
-									'card-title',
-									`font--${titleSize}`,
-									`text--${titleAlign}`,
-									justify === 'one' && 'mb-auto',
-								]}
-								set:html={title}
-							/>
-						)}
-						{text && (
-							<div
-								class:list={[
-									'card-text',
-									'mt-2',
-									`font--${textSize}`,
-									`text--${textAlign}`,
-								]}
-								set:html={text}
-							/>
-						)}
-						{image && (
-							<div
-								class:list={[
-									'card-image',
-									'w-full',
-									justify === 'two' && 'mt-auto',
-								]}
-							>
-								<VectorImage
-									image={image}
-									noLink="true"
-									widthMobile={widthMobile}
-									widthDesktop={widthDesktop}
-									widthAlign={widthAlign}
-								/>
-							</div>
-						)}
-					</div>
+				<div class="h-full">
+					<CardContent
+						{title}
+						{text}
+						{image}
+						{hovertoggle}
+						{justify}
+						Level={Level}
+						{titleSize}
+						{titleAlign}
+						{textSize}
+						{textAlign}
+						{widthMobile}
+						{widthDesktop}
+						{widthAlign}
+					/>
 					{hovertoggle && hovertext && (
-						<div class="card-hover-text absolute inset-0 flex items-start  opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+						<div class="card-hover-text absolute inset-0 flex items-start opacity-0 transition-opacity duration-300 group-hover:opacity-100">
 							<div
 								set:html={hovertext}
 								class:list={[`font--${titleSize}`, `text--${titleAlign}`]}
 							/>
 						</div>
 					)}
-				</>
+				</div>
 			</Link>
 		) : (
-			<div
-				class="card-main-content transition-opacity duration-300"
-				class:list={[hovertoggle && 'group-hover:opacity-0']}
-			>
-				{title && (
-					<Level
-						class:list={[
-							'card-title',
-							`font--${titleSize}`,
-							`text--${titleAlign}`,
-							justify === 'one' && 'mb-auto',
-						]}
-						set:html={title}
-					/>
-				)}
-				{text && (
-					<div
-						class:list={[
-							'card-text',
-							'mt-2',
-							`font--${textSize}`,
-							`text--${textAlign}`,
-						]}
-						set:html={text}
-					/>
-				)}
-				{image && (
-					<div
-						class:list={[
-							'card-image',
-							'w-full',
-							justify === 'two' && 'mt-auto',
-						]}
-					>
-						<VectorImage
-							image={image}
-							noLink="true"
-							widthMobile={widthMobile}
-							widthDesktop={widthDesktop}
-							widthAlign={widthAlign}
-						/>
-					</div>
-				)}
-			</div>
+			<CardContent
+				{title}
+				{text}
+				{image}
+				{hovertoggle}
+				{justify}
+				Level={Level}
+				{titleSize}
+				{titleAlign}
+				{textSize}
+				{textAlign}
+				{widthMobile}
+				{widthDesktop}
+				{widthAlign}
+			/>
 		)
 	}
 </div>

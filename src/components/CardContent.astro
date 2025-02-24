@@ -5,79 +5,62 @@ const {
 	title,
 	text,
 	image,
+	hovertoggle,
+	justify,
 	Level,
 	titleSize,
 	titleAlign,
 	textSize,
 	textAlign,
-	justify,
-	hovertoggle,
-	hovertext,
 	widthMobile,
 	widthDesktop,
 	widthAlign,
 } = Astro.props;
-
-const mainContentClasses = [
-	'card-main-content',
-	'transition-opacity',
-	'duration-300',
-	hovertoggle && 'group-hover:opacity-0',
-];
 ---
 
-<>
-	<div class:list={mainContentClasses}>
-		{
-			title && (
-				<Level
-					class:list={[
-						'card-title',
-						`font--${titleSize}`,
-						`text--${titleAlign}`,
-						justify === 'one' && 'mb-auto',
-					]}
-					set:html={title}
-				/>
-			)
-		}
-		{
-			text && (
-				<div
-					class:list={[
-						'card-text',
-						'mt-2',
-						`font--${textSize}`,
-						`text--${textAlign}`,
-					]}
-					set:html={text}
-				/>
-			)
-		}
-		{
-			image && (
-				<div
-					class:list={['card-image', 'w-full', justify === 'two' && 'mt-auto']}
-				>
-					<VectorImage
-						image={image}
-						noLink="true"
-						{widthMobile}
-						{widthDesktop}
-						{widthAlign}
-					/>
-				</div>
-			)
-		}
-	</div>
+<div
+	class="card-main-content flex h-full flex-col transition-opacity duration-300"
+	class:list={[hovertoggle && 'group-hover:opacity-0']}
+>
 	{
-		hovertoggle && hovertext && (
-			<div class="card-hover-text absolute inset-0 flex items-start opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-				<div
-					set:html={hovertext}
-					class:list={[`font--${titleSize}`, `text--${titleAlign}`]}
+		title && (
+			<Level
+				class:list={[
+					'card-title',
+					`font--${titleSize}`,
+					`text--${titleAlign}`,
+					justify === 'one' && 'mb-auto',
+				]}
+				set:html={title}
+			/>
+		)
+	}
+	{
+		text && (
+			<div
+				class:list={[
+					'card-text',
+					'mt-2',
+					`font--${textSize}`,
+					`text--${textAlign}`,
+				]}
+				set:html={text}
+			/>
+		)
+	}
+	{
+		image && (
+			<div
+				class:list={['card-image', 'w-full', justify === 'two' && 'mt-auto']}
+			>
+				<VectorImage
+					image={image}
+					noLink="true"
+					widthMobile={widthMobile}
+					widthDesktop={widthDesktop}
+					widthAlign={widthAlign}
 				/>
 			</div>
 		)
 	}
-</>
+</div>
