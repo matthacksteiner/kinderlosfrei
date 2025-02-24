@@ -15,12 +15,16 @@ const {
 	widthMobile,
 	widthDesktop,
 	widthAlign,
+	additionalClasses = '',
 } = Astro.props;
 ---
 
 <div
-	class="card-main-content flex h-full flex-col transition-opacity duration-300"
-	class:list={[hovertoggle && 'group-hover:opacity-0']}
+	class:list={[
+		'card-main-content transition-opacity duration-300',
+		additionalClasses,
+		hovertoggle && 'group-hover:opacity-0',
+	]}
 >
 	{
 		title && (
@@ -64,3 +68,13 @@ const {
 		)
 	}
 </div>
+
+<style lang="css">
+	.card-title {
+		font-family: var(--titleFont);
+	}
+
+	.card-text {
+		font-family: var(--textFont);
+	}
+</style>

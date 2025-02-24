@@ -68,49 +68,52 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 	{...metadata?.attributes}
 >
 	{
-		linkToggle ? (
+		linkToggle && link && (
 			<Link link={link}>
-				<div class="h-full">
-					<CardContent
-						{title}
-						{text}
-						{image}
-						{hovertoggle}
-						{justify}
-						Level={Level}
-						{titleSize}
-						{titleAlign}
-						{textSize}
-						{textAlign}
-						{widthMobile}
-						{widthDesktop}
-						{widthAlign}
-					/>
-					{hovertoggle && hovertext && (
-						<div class="card-hover-text absolute inset-0 flex items-start opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-							<div
-								set:html={hovertext}
-								class:list={[`font--${titleSize}`, `text--${titleAlign}`]}
-							/>
-						</div>
-					)}
-				</div>
+				<CardContent
+					title={title}
+					text={text}
+					image={image}
+					hovertoggle={hovertoggle}
+					justify={justify}
+					Level={Level}
+					titleSize={titleSize}
+					titleAlign={titleAlign}
+					textSize={textSize}
+					textAlign={textAlign}
+					widthMobile={widthMobile}
+					widthDesktop={widthDesktop}
+					widthAlign={widthAlign}
+					additionalClasses="block"
+				/>
+				{hovertoggle && hovertext && (
+					<div class="card-hover-text absolute inset-0 flex items-start opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+						<div
+							set:html={hovertext}
+							class:list={[`font--${titleSize}`, `text--${titleAlign}`]}
+						/>
+					</div>
+				)}
 			</Link>
-		) : (
+		)
+	}
+
+	{
+		!linkToggle && (
 			<CardContent
-				{title}
-				{text}
-				{image}
-				{hovertoggle}
-				{justify}
+				title={title}
+				text={text}
+				image={image}
+				hovertoggle={hovertoggle}
+				justify={justify}
 				Level={Level}
-				{titleSize}
-				{titleAlign}
-				{textSize}
-				{textAlign}
-				{widthMobile}
-				{widthDesktop}
-				{widthAlign}
+				titleSize={titleSize}
+				titleAlign={titleAlign}
+				textSize={textSize}
+				textAlign={textAlign}
+				widthMobile={widthMobile}
+				widthDesktop={widthDesktop}
+				widthAlign={widthAlign}
 			/>
 		)
 	}
@@ -133,14 +136,6 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 	.blockCard {
 		@apply rounded-[var(--cardBorderRadiusRem)] border-[length:var(--cardBorderWidthRem)];
 		padding: var(--cardBorderPaddingDesktopRem);
-	}
-
-	.card-title {
-		font-family: var(--titleFont);
-	}
-
-	.card-text {
-		font-family: var(--textFont);
 	}
 
 	.card-hover-text {
@@ -273,6 +268,7 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 			@apply hover:border-transparent;
 		}
 	}
+
 	.cardAspectRatio {
 		&--1\/1 {
 			@apply aspect-[1/1];
