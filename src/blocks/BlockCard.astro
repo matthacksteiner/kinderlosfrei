@@ -43,6 +43,23 @@ const cardBorderPaddingDesktopRem = cardBorderPaddingDesktop
 const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 	? toRem(cardBorderPaddingMobile)
 	: '0';
+
+const cardContentProps = {
+	title,
+	text,
+	image,
+	hovertoggle,
+	hovertext,
+	justify,
+	Level,
+	titleSize,
+	titleAlign,
+	textSize,
+	textAlign,
+	widthMobile,
+	widthDesktop,
+	widthAlign,
+};
 ---
 
 <div
@@ -69,54 +86,23 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 	{
 		linkToggle && link && (
 			<Link link={link}>
-				<CardContent
-					title={title}
-					text={text}
-					image={image}
-					hovertoggle={hovertoggle}
-					hovertext={hovertext}
-					justify={justify}
-					Level={Level}
-					titleSize={titleSize}
-					titleAlign={titleAlign}
-					textSize={textSize}
-					textAlign={textAlign}
-					widthMobile={widthMobile}
-					widthDesktop={widthDesktop}
-					widthAlign={widthAlign}
-				/>
-				{hovertoggle && hovertext && (
-					<div class="card-hover-text absolute inset-0 flex items-start opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-						<div
-							set:html={hovertext}
-							class:list={[`font--${titleSize}`, `text--${titleAlign}`]}
-						/>
-					</div>
-				)}
+				<CardContent {...cardContentProps} />
 			</Link>
 		)
 	}
 
 	{
-		!linkToggle && (
-			<CardContent
-				title={title}
-				text={text}
-				image={image}
-				hovertoggle={hovertoggle}
-				hovertext={hovertext}
-				justify={justify}
-				Level={Level}
-				titleSize={titleSize}
-				titleAlign={titleAlign}
-				textSize={textSize}
-				textAlign={textAlign}
-				widthMobile={widthMobile}
-				widthDesktop={widthDesktop}
-				widthAlign={widthAlign}
-			/>
+		hovertoggle && hovertext && (
+			<div class="card-hover absolute inset-0 flex items-start opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+				<div
+					set:html={hovertext}
+					class:list={[`font--${titleSize}`, `text--${titleAlign}`]}
+				/>
+			</div>
 		)
 	}
+
+	{!linkToggle && <CardContent {...cardContentProps} />}
 </div>
 
 <style
@@ -138,7 +124,7 @@ const cardBorderPaddingMobileRem = cardBorderPaddingMobile
 		padding: var(--cardBorderPaddingDesktopRem);
 	}
 
-	.card-hover-text {
+	.card-hover {
 		padding: var(--cardBorderPaddingDesktopRem);
 		font-family: var(--titleFont);
 	}
