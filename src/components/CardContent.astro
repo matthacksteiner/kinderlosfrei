@@ -6,6 +6,7 @@ const {
 	text,
 	image,
 	hovertoggle,
+	hovertext,
 	justify,
 	Level,
 	titleSize,
@@ -15,14 +16,12 @@ const {
 	widthMobile,
 	widthDesktop,
 	widthAlign,
-	additionalClasses = '',
 } = Astro.props;
 ---
 
 <div
 	class:list={[
-		'card-main-content transition-opacity duration-300',
-		additionalClasses,
+		'card-main-content transition-opacity duration-300 h-full flex flex-col',
 		hovertoggle && 'group-hover:opacity-0',
 	]}
 >
@@ -68,6 +67,16 @@ const {
 		)
 	}
 </div>
+{
+	hovertoggle && hovertext && (
+		<div class="card-hover-text absolute inset-0 flex items-start  opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+			<div
+				set:html={hovertext}
+				class:list={[`font--${titleSize}`, `text--${titleAlign}`]}
+			/>
+		</div>
+	)
+}
 
 <style lang="css">
 	.card-title {
