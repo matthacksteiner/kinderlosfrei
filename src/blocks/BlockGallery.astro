@@ -14,14 +14,19 @@ const {
 	span,
 	metadata,
 } = Astro.props;
-const paddingDesktop = viewPaddingDesktop ? `${viewPaddingDesktop}px` : '0';
-const paddingMobile = viewPaddingMobile ? `${viewPaddingMobile}px` : '0';
-const gridClasses = {
-	masonry: `columns-1 md:columns-2 lg:columns-3 gap-[${paddingMobile}] md:gap-[${paddingDesktop}]`,
-	grid: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-[${paddingMobile}] md:gap-[${paddingDesktop}]`,
-	flex: `flex flex-wrap gap-[${paddingMobile}] md:gap-[${paddingDesktop}]`,
-};
-const layoutClass = gridClasses[layoutType] || gridClasses.grid;
+// Convert padding values to numbers for CSS variables
+const paddingDesktopValue = viewPaddingDesktop
+	? parseInt(viewPaddingDesktop)
+	: 0;
+const paddingMobileValue = viewPaddingMobile ? parseInt(viewPaddingMobile) : 0;
+
+// Base classes for different layout types
+let layoutClass = 'grid-layout';
+if (layoutType === 'masonry') {
+	layoutClass = 'masonry-layout';
+} else if (layoutType === 'flex') {
+	layoutClass = 'flex-layout';
+}
 ---
 
 <section
@@ -38,33 +43,90 @@ const layoutClass = gridClasses[layoutType] || gridClasses.grid;
 		{
 			images?.map((image) => (
 				<div class="gallery-item">
-					<ImageComponent
-						global={global}
-						image={image}
-						loading="lazy"
-						ratioMobile={ratioMobile}
-						ratioDesktop={ratioDesktop}
-						span={span}
-					/>
+					<div class="image-wrapper">
+						<ImageComponent
+							global={global}
+							image={image}
+							loading="auto"
+							ratioMobile={ratioMobile}
+							ratioDesktop={ratioDesktop}
+							span={span}
+						/>
+					</div>
 				</div>
 			))
 		}
 	</div>
 </section>
 
-<script>
-	// If using masonry layout, you might want to add Masonry.js here
-	if (document.querySelector('.blockGallery[data-layouttype="masonry"]')) {
-		// Initialize masonry layout if needed
+<style
+	lang="css"
+	is:global
+	define:vars={{
+		viewMobile: viewMobile,
+		viewDesktop: viewDesktop,
+		paddingMobile: `${paddingMobileValue}px`,
+		paddingDesktop: `${paddingDesktopValue}px`,
+	}}
+>
+	.blockGallery .grid-layout {
+		@apply grid gap-[var(--paddingMobile)];
+		grid-template-columns: repeat(var(--viewMobile), minmax(0, 1fr));
 	}
-</script>
 
-<style lang="css" is:global>
+	@media (min-width: 768px) {
+		.blockGallery .grid-layout {
+			grid-template-columns: repeat(var(--viewDesktop), minmax(0, 1fr));
+			@apply gap-[var(--paddingDesktop)];
+		}
+	}
+
+	.blockGallery .masonry-layout {
+		column-count: var(--viewMobile);
+		column-gap: var(--paddingMobile);
+	}
+
+	@media (min-width: 768px) {
+		.blockGallery .masonry-layout {
+			column-count: var(--viewDesktop);
+			column-gap: var(--paddingDesktop);
+		}
+	}
+
+	.blockGallery .flex-layout {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--paddingMobile);
+	}
+
+	@media (min-width: 768px) {
+		.blockGallery .flex-layout {
+			gap: var(--paddingDesktop);
+		}
+	}
+
 	.blockGallery[data-layouttype='masonry'] .gallery-item {
 		@apply mb-4 break-inside-avoid;
 	}
 
 	.blockGallery[data-layouttype='flex'] .gallery-item {
 		@apply flex-grow basis-full md:basis-[calc(50%-1rem)] lg:basis-[calc(33.333%-1rem)];
+	}
+
+	.blockGallery .flex-layout .gallery-item {
+		flex-grow: 1;
+		flex-basis: 100%;
+	}
+
+	@media (min-width: 768px) {
+		.blockGallery .flex-layout .gallery-item {
+			flex-basis: calc(50% - var(--paddingDesktop));
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.blockGallery .flex-layout .gallery-item {
+			flex-basis: calc(33.333% - var(--paddingDesktop));
+		}
 	}
 </style>

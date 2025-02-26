@@ -15,6 +15,7 @@ const {
 	span,
 	backgroundContainer,
 	class: className,
+	lightbox,
 } = Astro.props;
 const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
 const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
@@ -38,6 +39,7 @@ const pictureProps = {
 	gridMarginDesktop: global.gridMarginDesktop,
 	position: 'relative',
 	class: `${className} ${image.classes} w-full object-cover`,
+	dataZoomable: lightbox ? true : null,
 };
 const link = image.linkexternal;
 ---
