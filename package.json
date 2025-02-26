@@ -16,6 +16,7 @@
 		"astro": "^5.1.10",
 		"astro-icon": "^1.1.0",
 		"dotenv": "^16.3.1",
+		"medium-zoom": "^1.1.0",
 		"photoswipe": "^5.4.4",
 		"swiper": "^9.2.3",
 		"tailwindcss": "^3.2.4",

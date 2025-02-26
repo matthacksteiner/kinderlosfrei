@@ -5,6 +5,7 @@ const {
 	global,
 	images,
 	layoutType,
+	lightbox,
 	viewMobile,
 	viewDesktop,
 	viewPaddingMobile,
@@ -25,6 +26,8 @@ let layoutClass = 'grid-layout';
 if (layoutType === 'masonry') {
 	layoutClass = 'masonry-layout';
 }
+
+const itemSpan = span / viewDesktop;
 ---
 
 <section
@@ -48,7 +51,8 @@ if (layoutType === 'masonry') {
 							loading="auto"
 							ratioMobile={ratioMobile}
 							ratioDesktop={ratioDesktop}
-							span={span}
+							span={itemSpan}
+							lightbox={lightbox}
 						/>
 					</div>
 				</div>
@@ -98,4 +102,21 @@ if (layoutType === 'masonry') {
 	.blockGallery[data-layouttype='masonry'] .gallery-item {
 		@apply mb-4 break-inside-avoid;
 	}
+
+	.medium-zoom-overlay,
+	.medium-zoom-image--opened {
+		z-index: 999;
+	}
 </style>
+
+<script>
+	import mediumZoom from 'medium-zoom';
+
+	document.addEventListener('DOMContentLoaded', () => {
+		mediumZoom('[data-zoomable]', {
+			margin: 24,
+			background: 'rgba(0, 0, 0, 0.8)',
+			scrollOffset: 40,
+		});
+	});
+</script>
