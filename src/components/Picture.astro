@@ -12,7 +12,6 @@ const baseUrl = isProd
 	: netlifyUrl;
 
 const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
-
 const getRatio = (ratio, width, height) => {
 	const [numerator, denominator] =
 		ratio === 'original' ? [width, height] : ratio.split('/');
@@ -45,7 +44,6 @@ const imageWidthMobile = 390 - gridMarginMobile;
 const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobile);
 const imageWidthDesktop1280 = imageWidth(1280);
 const imageWidthDesktop1920 = imageWidth(1920 - gridMarginDesktop);
-
 const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktop);
 const imageHeightDesktop1280 = imageHeight(imageWidthDesktop1280, ratioDesktop);
 const imageHeightDesktop1920 = imageHeight(imageWidthDesktop1920, ratioDesktop);
@@ -61,7 +59,7 @@ interface Props {
 	ratioMobile: string;
 	ratioDesktop: string;
 	span: string;
-	positon: string;
+	position: string;
 	id: string;
 	class: string;
 	loading: 'eager' | 'lazy';

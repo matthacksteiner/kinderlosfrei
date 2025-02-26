@@ -13,6 +13,7 @@ const {
 	loading,
 	span,
 	backgroundContainer,
+	lightbox,
 	class: className,
 } = Astro.props;
 
@@ -32,6 +33,7 @@ const pictureProps = {
 	backgroundContainer: backgroundContainer,
 	loading: loading,
 	span: span,
+	lightbox: lightbox,
 	gridGapMobile: global.gridGapMobile,
 	gridMarginMobile: global.gridMarginMobile,
 	gridGapDesktop: global.gridGapDesktop,
@@ -42,6 +44,8 @@ const pictureProps = {
 };
 
 const link = image.linkexternal;
+
+const shouldApplyZoom = lightbox && !image.linktoggle;
 ---
 
 {
@@ -64,7 +68,11 @@ const link = image.linkexternal;
 		<div
 			class:list={['relative', image.captionoverlay === 'overlay' && 'overlay']}
 		>
-			<Picture {...pictureProps} />
+			<Picture
+				{...pictureProps}
+				data-zoomable={shouldApplyZoom ? true : undefined}
+				data-zoom-src={shouldApplyZoom ? image.urlFocus : undefined}
+			/>
 			{image.captiontoggle ? <ImageCaption {...image} global={global} /> : null}
 			{image.copyrighttoggle ? <ImageCopyright {...image} /> : null}
 		</div>
