@@ -27,6 +27,6 @@ const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
 	}}
 >
 	.blockDivider {
-		@apply !mb-[calc(var(--gridBlockMobile)_*_-1)] !mt-[calc(var(--gridBlockMobile)_*_-1)] pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:!mb-[calc(var(--gridBlockDesktop)_*_-1)] lg:!mt-[calc(var(--gridBlockDesktop)_*_-1)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
+		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
 	}
 </style>

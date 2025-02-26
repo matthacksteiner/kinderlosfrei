@@ -16,128 +16,138 @@ section {
 	@apply h-screen-1/2;
 }
 
-.bg--primary {
-	@apply bg-primary;
+.bg {
+	&--primary {
+		@apply bg-primary;
+	}
+
+	&--secondary {
+		@apply bg-secondary;
+	}
+
+	&--tertiary {
+		@apply bg-tertiary;
+	}
+
+	&--black {
+		@apply bg-black;
+	}
+
+	&--white {
+		@apply bg-white;
+	}
+
+	&--transparent {
+		@apply bg-transparent;
+	}
 }
 
-.bg--secondary {
-	@apply bg-secondary;
+.text {
+	&--primary {
+		@apply text-primary;
+	}
+
+	&--secondary {
+		@apply text-secondary;
+	}
+
+	&--tertiary {
+		@apply text-tertiary;
+	}
+
+	&--black {
+		@apply text-black;
+	}
+
+	&--white {
+		@apply text-white;
+	}
+
+	&--transparent {
+		@apply text-transparent;
+	}
+
+	&--left {
+		@apply text-left;
+	}
+
+	&--leftCenter {
+		@apply mx-auto text-left;
+	}
+
+	&--center {
+		@apply mx-auto text-center;
+	}
+
+	&--right {
+		@apply ml-auto text-right;
+	}
+
+	&--rightCenter {
+		@apply mx-auto text-right;
+	}
 }
 
-.bg--tertiary {
-	@apply bg-tertiary;
+.borderColor {
+	&--primary {
+		@apply border-primary;
+	}
+
+	&--secondary {
+		@apply border-secondary;
+	}
+
+	&--tertiary {
+		@apply border-tertiary;
+	}
+
+	&--black {
+		@apply border-black;
+	}
+
+	&--white {
+		@apply border-white;
+	}
+
+	&--transparent {
+		@apply border-transparent;
+	}
 }
 
-.bg--black {
-	@apply bg-black;
+.align-vert {
+	&--start {
+		@apply items-start;
+	}
+
+	&--center {
+		@apply items-center;
+	}
+
+	&--end {
+		@apply items-end;
+	}
+
+	&--normal {
+		justify-items: normal;
+	}
 }
 
-.bg--white {
-	@apply bg-white;
-}
+.align-hor {
+	&--start {
+		@apply justify-items-start;
+	}
 
-.bg--transparent {
-	@apply bg-transparent;
-}
+	&--center {
+		@apply justify-items-center;
+	}
 
-.text--primary {
-	@apply text-primary;
-}
+	&--end {
+		@apply justify-items-end;
+	}
 
-.text--secondary {
-	@apply text-secondary;
-}
-
-.text--tertiary {
-	@apply text-tertiary;
-}
-
-.text--black {
-	@apply text-black;
-}
-
-.text--white {
-	@apply text-white;
-}
-
-.text--transparent {
-	@apply text-transparent;
-}
-
-.borderColor--primary {
-	@apply border-primary;
-}
-
-.borderColor--secondary {
-	@apply border-secondary;
-}
-
-.borderColor--tertiary {
-	@apply border-tertiary;
-}
-
-.borderColor--black {
-	@apply border-black;
-}
-
-.borderColor--white {
-	@apply border-white;
-}
-
-.borderColor--transparent {
-	@apply border-transparent;
-}
-
-.text--left {
-	@apply text-left;
-}
-
-.text--leftCenter {
-	@apply mx-auto text-left;
-}
-
-.text--center {
-	@apply mx-auto text-center;
-}
-
-.text--right {
-	@apply ml-auto text-right;
-}
-
-.text--rightCenter {
-	@apply mx-auto text-right;
-}
-
-.align-vert--start {
-	@apply items-start;
-}
-
-.align-vert--center {
-	@apply items-center;
-}
-
-.align-vert--end {
-	@apply items-end;
-}
-
-.align-vert--normal {
-	justify-items: normal;
-}
-
-.align-hor--start {
-	@apply justify-items-start;
-}
-
-.align-hor--center {
-	@apply justify-items-center;
-}
-
-.align-hor--end {
-	@apply justify-items-end;
-}
-
-.align-hor--normal {
-	justify-items: normal;
+	&--normal {
+		justify-items: normal;
+	}
 }
 
 h1,
@@ -149,58 +159,60 @@ h6 {
 	text-wrap: balance;
 }
 
-.kirby-text h1,
-.kirby-text h2,
-.kirby-text h3,
-.kirby-text h4,
-.kirby-text h5,
-.kirby-text h6 {
-	@apply mb-1 pt-5 lg:pt-5;
-}
+.kirby-text {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		@apply mb-1 pt-5 lg:pt-5;
+	}
 
-.kirby-text > h1:first-child,
-.kirby-text > h2:first-child,
-.kirby-text > h3:first-child,
-.kirby-text > h4:first-child,
-.kirby-text > h5:first-child,
-.kirby-text > h6:first-child {
-	@apply pt-0;
-}
+	& > h1:first-child,
+	& > h2:first-child,
+	& > h3:first-child,
+	& > h4:first-child,
+	& > h5:first-child,
+	& > h6:first-child {
+		@apply pt-0;
+	}
 
-.kirby-text p + p {
-	@apply pt-4 lg:pt-6;
-}
+	p + p {
+		@apply pt-4 lg:pt-6;
+	}
 
-.kirby-text ul,
-.kirby-text ol {
-	@apply list-inside;
-}
+	ul,
+	ol {
+		@apply list-inside;
+	}
 
-.kirby-text p + ul,
-.kirby-text p + ol {
-	@apply mb-4 lg:mb-8;
-}
+	p + ul,
+	p + ol {
+		@apply mb-4 lg:mb-8;
+	}
 
-.kirby-text ul {
-	@apply list-disc;
-}
+	ul {
+		@apply list-disc;
+	}
 
-.kirby-text ol {
-	@apply list-decimal;
-}
+	ol {
+		@apply list-decimal;
+	}
 
-.kirby-text ul > li,
-.kirby-text ol > li {
-	@apply my-1 last:mb-0 lg:my-2;
-}
+	ul > li,
+	ol > li {
+		@apply my-1 last:mb-0 lg:my-2;
+	}
 
-.kirby-text ol li:before {
-	content: '';
-	padding-left: 0.625rem;
-}
+	ol li:before {
+		content: '';
+		padding-left: 0.625rem;
+	}
 
-.kirby-text a {
-	@apply underline underline-offset-4;
+	a {
+		@apply underline underline-offset-4;
+	}
 }
 
 address {

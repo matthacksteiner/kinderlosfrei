@@ -66,7 +66,10 @@ interface Props {
 	backgroundContainer: string;
 	gridMarginDesktop: number;
 	gridMarginMobile: number;
+	thumbhash?: string;
 }
+
+const thumbhash = props.thumbhash;
 
 const altFallback = props.name
 	.replace(/[-_]/g, ' ') // Replace all '-' and '_' with spaces
@@ -91,6 +94,9 @@ const generateImgSrc = (source, width, height) => {
 {
 	isProd || netlifyDev ? (
 		<picture>
+			{thumbhash && (
+				<div class="thumbhash" style={`background-image: url(${thumbhash});`} />
+			)}
 			<source
 				srcset={generateSrcSet(
 					sourceMobile,
@@ -135,29 +141,54 @@ const generateImgSrc = (source, width, height) => {
 				loading={props.loading}
 				id={props.id}
 				class:list={[props.class]}
+				style={thumbhash ? 'background: transparent;' : ''}
 			/>
 		</picture>
 	) : (
 		<>
-			<Image
-				src={sourceMobile}
-				{...props}
-				width={imageWidthMobile}
-				height={imageHeightMobile}
-				alt={props.alt || altFallback}
-				loading={props.loading}
-				class:list={['lg:hidden', props.class]}
-			/>
+			<div class="relative">
+				{thumbhash && (
+					<div
+						class="thumbhash"
+						style={`background-image: url(${thumbhash});`}
+					/>
+				)}
+				<Image
+					src={sourceMobile}
+					{...props}
+					width={imageWidthMobile}
+					height={imageHeightMobile}
+					alt={props.alt || altFallback}
+					loading={props.loading}
+					class:list={['lg:hidden', props.class]}
+					style={thumbhash ? 'background: transparent;' : ''}
+				/>
+			</div>
 
-			<Image
-				src={sourceDesktop}
-				width={imageWidthDesktop}
-				height={imageHeightDesktop}
-				alt={props.alt || altFallback}
-				loading={props.loading}
-				{...props}
-				class:list={['hidden', 'lg:block', props.class]}
-			/>
+			<div class="relative">
+				{thumbhash && (
+					<div
+						class="thumbhash"
+						style={`background-image: url(${thumbhash});`}
+					/>
+				)}
+				<Image
+					src={sourceDesktop}
+					width={imageWidthDesktop}
+					height={imageHeightDesktop}
+					alt={props.alt || altFallback}
+					loading={props.loading}
+					{...props}
+					class:list={['hidden', 'lg:block', props.class]}
+					style={thumbhash ? 'background: transparent;' : ''}
+				/>
+			</div>
 		</>
 	)
 }
+
+<style lang="css">
+	.thumbhash {
+		@apply absolute inset-0 -z-10 bg-cover bg-center;
+	}
+</style>

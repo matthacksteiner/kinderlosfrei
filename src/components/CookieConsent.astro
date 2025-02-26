@@ -185,11 +185,13 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 <style>
 	#cookieButton {
 		@apply fixed bottom-5 left-5 z-50 grid h-12 w-12 place-items-center rounded-[50%] bg-black opacity-50;
-	}
-	#cookieButton:hover {
-		@apply opacity-100;
-	}
-	#cookieButton svg {
-		@apply h-8 w-8 text-white;
+
+		&:hover {
+			@apply opacity-100;
+		}
+
+		& svg {
+			@apply h-8 w-8 text-white;
+		}
 	}
 </style>

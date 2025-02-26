@@ -17,6 +17,8 @@ import BlockColumns from '@blocks/BlockColumns.astro';
 import BlockGrid from '@blocks/BlockGrid.astro';
 import BlockCode from '@blocks/BlockCode.astro';
 import BlockGallery from '@blocks/BlockGallery.astro';
+import BlockButtonBar from '@blocks/BlockButtonBar.astro';
+import BlockCard from '@blocks/BlockCard.astro';
 const { blocks, global, span, backgroundContainer } = Astro.props;
 ---
 
@@ -149,6 +151,21 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							link={block.content.linkobject}
 							global={global}
 							align={block.content.buttonalign}
+							buttonLocal={block.content.buttonlocal}
+							buttonSettings={block.content.buttonsettings}
+							buttonColors={block.content.buttoncolors}
+							metadata={block.content.metadata}
+						/>
+					);
+				case 'buttonBar':
+					return (
+						<BlockButtonBar
+							buttons={block.content.buttons}
+							global={global}
+							adjust={block.content.buttonadjust}
+							buttonLocal={block.content.buttonlocal}
+							buttonSettings={block.content.buttonsettings}
+							buttonColors={block.content.buttoncolors}
 							metadata={block.content.metadata}
 						/>
 					);
@@ -243,7 +260,43 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							spacingDesktopBottom={toRem(block.content.spacingdesktopbottom)}
 						/>
 					);
-
+				case 'card':
+					return (
+						<BlockCard
+							title={block.content.title}
+							text={block.content.text}
+							image={block.content.image}
+							hovertoggle={block.content.hovertoggle}
+							hovertext={block.content.hovertext}
+							linkToggle={block.content.linktoggle}
+							link={block.content.linkobject}
+							aspectRatio={block.content.aspectratio}
+							justify={block.content.justify}
+							level={block.content.level}
+							titleFont={block.content.titlefont}
+							titleSize={block.content.titlesize}
+							titleAlign={block.content.titlealign}
+							textFont={block.content.textfont}
+							textSize={block.content.textsize}
+							textAlign={block.content.textalign}
+							widthMobile={block.content.widthmobile}
+							widthDesktop={block.content.widthdesktop}
+							widthAlign={block.content.widthalign}
+							cardBackgroundColor={block.content.cardbackgroundcolor}
+							cardBackgroundColorActive={
+								block.content.cardbackgroundcoloractive
+							}
+							cardTextColor={block.content.cardtextcolor}
+							cardTextColorActive={block.content.cardtextcoloractive}
+							cardBorderColor={block.content.cardbordercolor}
+							cardBorderColorActive={block.content.cardbordercoloractive}
+							cardBorderWidth={block.content.cardborderwidth}
+							cardBorderRadius={block.content.cardborderradius}
+							cardBorderPaddingDesktop={block.content.cardborderpaddingdesktop}
+							cardBorderPaddingMobile={block.content.cardborderpaddingmobile}
+							metadata={block.content.metadata}
+						/>
+					);
 				default:
 					return null;
 			}

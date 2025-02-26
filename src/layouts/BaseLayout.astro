@@ -126,7 +126,7 @@ const googleAnalyticsCode = global.googleAnalyticsCode;
 				@apply grid grid-cols-6 gap-x-[var(--gridGapMobile)] max-lg:gap-y-[var(--gridGapMobile)] lg:grid-cols-12 lg:gap-x-[var(--gridGapDesktop)];
 			}
 
-			.blocks + .blocks {
+			.blocks ~ .blocks:not(.blockDivider) {
 				@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
 			}
 		</style>

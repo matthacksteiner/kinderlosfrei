@@ -113,222 +113,240 @@ const paginationList = Array.from({ length: Number(length) }, (_, i) => i + 1);
 		font-family: var(--paginationFont);
 	}
 
+	/* text */
+	.paginationText {
+		&--primary {
+			@apply text-primary;
+		}
+
+		&--secondary {
+			@apply text-secondary;
+		}
+
+		&--tertiary {
+			@apply text-tertiary;
+		}
+
+		&--black {
+			@apply text-black;
+		}
+
+		&--white {
+			@apply text-white;
+		}
+
+		&--transparent {
+			@apply text-transparent;
+		}
+	}
+
+	.paginationTextHover {
+		&--primary {
+			@apply hover:text-primary;
+		}
+
+		&--secondary {
+			@apply hover:text-secondary;
+		}
+
+		&--tertiary {
+			@apply hover:text-tertiary;
+		}
+
+		&--black {
+			@apply hover:text-black;
+		}
+
+		&--white {
+			@apply hover:text-white;
+		}
+
+		&--transparent {
+			@apply hover:text-transparent;
+		}
+	}
+
+	.paginationTextActive {
+		&--primary {
+			@apply text-primary;
+		}
+
+		&--secondary {
+			@apply text-secondary;
+		}
+
+		&--tertiary {
+			@apply text-tertiary;
+		}
+
+		&--black {
+			@apply text-black;
+		}
+
+		&--white {
+			@apply text-white;
+		}
+
+		&--transparent {
+			@apply text-transparent;
+		}
+	}
+
 	/* bg */
-	.paginationText--primary {
-		@apply text-primary;
+	.paginationBg {
+		&--primary {
+			@apply bg-primary;
+		}
+
+		&--secondary {
+			@apply bg-secondary;
+		}
+
+		&--tertiary {
+			@apply bg-tertiary;
+		}
+
+		&--black {
+			@apply bg-black;
+		}
+
+		&--white {
+			@apply bg-white;
+		}
+
+		&--transparent {
+			@apply bg-transparent;
+		}
 	}
 
-	.paginationText--secondary {
-		@apply text-secondary;
+	.paginationBgHover {
+		&--primary {
+			@apply hover:bg-primary;
+		}
+
+		&--secondary {
+			@apply hover:bg-secondary;
+		}
+
+		&--tertiary {
+			@apply hover:bg-tertiary;
+		}
+
+		&--black {
+			@apply hover:bg-black;
+		}
+
+		&--white {
+			@apply hover:bg-white;
+		}
+
+		&--transparent {
+			@apply hover:bg-transparent;
+		}
 	}
 
-	.paginationText--tertiary {
-		@apply text-tertiary;
-	}
+	.paginationBgActive {
+		&--primary {
+			@apply bg-primary;
+		}
 
-	.paginationText--black {
-		@apply text-black;
-	}
+		&--secondary {
+			@apply bg-secondary;
+		}
 
-	.paginationText--white {
-		@apply text-white;
-	}
+		&--tertiary {
+			@apply bg-tertiary;
+		}
 
-	.paginationText--transparent {
-		@apply text-transparent;
-	}
+		&--black {
+			@apply bg-black;
+		}
 
-	.paginationTextHover--primary {
-		@apply hover:text-primary;
-	}
+		&--white {
+			@apply bg-white;
+		}
 
-	.paginationTextHover--secondary {
-		@apply hover:text-secondary;
-	}
-
-	.paginationTextHover--tertiary {
-		@apply hover:text-tertiary;
-	}
-
-	.paginationTextHover--black {
-		@apply hover:text-black;
-	}
-
-	.paginationTextHover--white {
-		@apply hover:text-white;
-	}
-
-	.paginationTextHover--transparent {
-		@apply hover:text-transparent;
-	}
-
-	.paginationTextActive--primary {
-		@apply text-primary;
-	}
-
-	.paginationTextActive--secondary {
-		@apply text-secondary;
-	}
-
-	.paginationTextActive--tertiary {
-		@apply text-tertiary;
-	}
-
-	.paginationTextActive--black {
-		@apply text-black;
-	}
-
-	.paginationTextActive--white {
-		@apply text-white;
-	}
-
-	.paginationTextActive--transparent {
-		@apply text-transparent;
-	}
-
-	/* bg */
-	.paginationBg--primary {
-		@apply bg-primary;
-	}
-
-	.paginationBg--secondary {
-		@apply bg-secondary;
-	}
-
-	.paginationBg--tertiary {
-		@apply bg-tertiary;
-	}
-
-	.paginationBg--black {
-		@apply bg-black;
-	}
-
-	.paginationBg--white {
-		@apply bg-white;
-	}
-
-	.paginationBg--transparent {
-		@apply bg-transparent;
-	}
-
-	.paginationBgHover--primary {
-		@apply hover:bg-primary;
-	}
-
-	.paginationBgHover--secondary {
-		@apply hover:bg-secondary;
-	}
-
-	.paginationBgHover--tertiary {
-		@apply hover:bg-tertiary;
-	}
-
-	.paginationBgHover--black {
-		@apply hover:bg-black;
-	}
-
-	.paginationBgHover--white {
-		@apply hover:bg-white;
-	}
-
-	.paginationBgHover--transparent {
-		@apply hover:bg-transparent;
-	}
-
-	.paginationBgActive--primary {
-		@apply bg-primary;
-	}
-
-	.paginationBgActive--secondary {
-		@apply bg-secondary;
-	}
-
-	.paginationBgActive--tertiary {
-		@apply bg-tertiary;
-	}
-
-	.paginationBgActive--black {
-		@apply bg-black;
-	}
-
-	.paginationBgActive--white {
-		@apply bg-white;
-	}
-
-	.paginationBgActive--transparent {
-		@apply bg-transparent;
+		&--transparent {
+			@apply bg-transparent;
+		}
 	}
 
 	/* border */
-	.paginationBoder--primary {
-		@apply border-primary;
+	.paginationBoder {
+		&--primary {
+			@apply border-primary;
+		}
+
+		&--secondary {
+			@apply border-secondary;
+		}
+
+		&--tertiary {
+			@apply border-tertiary;
+		}
+
+		&--black {
+			@apply border-black;
+		}
+
+		&--white {
+			@apply border-white;
+		}
+
+		&--transparent {
+			@apply border-transparent;
+		}
 	}
 
-	.paginationBoder--secondary {
-		@apply border-secondary;
+	.paginationBorderHover {
+		&--primary {
+			@apply hover:border-primary;
+		}
+
+		&--secondary {
+			@apply hover:border-secondary;
+		}
+
+		&--tertiary {
+			@apply hover:border-tertiary;
+		}
+
+		&--black {
+			@apply hover:border-black;
+		}
+
+		&--white {
+			@apply hover:border-white;
+		}
+
+		&--transparent {
+			@apply hover:border-transparent;
+		}
 	}
 
-	.paginationBoder--tertiary {
-		@apply border-tertiary;
-	}
+	.paginationBorderActive {
+		&--primary {
+			@apply border-primary;
+		}
 
-	.paginationBoder--black {
-		@apply border-black;
-	}
+		&--secondary {
+			@apply border-secondary;
+		}
 
-	.paginationBoder--white {
-		@apply border-white;
-	}
+		&--tertiary {
+			@apply border-tertiary;
+		}
 
-	.paginationBoder--transparent {
-		@apply border-transparent;
-	}
+		&--black {
+			@apply border-black;
+		}
 
-	.paginationBorderHover--primary {
-		@apply hover:border-primary;
-	}
+		&--white {
+			@apply border-white;
+		}
 
-	.paginationBorderHover--secondary {
-		@apply hover:border-secondary;
-	}
-
-	.paginationBorderHover--tertiary {
-		@apply hover:border-tertiary;
-	}
-
-	.paginationBorderHover--black {
-		@apply hover:border-black;
-	}
-
-	.paginationBorderHover--white {
-		@apply hover:border-white;
-	}
-
-	.paginationBorderHover--transparent {
-		@apply hover:border-transparent;
-	}
-
-	.paginationBorderActive--primary {
-		@apply border-primary;
-	}
-
-	.paginationBorderActive--secondary {
-		@apply border-secondary;
-	}
-
-	.paginationBorderActive--tertiary {
-		@apply border-tertiary;
-	}
-
-	.paginationBorderActive--black {
-		@apply border-black;
-	}
-
-	.paginationBorderActive--white {
-		@apply border-white;
-	}
-
-	.paginationBorderActive--transparent {
-		@apply border-transparent;
+		&--transparent {
+			@apply border-transparent;
+		}
 	}
 </style>
