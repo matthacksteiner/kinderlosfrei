@@ -59,6 +59,13 @@ if (layoutType === 'masonry') {
 	</div>
 </section>
 
+<script>
+	// If using masonry layout, you might want to add Masonry.js here
+	if (document.querySelector('.blockGallery[data-layouttype="masonry"]')) {
+		// Initialize masonry layout if needed
+	}
+</script>
+
 <style
 	lang="css"
 	is:global
@@ -69,18 +76,21 @@ if (layoutType === 'masonry') {
 		paddingDesktop: `${paddingDesktopValue}px`,
 	}}
 >
+	/* Grid Layout */
 	.blockGallery .grid-layout {
-		@apply grid gap-[var(--paddingMobile)];
-		grid-template-columns: repeat(var(--viewMobile), minmax(0, 1fr));
+		@apply grid;
+		grid-template-columns: repeat(var(--viewMobile), 1fr);
+		gap: var(--paddingMobile);
 	}
 
 	@media (min-width: 768px) {
 		.blockGallery .grid-layout {
-			grid-template-columns: repeat(var(--viewDesktop), minmax(0, 1fr));
-			@apply gap-[var(--paddingDesktop)];
+			grid-template-columns: repeat(var(--viewDesktop), 1fr);
+			gap: var(--paddingDesktop);
 		}
 	}
 
+	/* Masonry Layout */
 	.blockGallery .masonry-layout {
 		column-count: var(--viewMobile);
 		column-gap: var(--paddingMobile);
@@ -93,9 +103,9 @@ if (layoutType === 'masonry') {
 		}
 	}
 
+	/* Flex Layout */
 	.blockGallery .flex-layout {
-		display: flex;
-		flex-wrap: wrap;
+		@apply flex flex-wrap;
 		gap: var(--paddingMobile);
 	}
 
@@ -105,6 +115,7 @@ if (layoutType === 'masonry') {
 		}
 	}
 
+	/* Item Styles */
 	.blockGallery[data-layouttype='masonry'] .gallery-item {
 		@apply mb-4 break-inside-avoid;
 	}
@@ -114,8 +125,7 @@ if (layoutType === 'masonry') {
 	}
 
 	.blockGallery .flex-layout .gallery-item {
-		flex-grow: 1;
-		flex-basis: 100%;
+		@apply flex-grow basis-full;
 	}
 
 	@media (min-width: 768px) {
