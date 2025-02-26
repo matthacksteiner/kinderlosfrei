@@ -24,8 +24,8 @@ const paddingMobileValue = viewPaddingMobile ? parseInt(viewPaddingMobile) : 0;
 let layoutClass = 'grid-layout';
 if (layoutType === 'masonry') {
 	layoutClass = 'masonry-layout';
-} else if (layoutType === 'flex') {
-	layoutClass = 'flex-layout';
+} else if (layoutType === 'justified') {
+	layoutClass = 'justified-layout';
 }
 ---
 
@@ -103,15 +103,42 @@ if (layoutType === 'masonry') {
 		}
 	}
 
-	/* Flex Layout */
-	.blockGallery .flex-layout {
+	/* Justified Layout */
+	.blockGallery .justified-layout {
 		@apply flex flex-wrap;
 		gap: var(--paddingMobile);
+		align-items: flex-start;
 	}
 
 	@media (min-width: 768px) {
-		.blockGallery .flex-layout {
+		.blockGallery .justified-layout {
 			gap: var(--paddingDesktop);
+		}
+	}
+
+	.blockGallery .justified-layout .gallery-item {
+		@apply flex-shrink-0 flex-grow-0;
+		height: 200px; /* Base height for mobile */
+	}
+
+	.blockGallery .justified-layout .image-wrapper {
+		@apply h-full w-full;
+	}
+
+	.blockGallery .justified-layout .image-wrapper :global(img) {
+		@apply h-full w-full object-cover;
+	}
+
+	@media (min-width: 768px) {
+		.blockGallery .justified-layout .gallery-item {
+			height: 250px; /* Increased height for desktop */
+			flex-basis: auto;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.blockGallery .justified-layout .gallery-item {
+			height: 300px; /* Even taller for larger screens */
 		}
 	}
 
@@ -120,22 +147,22 @@ if (layoutType === 'masonry') {
 		@apply mb-4 break-inside-avoid;
 	}
 
-	.blockGallery[data-layouttype='flex'] .gallery-item {
+	.blockGallery[data-layouttype='justified'] .gallery-item {
 		@apply flex-grow basis-full md:basis-[calc(50%-1rem)] lg:basis-[calc(33.333%-1rem)];
 	}
 
-	.blockGallery .flex-layout .gallery-item {
+	.blockGallery .justified-layout .gallery-item {
 		@apply flex-grow basis-full;
 	}
 
 	@media (min-width: 768px) {
-		.blockGallery .flex-layout .gallery-item {
+		.blockGallery .justified-layout .gallery-item {
 			flex-basis: calc(50% - var(--paddingDesktop));
 		}
 	}
 
 	@media (min-width: 1024px) {
-		.blockGallery .flex-layout .gallery-item {
+		.blockGallery .justified-layout .gallery-item {
 			flex-basis: calc(33.333% - var(--paddingDesktop));
 		}
 	}
