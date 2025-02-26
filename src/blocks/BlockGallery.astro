@@ -24,8 +24,6 @@ const paddingMobileValue = viewPaddingMobile ? parseInt(viewPaddingMobile) : 0;
 let layoutClass = 'grid-layout';
 if (layoutType === 'masonry') {
 	layoutClass = 'masonry-layout';
-} else if (layoutType === 'justified') {
-	layoutClass = 'justified-layout';
 }
 ---
 
@@ -58,13 +56,6 @@ if (layoutType === 'masonry') {
 		}
 	</div>
 </section>
-
-<script>
-	// If using masonry layout, you might want to add Masonry.js here
-	if (document.querySelector('.blockGallery[data-layouttype="masonry"]')) {
-		// Initialize masonry layout if needed
-	}
-</script>
 
 <style
 	lang="css"
@@ -103,67 +94,8 @@ if (layoutType === 'masonry') {
 		}
 	}
 
-	/* Justified Layout */
-	.blockGallery .justified-layout {
-		@apply flex flex-wrap;
-		gap: var(--paddingMobile);
-		align-items: flex-start;
-	}
-
-	@media (min-width: 768px) {
-		.blockGallery .justified-layout {
-			gap: var(--paddingDesktop);
-		}
-	}
-
-	.blockGallery .justified-layout .gallery-item {
-		@apply flex-shrink-0 flex-grow-0;
-		height: 200px; /* Base height for mobile */
-	}
-
-	.blockGallery .justified-layout .image-wrapper {
-		@apply h-full w-full;
-	}
-
-	.blockGallery .justified-layout .image-wrapper :global(img) {
-		@apply h-full w-full object-cover;
-	}
-
-	@media (min-width: 768px) {
-		.blockGallery .justified-layout .gallery-item {
-			height: 250px; /* Increased height for desktop */
-			flex-basis: auto;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.blockGallery .justified-layout .gallery-item {
-			height: 300px; /* Even taller for larger screens */
-		}
-	}
-
 	/* Item Styles */
 	.blockGallery[data-layouttype='masonry'] .gallery-item {
 		@apply mb-4 break-inside-avoid;
-	}
-
-	.blockGallery[data-layouttype='justified'] .gallery-item {
-		@apply flex-grow basis-full md:basis-[calc(50%-1rem)] lg:basis-[calc(33.333%-1rem)];
-	}
-
-	.blockGallery .justified-layout .gallery-item {
-		@apply flex-grow basis-full;
-	}
-
-	@media (min-width: 768px) {
-		.blockGallery .justified-layout .gallery-item {
-			flex-basis: calc(50% - var(--paddingDesktop));
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.blockGallery .justified-layout .gallery-item {
-			flex-basis: calc(33.333% - var(--paddingDesktop));
-		}
 	}
 </style>
