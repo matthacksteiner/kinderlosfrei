@@ -92,10 +92,7 @@ const generateImgSrc = (source, width, height) => {
 	isProd || netlifyDev ? (
 		<picture>
 			{thumbhash && (
-				<div
-					class="absolute inset-0 -z-10 bg-cover bg-center"
-					style={`background-image: url(${thumbhash});`}
-				/>
+				<div class="thumbhash" style={`background-image: url(${thumbhash});`} />
 			)}
 			<source
 				srcset={generateSrcSet(
@@ -147,10 +144,7 @@ const generateImgSrc = (source, width, height) => {
 	) : (
 		<picture>
 			{thumbhash && (
-				<div
-					class="absolute inset-0 -z-10 bg-cover bg-center"
-					style={`background-image: url(${thumbhash});`}
-				/>
+				<div class="thumbhash" style={`background-image: url(${thumbhash});`} />
 			)}
 			<source srcset={sourceMobile} media="(max-width: 768px)" />
 			<source srcset={sourceDesktop} media="(min-width: 769px)" />
@@ -167,3 +161,9 @@ const generateImgSrc = (source, width, height) => {
 		</picture>
 	)
 }
+
+<style>
+	.thumbhash {
+		@apply absolute inset-0 -z-10 bg-cover bg-center;
+	}
+</style>
