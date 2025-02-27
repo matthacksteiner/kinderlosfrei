@@ -64,6 +64,8 @@ interface Props {
 	gridMarginDesktop: number;
 	gridMarginMobile: number;
 	thumbhash?: string;
+	dataZoomable?: boolean;
+	dataZoomSrc?: string;
 }
 
 const thumbhash = props.thumbhash;
@@ -137,6 +139,8 @@ const generateImgSrc = (source, width, height) => {
 				alt={props.alt || altFallback}
 				loading={props.loading}
 				id={props.id}
+				data-zoomable={props.dataZoomable}
+				data-zoom-src={props.dataZoomSrc}
 				class:list={[props.class]}
 				style={thumbhash ? 'background: transparent;' : ''}
 			/>
@@ -155,6 +159,8 @@ const generateImgSrc = (source, width, height) => {
 				alt={props.alt || altFallback}
 				loading={props.loading}
 				id={props.id}
+				data-zoomable={props.dataZoomable}
+				data-zoom-src={props.dataZoomSrc}
 				class={props.class}
 				style={thumbhash ? 'background: transparent;' : ''}
 			/>
