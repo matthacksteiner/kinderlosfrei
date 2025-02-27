@@ -29,6 +29,8 @@ const {
 	size: textSize,
 	align: textAlign,
 } = text;
+const pageSize = page.size;
+const pageTotal = page.total;
 const layoutPre = data.layoutPre;
 const layoutPost = data.layoutPost;
 const ratioMobile = settings.ratioMobile;
@@ -98,16 +100,20 @@ const firstPath =
 				})
 		}
 	</div>
-	<Pagination
-		global={global}
-		length={page.lastPage}
-		currentUrl={page.url.current}
-		currentPage={page.currentPage}
-		firstUrl={`/${firstPath}`}
-		prevUrl={page.url.prev}
-		nextUrl={page.url.next}
-		lastUrl={`/${firstPath}/${page.lastPage}`}
-	/>
+	{
+		pageSize < pageTotal && (
+			<Pagination
+				global={global}
+				length={page.lastPage}
+				currentUrl={page.url.current}
+				currentPage={page.currentPage}
+				firstUrl={`/${firstPath}`}
+				prevUrl={page.url.prev}
+				nextUrl={page.url.next}
+				lastUrl={`/${firstPath}/${page.lastPage}`}
+			/>
+		)
+	}
 </section>
 
 {
