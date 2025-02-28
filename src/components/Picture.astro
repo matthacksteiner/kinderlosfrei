@@ -31,7 +31,7 @@ const backgroundContainer = props.backgroundContainer
 	: 'container';
 
 const imageWidth = (containerWidth) =>
-	Math.round(containerWidth / 12) * Number(span);
+	Math.round((containerWidth / 12) * Number(span));
 const imageHeight = (imageWidth, ratio) => Math.round(imageWidth / ratio);
 
 const imageWidthDesktop = imageWidth(
