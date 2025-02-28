@@ -22,6 +22,8 @@ const ratioMobile = getRatio(props.ratioMobile, props.width, props.height);
 const sourceMobile = props.ratioMobile === 'original' ? src : urlFocusMobile;
 const sourceDesktop = props.ratioDesktop === 'original' ? src : urlFocus;
 const span = props.span;
+const gridGapDesktop = props.gridGapDesktop;
+const gridGapMobile = props.gridGapMobile;
 const gridMarginTotal = 2;
 const gridMarginDesktop = props.gridMarginDesktop * gridMarginTotal;
 const gridMarginMobile = props.gridMarginMobile * gridMarginTotal;
@@ -30,17 +32,61 @@ const backgroundContainer = props.backgroundContainer
 	? props.backgroundContainer
 	: 'container';
 
-const imageWidth = (containerWidth) =>
-	Math.round((containerWidth / 12) * Number(span));
+// Calculate column width accounting for grid gaps
+const calculateColumnWidth = (containerWidth, columns, gridGap) => {
+	// Total space taken by gaps between columns
+	const totalGapSpace = gridGap * (columns - 1);
+	// Available space for columns after subtracting gaps
+	const availableSpace = containerWidth - totalGapSpace;
+	// Width of a single column
+	return availableSpace / columns;
+};
+
+// Calculate total width for a span of columns including gaps
+const imageWidth = (containerWidth, columns, span, gridGap) => {
+	const columnWidth = calculateColumnWidth(containerWidth, columns, gridGap);
+	// Width of columns plus gaps between them
+	return Math.round(columnWidth * Number(span) + gridGap * (Number(span) - 1));
+};
+
 const imageHeight = (imageWidth, ratio) => Math.round(imageWidth / ratio);
 
+// Desktop calculations
+const desktopColumns = 12;
+const containerWidthDesktop =
+	backgroundContainer === 'container' ? 1920 - gridMarginDesktop : 2560;
 const imageWidthDesktop = imageWidth(
-	backgroundContainer === 'container' ? 1920 - gridMarginDesktop : 2560
+	containerWidthDesktop,
+	desktopColumns,
+	span,
+	gridGapDesktop
 );
-const imageWidthMobile = 390 - gridMarginMobile;
+
+// Mobile calculations
+const mobileColumns = 6;
+const containerWidthMobile = 390 - gridMarginMobile;
+const imageWidthMobile = imageWidth(
+	containerWidthMobile,
+	mobileColumns,
+	span,
+	gridGapMobile
+);
+
+// Other width calculations
+const imageWidthDesktop1280 = imageWidth(
+	1280,
+	desktopColumns,
+	span,
+	gridGapDesktop
+);
+const imageWidthDesktop1920 = imageWidth(
+	1920 - gridMarginDesktop,
+	desktopColumns,
+	span,
+	gridGapDesktop
+);
+
 const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobile);
-const imageWidthDesktop1280 = imageWidth(1280);
-const imageWidthDesktop1920 = imageWidth(1920 - gridMarginDesktop);
 const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktop);
 const imageHeightDesktop1280 = imageHeight(imageWidthDesktop1280, ratioDesktop);
 const imageHeightDesktop1920 = imageHeight(imageWidthDesktop1920, ratioDesktop);
@@ -63,6 +109,8 @@ interface Props {
 	backgroundContainer: string;
 	gridMarginDesktop: number;
 	gridMarginMobile: number;
+	gridGapDesktop: number;
+	gridGapMobile: number;
 	thumbhash?: string;
 	dataZoomable?: boolean;
 	dataZoomSrc?: string;
