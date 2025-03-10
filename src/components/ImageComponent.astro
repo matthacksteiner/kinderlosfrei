@@ -14,7 +14,6 @@ const {
 	span,
 	backgroundContainer,
 	lightbox,
-	class: className,
 } = Astro.props;
 
 const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
@@ -39,7 +38,9 @@ const pictureProps = {
 	gridGapDesktop: global.gridGapDesktop,
 	gridMarginDesktop: global.gridMarginDesktop,
 	positon: 'relative',
-	class: `${className} ${image.classes} w-full object-cover`,
+	class: image.classes
+		? `${image.classes} w-full object-cover`
+		: 'w-full object-cover',
 	thumbhash: image.thumbhash,
 };
 const link = image.linkexternal;
