@@ -1,7 +1,113 @@
 ---
+/**
+ * Picture Component
+ *
+ * Renders a responsive picture element with various image sizes and formats.
+ * Supports both production (with image processing) and development environments.
+ *
+ * @component
+ * @example
+ * ```astro
+ * <Picture
+ *   src="/images/example.jpg"
+ *   urlFocus="/images/example-focus.jpg"
+ *   urlFocusMobile="/images/example-focus-mobile.jpg"
+ *   width={1200}
+ *   height={800}
+ *   name="example-image"
+ *   ratioMobile="1/1"
+ *   ratioDesktop="16/9"
+ *   span="6"
+ * />
+ * ```
+ */
+
 const isProd = import.meta.env.PROD;
 const netlifyDev = import.meta.env.NETLIFY_DEV;
 const netlifyUrl = import.meta.env.NETLIFY_URL;
+
+interface Props {
+	// Required props
+	src: string;
+	urlFocus: string;
+	urlFocusMobile: string;
+	width: number;
+	height: number;
+	name: string;
+	ratioMobile: string;
+	ratioDesktop: string;
+	span: string;
+
+	// Optional props with defaults
+	alt?: string;
+	position?: string;
+	id?: string;
+	class?: string;
+	loading?: 'eager' | 'lazy';
+	backgroundContainer?: 'container' | 'full';
+	gridMarginDesktop?: number;
+	gridMarginMobile?: number;
+	gridGapDesktop?: number;
+	gridGapMobile?: number;
+
+	// Optional features
+	thumbhash?: string;
+	dataZoomable?: boolean;
+	dataZoomSrc?: string;
+}
+
+const {
+	src,
+	urlFocus,
+	urlFocusMobile,
+	width,
+	height,
+	name,
+	ratioMobile,
+	ratioDesktop,
+	span,
+	// Optional props with defaults
+	alt,
+	position = 'center',
+	id,
+	class: className,
+	loading = 'lazy',
+	backgroundContainer = 'container',
+	gridMarginDesktop = 24,
+	gridMarginMobile = 16,
+	gridGapDesktop = 24,
+	gridGapMobile = 16,
+	// Optional features
+	thumbhash,
+	dataZoomable,
+	dataZoomSrc,
+} = Astro.props;
+
+// Input validation
+if (
+	!src ||
+	!urlFocus ||
+	!urlFocusMobile ||
+	!width ||
+	!height ||
+	!name ||
+	!ratioMobile ||
+	!ratioDesktop ||
+	!span
+) {
+	throw new Error('Missing required props in Picture component');
+}
+
+const validateRatio = (ratio: string) => {
+	if (ratio !== 'original' && !ratio.match(/^\d+\/\d+$/)) {
+		throw new Error(
+			`Invalid ratio format: ${ratio}. Must be either 'original' or 'number/number'`
+		);
+	}
+};
+
+validateRatio(ratioMobile);
+validateRatio(ratioDesktop);
 
 const baseUrl = isProd
 	? netlifyUrl
@@ -9,52 +115,56 @@ const baseUrl = isProd
 	? 'http://localhost:8888'
 	: netlifyUrl;
 
-const { src, urlFocus, urlFocusMobile, ...props } = Astro.props;
-const getRatio = (ratio, width, height) => {
+const getRatio = (ratio: string, width: number, height: number): number => {
+	if (!ratio) {
+		console.warn('Ratio is undefined, using default 1/1');
+		return 1; // default square ratio
+	}
+
 	const [numerator, denominator] =
 		ratio === 'original' ? [width, height] : ratio.split('/');
 	return Number(numerator) / Number(denominator);
 };
 
-const ratioDesktop = getRatio(props.ratioDesktop, props.width, props.height);
-const ratioMobile = getRatio(props.ratioMobile, props.width, props.height);
+const ratioDesktopValue = getRatio(ratioDesktop, width, height);
+const ratioMobileValue = getRatio(ratioMobile, width, height);
 
-const sourceMobile = props.ratioMobile === 'original' ? src : urlFocusMobile;
-const sourceDesktop = props.ratioDesktop === 'original' ? src : urlFocus;
-const span = props.span;
-const gridGapDesktop = props.gridGapDesktop;
-const gridGapMobile = props.gridGapMobile;
+const sourceMobile = ratioMobile === 'original' ? src : urlFocusMobile;
+const sourceDesktop = ratioDesktop === 'original' ? src : urlFocus;
+
 const gridMarginTotal = 2;
-const gridMarginDesktop = props.gridMarginDesktop * gridMarginTotal;
-const gridMarginMobile = props.gridMarginMobile * gridMarginTotal;
-
-const backgroundContainer = props.backgroundContainer
-	? props.backgroundContainer
-	: 'container';
+const gridMarginDesktopTotal = gridMarginDesktop * gridMarginTotal;
+const gridMarginMobileTotal = gridMarginMobile * gridMarginTotal;
 
 // Calculate column width accounting for grid gaps
-const calculateColumnWidth = (containerWidth, columns, gridGap) => {
-	// Total space taken by gaps between columns
+const calculateColumnWidth = (
+	containerWidth: number,
+	columns: number,
+	gridGap: number
+): number => {
 	const totalGapSpace = gridGap * (columns - 1);
-	// Available space for columns after subtracting gaps
 	const availableSpace = containerWidth - totalGapSpace;
-	// Width of a single column
 	return availableSpace / columns;
 };
 
 // Calculate total width for a span of columns including gaps
-const imageWidth = (containerWidth, columns, span, gridGap) => {
+const imageWidth = (
+	containerWidth: number,
+	columns: number,
+	span: string,
+	gridGap: number
+): number => {
 	const columnWidth = calculateColumnWidth(containerWidth, columns, gridGap);
-	// Width of columns plus gaps between them
 	return Math.round(columnWidth * Number(span) + gridGap * (Number(span) - 1));
 };
 
-const imageHeight = (imageWidth, ratio) => Math.round(imageWidth / ratio);
+const imageHeight = (imageWidth: number, ratio: number): number =>
+	Math.round(imageWidth / ratio);
 
 // Desktop calculations
 const desktopColumns = 12;
 const containerWidthDesktop =
-	backgroundContainer === 'container' ? 1920 - gridMarginDesktop : 2560;
+	backgroundContainer === 'container' ? 1920 - gridMarginDesktopTotal : 2560;
 const imageWidthDesktop = imageWidth(
 	containerWidthDesktop,
 	desktopColumns,
@@ -64,7 +174,7 @@ const imageWidthDesktop = imageWidth(
 
 // Mobile calculations
 const mobileColumns = 6;
-const containerWidthMobile = 390 - gridMarginMobile;
+const containerWidthMobile = 390 - gridMarginMobileTotal;
 const imageWidthMobile = imageWidth(
 	containerWidthMobile,
 	mobileColumns,
@@ -80,50 +190,35 @@ const imageWidthDesktop1280 = imageWidth(
 	gridGapDesktop
 );
 const imageWidthDesktop1920 = imageWidth(
-	1920 - gridMarginDesktop,
+	1920 - gridMarginDesktopTotal,
 	desktopColumns,
 	span,
 	gridGapDesktop
 );
 
-const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobile);
-const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktop);
-const imageHeightDesktop1280 = imageHeight(imageWidthDesktop1280, ratioDesktop);
-const imageHeightDesktop1920 = imageHeight(imageWidthDesktop1920, ratioDesktop);
+const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobileValue);
+const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktopValue);
+const imageHeightDesktop1280 = imageHeight(
+	imageWidthDesktop1280,
+	ratioDesktopValue
+);
+const imageHeightDesktop1920 = imageHeight(
+	imageWidthDesktop1920,
+	ratioDesktopValue
+);
 
-interface Props {
-	src: string;
-	urlFocus: string;
-	urlFocusMobile: string;
-	width: number;
-	height: number;
-	alt: string;
-	name: string;
-	ratioMobile: string;
-	ratioDesktop: string;
-	span: string;
-	position: string;
-	id: string;
-	class: string;
-	loading: 'eager' | 'lazy';
-	backgroundContainer: string;
-	gridMarginDesktop: number;
-	gridMarginMobile: number;
-	gridGapDesktop: number;
-	gridGapMobile: number;
-	thumbhash?: string;
-	dataZoomable?: boolean;
-	dataZoomSrc?: string;
-}
+const altFallback = name
+	? name
+			.replace(/[-_]/g, ' ')
+			.replace(/[^\w\s]/g, '')
+			.replace(/\b\w/g, (char) => char.toUpperCase())
+	: 'Image';
 
-const thumbhash = props.thumbhash;
-
-const altFallback = props.name
-	.replace(/[-_]/g, ' ') // Replace all '-' and '_' with spaces
-	.replace(/[^\w\s]/g, '') // Remove all non-alphanumeric characters
-	.replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize the first letter of each word
-
-const generateSrcSet = (source, width, height) => {
+const generateSrcSet = (
+	source: string,
+	width: number,
+	height: number
+): string => {
 	const srcSetValues = [1, 2, 3].map((value) => {
 		const multipliedWidth = width * value;
 		const multipliedHeight = height * value;
@@ -133,7 +228,11 @@ const generateSrcSet = (source, width, height) => {
 	return srcSetValues.join(', ');
 };
 
-const generateImgSrc = (source, width, height) => {
+const generateImgSrc = (
+	source: string,
+	width: number,
+	height: number
+): string => {
 	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=jpg&q=80`;
 };
 ---
@@ -184,12 +283,12 @@ const generateImgSrc = (source, width, height) => {
 				)}
 				width={imageWidthDesktop}
 				height={imageHeightDesktop}
-				alt={props.alt || altFallback}
-				loading={props.loading}
-				id={props.id}
-				data-zoomable={props.dataZoomable}
-				data-zoom-src={props.dataZoomSrc}
-				class:list={[props.class]}
+				alt={alt || altFallback}
+				loading={loading}
+				id={id}
+				data-zoomable={dataZoomable}
+				data-zoom-src={dataZoomSrc}
+				class:list={[className]}
 				style={thumbhash ? 'background: transparent;' : ''}
 			/>
 		</picture>
@@ -204,12 +303,12 @@ const generateImgSrc = (source, width, height) => {
 				src={sourceDesktop}
 				width={imageWidthDesktop}
 				height={imageHeightDesktop}
-				alt={props.alt || altFallback}
-				loading={props.loading}
-				id={props.id}
-				data-zoomable={props.dataZoomable}
-				data-zoom-src={props.dataZoomSrc}
-				class={props.class}
+				alt={alt || altFallback}
+				loading={loading}
+				id={id}
+				data-zoomable={dataZoomable}
+				data-zoom-src={dataZoomSrc}
+				class={className}
 				style={thumbhash ? 'background: transparent;' : ''}
 			/>
 		</picture>
