@@ -1,10 +1,66 @@
 ---
+/**
+ * Link Component
+ *
+ * Renders different types of links (URL, page, file, email, telephone) with proper attributes
+ * and language handling. Supports popup windows and file downloads.
+ *
+ * @component
+ * @example
+ * ```astro
+ * <Link
+ *   link={{
+ *     type: 'url',
+ *     href: 'https://example.com',
+ *     title: 'External Link',
+ *     popup: true
+ *   }}
+ *   class="custom-class"
+ * />
+ * ```
+ */
+
+interface BaseLink {
+	type: 'url' | 'page' | 'file' | 'email' | 'tel';
+	href: string;
+	title?: string;
+	popup?: boolean;
+}
+
+interface PageLink extends BaseLink {
+	type: 'page';
+	uri: string;
+	hash?: string;
+}
+
+interface FileLink extends BaseLink {
+	type: 'file';
+	downloadFilename?: string;
+}
+
+interface Props {
+	// Required props
+	link: BaseLink | PageLink | FileLink;
+
+	// Optional props
+	class?: string;
+}
+
 const { link, class: className, ...rest } = Astro.props;
 const { lang } = Astro.params;
 const currentLang = lang;
 
+// Input validation
 if (!link) {
 	throw new Error('Missing link prop in Link.astro');
+}
+
+if (!link.type || !link.href) {
+	throw new Error('Link must have both type and href properties');
+}
+
+if (link.type === 'page' && !('uri' in link)) {
+	throw new Error('Page links must include a uri property');
 }
 
 let href = '';
@@ -13,9 +69,11 @@ switch (link.type) {
 		href = link.href;
 		break;
 	case 'page':
-		href = link.hash
-			? `${currentLang ? `/${currentLang}/` : ''}${link.uri}#${link.hash}`
-			: `${currentLang ? `/${currentLang}/` : ''}${link.uri}`;
+		href = (link as PageLink).hash
+			? `${currentLang ? `/${currentLang}/` : ''}${(link as PageLink).uri}#${
+					(link as PageLink).hash
+			  }`
+			: `${currentLang ? `/${currentLang}/` : ''}${(link as PageLink).uri}`;
 		break;
 	case 'file':
 		href = link.href;
@@ -39,7 +97,7 @@ const attributes = {
 const defaultContent = link.title
 	? link.title
 	: link.type === 'page'
-	? link.uri
+	? (link as PageLink).uri
 	: link.href;
 ---
 
