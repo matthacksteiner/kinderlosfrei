@@ -55,8 +55,8 @@ if (!link) {
 	throw new Error('Missing link prop in Link.astro');
 }
 
-if (!link.type || !link.href) {
-	throw new Error('Link must have both type and href properties');
+if (!link.type) {
+	throw new Error('Link must have type properties');
 }
 
 if (link.type === 'page' && !('uri' in link)) {
