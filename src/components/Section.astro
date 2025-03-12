@@ -62,9 +62,10 @@ const firstPath =
 				.sort((a, b) => a.position - b.position)
 				.map((item) => {
 					const image = item.thumbnail;
+					const coverOnly = item.coverOnly;
 					return (
 						<div class:list={[`col-span-${spanMobile}`, `lg:col-span-${span}`]}>
-							<a href={lang ? `/${lang}/${item.uri}` : '/' + item.uri}>
+							{coverOnly ? (
 								<ImageComponent
 									global={global}
 									image={image}
@@ -74,7 +75,19 @@ const firstPath =
 									backgroundContainer="container"
 									span={span}
 								/>
-							</a>
+							) : (
+								<a href={lang ? `/${lang}/${item.uri}` : '/' + item.uri}>
+									<ImageComponent
+										global={global}
+										image={image}
+										loading="auto"
+										ratioMobile={ratioMobile}
+										ratioDesktop={ratio}
+										backgroundContainer="container"
+										span={span}
+									/>
+								</a>
+							)}
 
 							<TitleLevel
 								class:list={[
