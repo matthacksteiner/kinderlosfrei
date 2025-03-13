@@ -1,6 +1,5 @@
 ---
 import ImageComponent from '@components/ImageComponent.astro';
-
 const {
 	global,
 	images,
@@ -52,15 +51,24 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 			{
 				images?.map((image) => (
 					<div class:list={['swiper-slide', overlay]}>
-						<ImageComponent
-							global={global}
-							image={image}
-							loading="auto"
-							class:list={[full]}
-							ratioMobile={ratioMobile}
-							ratioDesktop={ratioDesktop}
-							span={span}
-						/>
+						{image.url?.endsWith('.svg') ? (
+							<img
+								src={image.url}
+								alt={image.alt || ''}
+								id={image.identifier}
+								class:list={[full, 'w-full', 'h-auto', image.classes]}
+							/>
+						) : (
+							<ImageComponent
+								global={global}
+								image={image}
+								loading="auto"
+								class:list={[full]}
+								ratioMobile={ratioMobile}
+								ratioDesktop={ratioDesktop}
+								span={span}
+							/>
+						)}
 					</div>
 				))
 			}
