@@ -11,10 +11,10 @@
 		"test": "vitest"
 	},
 	"dependencies": {
-		"@astrojs/netlify": "^6.2.2",
+		"@astrojs/netlify": "^6.2.3",
 		"@astrojs/tailwind": "^6.0.0",
 		"@iarna/toml": "^2.2.5",
-		"astro": "^5.4.2",
+		"astro": "^5.5.0",
 		"astro-icon": "^1.1.0",
 		"dotenv": "^16.3.1",
 		"medium-zoom": "^1.1.0",
