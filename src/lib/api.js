@@ -75,13 +75,11 @@ export async function getFonts() {
 
 	const css = `${global.font
 		.map((item) => {
-			const base64Data1 = `data:application/font-woff;base64,${item.base64Data1}`;
 			const base64Data2 = `data:application/font-woff2;base64,${item.base64Data2}`;
 
 			return `@font-face {
 			font-family: '${item.name}';
-			src: url('${base64Data2}') format('woff2'),
-				 url('${base64Data1}') format('woff');
+			src: url('${base64Data2}') format('woff2');
 			font-weight: normal;
 			font-style: normal;
 			font-display: swap;
