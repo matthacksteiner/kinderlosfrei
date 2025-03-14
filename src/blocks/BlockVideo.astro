@@ -58,13 +58,22 @@ const vimeoPlayer = isVimeo
 						allow="autoplay; encrypted-media"
 					/>
 				) : isVimeo ? (
-					<iframe
-						src={`${vimeoPlayer}?dnt=1?autoplay=${autoplay ? 1 : 0}&loop=${
-							loop ? 1 : 0
-						}&muted=${muted || autoplay ? 1 : 0}&controls=${controls ? 1 : 0}`}
-						frameborder="0"
-						allow="autoplay; fullscreen"
-					/>
+					<>
+						<div class="vimeo-container">
+							<iframe
+								src={`${vimeoPlayer}?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=${
+									autoplay ? 1 : 0
+								}&loop=${loop ? 1 : 0}&muted=${
+									muted || autoplay ? 1 : 0
+								}&controls=${controls ? 1 : 0}&dnt=1`}
+								frameborder="0"
+								allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+								style="position:absolute;top:0;left:0;width:100%;height:100%;"
+								title="Vimeo video player"
+							/>
+						</div>
+						<script src="https://player.vimeo.com/api/player.js" />
+					</>
 				) : (
 					<div class="error">
 						<p class="text-red-500">
@@ -75,7 +84,7 @@ const vimeoPlayer = isVimeo
 			) : (
 				<video
 					preload="none"
-					id={`${file.identifier}`}
+					id={file.identifier ? `${file.identifier}` : undefined}
 					muted={muted || autoplay}
 					autoplay={autoplay}
 					loop={loop}
@@ -115,6 +124,12 @@ const vimeoPlayer = isVimeo
 	iframe {
 		@apply aspect-[var(--ratioMobile)] h-auto w-full lg:aspect-[var(--ratioDesktop)];
 	}
+
+	.vimeo-container {
+		position: relative;
+		padding-top: calc(100% / (var(--ratioDesktop)));
+	}
+
 	video {
 		@apply w-full;
 	}

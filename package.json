@@ -14,7 +14,7 @@
 		"@astrojs/netlify": "^6.2.3",
 		"@astrojs/tailwind": "^6.0.0",
 		"@iarna/toml": "^2.2.5",
-		"astro": "^5.5.0",
+		"astro": "^5.5.2",
 		"astro-icon": "^1.1.0",
 		"dotenv": "^16.3.1",
 		"medium-zoom": "^1.1.0",
