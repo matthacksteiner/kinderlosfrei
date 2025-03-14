@@ -53,15 +53,27 @@ export async function getFrontendUrl() {
 export async function getFonts() {
 	const global = await getGlobal();
 	if (!global.font || global.font.length === 0) {
-		return `@font-face {
+		return {
+			css: `@font-face {
       font-family: system-ui;
       font-weight: normal;
       font-style: normal;
       font-display: swap;
-    }`;
+    }`,
+			fonts: [],
+		};
 	}
 
-	return `${global.font
+	const fontArray = global.font.map((item) => {
+		const base64Data2 = `data:application/font-woff2;base64,${item.base64Data2}`;
+
+		return {
+			name: item.name,
+			woff2: base64Data2,
+		};
+	});
+
+	const css = `${global.font
 		.map((item) => {
 			const base64Data1 = `data:application/font-woff;base64,${item.base64Data1}`;
 			const base64Data2 = `data:application/font-woff2;base64,${item.base64Data2}`;
@@ -76,6 +88,11 @@ export async function getFonts() {
 		  }`;
 		})
 		.join('')}`;
+
+	return {
+		css,
+		fonts: fontArray,
+	};
 }
 
 // export all font sizes
