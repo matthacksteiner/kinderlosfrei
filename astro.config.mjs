@@ -4,6 +4,7 @@ import { defineConfig } from 'astro/config';
 import icon from 'astro-icon';
 import tailwind from '@astrojs/tailwind';
 import netlify from '@astrojs/netlify';
+import compress from '@playform/compress';
 import langFolderRename from './plugins/lang-folder-rename/langFolderRename.js';
 
 const API_URL = process.env.KIRBY_URL;
@@ -40,6 +41,13 @@ export default defineConfig({
 		,
 		icon(),
 		langFolderRename(),
+		compress({
+			HTML: true,
+			JavaScript: true,
+			CSS: true,
+			Image: false, // astro:assets handles this. Enabling this can dramatically increase build times
+			SVG: false, // astro-icon handles this
+		}),
 	],
 	image: {
 		domains: [API_URL],
