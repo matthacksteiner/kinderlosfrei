@@ -78,18 +78,8 @@ const vimeoPlayer = isVimeo
 								transformation={{
 									streaming_profile: 'hd',
 								}}
-								poster={{
-									transformation: [
-										{
-											width: 'auto',
-											crop: 'fill',
-											quality: 'auto:low',
-											format: 'auto',
-										},
-									],
-								}}
-								lazyload={true}
-								preload="none"
+								poster="w_auto,c_fill,q_auto:low,f_auto"
+								preload="auto"
 							/>
 						) : (
 							<div class="error rounded border border-red-400 bg-red-100 p-4 text-red-700">
