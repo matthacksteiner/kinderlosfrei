@@ -4,6 +4,7 @@
  *
  * Renders a responsive picture element with various image sizes and formats.
  * Supports both production (with image processing) and development environments.
+ * Prevents layout shifts by maintaining proper aspect ratios before image loads.
  *
  * @component
  * @example
@@ -18,8 +19,19 @@
  *   ratioMobile="1/1"
  *   ratioDesktop="16/9"
  *   span="6"
+ *   thumbhash="data:image/png;base64,..." // Optional thumbhash for blur-up effect
  * />
  * ```
+ *
+ * Features:
+ * - Responsive image loading with different sources for mobile and desktop
+ * - Automatic size calculations based on grid system
+ * - Optional thumbhash placeholder for improved loading experience
+ * - Layout shift prevention using CSS aspect ratio
+ * - Support for image zooming functionality
+ *
+ * The component preserves aspect ratios during loading to prevent CLS (Cumulative Layout Shift).
+ * When thumbhash is provided, it displays a blurred placeholder until the image loads.
  */
 
 const isProd = import.meta.env.PROD;
@@ -237,84 +249,128 @@ const generateImgSrc = (
 
 {
 	isProd || netlifyDev ? (
-		<picture>
+		<div
+			class="picture-container"
+			style={`--ratio-mobile: ${ratioMobileValue}; --ratio-desktop: ${ratioDesktopValue};`}
+		>
 			{thumbhash && (
 				<div class="thumbhash" style={`background-image: url(${thumbhash});`} />
 			)}
-			<source
-				srcset={generateSrcSet(
-					sourceMobile,
-					imageWidthMobile,
-					imageHeightMobile
-				)}
-				media="(max-width: 768px)"
-			/>
-			<source
-				srcset={generateSrcSet(
-					sourceDesktop,
-					imageWidthDesktop1280,
-					imageHeightDesktop1280
-				)}
-				media="(min-width: 769px) and (max-width: 1280px)"
-			/>
-			<source
-				srcset={generateSrcSet(
-					sourceDesktop,
-					imageWidthDesktop1920,
-					imageHeightDesktop1920
-				)}
-				media="(min-width: 1281px) and (max-width: 1920px)"
-			/>
-			<source
-				srcset={generateSrcSet(
-					sourceDesktop,
-					imageWidthDesktop,
-					imageHeightDesktop
-				)}
-				media="(min-width: 1921px)"
-			/>
-			<img
-				src={generateImgSrc(
-					sourceDesktop,
-					imageWidthDesktop,
-					imageHeightDesktop
-				)}
-				width={imageWidthDesktop}
-				height={imageHeightDesktop}
-				alt={alt || altFallback}
-				loading={loading}
-				id={id}
-				data-zoomable={dataZoomable}
-				data-zoom-src={dataZoomSrc}
-				class:list={[className]}
-				style={thumbhash ? 'background: transparent;' : ''}
-			/>
-		</picture>
+			<picture>
+				<source
+					srcset={generateSrcSet(
+						sourceMobile,
+						imageWidthMobile,
+						imageHeightMobile
+					)}
+					media="(max-width: 768px)"
+				/>
+				<source
+					srcset={generateSrcSet(
+						sourceDesktop,
+						imageWidthDesktop1280,
+						imageHeightDesktop1280
+					)}
+					media="(min-width: 769px) and (max-width: 1280px)"
+				/>
+				<source
+					srcset={generateSrcSet(
+						sourceDesktop,
+						imageWidthDesktop1920,
+						imageHeightDesktop1920
+					)}
+					media="(min-width: 1281px) and (max-width: 1920px)"
+				/>
+				<source
+					srcset={generateSrcSet(
+						sourceDesktop,
+						imageWidthDesktop,
+						imageHeightDesktop
+					)}
+					media="(min-width: 1921px)"
+				/>
+				<img
+					src={generateImgSrc(
+						sourceDesktop,
+						imageWidthDesktop,
+						imageHeightDesktop
+					)}
+					width={imageWidthDesktop}
+					height={imageHeightDesktop}
+					alt={alt || altFallback}
+					loading={loading}
+					id={id}
+					data-zoomable={dataZoomable}
+					data-zoom-src={dataZoomSrc}
+					class:list={[className]}
+				/>
+			</picture>
+		</div>
 	) : (
-		<picture>
+		<div
+			class="picture-container"
+			style={`--ratio-mobile: ${ratioMobileValue}; --ratio-desktop: ${ratioDesktopValue};`}
+		>
 			{thumbhash && (
 				<div class="thumbhash" style={`background-image: url(${thumbhash});`} />
 			)}
-			<source srcset={sourceMobile} media="(max-width: 768px)" />
-			<source srcset={sourceDesktop} media="(min-width: 769px)" />
-			<img
-				src={sourceDesktop}
-				width={imageWidthDesktop}
-				height={imageHeightDesktop}
-				alt={alt || altFallback}
-				loading={loading}
-				id={id}
-				data-zoomable={dataZoomable}
-				data-zoom-src={dataZoomSrc}
-				class={className}
-				style={thumbhash ? 'background: transparent;' : ''}
-			/>
-		</picture>
+			<picture>
+				<source srcset={sourceMobile} media="(max-width: 768px)" />
+				<source srcset={sourceDesktop} media="(min-width: 769px)" />
+				<img
+					src={sourceDesktop}
+					width={imageWidthDesktop}
+					height={imageHeightDesktop}
+					alt={alt || altFallback}
+					loading={loading}
+					id={id}
+					data-zoomable={dataZoomable}
+					data-zoom-src={dataZoomSrc}
+					class={className}
+				/>
+			</picture>
+		</div>
 	)
 }
 
 <style>
+	.picture-container {
+		@apply relative block w-full;
+	}
+
+	/* Apply aspect ratio based on screen size */
+	.picture-container::before {
+		@apply block w-full content-[''];
+	}
+
+	/* Mobile aspect ratio */
+	@media (max-width: 768px) {
+		.picture-container::before {
+			padding-top: calc(1 / var(--ratio-mobile) * 100%);
+		}
+	}
+
+	/* Desktop aspect ratio */
+	@media (min-width: 769px) {
+		.picture-container::before {
+			padding-top: calc(1 / var(--ratio-desktop) * 100%);
+		}
+	}
+
 	.thumbhash {
-		@apply absolute inset-0 -z-10 bg-cover bg-center;
+		@apply absolute inset-0 -z-10 bg-cover bg-center blur-sm;
+	}
+
+	picture {
+		@apply block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	picture img {
+		@apply block h-full w-full object-cover;
 	}
 </style>
