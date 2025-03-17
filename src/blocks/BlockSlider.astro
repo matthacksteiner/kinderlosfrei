@@ -55,6 +55,8 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 							<img
 								src={image.url}
 								alt={image.alt || ''}
+								width={image.width}
+								height={image.height}
 								id={image.identifier}
 								class:list={[full, 'w-full', 'h-auto', image.classes]}
 							/>
