@@ -31,6 +31,9 @@
         "src/overrides/*",
         "src/lib/*"
       ],
+      "@overrides/*": [
+        "src/overrides/*"
+      ]
     }
   }
 }

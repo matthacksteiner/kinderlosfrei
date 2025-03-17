@@ -37,6 +37,7 @@ export default defineConfig({
 		tailwind({
 			// Enable CSS nesting
 			nesting: true,
+			config: { path: './src/overrides/tailwind.config.cjs' },
 		}),
 		,
 		icon(),
@@ -45,8 +46,8 @@ export default defineConfig({
 			HTML: true,
 			JavaScript: true,
 			CSS: true,
-			Image: false, // astro:assets handles this. Enabling this can dramatically increase build times
-			SVG: false, // astro-icon handles this
+			Image: false,
+			SVG: true,
 		}),
 	],
 	image: {
