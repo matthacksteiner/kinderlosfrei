@@ -19,7 +19,7 @@
  *   ratioMobile="1/1"
  *   ratioDesktop="16/9"
  *   span="6"
- *   thumbhash="data:image/png;base64,..." // Optional thumbhash for blur-up effect
+ *   thumbhash="data:image/png;base64,..."
  * />
  * ```
  *
@@ -358,7 +358,7 @@ const generateImgSrc = (
 	}
 
 	.thumbhash {
-		@apply absolute inset-0 -z-10 bg-cover bg-center blur-sm;
+		@apply absolute inset-0 -z-10 bg-cover bg-center;
 	}
 
 	picture {
