@@ -9,6 +9,8 @@ const {
 	thumbnail,
 	ratioDesktop = '16/9',
 	ratioMobile = '16/9',
+	width,
+	height,
 	text,
 	font,
 	size,
@@ -71,6 +73,8 @@ const vimeoPlayer = isVimeo
 								loop={loop}
 								muted={muted || autoplay}
 								controls={controls}
+								width={width || undefined}
+								height={height || undefined}
 								colors={{
 									accent: 'var(--color-primary)',
 								}}
@@ -123,6 +127,8 @@ const vimeoPlayer = isVimeo
 					muted={muted || autoplay}
 					autoplay={autoplay}
 					loop={loop}
+					width={width || undefined}
+					height={height || undefined}
 					controls={controls}
 					playsinline={autoplay}
 					poster={thumb}
