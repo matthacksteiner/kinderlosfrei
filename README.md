@@ -11,7 +11,7 @@ This is the Astro frontend part of the Baukasten project. It works in conjunctio
 ### automated
 
 run the script `update-template-version.sh` to fetch and merge the latest changes from the template repository.
-use git-bash or WSL on Windows.
+use git-bash or WSL on Windows
 
 ### manual
 
