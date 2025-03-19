@@ -64,7 +64,13 @@ const firstPath =
 					const image = item.thumbnail;
 					const coverOnly = item.coverOnly;
 					return (
-						<div class:list={[`col-span-${spanMobile}`, `lg:col-span-${span}`]}>
+						<div
+							class:list={[
+								`section-item`,
+								`col-span-${spanMobile}`,
+								`lg:col-span-${span}`,
+							]}
+						>
 							{coverOnly ? (
 								<ImageComponent
 									global={global}
