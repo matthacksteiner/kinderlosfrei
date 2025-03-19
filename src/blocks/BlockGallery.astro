@@ -14,6 +14,7 @@ const {
 	ratioDesktop,
 	span,
 	metadata,
+	aboveFold,
 } = Astro.props;
 // Convert padding values to numbers for CSS variables
 const paddingDesktopValue = viewPaddingDesktop
@@ -28,6 +29,9 @@ if (layoutType === 'masonry') {
 }
 
 const itemSpan = span / viewDesktop;
+
+// Determine loading strategy based on aboveFold
+const loadingStrategy = aboveFold ? 'eager' : 'lazy';
 ---
 
 <section
@@ -48,11 +52,12 @@ const itemSpan = span / viewDesktop;
 						<ImageComponent
 							global={global}
 							image={image}
-							loading="auto"
+							loading={loadingStrategy}
 							ratioMobile={ratioMobile}
 							ratioDesktop={ratioDesktop}
 							span={itemSpan}
 							lightbox={lightbox}
+							aboveFold={aboveFold}
 						/>
 					</div>
 				</div>

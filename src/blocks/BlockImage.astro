@@ -8,7 +8,10 @@ const {
 	span,
 	backgroundContainer,
 	metadata,
+	aboveFold,
 } = Astro.props;
+
+const loadingStrategy = aboveFold ? 'eager' : 'lazy';
 ---
 
 <div
@@ -21,11 +24,12 @@ const {
 			<ImageComponent
 				global={global}
 				image={image}
-				loading="auto"
+				loading={loadingStrategy}
 				ratioMobile={ratioMobile}
 				ratioDesktop={ratioDesktop}
 				backgroundContainer={backgroundContainer}
 				span={span}
+				aboveFold={aboveFold}
 			/>
 		)
 	}

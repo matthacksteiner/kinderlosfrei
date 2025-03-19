@@ -23,6 +23,7 @@ const {
 	ratioDesktop,
 	span,
 	metadata,
+	aboveFold,
 } = Astro.props;
 const hasControl = (control) => controls && controls.includes(control);
 const arrows = hasControl('arrows');
@@ -31,6 +32,9 @@ const line = hasControl('line');
 const autoplay = hasControl('autoplay');
 const full = hasControl('full') ? 'h-screen' : null;
 const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
+
+// Determine loading strategy based on aboveFold
+const loadingStrategy = aboveFold ? 'eager' : 'lazy';
 ---
 
 <section
@@ -64,11 +68,12 @@ const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 							<ImageComponent
 								global={global}
 								image={image}
-								loading="auto"
+								loading={loadingStrategy}
 								class:list={[full]}
 								ratioMobile={ratioMobile}
 								ratioDesktop={ratioDesktop}
 								span={span}
+								aboveFold={aboveFold}
 							/>
 						)}
 					</div>

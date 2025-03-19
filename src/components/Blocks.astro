@@ -62,6 +62,7 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							textcolor={block.content.textcolor}
 							size={block.content.textsize}
 							metadata={block.content.metadata}
+							aboveFold={block.content.aboveFold}
 						/>
 					);
 				case 'vector':
@@ -206,6 +207,7 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							span={span}
 							backgroundContainer={backgroundContainer}
 							metadata={block.content.metadata}
+							aboveFold={block.content.aboveFold}
 						/>
 					);
 				case 'slider':
@@ -234,6 +236,7 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							global={global}
 							backgroundContainer={backgroundContainer}
 							metadata={block.content.metadata}
+							aboveFold={block.content.aboveFold}
 						/>
 					);
 				case 'gallery':
@@ -252,6 +255,7 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							global={global}
 							backgroundContainer={backgroundContainer}
 							metadata={block.content.metadata}
+							aboveFold={block.content.aboveFold}
 						/>
 					);
 				case 'divider':

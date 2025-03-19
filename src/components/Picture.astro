@@ -66,6 +66,7 @@ interface Props {
 	thumbhash?: string;
 	dataZoomable?: boolean;
 	dataZoomSrc?: string;
+	aboveFold?: boolean;
 }
 
 const {
@@ -93,6 +94,7 @@ const {
 	thumbhash,
 	dataZoomable,
 	dataZoomSrc,
+	aboveFold,
 } = Astro.props;
 
 // Input validation
@@ -245,7 +247,28 @@ const generateImgSrc = (
 ): string => {
 	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif,webp,jpg&q=70`;
 };
+
+// Generate sources for prefetching above fold images
+const prefetchSrcMobile = aboveFold
+	? generateImgSrc(sourceMobile, imageWidthMobile, imageHeightMobile)
+	: null;
+const prefetchSrcDesktop = aboveFold
+	? generateImgSrc(sourceDesktop, imageWidthDesktop, imageHeightDesktop)
+	: null;
 ---
+
+{
+	aboveFold && (
+		<>
+			{prefetchSrcMobile && (
+				<link rel="prefetch" href={prefetchSrcMobile} as="image" />
+			)}
+			{prefetchSrcDesktop && (
+				<link rel="prefetch" href={prefetchSrcDesktop} as="image" />
+			)}
+		</>
+	)
+}
 
 {
 	isProd || netlifyDev ? (

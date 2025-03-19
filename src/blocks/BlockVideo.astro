@@ -19,6 +19,7 @@ const {
 	Level,
 	toggle,
 	metadata,
+	aboveFold,
 } = Astro.props;
 const hasOption = (option) => options.includes(option);
 
@@ -62,6 +63,7 @@ const vimeoPlayer = isVimeo
 							controls ? 1 : 0
 						}&dnt=1`}
 						allow="autoplay; encrypted-media"
+						loading={aboveFold ? 'eager' : 'lazy'}
 					/>
 				) : isCloudinary ? (
 					<>
@@ -82,7 +84,7 @@ const vimeoPlayer = isVimeo
 								transformation={{
 									streaming_profile: 'hd',
 								}}
-								preload="auto"
+								preload={aboveFold ? 'auto' : 'none'}
 								cloudinaryAnalytics={false}
 								analytics={false}
 							/>
@@ -109,6 +111,7 @@ const vimeoPlayer = isVimeo
 								allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
 								style="position:absolute;top:0;left:0;width:100%;height:100%;"
 								title="Vimeo video player"
+								loading={aboveFold ? 'eager' : 'lazy'}
 							/>
 						</div>
 						<script src="https://player.vimeo.com/api/player.js" />
@@ -122,7 +125,7 @@ const vimeoPlayer = isVimeo
 				)
 			) : (
 				<video
-					preload="none"
+					preload={aboveFold ? 'auto' : 'none'}
 					id={file.identifier ? `${file.identifier}` : undefined}
 					muted={muted || autoplay}
 					autoplay={autoplay}
@@ -134,7 +137,11 @@ const vimeoPlayer = isVimeo
 					poster={thumb}
 					class:list={[full, cursor, file.classes, 'w-full']}
 				>
-					<source data-src={file.url} type="video/mp4" />
+					<source
+						src={aboveFold ? file.url : undefined}
+						data-src={file.url}
+						type="video/mp4"
+					/>
 				</video>
 			)
 		}
@@ -176,7 +183,7 @@ const vimeoPlayer = isVimeo
 	}
 </style>
 
-<script define:vars={{ cursor }}>
+<script define:vars={{ cursor, aboveFold }}>
 	if (cursor) {
 		document.addEventListener('DOMContentLoaded', function () {
 			const video = document.querySelectorAll('video');
@@ -203,7 +210,9 @@ const vimeoPlayer = isVimeo
 							let videoSource = video.target.children[source];
 							if (
 								typeof videoSource.tagName === 'string' &&
-								videoSource.tagName === 'SOURCE'
+								videoSource.tagName === 'SOURCE' &&
+								videoSource.dataset.src &&
+								!videoSource.src
 							) {
 								videoSource.src = videoSource.dataset.src;
 							}
