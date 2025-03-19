@@ -232,7 +232,7 @@ const generateSrcSet = (
 	const srcSetValues = [1, 2, 3].map((value) => {
 		const multipliedWidth = width * value;
 		const multipliedHeight = height * value;
-		return `${baseUrl}/.netlify/images?url=${source}&w=${multipliedWidth}&h=${multipliedHeight}&fit=cover ${value}x`;
+		return `${baseUrl}/.netlify/images?url=${source}&w=${multipliedWidth}&h=${multipliedHeight}&fit=cover&fm=avif,webp,jpg&q=70 ${value}x`;
 	});
 
 	return srcSetValues.join(', ');
@@ -243,7 +243,7 @@ const generateImgSrc = (
 	width: number,
 	height: number
 ): string => {
-	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=jpg&q=80`;
+	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif,webp,jpg&q=70`;
 };
 ---
 
@@ -303,6 +303,7 @@ const generateImgSrc = (
 					data-zoomable={dataZoomable}
 					data-zoom-src={dataZoomSrc}
 					class:list={[className]}
+					decoding="async"
 				/>
 			</picture>
 		</div>
@@ -327,6 +328,7 @@ const generateImgSrc = (
 					data-zoomable={dataZoomable}
 					data-zoom-src={dataZoomSrc}
 					class={className}
+					decoding="async"
 				/>
 			</picture>
 		</div>
