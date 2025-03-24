@@ -92,9 +92,7 @@ const {
 	// Optional features
 	thumbhash,
 	dataZoomable,
-	dataZoomSrc,
 } = Astro.props;
-
 // Input validation
 if (
 	!src ||
@@ -301,7 +299,15 @@ const generateImgSrc = (
 					loading={loading}
 					id={id}
 					data-zoomable={dataZoomable}
-					data-zoom-src={dataZoomSrc}
+					data-zoom-src={
+						dataZoomable
+							? generateImgSrc(
+									sourceDesktop,
+									imageWidthDesktop * 2,
+									imageHeightDesktop * 2
+							  )
+							: undefined
+					}
 					class:list={[className]}
 				/>
 			</picture>
@@ -325,7 +331,7 @@ const generateImgSrc = (
 					loading={loading}
 					id={id}
 					data-zoomable={dataZoomable}
-					data-zoom-src={dataZoomSrc}
+					data-zoom-src={dataZoomable ? sourceDesktop : undefined}
 					class={className}
 				/>
 			</picture>
