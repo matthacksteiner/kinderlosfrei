@@ -34,7 +34,7 @@ const full = hasControl('full') ? 'h-screen' : null;
 const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 
 // Determine loading strategy based on aboveFold
-const loadingStrategy = aboveFold ? 'eager' : 'lazy';
+const loadingStrategy = aboveFold ? undefined : 'lazy';
 ---
 
 <section
@@ -63,7 +63,9 @@ const loadingStrategy = aboveFold ? 'eager' : 'lazy';
 								height={image.height}
 								id={image.identifier}
 								class:list={[full, 'w-full', 'h-auto', image.classes]}
-								fetchpriority={aboveFold && index === 0 ? 'high' : 'low'}
+								{...(aboveFold
+									? { fetchpriority: index === 0 ? 'high' : 'low' }
+									: { loading: 'lazy' })}
 							/>
 						) : (
 							<ImageComponent
