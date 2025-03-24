@@ -258,12 +258,18 @@ const prefetchSrcDesktop = aboveFold
 {
 	aboveFold && (
 		<>
-			{prefetchSrcMobile && (
-				<link rel="prefetch" href={prefetchSrcMobile} as="image" />
-			)}
-			{prefetchSrcDesktop && (
-				<link rel="prefetch" href={prefetchSrcDesktop} as="image" />
-			)}
+			<link
+				rel="preload"
+				href={prefetchSrcMobile}
+				as="image"
+				media="(max-width: 768px)"
+			/>
+			<link
+				rel="preload"
+				href={prefetchSrcDesktop}
+				as="image"
+				media="(min-width: 769px)"
+			/>
 		</>
 	)
 }
