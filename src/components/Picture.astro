@@ -112,8 +112,12 @@ if (
 
 // Determine fetchpriority based on aboveFold and isFirstSlide
 // If it's above fold and it's the first slide, it gets high priority
-const fetchPriority =
-	aboveFold && (isFirstSlide || isFirstSlide === undefined) ? 'high' : 'low';
+// Only set fetchpriority when aboveFold is true
+const fetchPriority = aboveFold
+	? isFirstSlide || isFirstSlide === undefined
+		? 'high'
+		: 'low'
+	: undefined;
 
 const validateRatio = (ratio: string) => {
 	if (ratio !== 'original' && !ratio.match(/^\d+\/\d+$/)) {
@@ -343,7 +347,7 @@ const generateImgSrc = (
 					}
 					class:list={[className]}
 					decoding="async"
-					fetchpriority={fetchPriority}
+					{...(fetchPriority ? { fetchpriority: fetchPriority } : {})}
 				/>
 			</picture>
 		</div>
@@ -372,7 +376,7 @@ const generateImgSrc = (
 					data-zoom-src={dataZoomable ? sourceDesktop : undefined}
 					class={className}
 					decoding="async"
-					fetchpriority={fetchPriority}
+					{...(fetchPriority ? { fetchpriority: fetchPriority } : {})}
 				/>
 			</picture>
 		</div>
