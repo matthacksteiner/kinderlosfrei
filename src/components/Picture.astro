@@ -232,7 +232,7 @@ const generateSrcSet = (
 	const srcSetValues = [1, 2, 3].map((value) => {
 		const multipliedWidth = width * value;
 		const multipliedHeight = height * value;
-		return `${baseUrl}/.netlify/images?url=${source}&w=${multipliedWidth}&h=${multipliedHeight}&fit=cover&fm=avif,webp,jpg&q=70 ${value}x`;
+		return `${baseUrl}/.netlify/images?url=${source}&w=${multipliedWidth}&h=${multipliedHeight}&fit=cover&fm=avif&q=70 ${value}x`;
 	});
 
 	return srcSetValues.join(', ');
@@ -243,36 +243,9 @@ const generateImgSrc = (
 	width: number,
 	height: number
 ): string => {
-	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif,webp,jpg&q=70`;
+	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif&q=70`;
 };
-
-// Generate sources for prefetching above fold images
-const prefetchSrcMobile = aboveFold
-	? generateImgSrc(sourceMobile, imageWidthMobile, imageHeightMobile)
-	: null;
-const prefetchSrcDesktop = aboveFold
-	? generateImgSrc(sourceDesktop, imageWidthDesktop, imageHeightDesktop)
-	: null;
 ---
-
-{
-	aboveFold && (
-		<>
-			<link
-				rel="preload"
-				href={prefetchSrcMobile}
-				as="image"
-				media="(max-width: 768px)"
-			/>
-			<link
-				rel="preload"
-				href={prefetchSrcDesktop}
-				as="image"
-				media="(min-width: 769px)"
-			/>
-		</>
-	)
-}
 
 {
 	isProd || netlifyDev ? (
@@ -316,6 +289,30 @@ const prefetchSrcDesktop = aboveFold
 					)}
 					media="(min-width: 1921px)"
 				/>
+				<source
+					type="image/avif"
+					srcset={generateSrcSet(
+						sourceDesktop,
+						imageWidthDesktop,
+						imageHeightDesktop
+					)}
+				/>
+				<source
+					type="image/webp"
+					srcset={generateSrcSet(
+						sourceDesktop,
+						imageWidthDesktop,
+						imageHeightDesktop
+					)}
+				/>
+				<source
+					type="image/jpeg"
+					srcset={generateSrcSet(
+						sourceDesktop,
+						imageWidthDesktop,
+						imageHeightDesktop
+					)}
+				/>
 				<img
 					src={generateImgSrc(
 						sourceDesktop,
@@ -325,7 +322,7 @@ const prefetchSrcDesktop = aboveFold
 					width={imageWidthDesktop}
 					height={imageHeightDesktop}
 					alt={alt || altFallback}
-					loading={loading}
+					loading={aboveFold ? undefined : loading}
 					id={id}
 					data-zoomable={dataZoomable}
 					data-zoom-src={
@@ -339,6 +336,7 @@ const prefetchSrcDesktop = aboveFold
 					}
 					class:list={[className]}
 					decoding="async"
+					fetchpriority={aboveFold ? 'high' : 'low'}
 				/>
 			</picture>
 		</div>
@@ -353,17 +351,21 @@ const prefetchSrcDesktop = aboveFold
 			<picture>
 				<source srcset={sourceMobile} media="(max-width: 768px)" />
 				<source srcset={sourceDesktop} media="(min-width: 769px)" />
+				<source type="image/avif" srcset={sourceDesktop} />
+				<source type="image/webp" srcset={sourceDesktop} />
+				<source type="image/jpeg" srcset={sourceDesktop} />
 				<img
 					src={sourceDesktop}
 					width={imageWidthDesktop}
 					height={imageHeightDesktop}
 					alt={alt || altFallback}
-					loading={loading}
+					loading={aboveFold ? undefined : loading}
 					id={id}
 					data-zoomable={dataZoomable}
 					data-zoom-src={dataZoomable ? sourceDesktop : undefined}
 					class={className}
 					decoding="async"
+					fetchpriority={aboveFold ? 'high' : 'low'}
 				/>
 			</picture>
 		</div>
