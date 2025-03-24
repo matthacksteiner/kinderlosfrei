@@ -53,7 +53,7 @@ const loadingStrategy = aboveFold ? 'eager' : 'lazy';
 	<div class="swiper swiperSlider">
 		<div class="swiper-wrapper items-center">
 			{
-				images?.map((image) => (
+				images?.map((image, index) => (
 					<div class:list={['swiper-slide', overlay]}>
 						{image.url?.endsWith('.svg') ? (
 							<img
@@ -63,6 +63,7 @@ const loadingStrategy = aboveFold ? 'eager' : 'lazy';
 								height={image.height}
 								id={image.identifier}
 								class:list={[full, 'w-full', 'h-auto', image.classes]}
+								fetchpriority={aboveFold && index === 0 ? 'high' : 'low'}
 							/>
 						) : (
 							<ImageComponent
@@ -74,6 +75,7 @@ const loadingStrategy = aboveFold ? 'eager' : 'lazy';
 								ratioDesktop={ratioDesktop}
 								span={span}
 								aboveFold={aboveFold}
+								isFirstSlide={index === 0}
 							/>
 						)}
 					</div>

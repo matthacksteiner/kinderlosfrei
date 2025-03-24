@@ -67,6 +67,7 @@ interface Props {
 	dataZoomable?: boolean;
 	dataZoomSrc?: string;
 	aboveFold?: boolean;
+	isFirstSlide?: boolean;
 }
 
 const {
@@ -94,6 +95,7 @@ const {
 	thumbhash,
 	dataZoomable,
 	aboveFold,
+	isFirstSlide,
 } = Astro.props;
 // Input validation
 if (
@@ -107,6 +109,11 @@ if (
 ) {
 	throw new Error('Missing required props in Picture component');
 }
+
+// Determine fetchpriority based on aboveFold and isFirstSlide
+// If it's above fold and it's the first slide, it gets high priority
+const fetchPriority =
+	aboveFold && (isFirstSlide || isFirstSlide === undefined) ? 'high' : 'low';
 
 const validateRatio = (ratio: string) => {
 	if (ratio !== 'original' && !ratio.match(/^\d+\/\d+$/)) {
@@ -336,7 +343,7 @@ const generateImgSrc = (
 					}
 					class:list={[className]}
 					decoding="async"
-					fetchpriority={aboveFold ? 'high' : 'low'}
+					fetchpriority={fetchPriority}
 				/>
 			</picture>
 		</div>
@@ -365,7 +372,7 @@ const generateImgSrc = (
 					data-zoom-src={dataZoomable ? sourceDesktop : undefined}
 					class={className}
 					decoding="async"
-					fetchpriority={aboveFold ? 'high' : 'low'}
+					fetchpriority={fetchPriority}
 				/>
 			</picture>
 		</div>
