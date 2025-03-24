@@ -73,7 +73,6 @@ const shouldApplyZoom = lightbox && !image.linktoggle;
 			<Picture
 				{...pictureProps}
 				dataZoomable={shouldApplyZoom ? true : undefined}
-				dataZoomSrc={shouldApplyZoom ? image.urlFocus : undefined}
 			/>
 			{image.captiontoggle ? <ImageCaption {...image} global={global} /> : null}
 			{image.copyrighttoggle ? <ImageCopyright {...image} /> : null}

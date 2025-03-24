@@ -93,10 +93,8 @@ const {
 	// Optional features
 	thumbhash,
 	dataZoomable,
-	dataZoomSrc,
 	aboveFold,
 } = Astro.props;
-
 // Input validation
 if (
 	!src ||
@@ -324,7 +322,15 @@ const prefetchSrcDesktop = aboveFold
 					loading={loading}
 					id={id}
 					data-zoomable={dataZoomable}
-					data-zoom-src={dataZoomSrc}
+					data-zoom-src={
+						dataZoomable
+							? generateImgSrc(
+									sourceDesktop,
+									imageWidthDesktop * 2,
+									imageHeightDesktop * 2
+							  )
+							: undefined
+					}
 					class:list={[className]}
 					decoding="async"
 				/>
@@ -349,7 +355,7 @@ const prefetchSrcDesktop = aboveFold
 					loading={loading}
 					id={id}
 					data-zoomable={dataZoomable}
-					data-zoom-src={dataZoomSrc}
+					data-zoom-src={dataZoomable ? sourceDesktop : undefined}
 					class={className}
 					decoding="async"
 				/>

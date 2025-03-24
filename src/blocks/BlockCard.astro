@@ -120,12 +120,11 @@ const cardContentProps = {
 	}}
 >
 	.blockCard {
-		@apply rounded-[var(--cardBorderRadiusRem)] border-[length:var(--cardBorderWidthRem)];
-		padding: var(--cardBorderPaddingDesktopRem);
+		@apply rounded-[var(--cardBorderRadiusRem)] border-[length:var(--cardBorderWidthRem)] p-[var(--cardBorderPaddingMobileRem)] xl:p-[var(--cardBorderPaddingDesktopRem)];
 	}
 
 	.card-hover {
-		padding: var(--cardBorderPaddingDesktopRem);
+		@apply p-[var(--cardBorderPaddingMobileRem)] xl:p-[var(--cardBorderPaddingDesktopRem)];
 		font-family: var(--titleFont);
 	}
 

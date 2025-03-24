@@ -114,7 +114,12 @@ export async function getSizes() {
 			const letterSpacingDesktopXl =
 				item.letterSpacingDesktopXl || letterSpacingDesktop;
 
-			const minSizeDesktop = sizeDesktop - sizeDesktop * 0.4;
+			// Calculate the slope for the linear equation (for fluid typography)
+			const slope = (sizeDesktop - sizeMobile) / (1920 - 768);
+			const yAxisIntersection = sizeMobile - slope * 768;
+			const fluidValue = `${yAxisIntersection / baseFontSize}rem + ${
+				slope * 100
+			}vw`;
 
 			return `
 		  .font--${item.name} {
@@ -126,8 +131,8 @@ export async function getSizes() {
 		  }
 		   @media (min-width: 768px) and (max-width: 1919px) {
 			.font--${item.name} {
-			  font-size: clamp(${minSizeDesktop / baseFontSize}rem,
-				${minSizeDesktop / baseFontSize}rem + 1vw,
+			  font-size: clamp(${sizeMobile / baseFontSize}rem,
+				${fluidValue},
 				${sizeDesktop / baseFontSize}rem);
 			  line-height: ${lineHeightDesktop / sizeDesktop};
 			  letter-spacing: ${letterSpacingDesktop / sizeDesktop}em;
