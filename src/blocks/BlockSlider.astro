@@ -61,10 +61,10 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 								alt={image.alt || ''}
 								width={image.width}
 								height={image.height}
-								id={image.identifier}
+								id={image.identifier || undefined}
 								class:list={[full, 'w-full', 'h-auto', image.classes]}
 								{...(aboveFold
-									? { fetchpriority: index === 0 ? 'high' : 'low' }
+									? { fetchpriority: 'high' }
 									: { loading: 'lazy' })}
 							/>
 						) : (
