@@ -1,13 +1,12 @@
 [build]
-command = "astro build"
-base = "/"
-publish = "dist"
+command = "bun run build"
+publish = "dist"  # or your build output directory
 
 [build.processing.html]
 pretty_urls = false
 
 [build.environment]
-NODE_VERSION = "23"
+BUN_VERSION = "latest"  # or specify a version
 
 [images]
 remote_images = [ "https://cms.baukasten.matthiashacksteiner.net/media/.*" ]
@@ -17,3 +16,6 @@ remote_images = [ "https://cms.baukasten.matthiashacksteiner.net/media/.*" ]
 #   to = "/de"
 #   status = 302
 #   conditions = {Language = ["de"]}
+
+
+
