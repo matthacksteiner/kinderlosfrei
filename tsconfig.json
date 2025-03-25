@@ -7,6 +7,9 @@
       "astro/client"
     ],
     "paths": {
+      "@config/*": [
+        "src/config/*"
+      ],
       "@components/*": [
         "src/overrides/*",
         "src/components/*"
