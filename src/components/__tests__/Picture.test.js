@@ -3,10 +3,11 @@ import { describe, expect, test } from 'vitest';
 import Picture from '../Picture.astro';
 
 describe('Picture Component', () => {
+	// Base props configuration for most tests
 	const baseProps = {
 		src: '/test.jpg',
-		urlFocus: '/test.jpg',
-		urlFocusMobile: '/test.jpg',
+		urlFocus: '/test-focus.jpg',
+		urlFocusMobile: '/test-focus-mobile.jpg',
 		width: 1200,
 		height: 800,
 		alt: 'Test image',
@@ -23,7 +24,10 @@ describe('Picture Component', () => {
 		aboveFold: false,
 	};
 
-	test('renders basic picture element', async () => {
+	/**
+	 * Core functionality tests
+	 */
+	test('renders basic picture element with required attributes', async () => {
 		const container = await AstroContainer.create({
 			env: {
 				NETLIFY_URL: 'https://example.com',
@@ -33,10 +37,115 @@ describe('Picture Component', () => {
 			props: baseProps,
 		});
 
+		// Check for essential elements
+		expect(result).toContain('<picture');
+		expect(result).toContain('</picture>');
+		expect(result).toContain('<img');
 		expect(result).toContain(`alt="Test image"`);
 		expect(result).toContain(`loading="lazy"`);
+		expect(result).toContain(`width=`);
+		expect(result).toContain(`height=`);
 	});
 
+	test('handles original ratios correctly', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(Picture, {
+			props: baseProps,
+		});
+
+		// Since we're using original ratio, it should use the original src
+		expect(result).toContain(
+			'style="--ratio-mobile: 1.5; --ratio-desktop: 1.5;"'
+		);
+	});
+
+	test('handles custom ratios correctly', async () => {
+		const container = await AstroContainer.create();
+		const propsWithCustomRatios = {
+			...baseProps,
+			ratioMobile: '1/1',
+			ratioDesktop: '16/9',
+		};
+
+		const result = await container.renderToString(Picture, {
+			props: propsWithCustomRatios,
+		});
+
+		// Check for correct ratio values
+		expect(result).toContain(
+			'style="--ratio-mobile: 1; --ratio-desktop: 1.7777'
+		);
+
+		// With custom ratios, it should use the focal point images
+		expect(result).toContain(propsWithCustomRatios.urlFocusMobile);
+		expect(result).toContain(propsWithCustomRatios.urlFocus);
+	});
+
+	test('generates fallback alt text from name when alt is not provided', async () => {
+		const container = await AstroContainer.create();
+		const propsWithoutAlt = {
+			...baseProps,
+			alt: undefined,
+		};
+
+		const result = await container.renderToString(Picture, {
+			props: propsWithoutAlt,
+		});
+
+		// Should generate "Test Image" from "test-image"
+		expect(result).toContain('alt="Test Image"');
+	});
+
+	test('throws error when required props are missing', async () => {
+		const container = await AstroContainer.create();
+
+		// Test missing src
+		const missingSource = { ...baseProps };
+		delete missingSource.src;
+		await expect(async () => {
+			await container.renderToString(Picture, { props: missingSource });
+		}).rejects.toThrow('Missing required props');
+
+		// Test missing width
+		const missingWidth = { ...baseProps };
+		delete missingWidth.width;
+		await expect(async () => {
+			await container.renderToString(Picture, { props: missingWidth });
+		}).rejects.toThrow('Missing required props');
+
+		// Test missing span
+		const missingSpan = { ...baseProps };
+		delete missingSpan.span;
+		await expect(async () => {
+			await container.renderToString(Picture, { props: missingSpan });
+		}).rejects.toThrow('Missing required props');
+	});
+
+	test('validates ratio format', async () => {
+		const container = await AstroContainer.create();
+
+		// Test invalid mobile ratio
+		const invalidMobileRatio = {
+			...baseProps,
+			ratioMobile: 'invalid-ratio',
+		};
+		await expect(async () => {
+			await container.renderToString(Picture, { props: invalidMobileRatio });
+		}).rejects.toThrow('Invalid ratio format');
+
+		// Test invalid desktop ratio
+		const invalidDesktopRatio = {
+			...baseProps,
+			ratioDesktop: '16:9', // Using colon instead of slash
+		};
+		await expect(async () => {
+			await container.renderToString(Picture, { props: invalidDesktopRatio });
+		}).rejects.toThrow('Invalid ratio format');
+	});
+
+	/**
+	 * Optional props and features tests
+	 */
 	test('renders with thumbhash when provided', async () => {
 		const container = await AstroContainer.create();
 		const propsWithThumbhash = {
@@ -54,67 +163,6 @@ describe('Picture Component', () => {
 		);
 	});
 
-	test('generates fallback alt text from name', async () => {
-		const container = await AstroContainer.create();
-		const propsWithoutAlt = {
-			...baseProps,
-			alt: undefined,
-		};
-
-		const result = await container.renderToString(Picture, {
-			props: propsWithoutAlt,
-		});
-
-		// Update the expectation to match what your component actually generates
-		expect(result).toContain('alt="Test Image"');
-	});
-
-	// Update this test to use props correctly
-	test('renders picture with correct props in production', async () => {
-		const container = await AstroContainer.create({
-			env: {
-				PROD: true,
-				NETLIFY_DEV: false,
-				NETLIFY_URL: 'https://example.com',
-			},
-		});
-
-		const result = await container.renderToString(Picture, {
-			props: baseProps,
-		});
-
-		expect(result).toContain('<picture');
-		expect(result).toContain('</picture>');
-		expect(result).toContain(`alt="Test image"`); // Match the case from baseProps
-		expect(result).toContain(`loading="lazy"`);
-	});
-
-	test('throws error when required props are missing', async () => {
-		const container = await AstroContainer.create();
-		const invalidProps = { ...baseProps };
-		delete invalidProps.src;
-
-		await expect(async () => {
-			await container.renderToString(Picture, {
-				props: invalidProps,
-			});
-		}).rejects.toThrow('Missing required props');
-	});
-
-	test('validates ratio format', async () => {
-		const container = await AstroContainer.create();
-		const invalidRatioProps = {
-			...baseProps,
-			ratioMobile: 'invalid-ratio',
-		};
-
-		await expect(async () => {
-			await container.renderToString(Picture, {
-				props: invalidRatioProps,
-			});
-		}).rejects.toThrow('Invalid ratio format');
-	});
-
 	test('renders with custom class name', async () => {
 		const container = await AstroContainer.create();
 		const propsWithClass = {
@@ -129,16 +177,25 @@ describe('Picture Component', () => {
 		expect(result).toContain('class="custom-class"');
 	});
 
-	test('renders with data-zoomable attributes', async () => {
-		const container = await AstroContainer.create({
-			env: {
-				NETLIFY_URL: 'https://example.com',
-			},
+	test('applies custom ID to img element', async () => {
+		const container = await AstroContainer.create();
+		const propsWithId = {
+			...baseProps,
+			id: 'custom-id',
+		};
+
+		const result = await container.renderToString(Picture, {
+			props: propsWithId,
 		});
+
+		expect(result).toContain('id="custom-id"');
+	});
+
+	test('renders with data-zoomable attributes', async () => {
+		const container = await AstroContainer.create();
 		const zoomableProps = {
 			...baseProps,
 			dataZoomable: true,
-			dataZoomSrc: '/zoom-image.jpg',
 		};
 
 		const result = await container.renderToString(Picture, {
@@ -146,13 +203,13 @@ describe('Picture Component', () => {
 		});
 
 		expect(result).toContain('data-zoomable="true"');
-		// Update expectation to check for pattern instead of exact value
-		expect(result).toContain(
-			'data-zoom-src="https://example.com/.netlify/images?url='
-		);
+		expect(result).toContain('data-zoom-src="/test.jpg"');
 	});
 
-	test('renders correct srcset in production environment', async () => {
+	/**
+	 * Environment-specific rendering tests
+	 */
+	test('renders correctly in production environment', async () => {
 		const container = await AstroContainer.create({
 			env: {
 				PROD: true,
@@ -164,15 +221,56 @@ describe('Picture Component', () => {
 			props: baseProps,
 		});
 
+		// Check for Netlify Image API usage
 		expect(result).toContain('/.netlify/images?url=');
 		expect(result).toContain('&w=');
 		expect(result).toContain('&h=');
+		expect(result).toContain('&fit=cover&fm=avif&q=70');
+
+		// Check for responsive srcset
 		expect(result).toContain('1x,');
 		expect(result).toContain('2x,');
 		expect(result).toContain('3x');
 	});
 
-	// New tests for fetchPriority, aboveFold, and isFirstSlide props
+	test('renders with Netlify Image API in development environment too', async () => {
+		const container = await AstroContainer.create({
+			env: {
+				PROD: false,
+				NETLIFY_DEV: false,
+				NETLIFY_URL: 'https://example.com',
+			},
+		});
+
+		const result = await container.renderToString(Picture, {
+			props: baseProps,
+		});
+
+		// The component is actually using Netlify Image API in dev mode too when NETLIFY_URL is present
+		expect(result).toContain('/.netlify/images?url=');
+		expect(result).toContain('https://example.com/.netlify/images?url=');
+	});
+
+	test('uses Netlify URL as the base URL in Netlify dev environment', async () => {
+		const container = await AstroContainer.create({
+			env: {
+				PROD: false,
+				NETLIFY_DEV: true,
+				NETLIFY_URL: 'https://example.com', // This is what gets used in the test environment
+			},
+		});
+
+		const result = await container.renderToString(Picture, {
+			props: baseProps,
+		});
+
+		// The NETLIFY_URL value from the env is used in srcset URLs
+		expect(result).toContain('https://example.com/.netlify/images?url=');
+	});
+
+	/**
+	 * Performance optimization tests
+	 */
 	test('sets fetchpriority="high" when aboveFold=true and isFirstSlide=true', async () => {
 		const container = await AstroContainer.create();
 		const propsWithAboveFold = {
@@ -205,6 +303,22 @@ describe('Picture Component', () => {
 		expect(result).not.toContain('loading="lazy"');
 	});
 
+	test('defaults to first slide priority when aboveFold=true and isFirstSlide is undefined', async () => {
+		const container = await AstroContainer.create();
+		const propsWithAboveFold = {
+			...baseProps,
+			aboveFold: true,
+			// isFirstSlide intentionally omitted
+		};
+
+		const result = await container.renderToString(Picture, {
+			props: propsWithAboveFold,
+		});
+
+		expect(result).toContain('fetchpriority="high"');
+		expect(result).not.toContain('loading="lazy"');
+	});
+
 	test('does not set fetchpriority when aboveFold=false', async () => {
 		const container = await AstroContainer.create();
 		const propsWithoutAboveFold = {
@@ -221,6 +335,9 @@ describe('Picture Component', () => {
 		expect(result).toContain('loading="lazy"');
 	});
 
+	/**
+	 * Layout and container tests
+	 */
 	test('handles backgroundContainer="container" correctly', async () => {
 		const container = await AstroContainer.create({
 			env: {
@@ -238,7 +355,6 @@ describe('Picture Component', () => {
 		});
 
 		expect(result).toContain('<picture');
-		// We don't need to check exact calculations, just that it renders
 	});
 
 	test('handles backgroundContainer="full" correctly', async () => {
@@ -258,16 +374,13 @@ describe('Picture Component', () => {
 		});
 
 		expect(result).toContain('<picture');
-		// We don't need to check exact calculations, just that it renders
 	});
 
-	test('currently ignores custom dataZoomSrc and uses sourceDesktop for data-zoom-src', async () => {
-		const container = await AstroContainer.create({
-			env: {
-				PROD: true,
-				NETLIFY_URL: 'https://example.com',
-			},
-		});
+	/**
+	 * Known issues and future enhancement tests
+	 */
+	test('ISSUE: currently ignores custom dataZoomSrc and uses sourceDesktop instead', async () => {
+		const container = await AstroContainer.create();
 		const customZoomProps = {
 			...baseProps,
 			dataZoomable: true,
@@ -279,23 +392,19 @@ describe('Picture Component', () => {
 		});
 
 		expect(result).toContain('data-zoomable="true"');
+
 		// Currently, the component ignores dataZoomSrc and uses sourceDesktop instead
 		expect(result).toContain(`data-zoom-src="${customZoomProps.src}"`);
+
 		// The custom zoom src is NOT being used in the current implementation
 		expect(result).not.toContain(
 			`data-zoom-src="${customZoomProps.dataZoomSrc}"`
 		);
 	});
 
-	test.todo(
-		'should use custom dataZoomSrc when provided (FUTURE ENHANCEMENT)',
-		async () => {
-			// Future implementation should check for dataZoomSrc and use it when provided:
-			// data-zoom-src={dataZoomable ? dataZoomSrc || sourceDesktop : undefined}
-		}
-	);
+	test.todo('ENHANCEMENT: should use custom dataZoomSrc when provided');
 
-	test('position prop defined but not currently applied to img (FUTURE ENHANCEMENT)', async () => {
+	test('ISSUE: position prop defined but not currently applied to img', async () => {
 		const container = await AstroContainer.create();
 		const positionProps = {
 			...baseProps,
@@ -307,21 +416,126 @@ describe('Picture Component', () => {
 		});
 
 		// Position prop is defined in component interface but not currently used
-		// Future enhancement: should add style="object-position: top left" to the img element
 		expect(result).not.toContain('object-position: top left');
 	});
 
-	test('applies custom ID to img element', async () => {
-		const container = await AstroContainer.create();
-		const propsWithId = {
-			...baseProps,
-			id: 'custom-id',
-		};
+	test.todo(
+		'ENHANCEMENT: position prop should add object-position style to img'
+	);
 
-		const result = await container.renderToString(Picture, {
-			props: propsWithId,
+	/**
+	 * Responsive image tests
+	 */
+	test('generates correct responsive images for all breakpoints', async () => {
+		const container = await AstroContainer.create({
+			env: {
+				PROD: true,
+				NETLIFY_URL: 'https://example.com',
+			},
 		});
 
-		expect(result).toContain('id="custom-id"');
+		const result = await container.renderToString(Picture, {
+			props: baseProps,
+		});
+
+		// Check for mobile breakpoint (max-width: 640px)
+		expect(result).toContain('media="(max-width: 640px)"');
+
+		// Check for tablet/small desktop breakpoints
+		expect(result).toContain(
+			'media="(min-width: 769px) and (max-width: 1024px)"'
+		);
+		expect(result).toContain(
+			'media="(min-width: 1025px) and (max-width: 1280px)"'
+		);
+
+		// Check for larger desktop breakpoints
+		expect(result).toContain(
+			'media="(min-width: 1281px) and (max-width: 1440px)"'
+		);
+		expect(result).toContain(
+			'media="(min-width: 1441px) and (max-width: 1920px)"'
+		);
+		expect(result).toContain('media="(min-width: 1921px)"');
+
+		// Check that srcset contains 1x, 2x, and 3x DPR values for each source
+		expect(result).toContain('1x,');
+		expect(result).toContain('2x,');
+		expect(result).toContain('3x');
+
+		// Extract all source tags and verify they have the expected structure
+		const sourceTagRegex =
+			/<source[^>]*srcset="[^"]*"[^>]*media="[^"]*"[^>]*>/g;
+		const sourceTags = result.match(sourceTagRegex) || [];
+
+		// We should have at least 5 different source tags for different breakpoints
+		expect(sourceTags.length).toBeGreaterThanOrEqual(5);
+
+		// Check a few specific breakpoints
+		const mobileSource = sourceTags.find((tag) =>
+			tag.includes('(max-width: 640px)')
+		);
+		expect(mobileSource).toBeDefined();
+		expect(mobileSource).toContain('1x,');
+		expect(mobileSource).toContain('2x,');
+		expect(mobileSource).toContain('3x');
+
+		const desktopSource = sourceTags.find((tag) =>
+			tag.includes('(min-width: 1441px)')
+		);
+		expect(desktopSource).toBeDefined();
+		expect(desktopSource).toContain('1x,');
+		expect(desktopSource).toContain('2x,');
+		expect(desktopSource).toContain('3x');
+
+		// Verify width progression in one of the sources
+		const srcset = desktopSource.match(/srcset="([^"]+)"/)[1];
+		const srcsetUrls = srcset.split(',').map((s) => s.trim());
+
+		// Extract widths
+		const widths = srcsetUrls.map((url) => {
+			const match = url.match(/&w=(\d+)/);
+			return match ? parseInt(match[1], 10) : 0;
+		});
+
+		// DPR 2x should be roughly double 1x, and 3x should be roughly triple 1x
+		expect(widths[1]).toBeGreaterThan(widths[0] * 1.5);
+		expect(widths[2]).toBeGreaterThan(widths[0] * 2);
+
+		// Test with custom ratios to verify different sources are used
+		const customRatioContainer = await AstroContainer.create({
+			env: {
+				PROD: true,
+				NETLIFY_URL: 'https://example.com',
+			},
+		});
+
+		const customRatioResult = await customRatioContainer.renderToString(
+			Picture,
+			{
+				props: {
+					...baseProps,
+					ratioMobile: '1/1',
+					ratioDesktop: '16/9',
+				},
+			}
+		);
+
+		// Extract all source tags from the custom ratio result
+		const customSourceTags = customRatioResult.match(sourceTagRegex) || [];
+
+		// Mobile source should use urlFocusMobile
+		const customMobileSource = customSourceTags.find((tag) =>
+			tag.includes('(max-width: 640px)')
+		);
+		expect(customMobileSource).toBeDefined();
+		expect(customMobileSource).toContain('/test-focus-mobile.jpg');
+
+		// Desktop source should use urlFocus
+		const customDesktopSource = customSourceTags.find((tag) =>
+			tag.includes('(min-width: 769px)')
+		);
+		expect(customDesktopSource).toBeDefined();
+		expect(customDesktopSource).toContain('/test-focus.jpg');
 	});
 });
