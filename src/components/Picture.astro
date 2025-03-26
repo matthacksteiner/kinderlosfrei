@@ -2,48 +2,57 @@
 /**
  * Picture Component
  *
- * Renders a responsive picture element with various image sizes and formats.
- * Supports both production (with image processing) and development environments.
- * Prevents layout shifts by maintaining proper aspect ratios before image loads.
+ * A responsive image component that handles:
+ * - Optimal image loading for different screen sizes
+ * - Prevents layout shifts using aspect ratio
+ * - Supports multiple image formats and resolutions
+ * - Works in both production and development environments
  *
  * @component
  * @example
  * ```astro
  * <Picture
- *   src="/images/example.jpg"
- *   urlFocus="/images/example-focus.jpg"
- *   urlFocusMobile="/images/example-focus-mobile.jpg"
- *   width={1200}
- *   height={800}
- *   name="example-image"
- *   ratioMobile="1/1"
- *   ratioDesktop="16/9"
- *   span="6"
- *   thumbhash="data:image/png;base64,..."
+ *   src="/images/example.jpg"          // Base image path
+ *   urlFocus="/images/example-focus.jpg"    // Desktop focal point
+ *   urlFocusMobile="/images/example-focus-mobile.jpg"  // Mobile focal point
+ *   width={1200}                       // Original image width
+ *   height={800}                       // Original image height
+ *   name="example-image"               // Image name (used for alt text)
+ *   ratioMobile="1/1"                  // Mobile aspect ratio
+ *   ratioDesktop="16/9"                // Desktop aspect ratio
+ *   span="6"                           // Grid columns to span
+ *   thumbhash="data:image/png;base64,..." // Optional blur placeholder
  * />
  * ```
  *
- * Features:
- * - Responsive image loading with different sources for mobile and desktop
- * - Automatic size calculations based on grid system
- * - Optional thumbhash placeholder for improved loading experience
- * - Layout shift prevention using CSS aspect ratio
- * - Support for image zooming functionality
+ * ## Key Features
  *
- * The component preserves aspect ratios during loading to prevent CLS (Cumulative Layout Shift).
- * When thumbhash is provided, it displays a blurred placeholder until the image loads.
+ * - Responsive sizing: Automatically calculates image dimensions based on grid system
+ * - Aspect ratios: Uses different ratios for mobile/desktop with smooth transitions
+ * - Performance optimized: Supports lazy loading, fetchpriority, and decoding attributes
+ * - Low CLS: Maintains aspect ratio placeholders during image load
+ * - Enhanced UX: Optional thumbhash blurred placeholders while loading
+ * - Zoom support: Optional zoomable images
+ * - Production ready: Handles image processing in production via Netlify Image API
  */
 
 import { screens } from '@config/screens';
 
+// Environment variables
 const isProd = import.meta.env.PROD;
 const netlifyDev = import.meta.env.NETLIFY_DEV;
 const netlifyUrl = import.meta.env.NETLIFY_URL;
+const baseUrl = isProd
+	? netlifyUrl
+	: netlifyDev
+	? 'http://localhost:8888'
+	: netlifyUrl;
 
+// Constants
 const scrollbarWidth = 17;
-const scrollbarThreshold = 1920 + scrollbarWidth;
+const maxContainerWidth = 1920;
 
-// Process screen sizes to create breakpoints
+// Process screen sizes to create responsive breakpoints
 const breakpoints = Object.entries(screens)
 	.map(([key, value]) => ({
 		key,
@@ -140,6 +149,7 @@ const {
 	aboveFold,
 	isFirstSlide,
 } = Astro.props;
+
 // Input validation
 if (
 	!src ||
@@ -153,33 +163,16 @@ if (
 	throw new Error('Missing required props in Picture component');
 }
 
-// Determine fetchpriority based on aboveFold and isFirstSlide
-// If it's above fold and it's the first slide, it gets high priority
-// Only set fetchpriority when aboveFold is true
-const fetchPriority = aboveFold
-	? isFirstSlide || isFirstSlide === undefined
-		? 'high'
-		: 'low'
-	: undefined;
-
-const validateRatio = (ratio: string) => {
+// Utilities
+function validateRatio(ratio: string) {
 	if (ratio !== 'original' && !ratio.match(/^\d+\/\d+$/)) {
 		throw new Error(
 			`Invalid ratio format: ${ratio}. Must be either 'original' or 'number/number'`
 		);
 	}
-};
+}
 
-validateRatio(ratioMobile);
-validateRatio(ratioDesktop);
-
-const baseUrl = isProd
-	? netlifyUrl
-	: netlifyDev
-	? 'http://localhost:8888'
-	: netlifyUrl;
-
-const getRatio = (ratio: string, width: number, height: number): number => {
+function getRatio(ratio: string, width: number, height: number): number {
 	if (!ratio) {
 		console.warn('Ratio is undefined, using default 1/1');
 		return 1; // default square ratio
@@ -188,44 +181,74 @@ const getRatio = (ratio: string, width: number, height: number): number => {
 	const [numerator, denominator] =
 		ratio === 'original' ? [width, height] : ratio.split('/');
 	return Number(numerator) / Number(denominator);
-};
+}
 
-const ratioDesktopValue = getRatio(ratioDesktop, width, height);
-const ratioMobileValue = getRatio(ratioMobile, width, height);
-
-const sourceMobile = ratioMobile === 'original' ? src : urlFocusMobile;
-const sourceDesktop = ratioDesktop === 'original' ? src : urlFocus;
-
-const gridMarginTotal = 2;
-const gridMarginDesktopTotal = gridMarginDesktop * gridMarginTotal;
-const gridMarginMobileTotal = gridMarginMobile * gridMarginTotal;
-
-// Calculate column width accounting for grid gaps
-const calculateColumnWidth = (
+function calculateColumnWidth(
 	containerWidth: number,
 	columns: number,
 	gridGap: number
-): number => {
+): number {
 	const totalGapSpace = gridGap * (columns - 1);
 	const availableSpace = containerWidth - totalGapSpace;
 	return availableSpace / columns;
-};
+}
 
-// Calculate total width for a span of columns including gaps
-const calculateImageWidth = (
+function calculateImageWidth(
 	containerWidth: number,
 	columns: number,
 	span: string,
 	gridGap: number
-): number => {
+): number {
 	const columnWidth = calculateColumnWidth(containerWidth, columns, gridGap);
 	return Math.round(columnWidth * Number(span) + gridGap * (Number(span) - 1));
-};
+}
 
-// Calculate image height based on width and aspect ratio
-const calculateImageHeight = (imageWidth: number, ratio: number): number =>
-	Math.round(imageWidth / ratio);
+function calculateImageHeight(imageWidth: number, ratio: number): number {
+	return Math.round(imageWidth / ratio);
+}
 
+function getContainerWidth(
+	screenRange: (typeof screenRanges)[0],
+	isMobile: boolean,
+	gridMarginTotal: number
+) {
+	let containerWidth = screenRange.maxWidth - scrollbarWidth;
+	if (backgroundContainer === 'container' && !isMobile) {
+		containerWidth =
+			Math.min(containerWidth, maxContainerWidth) - gridMarginTotal;
+	}
+	return containerWidth;
+}
+
+function generateImgUrl(source: string, width: number, height: number): string {
+	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif&q=70`;
+}
+
+// Validate ratios
+validateRatio(ratioMobile);
+validateRatio(ratioDesktop);
+
+// Process aspect ratios
+const ratioDesktopValue = getRatio(ratioDesktop, width, height);
+const ratioMobileValue = getRatio(ratioMobile, width, height);
+
+// Determine image sources based on ratios
+const sourceMobile = ratioMobile === 'original' ? src : urlFocusMobile;
+const sourceDesktop = ratioDesktop === 'original' ? src : urlFocus;
+
+// Calculate grid margins
+const gridMarginTotal = 2;
+const gridMarginDesktopTotal = gridMarginDesktop * gridMarginTotal;
+const gridMarginMobileTotal = gridMarginMobile * gridMarginTotal;
+
+// Determine fetch priority for performance
+const fetchPriority = aboveFold
+	? isFirstSlide || isFirstSlide === undefined
+		? 'high'
+		: 'low'
+	: undefined;
+
+// Generate alt text from name if not provided
 const altFallback = name
 	? name
 			.replace(/[-_]/g, ' ')
@@ -233,75 +256,54 @@ const altFallback = name
 			.replace(/\b\w/g, (char) => char.toUpperCase())
 	: 'Image';
 
-const generateSrcSet = (
+// Generate srcset for responsive images
+function generateSrcSet(
 	source: string,
 	screenRange: (typeof screenRanges)[0],
 	isMobile: boolean
-): string => {
-	// Determine container width based on screen size
+): string {
 	const columns = isMobile ? 6 : 12;
 	const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
 	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
-
-	// Use different container widths based on screen range
-	let containerWidth = screenRange.maxWidth - scrollbarWidth;
-
-	if (backgroundContainer === 'container' && !isMobile) {
-		// Adjust for container width
-		const maxWidth = 1920;
-		containerWidth = Math.min(containerWidth, maxWidth) - gridMargin;
-	}
-
-	// Calculate appropriate image dimensions
+	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
 	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
 
 	return [1, 2, 3]
-		.map((value) => {
-			const width =
-				calculateImageWidth(containerWidth, columns, span, gridGap) * value;
-			const height = calculateImageHeight(width, ratio);
-			return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif&q=70 ${value}x`;
+		.map((dpr) => {
+			const imgWidth =
+				calculateImageWidth(containerWidth, columns, span, gridGap) * dpr;
+			const imgHeight = calculateImageHeight(imgWidth, ratio);
+			return `${generateImgUrl(source, imgWidth, imgHeight)} ${dpr}x`;
 		})
 		.join(', ');
-};
+}
 
-const generateImgSrc = (
+// Generate image source for fallback
+function generateImgSrc(
 	source: string,
 	screenRange: (typeof screenRanges)[0],
 	isMobile: boolean
-): string => {
-	// Determine container width based on screen size
+): string {
 	const columns = isMobile ? 6 : 12;
 	const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
 	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
-
-	// Use container width based on screen range
-	let containerWidth = screenRange.maxWidth - scrollbarWidth;
-
-	if (backgroundContainer === 'container' && !isMobile) {
-		// Adjust for container width
-		const maxWidth = 1920;
-		containerWidth = Math.min(containerWidth, maxWidth) - gridMargin;
-	}
-
-	// Calculate appropriate image dimensions
+	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
 	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
+
 	const width = calculateImageWidth(containerWidth, columns, span, gridGap);
 	const height = calculateImageHeight(width, ratio);
 
-	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif&q=70`;
-};
+	return generateImgUrl(source, width, height);
+}
 
-// Calculate image width for render function
-const getCalculatedWidth = () => {
-	let containerWidth;
+// Calculate final image dimensions for markup
+function getCalculatedWidth() {
 	const lastScreenRange = screenRanges[screenRanges.length - 1];
+	let containerWidth;
 
 	if (backgroundContainer === 'container') {
-		const maxWidth = 1920;
-		// Always subtract scrollbar width
 		containerWidth =
-			Math.min(lastScreenRange.maxWidth, maxWidth) -
+			Math.min(lastScreenRange.maxWidth, maxContainerWidth) -
 			scrollbarWidth -
 			gridMarginDesktopTotal;
 	} else {
@@ -309,7 +311,7 @@ const getCalculatedWidth = () => {
 	}
 
 	return calculateImageWidth(containerWidth, 12, span, gridGapDesktop);
-};
+}
 
 const imgWidth = getCalculatedWidth();
 const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
@@ -326,7 +328,6 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 			)}
 			<picture>
 				{screenRanges.map((range, index) => {
-					// Use mobile source for first breakpoint, desktop for others
 					const source = index === 0 ? sourceMobile : sourceDesktop;
 					const isMobile = index === 0;
 
@@ -340,8 +341,8 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 				<img
 					src={generateImgSrc(
 						sourceDesktop,
-						screenRanges[screenRanges.length - 1], // Use largest screen range
-						false // Desktop
+						screenRanges[screenRanges.length - 1],
+						false
 					)}
 					width={imgWidth}
 					height={imgHeight}
@@ -366,9 +367,7 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 			)}
 			<picture>
 				{screenRanges.map((range, index) => {
-					// Use mobile source for first breakpoint, desktop for others
 					const source = index === 0 ? sourceMobile : sourceDesktop;
-
 					return <source srcset={source} media={range.mediaQuery} />;
 				})}
 				<img
