@@ -34,9 +34,49 @@
  * When thumbhash is provided, it displays a blurred placeholder until the image loads.
  */
 
+import { screens } from '@config/screens';
+
 const isProd = import.meta.env.PROD;
 const netlifyDev = import.meta.env.NETLIFY_DEV;
 const netlifyUrl = import.meta.env.NETLIFY_URL;
+
+// Process screen sizes to create breakpoints
+const breakpoints = Object.entries(screens)
+	.map(([key, value]) => ({
+		key,
+		value: parseInt(value.replace('px', '')),
+	}))
+	.sort((a, b) => a.value - b.value);
+
+// Create screen ranges for media queries
+const screenRanges = breakpoints.map((breakpoint, index) => {
+	const nextBreakpoint = breakpoints[index + 1];
+
+	if (index === 0) {
+		// First breakpoint (mobile)
+		return {
+			key: breakpoint.key,
+			mediaQuery: `(max-width: ${breakpoint.value}px)`,
+			maxWidth: breakpoint.value,
+		};
+	} else if (!nextBreakpoint) {
+		// Last breakpoint (largest screens)
+		return {
+			key: breakpoint.key,
+			mediaQuery: `(min-width: ${breakpoint.value + 1}px)`,
+			maxWidth: breakpoint.value * 1.5, // Extra size for largest screens
+		};
+	} else {
+		// Middle breakpoints
+		return {
+			key: breakpoint.key,
+			mediaQuery: `(min-width: ${breakpoint.value + 1}px) and (max-width: ${
+				nextBreakpoint.value
+			}px)`,
+			maxWidth: nextBreakpoint.value,
+		};
+	}
+});
 
 interface Props {
 	// Required props
@@ -169,7 +209,7 @@ const calculateColumnWidth = (
 };
 
 // Calculate total width for a span of columns including gaps
-const imageWidth = (
+const calculateImageWidth = (
 	containerWidth: number,
 	columns: number,
 	span: string,
@@ -179,54 +219,9 @@ const imageWidth = (
 	return Math.round(columnWidth * Number(span) + gridGap * (Number(span) - 1));
 };
 
-const imageHeight = (imageWidth: number, ratio: number): number =>
+// Calculate image height based on width and aspect ratio
+const calculateImageHeight = (imageWidth: number, ratio: number): number =>
 	Math.round(imageWidth / ratio);
-
-// Desktop calculations
-const desktopColumns = 12;
-const containerWidthDesktop =
-	backgroundContainer === 'container' ? 1920 - gridMarginDesktopTotal : 2560;
-const imageWidthDesktop = imageWidth(
-	containerWidthDesktop,
-	desktopColumns,
-	span,
-	gridGapDesktop
-);
-
-// Mobile calculations
-const mobileColumns = 6;
-const containerWidthMobile = 390 - gridMarginMobileTotal;
-const imageWidthMobile = imageWidth(
-	containerWidthMobile,
-	mobileColumns,
-	span,
-	gridGapMobile
-);
-
-// Other width calculations
-const imageWidthDesktop1280 = imageWidth(
-	1280,
-	desktopColumns,
-	span,
-	gridGapDesktop
-);
-const imageWidthDesktop1920 = imageWidth(
-	1920 - gridMarginDesktopTotal,
-	desktopColumns,
-	span,
-	gridGapDesktop
-);
-
-const imageHeightMobile = imageHeight(imageWidthMobile, ratioMobileValue);
-const imageHeightDesktop = imageHeight(imageWidthDesktop, ratioDesktopValue);
-const imageHeightDesktop1280 = imageHeight(
-	imageWidthDesktop1280,
-	ratioDesktopValue
-);
-const imageHeightDesktop1920 = imageHeight(
-	imageWidthDesktop1920,
-	ratioDesktopValue
-);
 
 const altFallback = name
 	? name
@@ -237,23 +232,54 @@ const altFallback = name
 
 const generateSrcSet = (
 	source: string,
-	width: number,
-	height: number
+	screenRange: (typeof screenRanges)[0],
+	isMobile: boolean
 ): string => {
-	const srcSetValues = [1, 2, 3].map((value) => {
-		const multipliedWidth = width * value;
-		const multipliedHeight = height * value;
-		return `${baseUrl}/.netlify/images?url=${source}&w=${multipliedWidth}&h=${multipliedHeight}&fit=cover&fm=avif&q=70 ${value}x`;
-	});
+	// Determine container width based on screen size
+	const columns = isMobile ? 6 : 12;
+	const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
+	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
 
-	return srcSetValues.join(', ');
+	// Use different container widths based on screen range
+	let containerWidth = screenRange.maxWidth;
+	if (backgroundContainer === 'container' && !isMobile) {
+		containerWidth = Math.min(containerWidth, 1920) - gridMargin;
+	}
+
+	// Calculate appropriate image dimensions
+	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
+
+	return [1, 2, 3]
+		.map((value) => {
+			const width =
+				calculateImageWidth(containerWidth, columns, span, gridGap) * value;
+			const height = calculateImageHeight(width, ratio);
+			return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif&q=70 ${value}x`;
+		})
+		.join(', ');
 };
 
 const generateImgSrc = (
 	source: string,
-	width: number,
-	height: number
+	screenRange: (typeof screenRanges)[0],
+	isMobile: boolean
 ): string => {
+	// Determine container width based on screen size
+	const columns = isMobile ? 6 : 12;
+	const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
+	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
+
+	// Use container width based on screen range
+	let containerWidth = screenRange.maxWidth;
+	if (backgroundContainer === 'container' && !isMobile) {
+		containerWidth = Math.min(containerWidth, 1920) - gridMargin;
+	}
+
+	// Calculate appropriate image dimensions
+	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
+	const width = calculateImageWidth(containerWidth, columns, span, gridGap);
+	const height = calculateImageHeight(width, ratio);
+
 	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif&q=70`;
 };
 ---
@@ -268,83 +294,48 @@ const generateImgSrc = (
 				<div class="thumbhash" style={`background-image: url(${thumbhash});`} />
 			)}
 			<picture>
-				<source
-					srcset={generateSrcSet(
-						sourceMobile,
-						imageWidthMobile,
-						imageHeightMobile
-					)}
-					media="(max-width: 768px)"
-				/>
-				<source
-					srcset={generateSrcSet(
-						sourceDesktop,
-						imageWidthDesktop1280,
-						imageHeightDesktop1280
-					)}
-					media="(min-width: 769px) and (max-width: 1280px)"
-				/>
-				<source
-					srcset={generateSrcSet(
-						sourceDesktop,
-						imageWidthDesktop1920,
-						imageHeightDesktop1920
-					)}
-					media="(min-width: 1281px) and (max-width: 1920px)"
-				/>
-				<source
-					srcset={generateSrcSet(
-						sourceDesktop,
-						imageWidthDesktop,
-						imageHeightDesktop
-					)}
-					media="(min-width: 1921px)"
-				/>
-				<source
-					type="image/avif"
-					srcset={generateSrcSet(
-						sourceDesktop,
-						imageWidthDesktop,
-						imageHeightDesktop
-					)}
-				/>
-				<source
-					type="image/webp"
-					srcset={generateSrcSet(
-						sourceDesktop,
-						imageWidthDesktop,
-						imageHeightDesktop
-					)}
-				/>
-				<source
-					type="image/jpeg"
-					srcset={generateSrcSet(
-						sourceDesktop,
-						imageWidthDesktop,
-						imageHeightDesktop
-					)}
-				/>
+				{screenRanges.map((range, index) => {
+					// Use mobile source for first breakpoint, desktop for others
+					const source = index === 0 ? sourceMobile : sourceDesktop;
+					const isMobile = index === 0;
+
+					return (
+						<source
+							srcset={generateSrcSet(source, range, isMobile)}
+							media={range.mediaQuery}
+						/>
+					);
+				})}
 				<img
 					src={generateImgSrc(
 						sourceDesktop,
-						imageWidthDesktop,
-						imageHeightDesktop
+						screenRanges[screenRanges.length - 1], // Use largest screen range
+						false // Desktop
 					)}
-					width={imageWidthDesktop}
-					height={imageHeightDesktop}
+					width={calculateImageWidth(
+						backgroundContainer === 'container'
+							? 1920 - gridMarginDesktopTotal
+							: 2560,
+						12,
+						span,
+						gridGapDesktop
+					)}
+					height={calculateImageHeight(
+						calculateImageWidth(
+							backgroundContainer === 'container'
+								? 1920 - gridMarginDesktopTotal
+								: 2560,
+							12,
+							span,
+							gridGapDesktop
+						),
+						ratioDesktopValue
+					)}
 					alt={alt || altFallback}
-					loading={aboveFold ? undefined : loading}
 					id={id}
+					loading={aboveFold ? undefined : loading}
 					data-zoomable={dataZoomable}
-					data-zoom-src={
-						dataZoomable
-							? generateImgSrc(
-									sourceDesktop,
-									imageWidthDesktop * 2,
-									imageHeightDesktop * 2
-							  )
-							: undefined
-					}
+					data-zoom-src={dataZoomable ? sourceDesktop : undefined}
 					class:list={[className]}
 					decoding="async"
 					{...(fetchPriority ? { fetchpriority: fetchPriority } : {})}
@@ -360,15 +351,33 @@ const generateImgSrc = (
 				<div class="thumbhash" style={`background-image: url(${thumbhash});`} />
 			)}
 			<picture>
-				<source srcset={sourceMobile} media="(max-width: 768px)" />
-				<source srcset={sourceDesktop} media="(min-width: 769px)" />
-				<source type="image/avif" srcset={sourceDesktop} />
-				<source type="image/webp" srcset={sourceDesktop} />
-				<source type="image/jpeg" srcset={sourceDesktop} />
+				{screenRanges.map((range, index) => {
+					// Use mobile source for first breakpoint, desktop for others
+					const source = index === 0 ? sourceMobile : sourceDesktop;
+
+					return <source srcset={source} media={range.mediaQuery} />;
+				})}
 				<img
 					src={sourceDesktop}
-					width={imageWidthDesktop}
-					height={imageHeightDesktop}
+					width={calculateImageWidth(
+						backgroundContainer === 'container'
+							? 1920 - gridMarginDesktopTotal
+							: 2560,
+						12,
+						span,
+						gridGapDesktop
+					)}
+					height={calculateImageHeight(
+						calculateImageWidth(
+							backgroundContainer === 'container'
+								? 1920 - gridMarginDesktopTotal
+								: 2560,
+							12,
+							span,
+							gridGapDesktop
+						),
+						ratioDesktopValue
+					)}
 					alt={alt || altFallback}
 					loading={aboveFold ? undefined : loading}
 					id={id}

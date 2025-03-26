@@ -1,9 +1,11 @@
-const baseConfig = require('./tailwind.baseConfig.cjs');
+const baseConfig = require('./src/config/tailwind.baseConfig.cjs');
+const { screens } = require('./src/config/screens.js');
 
 module.exports = {
 	...baseConfig,
 	theme: {
 		...baseConfig.theme,
+		screens,
 		extend: {
 			...baseConfig.theme.extend,
 			// Add your custom extensions here
