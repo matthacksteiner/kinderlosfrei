@@ -152,7 +152,7 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 			if (time) {
 				const swiperSlider = blockSlider.querySelector('.swiperSlider');
 				const direction =
-					blockSlider?.dataset.direction !== 'rtl' ? 'rtl' : 'ltr';
+					blockSlider?.dataset.direction !== 'ltr' ? 'rtl' : 'ltr';
 				swiperSlider?.setAttribute('dir', direction);
 				const swiper = new Swiper(swiperSlider, {
 					...(autoplay && {
