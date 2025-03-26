@@ -40,6 +40,9 @@ const isProd = import.meta.env.PROD;
 const netlifyDev = import.meta.env.NETLIFY_DEV;
 const netlifyUrl = import.meta.env.NETLIFY_URL;
 
+const scrollbarWidth = 17;
+const scrollbarThreshold = 1920 + scrollbarWidth;
+
 // Process screen sizes to create breakpoints
 const breakpoints = Object.entries(screens)
 	.map(([key, value]) => ({
@@ -241,9 +244,12 @@ const generateSrcSet = (
 	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
 
 	// Use different container widths based on screen range
-	let containerWidth = screenRange.maxWidth;
+	let containerWidth = screenRange.maxWidth - scrollbarWidth;
+
 	if (backgroundContainer === 'container' && !isMobile) {
-		containerWidth = Math.min(containerWidth, 1920) - gridMargin;
+		// Adjust for container width
+		const maxWidth = 1920;
+		containerWidth = Math.min(containerWidth, maxWidth) - gridMargin;
 	}
 
 	// Calculate appropriate image dimensions
@@ -270,9 +276,12 @@ const generateImgSrc = (
 	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
 
 	// Use container width based on screen range
-	let containerWidth = screenRange.maxWidth;
+	let containerWidth = screenRange.maxWidth - scrollbarWidth;
+
 	if (backgroundContainer === 'container' && !isMobile) {
-		containerWidth = Math.min(containerWidth, 1920) - gridMargin;
+		// Adjust for container width
+		const maxWidth = 1920;
+		containerWidth = Math.min(containerWidth, maxWidth) - gridMargin;
 	}
 
 	// Calculate appropriate image dimensions
@@ -282,6 +291,28 @@ const generateImgSrc = (
 
 	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif&q=70`;
 };
+
+// Calculate image width for render function
+const getCalculatedWidth = () => {
+	let containerWidth;
+	const lastScreenRange = screenRanges[screenRanges.length - 1];
+
+	if (backgroundContainer === 'container') {
+		const maxWidth = 1920;
+		// Always subtract scrollbar width
+		containerWidth =
+			Math.min(lastScreenRange.maxWidth, maxWidth) -
+			scrollbarWidth -
+			gridMarginDesktopTotal;
+	} else {
+		containerWidth = 2560 - scrollbarWidth;
+	}
+
+	return calculateImageWidth(containerWidth, 12, span, gridGapDesktop);
+};
+
+const imgWidth = getCalculatedWidth();
+const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 ---
 
 {
@@ -312,25 +343,8 @@ const generateImgSrc = (
 						screenRanges[screenRanges.length - 1], // Use largest screen range
 						false // Desktop
 					)}
-					width={calculateImageWidth(
-						backgroundContainer === 'container'
-							? 1920 - gridMarginDesktopTotal
-							: 2560,
-						12,
-						span,
-						gridGapDesktop
-					)}
-					height={calculateImageHeight(
-						calculateImageWidth(
-							backgroundContainer === 'container'
-								? 1920 - gridMarginDesktopTotal
-								: 2560,
-							12,
-							span,
-							gridGapDesktop
-						),
-						ratioDesktopValue
-					)}
+					width={imgWidth}
+					height={imgHeight}
 					alt={alt || altFallback}
 					id={id}
 					loading={aboveFold ? undefined : loading}
@@ -359,25 +373,8 @@ const generateImgSrc = (
 				})}
 				<img
 					src={sourceDesktop}
-					width={calculateImageWidth(
-						backgroundContainer === 'container'
-							? 1920 - gridMarginDesktopTotal
-							: 2560,
-						12,
-						span,
-						gridGapDesktop
-					)}
-					height={calculateImageHeight(
-						calculateImageWidth(
-							backgroundContainer === 'container'
-								? 1920 - gridMarginDesktopTotal
-								: 2560,
-							12,
-							span,
-							gridGapDesktop
-						),
-						ratioDesktopValue
-					)}
+					width={imgWidth}
+					height={imgHeight}
 					alt={alt || altFallback}
 					loading={aboveFold ? undefined : loading}
 					id={id}

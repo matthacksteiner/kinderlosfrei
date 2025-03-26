@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+	:root {
+		--scrollbar-width: 17px;
+		--scrollbar-threshold: calc(1920px + var(--scrollbar-width));
+	}
+
 	html {
 		@apply overflow-x-hidden;
 	}
