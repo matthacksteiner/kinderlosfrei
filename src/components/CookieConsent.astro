@@ -1,8 +1,15 @@
 ---
 import 'vanilla-cookieconsent/dist/cookieconsent.css';
 import { Icon } from 'astro-icon/components';
-const { googleAnalyticsToggle, googleAnalyticsCode } = Astro.props;
+const { googleAnalyticsToggle, googleAnalyticsCode, global, lang } =
+	Astro.props;
 const toggle = googleAnalyticsToggle ? 'true' : 'false';
+
+const analyticsLink = global.analyticsLink.uri;
+const analyticsLinkTitle = global.analyticsLink.title;
+const currentLang = lang;
+const defaultLang = global.defaultLang.code;
+const prefixDefaultLocale = global.prefixDefaultLocale;
 ---
 
 <button
@@ -11,6 +18,11 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 	data-cc="show-preferencesModal"
 	data-toggle={toggle}
 	data-code={googleAnalyticsCode}
+	data-analytics-link={analyticsLink}
+	data-analytics-link-title={analyticsLinkTitle}
+	data-lang={currentLang}
+	data-default-lang={defaultLang}
+	data-prefix-default={prefixDefaultLocale.toString()}
 	class="transition-all duration-300 ease-in-out"
 	aria-label="Cookie Preferences"
 >
@@ -28,6 +40,23 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 		?.dataset.toggle;
 	let code = (document.querySelector('#cookieButton') as HTMLButtonElement)
 		?.dataset.code;
+	const analyticsLink = (
+		document.querySelector('#cookieButton') as HTMLButtonElement
+	)?.getAttribute('data-analytics-link');
+	const analyticsLinkTitle = (
+		document.querySelector('#cookieButton') as HTMLButtonElement
+	)?.getAttribute('data-analytics-link-title');
+	const currentLang = (
+		document.querySelector('#cookieButton') as HTMLButtonElement
+	)?.getAttribute('data-lang');
+	const defaultLang = (
+		document.querySelector('#cookieButton') as HTMLButtonElement
+	)?.getAttribute('data-default-lang');
+	const prefixDefaultLocale =
+		(
+			document.querySelector('#cookieButton') as HTMLButtonElement
+		)?.getAttribute('data-prefix-default') === 'true';
+
 	if (toggle === 'true') {
 		run({
 			guiOptions: {
@@ -104,8 +133,9 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 							acceptAllBtn: 'Alle Cookies akzeptieren',
 							acceptNecessaryBtn: 'Alle Cookies ablehnen',
 							showPreferencesBtn: 'Cookie Einstellungen anzeigen',
-							footer:
-								'<a href="/de/datenschutz">Datenschutzerklärung</a>\n<a href="/de/impressum">Impressum</a>',
+							footer: `<a href="${
+								currentLang === 'de' && !prefixDefaultLocale ? '/' : '/de/'
+							}${analyticsLink}">${analyticsLinkTitle}</a>`,
 						},
 						preferencesModal: {
 							title: 'Cookie Einstellungen',
@@ -144,8 +174,7 @@ const toggle = googleAnalyticsToggle ? 'true' : 'false';
 							acceptAllBtn: 'Accept all cookies',
 							acceptNecessaryBtn: 'Reject all cookies',
 							showPreferencesBtn: 'Show cookie settings',
-							footer:
-								'<a href="/en/data-protection">Data protection</a>\n<a href="/en/imprint">Imprint</a>',
+							footer: `<a href="/en/${analyticsLink}">${analyticsLinkTitle}</a>`,
 						},
 						preferencesModal: {
 							title: 'Cookie settings',
