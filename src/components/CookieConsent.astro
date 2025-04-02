@@ -205,6 +205,123 @@ const prefixDefaultLocale = global.prefixDefaultLocale;
 							],
 						},
 					},
+					it: {
+						consentModal: {
+							title: 'Questa pagina utilizza i Cookie!',
+							description:
+								"Questo sito web utilizza cookie, incluso Google Analytics, per analizzare l'utilizzo e migliorare la tua esperienza.",
+							acceptAllBtn: 'Accetta tutti i cookie',
+							acceptNecessaryBtn: 'Rifiuta tutti i cookie',
+							showPreferencesBtn: 'Mostra impostazioni cookie',
+							footer: `<a href="/it/${analyticsLink}">${analyticsLinkTitle}</a>`,
+						},
+						preferencesModal: {
+							title: 'Impostazioni cookie',
+							acceptAllBtn: 'Accetta tutti i cookie',
+							acceptNecessaryBtn: 'Rifiuta tutti i cookie',
+							savePreferencesBtn: 'Salva impostazioni',
+							closeIconLabel: 'Chiudi finestra di dialogo',
+							serviceCounterLabel: 'Servizio|Servizi',
+							sections: [
+								{
+									title: 'Utilizzo dei cookie',
+									description:
+										"Utilizziamo i cookie per garantirti la migliore esperienza sul nostro sito web. Utilizzando il nostro sito, accetti l'uso dei cookie in conformità con la nostra politica sulla privacy. Questi cookie includono anche quelli di Google Analytics per raccogliere e analizzare informazioni anonime sull'utilizzo del nostro sito web. Puoi modificare le tue impostazioni dei cookie in qualsiasi momento.",
+								},
+								{
+									title:
+										'Cookie tecnicamente necessari <span class="pm__badge">Sempre attivi</span>',
+									description:
+										'Questo sito web utilizza cookie tecnicamente necessari per abilitare le funzioni di base e garantire la sicurezza del sito web.',
+									linkedCategory: 'necessary',
+								},
+								{
+									title: 'Cookie analitici',
+									description:
+										"Questo sito web utilizza cookie analitici per raccogliere informazioni anonime sull'utilizzo del sito web e migliorare l'esperienza dell'utente.",
+									linkedCategory: 'analytics',
+								},
+							],
+						},
+					},
+					fr: {
+						consentModal: {
+							title: 'Cette page utilise des cookies !',
+							description:
+								"Ce site web utilise des cookies, y compris Google Analytics, pour analyser l'utilisation et améliorer votre expérience.",
+							acceptAllBtn: 'Accepter tous les cookies',
+							acceptNecessaryBtn: 'Refuser tous les cookies',
+							showPreferencesBtn: 'Afficher les paramètres des cookies',
+							footer: `<a href="/fr/${analyticsLink}">${analyticsLinkTitle}</a>`,
+						},
+						preferencesModal: {
+							title: 'Paramètres des cookies',
+							acceptAllBtn: 'Accepter tous les cookies',
+							acceptNecessaryBtn: 'Refuser tous les cookies',
+							savePreferencesBtn: 'Enregistrer les paramètres',
+							closeIconLabel: 'Fermer la boîte de dialogue',
+							serviceCounterLabel: 'Service|Services',
+							sections: [
+								{
+									title: 'Utilisation des cookies',
+									description:
+										"Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site web. En utilisant notre site, vous acceptez l'utilisation de cookies conformément à notre politique de confidentialité. Ces cookies incluent également ceux de Google Analytics pour collecter et analyser des informations anonymes sur l'utilisation de notre site web. Vous pouvez modifier vos paramètres de cookies à tout moment.",
+								},
+								{
+									title:
+										'Cookies techniquement nécessaires <span class="pm__badge">Toujours actifs</span>',
+									description:
+										'Ce site web utilise des cookies techniquement nécessaires pour permettre les fonctions de base et assurer la sécurité du site web.',
+									linkedCategory: 'necessary',
+								},
+								{
+									title: "Cookies d'analyse",
+									description:
+										"Ce site web utilise des cookies d'analyse pour collecter des informations anonymes sur l'utilisation du site web et améliorer l'expérience utilisateur.",
+									linkedCategory: 'analytics',
+								},
+							],
+						},
+					},
+					es: {
+						consentModal: {
+							title: '¡Esta página utiliza cookies!',
+							description:
+								'Este sitio web utiliza cookies, incluido Google Analytics, para analizar el uso y mejorar su experiencia.',
+							acceptAllBtn: 'Aceptar todas las cookies',
+							acceptNecessaryBtn: 'Rechazar todas las cookies',
+							showPreferencesBtn: 'Mostrar preferencias de cookies',
+							footer: `<a href="/es/${analyticsLink}">${analyticsLinkTitle}</a>`,
+						},
+						preferencesModal: {
+							title: 'Preferencias de cookies',
+							acceptAllBtn: 'Aceptar todas las cookies',
+							acceptNecessaryBtn: 'Rechazar todas las cookies',
+							savePreferencesBtn: 'Guardar preferencias',
+							closeIconLabel: 'Cerrar el diálogo',
+							serviceCounterLabel: 'Servicio|Servicios',
+							sections: [
+								{
+									title: 'Uso de cookies',
+									description:
+										'Utilizamos cookies para garantizarle la mejor experiencia en nuestro sitio web. Al utilizar nuestro sitio, acepta el uso de cookies de acuerdo con nuestra política de privacidad. Estas cookies también incluyen las de Google Analytics para recopilar y analizar información anónima sobre el uso de nuestro sitio web. Puede cambiar su configuración de cookies en cualquier momento.',
+								},
+								{
+									title:
+										'Cookies técnicamente necesarias <span class="pm__badge">Siempre activas</span>',
+									description:
+										'Este sitio web utiliza cookies técnicamente necesarias para permitir las funciones básicas y garantizar la seguridad del sitio web.',
+									linkedCategory: 'necessary',
+								},
+								{
+									title: 'Cookies analíticas',
+									description:
+										'Este sitio web utiliza cookies analíticas para recopilar información anónima sobre el uso del sitio web y mejorar la experiencia del usuario.',
+									linkedCategory: 'analytics',
+								},
+							],
+						},
+					},
 				},
 			},
 		});
