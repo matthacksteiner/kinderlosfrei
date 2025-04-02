@@ -5,8 +5,8 @@ const { googleAnalyticsToggle, googleAnalyticsCode, global, lang } =
 	Astro.props;
 const toggle = googleAnalyticsToggle ? 'true' : 'false';
 
-const analyticsLink = global.analyticsLink.uri;
-const analyticsLinkTitle = global.analyticsLink.title;
+const analyticsLink = global?.analyticsLink?.uri || '/datenschutz';
+const analyticsLinkTitle = global?.analyticsLink?.title || 'Datenschutz';
 const currentLang = lang;
 const defaultLang = global.defaultLang.code;
 const prefixDefaultLocale = global.prefixDefaultLocale;
