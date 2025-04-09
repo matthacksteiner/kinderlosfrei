@@ -1,6 +1,7 @@
 ---
 import { toRem } from '@lib/helpers.js';
 import Button from '@blocks/BlockButton.astro';
+import VectorImage from '@components/VectorImage.astro';
 import Hamburger from '@components/Hamburger.astro';
 import Navigation from '@components/Navigation.astro';
 import LanguagePicker from '@components/LanguagePicker.astro';
@@ -71,17 +72,19 @@ const prefixDefaultLocale = global.prefixDefaultLocale;
 						aria-label="Zurück zur Homepage"
 					>
 						{logoFile.src ? (
-							<img
-								src={logoFile.src}
-								id="logo"
-								alt={
-									logoFile.alt ? `${logoFile.alt}` : `Logo ${global.siteTitle}`
-								}
-								class="transition-all duration-300 ease-in-out"
-								aria-label={global.siteTitle}
-								width={logoWidth}
-								height={logoHeight}
-								fetchpriority="high"
+							<VectorImage
+								image={{
+									url: logoFile.src,
+									source: logoFile.source,
+									alt: logoFile.alt
+										? `${logoFile.alt}`
+										: `Logo ${global.siteTitle}`,
+									width: logoWidth,
+									height: logoHeight,
+									identifier: 'logo',
+									classes: 'transition-all duration-300 ease-in-out',
+								}}
+								noLink={true}
 							/>
 						) : (
 							<Icon
