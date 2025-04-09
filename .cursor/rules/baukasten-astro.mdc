@@ -1,0 +1,118 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You are an expert in JavaScript, TypeScript, and Astro framework for scalable web development.
+
+## Key Principles
+
+- Write concise, technical responses with accurate Astro examples
+- Leverage Astro's static site generation (SSG) capabilities
+- Provide a preview path (/preview/) for quick content previews without deployment
+- Implement multi-language support based on Kirby CMS configurations
+- Deploy to Netlify as configured in netlify.toml
+
+## Astro Project Structure
+
+The project follows this structure:
+
+```
+src/
+  blocks/        - Content block components (BlockText, BlockImage, BlockVideo, etc.)
+  components/    - Reusable UI components
+  config/        - Configuration files
+  icons/         - SVG icons (using astro-icon)
+  layouts/       - Page layout templates
+  lib/           - Utility functions and helpers
+  overrides/     - Custom overrides for project-specific implementations
+  pages/         - File-based routing system with dynamic routes
+  scripts/       - Client-side scripts for interactive components
+  styles/        - Global styles and Tailwind setup
+public/          - Static assets (images, fonts, etc.)
+astro.config.mjs - Astro configuration with Netlify adapter
+tailwind.config.cjs - Tailwind CSS configuration
+.env            - Environment variables (KIRBY_URL, etc.)
+plugins/        - Custom plugins extending functionality
+```
+
+## Component Development
+
+- Create .astro files for components with appropriate props
+- Use the block-based content approach for structured content
+- Follow the established patterns in existing components
+- Keep components small, focused, and reusable
+- Use Tailwind CSS for styling without @apply
+
+## Blocks System
+
+The project uses a comprehensive block-based content approach:
+- src/blocks/ contains all content block components (BlockText, BlockImage, BlockVideo, etc.)
+- Each block corresponds to a content type in the Kirby CMS
+- Blocks receive structured data via props and render accordingly
+- Common blocks include: BlockText, BlockImage, BlockVideo, BlockCard, BlockSlider, BlockGallery, etc.
+
+## Routing and Pages
+
+- Uses dynamic routing with [...slug].astro for content pages
+- Implements language-specific routes with [lang]/ directory
+- Section-specific routes with [section]/ directory
+- Special /preview/ path for SSR-based content previews
+- 404.astro for handling not found pages
+- Generates sitemap-index.xml and robots.txt programmatically
+
+## Content Management
+
+- Content is fetched from Kirby CMS via JSON endpoints
+- The KIRBY_URL environment variable points to the CMS
+- global.json provides site-wide configuration including languages
+- Content is fetched at build time for static generation
+- Preview mode uses SSR for real-time content updates
+
+## Styling
+
+- Uses Tailwind CSS for utility-based styling
+- Follows responsive design principles
+- Avoids @apply in favor of direct utility classes
+- Custom configurations in tailwind.config.cjs and src/overrides/tailwind.config.cjs
+
+## Performance Optimization
+
+- Static generation for optimal performance
+- Minimal JavaScript with selective hydration when needed
+- Image optimization with proper CDN configuration
+- Netlify adapter for deployment
+- CSS and JavaScript compression via @playform/compress
+
+## Integrations
+
+- @astrojs/netlify for Netlify deployment
+- @astrojs/tailwind for Tailwind CSS integration
+- astro-icon for SVG icons
+- astro-cloudinary for image optimization
+- Medium Zoom and PhotoSwipe for media galleries
+- Swiper for carousels and sliders
+
+## Internationalization
+
+- Multi-language support configured via i18n in astro.config.mjs
+- Language data from Kirby CMS global.json
+- Optional prefixing for default locale
+- Dynamic language routing
+
+## Deployment
+
+- Netlify deployment as configured in netlify.toml
+- Environment variables for different configurations
+- NODE_VERSION set to 23 for Netlify builds
+- Remote image configuration for Netlify Image CDN
+
+## Best Practices
+
+- Follow established patterns in the existing codebase
+- Use TypeScript for type safety
+- Keep components small and focused
+- Optimize for Core Web Vitals
+- Implement proper SEO meta tags
+- Follow accessibility guidelines
+- Test across different devices and browsers
