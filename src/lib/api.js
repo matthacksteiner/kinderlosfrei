@@ -54,8 +54,54 @@ export async function getFonts() {
 	try {
 		let fontData;
 
-		if (typeof window === 'undefined') {
-			// Node.js/SSR environment
+		// Check if we're in preview mode (SSR)
+		const isPreviewMode =
+			typeof window === 'undefined' &&
+			process.env.ASTRO_PATH &&
+			process.env.ASTRO_PATH.includes('/preview/');
+
+		// In preview mode, get font data directly from the API
+		if (isPreviewMode) {
+			const global = await getGlobal();
+			if (!global.font || global.font.length === 0) {
+				return { css: '', fonts: [] };
+			}
+
+			const fontArray = global.font
+				.map((item) => ({
+					name: item.name,
+					woff: item.url1,
+					woff2: item.url2,
+				}))
+				.filter((item) => item.woff || item.woff2);
+
+			if (fontArray.length === 0) {
+				return { css: '', fonts: [] };
+			}
+
+			// Generate CSS with remote URLs for preview mode
+			const css = fontArray
+				.map((item) => {
+					const sources = [];
+					if (item.woff2) sources.push(`url('${item.woff2}') format('woff2')`);
+					if (item.woff) sources.push(`url('${item.woff}') format('woff')`);
+
+					if (sources.length === 0) return '';
+
+					return `@font-face {
+						font-family: '${item.name}';
+						src: ${sources.join(',\n\t\t\t ')};
+						font-weight: normal;
+						font-style: normal;
+						font-display: swap;
+					}`;
+				})
+				.filter((css) => css !== '')
+				.join('');
+
+			return { css, fonts: fontArray };
+		} else if (typeof window === 'undefined') {
+			// Regular SSR environment (not preview)
 			try {
 				const fs = await import('fs');
 				const path = await import('path');

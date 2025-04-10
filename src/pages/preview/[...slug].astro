@@ -8,6 +8,17 @@ import Section from '@components/Section.astro';
 
 const API_URL = import.meta.env.KIRBY_URL;
 
+// Set ASTRO_PATH environment variable for font loading detection
+process.env.ASTRO_PATH = Astro.url.pathname;
+
+// Add CORS headers for preview mode
+const origin = Astro.request.headers.get('origin');
+if (origin) {
+	Astro.response.headers.set('Access-Control-Allow-Origin', origin);
+	Astro.response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+	Astro.response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+}
+
 const initialGlobal = await getGlobal();
 const prefixDefaultLocale = initialGlobal.prefixDefaultLocale;
 const defaultLang = initialGlobal.defaultLang;
