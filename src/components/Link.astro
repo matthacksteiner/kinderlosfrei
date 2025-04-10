@@ -20,6 +20,8 @@
  * ```
  */
 
+import { checkIsHome } from '@lib/helpers.js';
+
 interface BaseLink {
 	type: 'url' | 'page' | 'file' | 'email' | 'tel';
 	href: string;
@@ -49,7 +51,7 @@ interface Props {
 const { link, class: className, ...rest } = Astro.props;
 const { lang } = Astro.params;
 const currentLang = lang;
-
+const isHome = checkIsHome(Astro);
 // Input validation
 if (!link) {
 	throw new Error('Missing link prop in Link.astro');
@@ -70,9 +72,11 @@ switch (link.type) {
 		break;
 	case 'page':
 		href = (link as PageLink).hash
-			? `${currentLang ? `/${currentLang}/` : ''}${(link as PageLink).uri}#${
-					(link as PageLink).hash
-			  }`
+			? isHome
+				? `${currentLang ? `/${currentLang}` : ''}#${(link as PageLink).hash}`
+				: `${currentLang ? `/${currentLang}/` : ''}${(link as PageLink).uri}#${
+						(link as PageLink).hash
+				  }`
 			: `${currentLang ? `/${currentLang}/` : ''}${(link as PageLink).uri}`;
 		break;
 	case 'file':
@@ -93,7 +97,6 @@ const attributes = {
 	...(link.popup ? { target: '_blank', rel: 'noopener' } : {}),
 	...(link.type === 'file' ? { download: '' } : {}),
 };
-
 const defaultContent = link.title
 	? link.title
 	: link.type === 'page'
