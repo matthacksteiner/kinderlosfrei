@@ -6,6 +6,7 @@ import tailwind from '@astrojs/tailwind';
 import netlify from '@astrojs/netlify';
 import compress from '@playform/compress';
 import langFolderRename from './plugins/lang-folder-rename/langFolderRename.js';
+import fontDownloader from './plugins/font-downloader/fontDownloader.js';
 
 const API_URL = process.env.KIRBY_URL;
 const response = await fetch(API_URL + '/global.json');
@@ -42,6 +43,7 @@ export default defineConfig({
 		,
 		icon(),
 		langFolderRename(),
+		fontDownloader(),
 		compress({
 			HTML: true,
 			JavaScript: true,

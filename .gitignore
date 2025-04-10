@@ -31,3 +31,6 @@ src/pages/_[lang]
 # Coverage and test files
 coverage/
 .vitest/
+
+# Downloaded font files
+public/fonts/

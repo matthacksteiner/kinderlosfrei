@@ -51,46 +51,76 @@ export async function getFrontendUrl() {
 
 // export the getFonts function
 export async function getFonts() {
-	const global = await getGlobal();
-	if (!global.font || global.font.length === 0) {
-		return {
-			css: `@font-face {
-      font-family: system-ui;
-      font-weight: normal;
-      font-style: normal;
-      font-display: swap;
-    }`,
-			fonts: [],
-		};
+	try {
+		let fontData;
+
+		if (typeof window === 'undefined') {
+			// Node.js/SSR environment
+			try {
+				const fs = await import('fs');
+				const path = await import('path');
+				const fontsJsonPath = path.join(
+					process.cwd(),
+					'public',
+					'fonts',
+					'fonts.json'
+				);
+
+				if (fs.existsSync(fontsJsonPath)) {
+					const fontJson = fs.readFileSync(fontsJsonPath, 'utf8');
+					fontData = JSON.parse(fontJson);
+				} else {
+					return { css: '', fonts: [] };
+				}
+			} catch (error) {
+				return { css: '', fonts: [] };
+			}
+		} else {
+			// Browser environment
+			try {
+				const fontsUrl = new URL('/fonts/fonts.json', window.location.origin);
+				const response = await fetch(fontsUrl);
+
+				if (!response.ok) {
+					return { css: '', fonts: [] };
+				}
+
+				fontData = await response.json();
+			} catch (error) {
+				return { css: '', fonts: [] };
+			}
+		}
+
+		const fontArray = fontData?.fonts || [];
+
+		if (fontArray.length === 0) {
+			return { css: '', fonts: [] };
+		}
+
+		// Generate CSS for all downloaded fonts
+		const css = fontArray
+			.map((item) => {
+				const sources = [];
+				if (item.woff2) sources.push(`url('${item.woff2}') format('woff2')`);
+				if (item.woff) sources.push(`url('${item.woff}') format('woff')`);
+
+				if (sources.length === 0) return '';
+
+				return `@font-face {
+					font-family: '${item.name}';
+					src: ${sources.join(',\n\t\t\t ')};
+					font-weight: normal;
+					font-style: normal;
+					font-display: swap;
+				}`;
+			})
+			.filter((css) => css !== '')
+			.join('');
+
+		return { css, fonts: fontArray };
+	} catch (error) {
+		return { css: '', fonts: [] };
 	}
-
-	const fontArray = global.font.map((item) => {
-		const base64Data2 = `data:application/font-woff2;base64,${item.base64Data2}`;
-
-		return {
-			name: item.name,
-			woff2: base64Data2,
-		};
-	});
-
-	const css = `${global.font
-		.map((item) => {
-			const base64Data2 = `data:application/font-woff2;base64,${item.base64Data2}`;
-
-			return `@font-face {
-			font-family: '${item.name}';
-			src: url('${base64Data2}') format('woff2');
-			font-weight: normal;
-			font-style: normal;
-			font-display: swap;
-		  }`;
-		})
-		.join('')}`;
-
-	return {
-		css,
-		fonts: fontArray,
-	};
 }
 
 // export all font sizes
