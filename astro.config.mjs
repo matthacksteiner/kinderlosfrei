@@ -40,7 +40,6 @@ export default defineConfig({
 			nesting: true,
 			config: { path: './src/overrides/tailwind.config.cjs' },
 		}),
-		,
 		icon(),
 		langFolderRename(),
 		fontDownloader(),
