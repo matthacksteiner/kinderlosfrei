@@ -40,11 +40,11 @@ import { screens } from '@config/screens';
 
 // Environment variables
 const isProd = import.meta.env.PROD;
-const netlifyDev = import.meta.env.NETLIFY_DEV;
+const isNetlify = Boolean(import.meta.env.NETLIFY);
 const netlifyUrl = import.meta.env.NETLIFY_URL;
 const baseUrl = isProd
 	? netlifyUrl
-	: netlifyDev
+	: isNetlify
 	? 'http://localhost:8888'
 	: netlifyUrl;
 
@@ -318,7 +318,7 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 ---
 
 {
-	isProd || netlifyDev ? (
+	isProd || isNetlify ? (
 		<div
 			class="picture-container"
 			style={`--ratio-mobile: ${ratioMobileValue}; --ratio-desktop: ${ratioDesktopValue};`}
