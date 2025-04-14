@@ -359,9 +359,10 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 			loading={aboveFold ? undefined : loading}
 			data-zoomable={dataZoomable}
 			data-zoom-src={dataZoomable ? sourceDesktop : undefined}
-			class:list={[className]}
+			class:list={[className, 'image-fade']}
 			decoding="async"
 			{...fetchPriority ? { fetchpriority: fetchPriority } : {}}
+			onload="this.classList.add('loaded'); this.parentNode.parentNode.classList.add('image-loaded')"
 		/>
 	</picture>
 </div>
@@ -392,6 +393,11 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 
 	.thumbhash {
 		@apply absolute inset-0 z-0 bg-cover bg-center;
+		transition: opacity 0.3s ease-out;
+	}
+
+	.image-loaded .thumbhash {
+		opacity: 0;
 	}
 
 	picture {
@@ -405,5 +411,11 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 
 	picture img {
 		@apply block h-full w-full object-cover;
+		opacity: 0;
+		transition: opacity 0.3s ease-in;
+	}
+
+	picture img.loaded {
+		opacity: 1;
 	}
 </style>
