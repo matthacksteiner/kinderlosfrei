@@ -1,5 +1,6 @@
 ---
 import ImageComponent from '@components/ImageComponent.astro';
+import VectorImage from '@components/VectorImage.astro';
 const {
 	global,
 	images,
@@ -62,16 +63,11 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 				images?.map((image, index) => (
 					<div class:list={['swiper-slide', overlay]}>
 						{image.url?.endsWith('.svg') ? (
-							<img
-								src={image.url}
-								alt={image.alt || ''}
-								width={image.width}
-								height={image.height}
-								id={image.identifier || undefined}
-								class:list={[full, 'w-full', 'h-auto', image.classes]}
-								{...(aboveFold
-									? { fetchpriority: 'high' }
-									: { loading: 'lazy' })}
+							<VectorImage
+								image={image}
+								widthMobile="100"
+								widthDesktop="100"
+								widthAlign="center"
 							/>
 						) : (
 							<ImageComponent
