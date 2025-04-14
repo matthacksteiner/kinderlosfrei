@@ -317,76 +317,54 @@ const imgWidth = getCalculatedWidth();
 const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 ---
 
-{
-	isProd || isNetlify ? (
-		<div
-			class="picture-container"
-			style={`--ratio-mobile: ${ratioMobileValue}; --ratio-desktop: ${ratioDesktopValue};`}
-		>
-			{thumbhash && (
-				<div class="thumbhash" style={`background-image: url(${thumbhash});`} />
-			)}
-			<picture>
-				{screenRanges.map((range, index) => {
-					const source = index === 0 ? sourceMobile : sourceDesktop;
-					const isMobile = index === 0;
+<div
+	class="picture-container"
+	style={`--ratio-mobile: ${ratioMobileValue}; --ratio-desktop: ${ratioDesktopValue};`}
+>
+	{
+		thumbhash && (
+			<div class="thumbhash" style={`background-image: url(${thumbhash});`} />
+		)
+	}
+	<picture>
+		{
+			screenRanges.map((range, index) => {
+				const source = index === 0 ? sourceMobile : sourceDesktop;
+				const isMobile = index === 0;
 
-					return (
-						<source
-							srcset={generateSrcSet(source, range, isMobile)}
-							media={range.mediaQuery}
-						/>
-					);
-				})}
-				<img
-					src={generateImgSrc(
+				return (
+					<source
+						srcset={
+							isProd || isNetlify
+								? generateSrcSet(source, range, isMobile)
+								: source
+						}
+						media={range.mediaQuery}
+					/>
+				);
+			})
+		}
+		<img
+			src={isProd || isNetlify
+				? generateImgSrc(
 						sourceDesktop,
 						screenRanges[screenRanges.length - 1],
 						false
-					)}
-					width={imgWidth}
-					height={imgHeight}
-					alt={alt || altFallback}
-					id={id}
-					loading={aboveFold ? undefined : loading}
-					data-zoomable={dataZoomable}
-					data-zoom-src={dataZoomable ? sourceDesktop : undefined}
-					class:list={[className]}
-					decoding="async"
-					{...(fetchPriority ? { fetchpriority: fetchPriority } : {})}
-				/>
-			</picture>
-		</div>
-	) : (
-		<div
-			class="picture-container"
-			style={`--ratio-mobile: ${ratioMobileValue}; --ratio-desktop: ${ratioDesktopValue};`}
-		>
-			{thumbhash && (
-				<div class="thumbhash" style={`background-image: url(${thumbhash});`} />
-			)}
-			<picture>
-				{screenRanges.map((range, index) => {
-					const source = index === 0 ? sourceMobile : sourceDesktop;
-					return <source srcset={source} media={range.mediaQuery} />;
-				})}
-				<img
-					src={sourceDesktop}
-					width={imgWidth}
-					height={imgHeight}
-					alt={alt || altFallback}
-					loading={aboveFold ? undefined : loading}
-					id={id}
-					data-zoomable={dataZoomable}
-					data-zoom-src={dataZoomable ? sourceDesktop : undefined}
-					class={className}
-					decoding="async"
-					{...(fetchPriority ? { fetchpriority: fetchPriority } : {})}
-				/>
-			</picture>
-		</div>
-	)
-}
+				  )
+				: sourceDesktop}
+			width={imgWidth}
+			height={imgHeight}
+			alt={alt || altFallback}
+			id={id}
+			loading={aboveFold ? undefined : loading}
+			data-zoomable={dataZoomable}
+			data-zoom-src={dataZoomable ? sourceDesktop : undefined}
+			class:list={[className]}
+			decoding="async"
+			{...fetchPriority ? { fetchpriority: fetchPriority } : {}}
+		/>
+	</picture>
+</div>
 
 <style>
 	.picture-container {
