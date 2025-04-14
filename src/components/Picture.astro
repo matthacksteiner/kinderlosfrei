@@ -38,20 +38,30 @@
 
 import { screens } from '@config/screens';
 
-// Environment variables
-const isProd = import.meta.env.PROD;
+// --------------------------------------
+// Environment Configuration
+// --------------------------------------
+const isProduction = import.meta.env.PROD;
 const isNetlify = Boolean(import.meta.env.NETLIFY);
 const netlifyUrl = import.meta.env.NETLIFY_URL;
-const baseUrl = isProd
+const baseUrl = isProduction
 	? netlifyUrl
 	: isNetlify
 	? 'http://localhost:8888'
 	: netlifyUrl;
 
-// Constants
+// Should we use Netlify Image processing?
+const useNetlifyImageProcessing = isProduction || isNetlify;
+
+// --------------------------------------
+// Layout Constants
+// --------------------------------------
 const scrollbarWidth = 17;
 const maxContainerWidth = 1920;
 
+// --------------------------------------
+// Responsive Breakpoints Configuration
+// --------------------------------------
 // Process screen sizes to create responsive breakpoints
 const breakpoints = Object.entries(screens)
 	.map(([key, value]) => ({
@@ -163,7 +173,9 @@ if (
 	throw new Error('Missing required props in Picture component');
 }
 
-// Utilities
+// --------------------------------------
+// Utility Functions
+// --------------------------------------
 function validateRatio(ratio: string) {
 	if (ratio !== 'original' && !ratio.match(/^\d+\/\d+$/)) {
 		throw new Error(
@@ -220,10 +232,58 @@ function getContainerWidth(
 	return containerWidth;
 }
 
-function generateImgUrl(source: string, width: number, height: number): string {
+// --------------------------------------
+// Image URL Generation - Production
+// --------------------------------------
+function createNetlifyImageUrl(
+	source: string,
+	width: number,
+	height: number
+): string {
 	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif&q=70`;
 }
 
+function createProductionSrcSet(
+	source: string,
+	screenRange: (typeof screenRanges)[0],
+	isMobile: boolean
+): string {
+	const columns = isMobile ? 6 : 12;
+	const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
+	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
+	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
+	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
+
+	return [1, 2, 3]
+		.map((dpr) => {
+			const imgWidth =
+				calculateImageWidth(containerWidth, columns, span, gridGap) * dpr;
+			const imgHeight = calculateImageHeight(imgWidth, ratio);
+			return `${createNetlifyImageUrl(source, imgWidth, imgHeight)} ${dpr}x`;
+		})
+		.join(', ');
+}
+
+function createProductionImageSrc(
+	source: string,
+	screenRange: (typeof screenRanges)[0],
+	isMobile: boolean
+): string {
+	const columns = isMobile ? 6 : 12;
+	const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
+	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
+	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
+	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
+
+	const width = calculateImageWidth(containerWidth, columns, span, gridGap);
+	const height = calculateImageHeight(width, ratio);
+
+	return createNetlifyImageUrl(source, width, height);
+}
+
+// --------------------------------------
+// Content Preparation
+// --------------------------------------
 // Validate ratios
 validateRatio(ratioMobile);
 validateRatio(ratioDesktop);
@@ -255,46 +315,6 @@ const altFallback = name
 			.replace(/[^\w\s]/g, '')
 			.replace(/\b\w/g, (char) => char.toUpperCase())
 	: 'Image';
-
-// Generate srcset for responsive images
-function generateSrcSet(
-	source: string,
-	screenRange: (typeof screenRanges)[0],
-	isMobile: boolean
-): string {
-	const columns = isMobile ? 6 : 12;
-	const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
-	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
-	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
-	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
-
-	return [1, 2, 3]
-		.map((dpr) => {
-			const imgWidth =
-				calculateImageWidth(containerWidth, columns, span, gridGap) * dpr;
-			const imgHeight = calculateImageHeight(imgWidth, ratio);
-			return `${generateImgUrl(source, imgWidth, imgHeight)} ${dpr}x`;
-		})
-		.join(', ');
-}
-
-// Generate image source for fallback
-function generateImgSrc(
-	source: string,
-	screenRange: (typeof screenRanges)[0],
-	isMobile: boolean
-): string {
-	const columns = isMobile ? 6 : 12;
-	const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
-	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
-	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
-	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
-
-	const width = calculateImageWidth(containerWidth, columns, span, gridGap);
-	const height = calculateImageHeight(width, ratio);
-
-	return generateImgUrl(source, width, height);
-}
 
 // Calculate final image dimensions for markup
 function getCalculatedWidth() {
@@ -335,8 +355,8 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 				return (
 					<source
 						srcset={
-							isProd || isNetlify
-								? generateSrcSet(source, range, isMobile)
+							useNetlifyImageProcessing
+								? createProductionSrcSet(source, range, isMobile)
 								: source
 						}
 						media={range.mediaQuery}
@@ -345,8 +365,8 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 			})
 		}
 		<img
-			src={isProd || isNetlify
-				? generateImgSrc(
+			src={useNetlifyImageProcessing
+				? createProductionImageSrc(
 						sourceDesktop,
 						screenRanges[screenRanges.length - 1],
 						false
@@ -392,30 +412,22 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 	}
 
 	.thumbhash {
-		@apply absolute inset-0 z-0 bg-cover bg-center;
-		transition: opacity 0.3s ease-out;
+		@apply absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-300 ease-out;
 	}
 
 	.image-loaded .thumbhash {
-		opacity: 0;
+		@apply opacity-0;
 	}
 
 	picture {
-		@apply block;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
+		@apply absolute left-0 top-0 block h-full w-full;
 	}
 
 	picture img {
-		@apply block h-full w-full object-cover;
-		opacity: 0;
-		transition: opacity 0.3s ease-in;
+		@apply block h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-in;
 	}
 
 	picture img.loaded {
-		opacity: 1;
+		@apply opacity-100;
 	}
 </style>
