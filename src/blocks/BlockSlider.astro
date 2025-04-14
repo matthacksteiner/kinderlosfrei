@@ -30,6 +30,7 @@ const arrows = hasControl('arrows');
 const dots = hasControl('dots');
 const line = hasControl('line');
 const autoplay = hasControl('autoplay');
+const ticker = hasControl('ticker');
 const full = hasControl('full') ? 'h-screen' : null;
 const overlay = toggle && hasControl('overlay') ? 'overlay' : null;
 
@@ -39,7 +40,12 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 
 <section
 	id={metadata?.identifier || undefined}
-	class:list={['blockSlider', 'blocks', metadata?.classes]}
+	class:list={[
+		'blockSlider',
+		'blocks',
+		metadata?.classes,
+		ticker ? 'ticker-mode' : '',
+	]}
 	{...metadata?.attributes}
 	data-controls={controls}
 	data-time={time}
@@ -85,7 +91,7 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 			}
 		</div>
 		{
-			arrows && (
+			arrows && !ticker && (
 				<nav>
 					<div class:list={[`text--${color}`, 'swiper-button-next']} />
 					<div class:list={[`text--${color}`, 'swiper-button-prev']} />
@@ -93,7 +99,7 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 			)
 		}
 		{
-			(dots || line) && (
+			(dots || line) && !ticker && (
 				<div
 					class:list={['swiper-pagination', `swiper-pagination--${color}`]}
 				/>
@@ -135,6 +141,7 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 			const line = controls?.includes('line');
 			const time = blockSlider?.dataset.time;
 			const autoplay = controls?.includes('autoplay');
+			const ticker = controls?.includes('ticker');
 			const effect = blockSlider?.dataset.effect;
 			const direction = blockSlider?.dataset.direction;
 			const viewMobile = blockSlider?.dataset.viewmobile
@@ -154,13 +161,10 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 				const direction =
 					blockSlider?.dataset.direction !== 'ltr' ? 'rtl' : 'ltr';
 				swiperSlider?.setAttribute('dir', direction);
-				const swiper = new Swiper(swiperSlider, {
-					...(autoplay && {
-						autoplay: {
-							delay: parseInt(time),
-						},
-					}),
-					centeredSlidesBounds: true,
+
+				// Configure Swiper options
+				const swiperOptions: Swiper.SwiperOptions = {
+					centeredSlidesBounds: !ticker,
 					slidesPerView: parseFloat(viewMobile),
 					spaceBetween: parseInt(viewPaddingMobile),
 					effect: effect === 'fade' ? 'fade' : 'slide',
@@ -179,7 +183,25 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 							spaceBetween: parseInt(viewPaddingDesktop),
 						},
 					},
-				});
+				};
+
+				// Configure ticker mode
+				if (ticker) {
+					swiperOptions.loop = true;
+					swiperOptions.speed = parseInt(time);
+					swiperOptions.autoplay = {
+						delay: 0,
+						disableOnInteraction: false,
+					};
+					swiperOptions.allowTouchMove = false;
+					swiperOptions.loopAdditionalSlides = 10;
+				} else if (autoplay) {
+					swiperOptions.autoplay = {
+						delay: parseInt(time),
+					};
+				}
+
+				const swiper = new Swiper(swiperSlider, swiperOptions);
 			}
 		}
 	});
@@ -199,6 +221,15 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 		&:before {
 			@apply absolute left-0 top-0 z-10 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
 		}
+	}
+
+	/* Ticker mode styles */
+	.ticker-mode .swiperSlider {
+		overflow: hidden;
+	}
+
+	.ticker-mode .swiper-wrapper {
+		transition-timing-function: linear !important;
 	}
 
 	.swiper-pagination {
