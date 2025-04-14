@@ -67,7 +67,8 @@ export default function fontDownloader() {
 							try {
 								const fontResponse = await fetch(format.url);
 								if (fontResponse.ok) {
-									const buffer = await fontResponse.buffer();
+									const arrayBuffer = await fontResponse.arrayBuffer();
+									const buffer = Buffer.from(arrayBuffer);
 									fs.writeFileSync(
 										path.join(fontsDir, format.filename),
 										buffer
