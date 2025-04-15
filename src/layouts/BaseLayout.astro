@@ -55,19 +55,27 @@ const googleAnalyticsCode = global.googleAnalyticsCode;
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<KirbyMeta data={data} global={global} pageTitle={pageTitle} />
+
+		<!-- Add font CSS first so it's immediately available -->
+		<style set:html={fonts}></style>
+		<style set:html={sizes}></style>
+
 		{
-			fontsList.map((font) => (
-				<>
-					<link
-						rel="preload"
-						href={font.woff2}
-						as="font"
-						type="font/woff2"
-						crossorigin="anonymous"
-					/>
-				</>
-			))
+			/* Only preload woff2 fonts if they exist and will be used */
+			fontsList.map(
+				(font) =>
+					font.woff2 && (
+						<link
+							rel="preload"
+							href={font.woff2}
+							as="font"
+							type="font/woff2"
+							crossorigin="anonymous"
+						/>
+					)
+			)
 		}
+
 		<link
 			rel="icon"
 			type="image/svg+xml"
@@ -84,8 +92,6 @@ const googleAnalyticsCode = global.googleAnalyticsCode;
 		/>
 		<link rel="manifest" id="manifestPlaceholder" />
 		<meta name="theme-color" content={`${colorPrimary}`} />
-		<style set:html={fonts}></style>
-		<style set:html={sizes}></style>
 		<link rel="sitemap" href="/sitemap-index.xml" />
 		{
 			searchConsoleToggle && (

@@ -108,7 +108,23 @@ function createFontCSS(fontArray: FontItem[], isPreviewMode = false): FontData {
 		return { css: '', fonts: [] };
 	}
 
-	const css = fontArray
+	// Normalize font items to ensure consistent URLs
+	const normalizedFonts = fontArray
+		.map((item) => {
+			// Ensure font items have properly encoded URLs
+			return {
+				name: item.name,
+				woff: item.woff,
+				woff2: item.woff2,
+			};
+		})
+		.filter((item) => item.woff || item.woff2);
+
+	if (normalizedFonts.length === 0) {
+		return { css: '', fonts: [] };
+	}
+
+	const css = normalizedFonts
 		.map((item) => {
 			const sources: string[] = [];
 
@@ -146,7 +162,7 @@ function createFontCSS(fontArray: FontItem[], isPreviewMode = false): FontData {
 		.filter((css) => css !== '')
 		.join('');
 
-	return { css, fonts: fontArray };
+	return { css, fonts: normalizedFonts };
 }
 
 // Get fonts function
