@@ -1,7 +1,8 @@
 ---
 export const prerender = false;
 
-import { getData, getGlobal } from '@lib/api.js';
+import { getData, getGlobal } from '@lib/api';
+import type { GlobalData } from '@lib/api';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 import Section from '@components/Section.astro';
@@ -9,7 +10,6 @@ import Section from '@components/Section.astro';
 const API_URL = import.meta.env.KIRBY_URL;
 // Set environment variable for preview mode detection
 process.env.ASTRO_PATH = Astro.url.pathname;
-console.log('Preview mode activated, path:', process.env.ASTRO_PATH);
 
 const initialGlobal = await getGlobal();
 const prefixDefaultLocale = initialGlobal.prefixDefaultLocale;
@@ -30,8 +30,8 @@ if (!pagesResponse.ok) throw Astro.redirect('/404');
 const data = await pagesResponse.json();
 
 const global = currentLang
-	? await getData(`/${currentLang}/global.json`)
-	: await getData(`/global.json`);
+	? await getData<GlobalData>(`/${currentLang}/global.json`)
+	: await getData<GlobalData>(`/global.json`);
 
 const pageTitle = data.title;
 
@@ -47,7 +47,7 @@ if (data.intendedTemplate === 'section') {
 }
 
 // Prepare pagination information (if applicable)
-const pageSize = global.paginationElements;
+const pageSize = global.paginationElements || 10; // Default to 10 if not specified
 const currentPage = 1; // Modify this as needed if you have dynamic page numbers
 const lastPage = Math.ceil(items.length / pageSize);
 const paginatedItems = items.slice(0, pageSize); // Adjust pagination logic as needed
