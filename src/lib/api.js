@@ -1,14 +1,10 @@
 const API_URL = import.meta.env.KIRBY_URL;
 
 class KirbyApiError extends Error {
-	url;
-	status;
-
 	constructor(message, status, url) {
 		super(message);
 		this.status = status;
 		this.url = url;
-		this.message = message;
 		this.name = 'KirbyApiError';
 	}
 }
@@ -18,10 +14,10 @@ async function fetchData(uri) {
 	const response = await fetch(API_URL + uri, {
 		method: 'GET',
 	});
-	// console.log('Fetching', uri, response.status, response.statusText);
+
 	if (response.status !== 200) {
-		console.log('Error fetching', uri, response.status, response.statusText);
-		// throw new KirbyApiError(await response.text(), response.status, uri);
+		console.error('Error fetching', uri, response.status, response.statusText);
+		throw new KirbyApiError(await response.text(), response.status, uri);
 	}
 	return response.json();
 }
@@ -49,21 +45,70 @@ export async function getFrontendUrl() {
 	return global.frontendUrl;
 }
 
-// export the getFonts function
+// Create CSS for font sources
+function createFontCSS(fontArray, isPreviewMode = false) {
+	if (!fontArray || fontArray.length === 0) {
+		return { css: '', fonts: [] };
+	}
+
+	const css = fontArray
+		.map((item) => {
+			const sources = [];
+
+			// Handle font sources differently for preview mode
+			if (isPreviewMode) {
+				if (item.woff2) {
+					sources.push(
+						`url('/preview/font-proxy?url=${encodeURIComponent(
+							item.woff2
+						)}') format('woff2')`
+					);
+				}
+				if (item.woff) {
+					sources.push(
+						`url('/preview/font-proxy?url=${encodeURIComponent(
+							item.woff
+						)}') format('woff')`
+					);
+				}
+			} else {
+				if (item.woff2) sources.push(`url('${item.woff2}') format('woff2')`);
+				if (item.woff) sources.push(`url('${item.woff}') format('woff')`);
+			}
+
+			if (sources.length === 0) return '';
+
+			return `@font-face {
+				font-family: '${item.name}';
+				src: ${sources.join(',\n\t\t\t ')};
+				font-weight: normal;
+				font-style: normal;
+				font-display: swap;
+			}`;
+		})
+		.filter((css) => css !== '')
+		.join('');
+
+	return { css, fonts: fontArray };
+}
+
+// Get fonts function
 export async function getFonts() {
 	try {
-		let fontData;
-
-		// Check if we're in preview mode (SSR)
+		// Determine the environment
+		const isServer = typeof window === 'undefined';
 		const isPreviewMode =
-			typeof window === 'undefined' &&
+			isServer &&
 			process.env.ASTRO_PATH &&
 			process.env.ASTRO_PATH.includes('/preview/');
 
-		// In preview mode, get font data directly from the API
+		// Preview mode - get fonts from API
 		if (isPreviewMode) {
+			console.log('Loading fonts in preview mode');
 			const global = await getGlobal();
+
 			if (!global.font || global.font.length === 0) {
+				console.warn('No fonts found in global data for preview mode');
 				return { css: '', fonts: [] };
 			}
 
@@ -75,43 +120,11 @@ export async function getFonts() {
 				}))
 				.filter((item) => item.woff || item.woff2);
 
-			if (fontArray.length === 0) {
-				return { css: '', fonts: [] };
-			}
+			return createFontCSS(fontArray, true);
+		}
 
-			// Generate CSS with proxied URLs for preview mode
-			const css = fontArray
-				.map((item) => {
-					const sources = [];
-					if (item.woff2)
-						sources.push(
-							`url('/preview/font-proxy?url=${encodeURIComponent(
-								item.woff2
-							)}') format('woff2')`
-						);
-					if (item.woff)
-						sources.push(
-							`url('/preview/font-proxy?url=${encodeURIComponent(
-								item.woff
-							)}') format('woff')`
-						);
-
-					if (sources.length === 0) return '';
-
-					return `@font-face {
-						font-family: '${item.name}';
-						src: ${sources.join(',\n\t\t\t ')};
-						font-weight: normal;
-						font-style: normal;
-						font-display: swap;
-					}`;
-				})
-				.filter((css) => css !== '')
-				.join('');
-
-			return { css, fonts: fontArray };
-		} else if (typeof window === 'undefined') {
-			// Regular SSR environment (not preview)
+		// Server mode (not preview) - read from filesystem
+		else if (isServer) {
 			try {
 				const fs = await import('fs');
 				const path = await import('path');
@@ -122,64 +135,45 @@ export async function getFonts() {
 					'fonts.json'
 				);
 
-				if (fs.existsSync(fontsJsonPath)) {
-					const fontJson = fs.readFileSync(fontsJsonPath, 'utf8');
-					fontData = JSON.parse(fontJson);
-				} else {
+				if (!fs.existsSync(fontsJsonPath)) {
+					console.warn('Fonts file not found on server:', fontsJsonPath);
 					return { css: '', fonts: [] };
 				}
+
+				const fontJson = fs.readFileSync(fontsJsonPath, 'utf8');
+				const fontData = JSON.parse(fontJson);
+				return createFontCSS(fontData?.fonts || []);
 			} catch (error) {
+				console.error('Error reading fonts from filesystem:', error);
 				return { css: '', fonts: [] };
 			}
-		} else {
-			// Browser environment
+		}
+
+		// Browser mode - fetch from URL
+		else {
 			try {
 				const fontsUrl = new URL('/fonts/fonts.json', window.location.origin);
 				const response = await fetch(fontsUrl);
 
 				if (!response.ok) {
+					console.warn('Could not fetch fonts from browser');
 					return { css: '', fonts: [] };
 				}
 
-				fontData = await response.json();
+				const fontData = await response.json();
+				return createFontCSS(fontData?.fonts || []);
 			} catch (error) {
+				console.error('Error fetching fonts in browser:', error);
 				return { css: '', fonts: [] };
 			}
 		}
-
-		const fontArray = fontData?.fonts || [];
-
-		if (fontArray.length === 0) {
-			return { css: '', fonts: [] };
-		}
-
-		// Generate CSS for all downloaded fonts
-		const css = fontArray
-			.map((item) => {
-				const sources = [];
-				if (item.woff2) sources.push(`url('${item.woff2}') format('woff2')`);
-				if (item.woff) sources.push(`url('${item.woff}') format('woff')`);
-
-				if (sources.length === 0) return '';
-
-				return `@font-face {
-					font-family: '${item.name}';
-					src: ${sources.join(',\n\t\t\t ')};
-					font-weight: normal;
-					font-style: normal;
-					font-display: swap;
-				}`;
-			})
-			.filter((css) => css !== '')
-			.join('');
-
-		return { css, fonts: fontArray };
 	} catch (error) {
+		console.error('Unexpected error in getFonts:', error);
 		return { css: '', fonts: [] };
 	}
 }
 
-// export all font sizes
+// Generate CSS for font sizes
 export async function getSizes() {
 	const baseFontSize = 16;
 	const global = await getGlobal();

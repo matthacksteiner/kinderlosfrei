@@ -7,7 +7,9 @@ import Layouts from '@components/Layouts.astro';
 import Section from '@components/Section.astro';
 
 const API_URL = import.meta.env.KIRBY_URL;
+// Set environment variable for preview mode detection
 process.env.ASTRO_PATH = Astro.url.pathname;
+console.log('Preview mode activated, path:', process.env.ASTRO_PATH);
 
 const initialGlobal = await getGlobal();
 const prefixDefaultLocale = initialGlobal.prefixDefaultLocale;
