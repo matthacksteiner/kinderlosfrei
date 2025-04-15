@@ -79,12 +79,22 @@ export async function getFonts() {
 				return { css: '', fonts: [] };
 			}
 
-			// Generate CSS with remote URLs for preview mode
+			// Generate CSS with proxied URLs for preview mode
 			const css = fontArray
 				.map((item) => {
 					const sources = [];
-					if (item.woff2) sources.push(`url('${item.woff2}') format('woff2')`);
-					if (item.woff) sources.push(`url('${item.woff}') format('woff')`);
+					if (item.woff2)
+						sources.push(
+							`url('/preview/font-proxy?url=${encodeURIComponent(
+								item.woff2
+							)}') format('woff2')`
+						);
+					if (item.woff)
+						sources.push(
+							`url('/preview/font-proxy?url=${encodeURIComponent(
+								item.woff
+							)}') format('woff')`
+						);
 
 					if (sources.length === 0) return '';
 
