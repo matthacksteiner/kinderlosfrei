@@ -7,6 +7,7 @@ import Layouts from '@components/Layouts.astro';
 import Section from '@components/Section.astro';
 
 const API_URL = import.meta.env.KIRBY_URL;
+process.env.ASTRO_PATH = Astro.url.pathname;
 
 const initialGlobal = await getGlobal();
 const prefixDefaultLocale = initialGlobal.prefixDefaultLocale;
