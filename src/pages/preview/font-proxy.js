@@ -34,14 +34,37 @@ export async function GET({ request, url }) {
 			status: 200,
 			headers: {
 				'Content-Type': contentType,
-				'Cache-Control': 'public, max-age=31536000',
-				'Access-Control-Allow-Origin': '*', // Allow cross-origin requests
+				// Set long cache time
+				'Cache-Control': 'public, max-age=31536000, immutable',
+				// Set permissive CORS headers to allow cross-origin requests
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Methods': 'GET, OPTIONS',
+				'Access-Control-Allow-Headers': 'Content-Type',
+				'Access-Control-Max-Age': '86400',
+				// Add a Vary header to vary the cache based on the Origin header
+				Vary: 'Origin',
 			},
 		});
 	} catch (error) {
 		console.error('Error proxying font:', error);
 		return new Response(`Error proxying font: ${error.message}`, {
 			status: 500,
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+			},
 		});
 	}
+}
+
+// Also handle OPTIONS requests for CORS preflight
+export function OPTIONS() {
+	return new Response(null, {
+		status: 204,
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'GET, OPTIONS',
+			'Access-Control-Allow-Headers': 'Content-Type',
+			'Access-Control-Max-Age': '86400',
+		},
+	});
 }

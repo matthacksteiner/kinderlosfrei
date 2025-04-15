@@ -17,6 +17,8 @@ export interface FontItem {
 	name: string;
 	woff?: string;
 	woff2?: string;
+	originalWoff?: string;
+	originalWoff2?: string;
 }
 
 export interface FontData {
@@ -176,7 +178,7 @@ export async function getFonts(): Promise<FontData> {
 			(process.env.ASTRO_PATH.includes('/preview/') ||
 				process.env.ASTRO_PATH === '/preview');
 
-		// Preview mode - get fonts from API
+		// Preview mode - get fonts from API and use proxy
 		if (isPreviewMode) {
 			const global = await getGlobal();
 
@@ -184,55 +186,100 @@ export async function getFonts(): Promise<FontData> {
 				return { css: '', fonts: [] };
 			}
 
+			// Create font array with proxy URLs for both CSS and preload
 			const fontArray = global.font
-				.map((item) => ({
-					name: item.name,
-					woff: item.url1,
-					woff2: item.url2,
-				}))
-				.filter((item) => item.woff || item.woff2);
+				.map((item) => {
+					// For preview mode, we don't use the original URLs at all
+					// Instead, we send empty URLs in the fontArray so they don't get preloaded directly
+					// The CSS will use the proxy URLs instead
+					return {
+						name: item.name,
+						// Include original URLs as data attributes for debugging
+						woff: '', // Don't preload the direct URL
+						woff2: '', // Don't preload the direct URL
+						originalWoff: item.url1,
+						originalWoff2: item.url2,
+					};
+				})
+				.filter((item) => item.originalWoff || item.originalWoff2);
 
-			return createFontCSS(fontArray, true);
+			// Use special handling for preview mode to generate CSS with proxied URLs
+			const css = fontArray
+				.map((item) => {
+					const sources: string[] = [];
+
+					if (item.originalWoff2) {
+						sources.push(
+							`url('/preview/font-proxy?url=${encodeURIComponent(
+								item.originalWoff2
+							)}') format('woff2')`
+						);
+					}
+
+					if (item.originalWoff) {
+						sources.push(
+							`url('/preview/font-proxy?url=${encodeURIComponent(
+								item.originalWoff
+							)}') format('woff')`
+						);
+					}
+
+					if (sources.length === 0) return '';
+
+					return `@font-face {
+						font-family: '${item.name}';
+						src: ${sources.join(',\n\t\t\t ')};
+						font-weight: normal;
+						font-style: normal;
+						font-display: swap;
+					}`;
+				})
+				.filter((css) => css !== '')
+				.join('');
+
+			return { css, fonts: fontArray };
 		}
 
-		// Server mode (not preview) - read from filesystem
-		else if (isServer) {
-			try {
-				const fs = await import('fs');
-				const path = await import('path');
-				const fontsJsonPath = path.join(
-					process.cwd(),
-					'public',
-					'fonts',
-					'fonts.json'
-				);
-
-				if (!fs.existsSync(fontsJsonPath)) {
-					return { css: '', fonts: [] };
-				}
-
-				const fontJson = fs.readFileSync(fontsJsonPath, 'utf8');
-				const fontData = JSON.parse(fontJson);
-				return createFontCSS(fontData?.fonts || []);
-			} catch (error) {
-				return { css: '', fonts: [] };
-			}
-		}
-
-		// Browser mode - fetch from URL
+		// Regular SSR or browser mode - use normal font handling
 		else {
-			try {
-				const fontsUrl = new URL('/fonts/fonts.json', window.location.origin);
-				const response = await fetch(fontsUrl);
+			// Server mode (not preview) - read from filesystem
+			if (isServer) {
+				try {
+					const fs = await import('fs');
+					const path = await import('path');
+					const fontsJsonPath = path.join(
+						process.cwd(),
+						'public',
+						'fonts',
+						'fonts.json'
+					);
 
-				if (!response.ok) {
+					if (!fs.existsSync(fontsJsonPath)) {
+						return { css: '', fonts: [] };
+					}
+
+					const fontJson = fs.readFileSync(fontsJsonPath, 'utf8');
+					const fontData = JSON.parse(fontJson);
+					return createFontCSS(fontData?.fonts || []);
+				} catch (error) {
 					return { css: '', fonts: [] };
 				}
+			}
+			// Browser mode - fetch from URL
+			else {
+				try {
+					const fontsUrl = new URL('/fonts/fonts.json', window.location.origin);
+					const response = await fetch(fontsUrl);
 
-				const fontData = await response.json();
-				return createFontCSS(fontData?.fonts || []);
-			} catch (error) {
-				return { css: '', fonts: [] };
+					if (!response.ok) {
+						return { css: '', fonts: [] };
+					}
+
+					const fontData = await response.json();
+					return createFontCSS(fontData?.fonts || []);
+				} catch (error) {
+					return { css: '', fonts: [] };
+				}
 			}
 		}
 	} catch (error) {

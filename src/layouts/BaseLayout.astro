@@ -15,6 +15,13 @@ const fontsList = fontsData.fonts;
 const sizes = await getSizes();
 const lang = data.lang;
 
+// Check if we're in preview mode to avoid preloading fonts
+const isPreviewMode =
+	typeof window === 'undefined' &&
+	process.env.ASTRO_PATH &&
+	(process.env.ASTRO_PATH.includes('/preview/') ||
+		process.env.ASTRO_PATH === '/preview');
+
 const colorPrimary = global.colorPrimary;
 const colorSecondary = global.colorSecondary;
 const colorTertiary = global.colorTertiary;
@@ -62,18 +69,19 @@ const googleAnalyticsCode = global.googleAnalyticsCode;
 
 		{
 			/* Only preload woff2 fonts if they exist and will be used */
-			fontsList.map(
-				(font) =>
-					font.woff2 && (
-						<link
-							rel="preload"
-							href={font.woff2}
-							as="font"
-							type="font/woff2"
-							crossorigin="anonymous"
-						/>
-					)
-			)
+			!isPreviewMode &&
+				fontsList.map(
+					(font) =>
+						font.woff2 && (
+							<link
+								rel="preload"
+								href={font.woff2}
+								as="font"
+								type="font/woff2"
+								crossorigin="anonymous"
+							/>
+						)
+				)
 		}
 
 		<link
