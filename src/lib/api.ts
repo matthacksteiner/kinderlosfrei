@@ -1,5 +1,9 @@
 const API_URL = import.meta.env.KIRBY_URL;
 
+// ============================================================================
+// TYPE DEFINITIONS
+// ============================================================================
+
 export interface KirbyError {
 	status: number;
 	url: string;
@@ -11,6 +15,21 @@ export interface LanguageData {
 	defaultLang: string;
 	allLang: string[];
 	prefixDefaultLocale: boolean;
+}
+
+export interface GlobalData {
+	translations: Record<string, any>;
+	defaultLang: string;
+	allLang: string[];
+	prefixDefaultLocale: boolean;
+	frontendUrl: string;
+	paginationElements?: number;
+	font?: Array<{
+		name: string;
+		url1?: string; // woff
+		url2?: string; // woff2
+	}>;
+	fontSize: FontSizeItem[];
 }
 
 export interface FontItem {
@@ -41,20 +60,21 @@ export interface FontSizeItem {
 	decoration: string;
 }
 
-export interface GlobalData {
-	translations: Record<string, any>;
-	defaultLang: string;
-	allLang: string[];
-	prefixDefaultLocale: boolean;
-	frontendUrl: string;
-	paginationElements?: number;
-	font?: Array<{
-		name: string;
-		url1?: string; // woff
-		url2?: string; // woff2
-	}>;
-	fontSize: FontSizeItem[];
+export interface PageData {
+	title: string;
+	uri: string;
+	intendedTemplate: string;
+	layouts?: any[];
+	[key: string]: any;
 }
+
+export interface SectionData extends PageData {
+	items: PageData[];
+}
+
+// ============================================================================
+// ERROR HANDLING
+// ============================================================================
 
 class KirbyApiError extends Error implements KirbyError {
 	url: string;
@@ -67,6 +87,10 @@ class KirbyApiError extends Error implements KirbyError {
 		this.name = 'KirbyApiError';
 	}
 }
+
+// ============================================================================
+// CORE API FUNCTIONS
+// ============================================================================
 
 // Reusable function for making GET requests
 async function fetchData<T>(uri: string): Promise<T> {
@@ -81,13 +105,27 @@ async function fetchData<T>(uri: string): Promise<T> {
 	return response.json() as Promise<T>;
 }
 
+// Generic data fetching function
 export async function getData<T>(uri: string): Promise<T> {
 	return fetchData<T>(uri);
 }
 
+// ============================================================================
+// GLOBAL DATA FUNCTIONS
+// ============================================================================
+
 export async function getGlobal(): Promise<GlobalData> {
 	return fetchData<GlobalData>('/global.json');
 }
+
+export async function getFrontendUrl(): Promise<string> {
+	const global = await getGlobal();
+	return global.frontendUrl;
+}
+
+// ============================================================================
+// LANGUAGE FUNCTIONS
+// ============================================================================
 
 export async function getLanguages(): Promise<LanguageData> {
 	const global = await getGlobal();
@@ -99,10 +137,56 @@ export async function getLanguages(): Promise<LanguageData> {
 	};
 }
 
-export async function getFrontendUrl(): Promise<string> {
-	const global = await getGlobal();
-	return global.frontendUrl;
+// ============================================================================
+// PAGE AND CONTENT FUNCTIONS
+// ============================================================================
+
+// Get all pages for a specific language or default
+export async function getAllPages(lang?: string): Promise<PageData[]> {
+	const path = lang ? `/${lang}/index.json` : '/index.json';
+	return fetchData<PageData[]>(path);
 }
+
+// Get specific page data
+export async function getPage(slug: string, lang?: string): Promise<PageData> {
+	const path = lang ? `/${lang}/${slug}.json` : `/${slug}.json`;
+	return fetchData<PageData>(path);
+}
+
+// Get section with its items
+export async function getSection(
+	section: string,
+	lang?: string
+): Promise<SectionData> {
+	const path = lang ? `/${lang}/${section}.json` : `/${section}.json`;
+	return fetchData<SectionData>(path);
+}
+
+// Get sections from all pages
+export async function getSections(lang?: string): Promise<PageData[]> {
+	const pages = await getAllPages(lang);
+	return pages.filter((page) => page.intendedTemplate === 'section');
+}
+
+// Advanced function to get a page with optional redirection for missing pages
+export async function getPageWithFallback(
+	slug: string,
+	lang?: string,
+	fallbackUrl = '/404'
+): Promise<PageData> {
+	try {
+		return await getPage(slug, lang);
+	} catch (error) {
+		if (error instanceof KirbyApiError && error.status === 404) {
+			throw new Error(`REDIRECT:${fallbackUrl}`);
+		}
+		throw error;
+	}
+}
+
+// ============================================================================
+// FONT FUNCTIONS
+// ============================================================================
 
 // Create CSS for font sources
 function createFontCSS(fontArray: FontItem[], isPreviewMode = false): FontData {

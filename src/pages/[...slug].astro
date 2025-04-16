@@ -1,13 +1,11 @@
 ---
-import { getGlobal, getData } from '@lib/api';
+import { getGlobal, getPage, getAllPages, type PageData } from '@lib/api';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 
 export async function getStaticPaths() {
-	const API_URL = import.meta.env.KIRBY_URL;
-	const pagesResponse = await fetch(API_URL + '/index.json');
-	const data = await pagesResponse.json();
-	return data.map((item) => {
+	const pages = await getAllPages();
+	return pages.map((item) => {
 		return {
 			params: {
 				slug: item.uri,
@@ -17,7 +15,7 @@ export async function getStaticPaths() {
 }
 const { slug } = Astro.params;
 const global = await getGlobal();
-const data = await getData(`/${slug}.json`);
+const data = await getPage(slug as string);
 const pageTitle = data.title;
 ---
 

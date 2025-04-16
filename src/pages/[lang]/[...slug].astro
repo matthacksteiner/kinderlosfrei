@@ -1,24 +1,33 @@
 ---
-import { getData, getLanguages } from '@lib/api';
+import {
+	getPage,
+	getLanguages,
+	getGlobal,
+	getSections,
+	getAllPages,
+	getData,
+	type PageData,
+	type GlobalData,
+} from '@lib/api';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 
 export async function getStaticPaths() {
-	const global = await getData(`/global.json`);
+	const global = await getGlobal();
 	const prefixDefaultLocale = global.prefixDefaultLocale;
-	const API_URL = import.meta.env.KIRBY_URL;
 	const languages = await getLanguages();
 	const allLang = !prefixDefaultLocale
-		? languages.translations.map(({ code }) => code)
-		: languages.allLang.map(({ code }) => code);
+		? languages.translations.map((lang: any) => lang.code)
+		: languages.allLang.map((lang: any) => lang.code);
 
 	let paths: { params: { lang: string; slug: string } }[] = [];
 
 	for (const lang of allLang) {
-		const pagesResponse = await fetch(API_URL + '/' + lang + '/index.json');
-		const data = await pagesResponse.json();
+		// Use the new API function to get all pages
+		const pages = await getAllPages(lang);
+
 		paths.push(
-			...data.map((item) => ({
+			...pages.map((item) => ({
 				params: {
 					lang: lang,
 					slug: item.uri,
@@ -31,8 +40,8 @@ export async function getStaticPaths() {
 }
 
 const { lang, slug } = Astro.params;
-const global = await getData(`/${lang}/global.json`);
-const data = await getData(`/${lang}/${slug}.json`);
+const global = await getData<GlobalData>(`/${lang}/global.json`);
+const data = await getPage(slug as string, lang);
 const pageTitle = data.title;
 ---
 
