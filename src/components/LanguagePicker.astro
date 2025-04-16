@@ -1,21 +1,77 @@
 ---
-const { global, class: className, ...rest } = Astro.props;
+const { global, class: className } = Astro.props;
 const { lang } = Astro.params;
 import { Icon } from 'astro-icon/components';
-const defaultLang = global.defaultLang;
+import { getAllPages } from '@lib/api';
+import { checkIsHome } from '@lib/helpers.js';
+
+// Follow the same pattern as in Section.astro and slug files
+const defaultLang = global.defaultLang.code;
 const allLangs = global.allLang;
-const translations = global.translations;
+const translations = global.translations.map((lang) => lang.code);
+const prefixDefaultLocale = global.prefixDefaultLocale;
 const headerFont = global.headerFont;
 const headerFontSize = global.headerFontSize;
-const prefixDefaultLocale = global.prefixDefaultLocale;
-
 const headerColor = global.headerColor;
 const headerBackground = global.headerBackground;
 
-// Determine the currently selected language; if none is provided, use the default.
-const currentLang = lang || defaultLang.code;
+// Determine the currently selected language
+const currentLang = lang || defaultLang;
 const selectedLang =
-	allLangs.find((l) => l.code === currentLang) || defaultLang;
+	allLangs.find((l) => l.code === currentLang) || global.defaultLang;
+
+// Parse the current URL pathname
+const pathname = new URL(Astro.request.url).pathname.split('/');
+const isHome = checkIsHome({
+	url: { pathname: Astro.url.pathname },
+	currentLocale: currentLang,
+});
+
+// Get all pages for translations
+const allPages = await getAllPages(currentLang);
+
+// Extract the current page slug based on URL structure
+let currentPageSlug = '';
+if (isHome) {
+	currentPageSlug = 'home';
+} else if (translations.includes(pathname[1])) {
+	// URL format: /[lang]/[page]
+	currentPageSlug = pathname.slice(2).join('/') || 'home';
+} else {
+	// URL format: /[page]
+	currentPageSlug = pathname.slice(1).join('/');
+}
+
+// Find the current page by its uri in the current language
+const currentPage = allPages.find((page) => page.uri === currentPageSlug);
+
+// Method to find translations for different languages
+function getTranslatedPageUrl(targetLangCode) {
+	// Handle home page as a special case
+	if (isHome || currentPageSlug === 'home') {
+		return targetLangCode === defaultLang && !prefixDefaultLocale
+			? '/'
+			: `/${targetLangCode}`;
+	}
+
+	// If we have a current page with translations
+	if (currentPage && currentPage.translations) {
+		// The translations object maps target language code to translated URI
+		const translatedUri = currentPage.translations[targetLangCode];
+
+		if (translatedUri) {
+			// Format the URL based on language settings
+			return targetLangCode === defaultLang && !prefixDefaultLocale
+				? `/${translatedUri}`
+				: `/${targetLangCode}/${translatedUri}`;
+		}
+	}
+
+	// If no translation found or no current page, fallback to language root
+	return targetLangCode === defaultLang && !prefixDefaultLocale
+		? '/'
+		: `/${targetLangCode}`;
+}
 ---
 
 {
@@ -57,21 +113,16 @@ const selectedLang =
 				{allLangs
 					// Remove the currently selected language from the options.
 					.filter((language) => language.code !== selectedLang.code)
-					.map((language) => {
-						const langCode = language.code;
-						// Construct the URL for the language.
-						const href =
-							prefixDefaultLocale && langCode === defaultLang.code
-								? '/'
-								: `/${langCode === defaultLang.code ? '' : langCode}`;
-						return (
-							<li>
-								<a href={href} class="block hover:opacity-50">
-									{language.code}
-								</a>
-							</li>
-						);
-					})}
+					.map((language) => (
+						<li>
+							<a
+								href={getTranslatedPageUrl(language.code)}
+								class="block hover:opacity-50"
+							>
+								{language.code}
+							</a>
+						</li>
+					))}
 			</ul>
 		</details>
 	)
