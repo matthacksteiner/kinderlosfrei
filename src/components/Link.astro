@@ -20,8 +20,6 @@
  * ```
  */
 
-import { checkIsHome } from '@lib/helpers.js';
-
 interface BaseLink {
 	type: 'url' | 'page' | 'file' | 'email' | 'tel';
 	href: string;
@@ -51,7 +49,7 @@ interface Props {
 const { link, class: className, ...rest } = Astro.props;
 const { lang } = Astro.params;
 const currentLang = lang;
-const isHome = checkIsHome(Astro);
+
 // Input validation
 if (!link) {
 	throw new Error('Missing link prop in Link.astro');
@@ -71,13 +69,22 @@ switch (link.type) {
 		href = link.href;
 		break;
 	case 'page':
-		href = (link as PageLink).hash
-			? isHome
-				? `${currentLang ? `/${currentLang}` : ''}#${(link as PageLink).hash}`
-				: `${currentLang ? `/${currentLang}/` : ''}${(link as PageLink).uri}#${
-						(link as PageLink).hash
-				  }`
-			: `${currentLang ? `/${currentLang}/` : ''}${(link as PageLink).uri}`;
+		// Extract URI and hash from the page link, defaulting URI to empty string if not provided
+		const { uri = '', hash } = link as PageLink;
+
+		if (uri === '') {
+			// For home page (empty URI), construct URL with just the language prefix
+			// Format: /language or / (if no language)
+			// Add hash fragment if it exists
+			href = `${currentLang ? `/${currentLang}` : ''}${hash ? `#${hash}` : ''}`;
+		} else {
+			// For other pages, construct URL with language prefix and URI
+			// Format: /language/uri or /uri (if no language)
+			// Add hash fragment if it exists
+			href = `${currentLang ? `/${currentLang}/` : ''}${uri}${
+				hash ? `#${hash}` : ''
+			}`;
+		}
 		break;
 	case 'file':
 		href = link.href;
