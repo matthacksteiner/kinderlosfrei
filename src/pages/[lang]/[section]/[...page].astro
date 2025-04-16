@@ -1,19 +1,27 @@
 ---
-import { getData, getLanguages } from '@lib/api';
+import {
+	getData,
+	getLanguages,
+	getGlobal,
+	getSection,
+	getPage,
+	type GlobalData,
+	type PageData,
+} from '@lib/api';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Section from '@components/Section.astro';
 
 export async function getStaticPaths({ paginate }) {
 	const API_URL = import.meta.env.KIRBY_URL;
 
-	const global = await getData(`/global.json`);
+	const global = await getGlobal();
 	const elements = global.paginationElements;
 
 	const prefixDefaultLocale = global.prefixDefaultLocale;
 	const languages = await getLanguages();
 	const allLang = !prefixDefaultLocale
-		? languages.translations.map(({ code }) => code)
-		: languages.allLang.map(({ code }) => code);
+		? languages.translations.map((lang: any) => lang.code)
+		: languages.allLang.map((lang: any) => lang.code);
 
 	let paths: Array<{ params: { lang: string; section: string }; props?: any }> =
 		[];
@@ -46,8 +54,8 @@ export async function getStaticPaths({ paginate }) {
 
 const { page } = Astro.props;
 const { lang, section } = Astro.params;
-const data = await getData(`/${lang}/${section}.json`);
-const global = await getData(`/${lang}/global.json`);
+const data = await getPage(section as string, lang as string);
+const global = await getData<GlobalData>(`/${lang}/global.json`);
 const pageTitle = data.title;
 ---
 

@@ -1,8 +1,8 @@
 ---
-import { getData, getGlobal } from '@lib/api';
+import { getData, getGlobal, type PageData } from '@lib/api';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
-const data = await getData(`/error.json`);
+const data = await getData<PageData>(`/error.json`);
 const global = await getGlobal();
 const pageTitle = data.title;
 ---

@@ -1,5 +1,11 @@
 ---
-import { getGlobal, getData } from '@lib/api';
+import {
+	getGlobal,
+	getPage,
+	getSections,
+	type PageData,
+	type GlobalData,
+} from '@lib/api';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Section from '@components/Section.astro';
 
@@ -39,7 +45,7 @@ const global = await getGlobal();
 const { page } = Astro.props;
 const params = Astro.params;
 const section = params.section;
-const data = await getData(`/${section}.json`);
+const data = await getPage(section as string);
 const pageTitle = data.title;
 ---
 
