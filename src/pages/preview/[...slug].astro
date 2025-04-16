@@ -17,23 +17,9 @@ import Section from '@components/Section.astro';
 // Set environment variable for preview mode detection
 process.env.ASTRO_PATH = Astro.url.pathname;
 
-const initialGlobal = await getGlobal();
-const prefixDefaultLocale = initialGlobal.prefixDefaultLocale;
-const defaultLang = initialGlobal.defaultLang;
-const currentLang = Astro.currentLocale;
-const { slug } = Astro.params;
-
-let endpoint;
-if (prefixDefaultLocale && currentLang === defaultLang) {
-	endpoint = 'home';
-} else {
-	endpoint = slug && slug !== currentLang ? slug : 'home';
-}
-
-// Initialize variables that will be used in the template
 let data: PageData;
 let global: GlobalData;
-let pageTitle: string;
+let pageTitle: string = 'Preview';
 let sectionData: PageData | null = null;
 let items: PageData[] = [];
 let paginatedItems: PageData[] = [];
@@ -50,46 +36,83 @@ let pageUrls: {
 };
 
 try {
-	// Get the page data using our new utility function
-	data = await getPageWithFallback(endpoint, currentLang);
+	const initialGlobal = await getGlobal();
+	const prefixDefaultLocale = initialGlobal.prefixDefaultLocale;
+	const defaultLang = initialGlobal.defaultLang;
+	const currentLang = Astro.currentLocale;
+	const { slug } = Astro.params;
 
-	// Get global data
-	global = currentLang
-		? await getData<GlobalData>(`/${currentLang}/global.json`)
-		: await getData<GlobalData>(`/global.json`);
-
-	pageTitle = data.title;
-
-	// Handle sections and items if needed
-	if (data.intendedTemplate === 'section') {
-		const sectionResult = await getSection(endpoint, currentLang);
-		items = sectionResult.items || [];
-		sectionData = data;
+	let endpoint;
+	if (prefixDefaultLocale && currentLang === defaultLang) {
+		endpoint = 'home';
+	} else {
+		endpoint = slug && slug !== currentLang ? slug : 'home';
 	}
 
-	// Prepare pagination information
-	const pageSize = global.paginationElements || 10;
-	currentPage = 1;
-	lastPage = Math.ceil(items.length / pageSize);
-	paginatedItems = items.slice(0, pageSize);
+	try {
+		// Get the page data using our new utility function
+		data = await getPageWithFallback(endpoint, currentLang);
 
-	// Pagination URLs
-	const currentUrl = `${endpoint}`;
-	const prevUrl =
-		currentPage > 1 ? `${endpoint}/page/${currentPage - 1}` : null;
-	const nextUrl =
-		currentPage < lastPage ? `${endpoint}/page/${currentPage + 1}` : null;
-	pageUrls = {
-		current: currentUrl,
-		prev: prevUrl,
-		next: nextUrl,
+		// Get global data
+		global = currentLang
+			? await getData<GlobalData>(`/${currentLang}/global.json`)
+			: await getData<GlobalData>(`/global.json`);
+
+		pageTitle = data.title;
+
+		// Handle sections and items if needed
+		if (data.intendedTemplate === 'section') {
+			const sectionResult = await getSection(endpoint, currentLang);
+			items = sectionResult.items || [];
+			sectionData = data;
+		}
+
+		// Prepare pagination information
+		const pageSize = global.paginationElements || 10;
+		currentPage = 1;
+		lastPage = Math.ceil(items.length / pageSize);
+		paginatedItems = items.slice(0, pageSize);
+
+		// Pagination URLs
+		const currentUrl = `${endpoint}`;
+		const prevUrl =
+			currentPage > 1 ? `${endpoint}/page/${currentPage - 1}` : null;
+		const nextUrl =
+			currentPage < lastPage ? `${endpoint}/page/${currentPage + 1}` : null;
+		pageUrls = {
+			current: currentUrl,
+			prev: prevUrl,
+			next: nextUrl,
+		};
+	} catch (innerError) {
+		console.error('Inner error in preview route:', innerError);
+
+		// Get error page data for 404 pages
+		data = await getData<PageData>(`/error.json`);
+		global = currentLang
+			? await getData<GlobalData>(`/${currentLang}/global.json`)
+			: await getData<GlobalData>(`/global.json`);
+		pageTitle = data.title || 'Page Not Found';
+	}
+} catch (outerError) {
+	console.error('Outer error in preview route:', outerError);
+
+	// Fallback to minimal data if even global data can't be loaded
+	data = {
+		title: 'Error',
+		uri: 'error',
+		intendedTemplate: 'error',
+		layouts: [],
 	};
-} catch (error) {
-	if (error.message?.startsWith('REDIRECT:')) {
-		const redirectUrl = error.message.split('REDIRECT:')[1];
-		throw Astro.redirect(redirectUrl);
-	}
-	throw error;
+	global = {
+		translations: {},
+		defaultLang: 'en',
+		allLang: ['en'],
+		prefixDefaultLocale: false,
+		frontendUrl: '',
+		fontSize: [],
+	};
+	pageTitle = 'Error';
 }
 ---
 
