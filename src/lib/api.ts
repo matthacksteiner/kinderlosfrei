@@ -195,7 +195,10 @@ export async function getPageWithFallback(
 // ============================================================================
 
 // Create CSS for font sources
-function createFontCSS(fontArray: FontItem[], isPreviewMode = false): FontData {
+function createFontCSS(
+	fontArray: FontItem[],
+	usePreviewProxy = false
+): FontData {
 	if (!fontArray || fontArray.length === 0) {
 		return { css: '', fonts: [] };
 	}
@@ -221,7 +224,7 @@ function createFontCSS(fontArray: FontItem[], isPreviewMode = false): FontData {
 			const sources: string[] = [];
 
 			// Handle font sources differently for preview mode
-			if (isPreviewMode) {
+			if (usePreviewProxy) {
 				if (item.woff2) {
 					sources.push(
 						`url('/preview/font-proxy?url=${encodeURIComponent(
@@ -260,16 +263,12 @@ function createFontCSS(fontArray: FontItem[], isPreviewMode = false): FontData {
 // Get fonts function
 export async function getFonts(): Promise<FontData> {
 	try {
-		// Determine the environment
-		const isServer = typeof window === 'undefined';
-		const isPreviewMode =
-			isServer &&
-			process.env.ASTRO_PATH &&
-			(process.env.ASTRO_PATH.includes('/preview/') ||
-				process.env.ASTRO_PATH === '/preview');
+		// Import preview mode check
+		const { isPreviewMode } = await import('@lib/preview');
+		const inPreviewMode = isPreviewMode();
 
 		// Preview mode - get fonts from API and use proxy
-		if (isPreviewMode) {
+		if (inPreviewMode) {
 			const global = await getGlobal();
 
 			if (!global.font || global.font.length === 0) {
@@ -333,7 +332,7 @@ export async function getFonts(): Promise<FontData> {
 		// Regular SSR or browser mode - use normal font handling
 		else {
 			// Server mode (not preview) - read from filesystem
-			if (isServer) {
+			if (typeof window === 'undefined') {
 				try {
 					const fs = await import('fs');
 					const path = await import('path');

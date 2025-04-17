@@ -1,5 +1,6 @@
 ---
 import { getFonts, getSizes } from '@lib/api';
+import { isPreviewMode } from '@lib/preview';
 import { toRem } from '@lib/helpers.js';
 import '@styles/global.css';
 import '@styles/custom.css';
@@ -16,11 +17,7 @@ const sizes = await getSizes();
 const lang = data.lang;
 
 // Check if we're in preview mode to avoid preloading fonts
-const isPreviewMode =
-	typeof window === 'undefined' &&
-	process.env.ASTRO_PATH &&
-	(process.env.ASTRO_PATH.includes('/preview/') ||
-		process.env.ASTRO_PATH === '/preview');
+const inPreviewMode = isPreviewMode();
 
 const colorPrimary = global.colorPrimary;
 const colorSecondary = global.colorSecondary;
@@ -69,7 +66,7 @@ const googleAnalyticsCode = global.googleAnalyticsCode;
 
 		{
 			/* Only preload woff2 fonts if they exist and will be used */
-			!isPreviewMode &&
+			!inPreviewMode &&
 				fontsList.map(
 					(font) =>
 						font.woff2 && (
