@@ -5,142 +5,129 @@ import {
 	getData,
 	getGlobal,
 	getPageWithFallback,
-	getSection,
+	getLanguages,
 	type GlobalData,
 	type PageData,
-	type SectionData,
 } from '@lib/api';
-import BaseLayout from '@layouts/BaseLayout.astro';
-import Layouts from '@components/Layouts.astro';
-import Section from '@components/Section.astro';
+import PageRenderer from '@components/PageRenderer.astro';
 
 // Set environment variable for preview mode detection
 process.env.ASTRO_PATH = Astro.url.pathname;
 
-let data: PageData;
-let global: GlobalData;
-let pageTitle: string = 'Preview';
-let sectionData: PageData | null = null;
-let items: PageData[] = [];
-let paginatedItems: PageData[] = [];
-let currentPage = 1;
-let lastPage = 1;
-let pageUrls: {
-	current: string;
-	prev: string | null;
-	next: string | null;
-} = {
-	current: '',
-	prev: null,
-	next: null,
-};
+// Variables to store our state
+let pageData: PageData | undefined;
+let globalData: GlobalData | undefined;
+let errorState: boolean = false;
+let sectionPageData: any = null;
+let currentLangCode: string | undefined;
+let endpointSlug: string = 'home';
 
 try {
-	const initialGlobal = await getGlobal();
-	const prefixDefaultLocale = initialGlobal.prefixDefaultLocale;
-	const defaultLang = initialGlobal.defaultLang;
-	const currentLang = Astro.currentLocale;
+	// Get the slug parameter from the URL
 	const { slug } = Astro.params;
 
-	let endpoint;
-	if (prefixDefaultLocale && currentLang === defaultLang) {
-		endpoint = 'home';
+	if (!slug) {
+		// Handle the root preview URL
+		currentLangCode = undefined; // Use default language
+		endpointSlug = 'home';
 	} else {
-		endpoint = slug && slug !== currentLang ? slug : 'home';
+		// Parse the path from the URL
+		const slugParts = slug.split('/');
+
+		// Get available languages from API
+		const languages = await getLanguages();
+		const langCodes = languages.allLang
+			.map((lang: any) => (typeof lang === 'string' ? lang : lang?.code || ''))
+			.filter(Boolean);
+
+		// Check if first segment is a language code
+		if (slugParts.length > 0 && langCodes.includes(slugParts[0])) {
+			currentLangCode = slugParts[0];
+			// Remove language from path
+			slugParts.shift();
+			endpointSlug = slugParts.length > 0 ? slugParts.join('/') : 'home';
+		} else {
+			// No language prefix, use the whole slug
+			currentLangCode = undefined; // Will use default
+			endpointSlug = slug;
+		}
 	}
 
 	try {
-		// Get the page data using our new utility function
-		data = await getPageWithFallback(endpoint, currentLang);
-
-		// Get global data
-		global = currentLang
-			? await getData<GlobalData>(`/${currentLang}/global.json`)
+		// Get the page data
+		pageData = await getPageWithFallback(endpointSlug, currentLangCode);
+		globalData = currentLangCode
+			? await getData<GlobalData>(`/${currentLangCode}/global.json`)
 			: await getData<GlobalData>(`/global.json`);
 
-		pageTitle = data.title;
+		// Handle section pages with pagination
+		if (pageData && pageData.intendedTemplate === 'section') {
+			const endpoint = currentLangCode
+				? `/${currentLangCode}/${endpointSlug}.json`
+				: `/${endpointSlug}.json`;
 
-		// Handle sections and items if needed
-		if (data.intendedTemplate === 'section') {
-			const sectionResult = await getSection(endpoint, currentLang);
-			items = sectionResult.items || [];
-			sectionData = data;
+			const sectionResult = await getData<PageData & { items: PageData[] }>(
+				endpoint
+			);
+			const items = sectionResult.items || [];
+
+			// Simple pagination for preview
+			const pageSize = globalData.paginationElements || 10;
+			const paginatedItems = items.slice(0, pageSize);
+
+			sectionPageData = {
+				data: paginatedItems,
+				url: { current: endpointSlug, prev: null, next: null },
+				currentPage: 1,
+				lastPage: Math.ceil(items.length / pageSize),
+			};
 		}
-
-		// Prepare pagination information
-		const pageSize = global.paginationElements || 10;
-		currentPage = 1;
-		lastPage = Math.ceil(items.length / pageSize);
-		paginatedItems = items.slice(0, pageSize);
-
-		// Pagination URLs
-		const currentUrl = `${endpoint}`;
-		const prevUrl =
-			currentPage > 1 ? `${endpoint}/page/${currentPage - 1}` : null;
-		const nextUrl =
-			currentPage < lastPage ? `${endpoint}/page/${currentPage + 1}` : null;
-		pageUrls = {
-			current: currentUrl,
-			prev: prevUrl,
-			next: nextUrl,
-		};
 	} catch (innerError) {
-		console.error('Inner error in preview route:', innerError);
+		console.error('Error in preview route:', innerError);
 
-		// Get error page data for 404 pages
-		data = await getData<PageData>(`/error.json`);
-		global = currentLang
-			? await getData<GlobalData>(`/${currentLang}/global.json`)
+		// Get error page data on inner error
+		pageData = await getData<PageData>(`/error.json`);
+		globalData = currentLangCode
+			? await getData<GlobalData>(`/${currentLangCode}/global.json`)
 			: await getData<GlobalData>(`/global.json`);
-		pageTitle = data.title || 'Page Not Found';
 	}
 } catch (outerError) {
-	console.error('Outer error in preview route:', outerError);
-
-	// Fallback to minimal data if even global data can't be loaded
-	data = {
-		title: 'Error',
-		uri: 'error',
-		intendedTemplate: 'error',
-		layouts: [],
-	};
-	global = {
-		translations: {},
-		defaultLang: 'en',
-		allLang: ['en'],
-		prefixDefaultLocale: false,
-		frontendUrl: '',
-		fontSize: [],
-	};
-	pageTitle = 'Error';
+	console.error('Fatal error in preview route:', outerError);
+	errorState = true;
 }
 ---
 
-<BaseLayout pageTitle={pageTitle} data={data} global={global}>
-	{
-		sectionData ? (
-			<>
-				<h1 class="fixed z-50 bg-white">
-					Pagination is currently not working in Preview Mode
-				</h1>
-				<Section
-					data={sectionData}
-					global={global}
-					page={{
-						data: paginatedItems,
-						url: pageUrls,
-						currentPage,
-						lastPage,
-					}}
-				/>
-			</>
+{
+	errorState ? (
+		<div class="p-8">
+			<h1 class="text-2xl font-bold text-red-600">Preview Error</h1>
+			<p class="mt-4">
+				Could not load preview. Please check the console for details.
+			</p>
+		</div>
+	) : pageData && globalData ? (
+		sectionPageData ? (
+			<PageRenderer
+				slug={endpointSlug}
+				lang={currentLangCode}
+				data={pageData}
+				global={globalData}
+				page={sectionPageData}
+			/>
 		) : (
-			<Layouts layouts={data.layouts} data={data} global={global} />
+			<PageRenderer
+				slug={endpointSlug}
+				lang={currentLangCode}
+				data={pageData}
+				global={globalData}
+			/>
 		)
-	}
-	<div
-		class="fixed bottom-4 right-4 z-40 rounded-lg bg-red-600 px-3 py-1 font-medium text-white shadow-md"
-	>
-		Preview Mode
-	</div>
-</BaseLayout>
+	) : (
+		<div class="p-8">
+			<h1 class="text-2xl font-bold text-red-600">Data Loading Error</h1>
+			<p class="mt-4">
+				Failed to load required data. Please check the console for details.
+			</p>
+		</div>
+	)
+}

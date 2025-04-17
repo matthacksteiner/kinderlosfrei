@@ -33,6 +33,7 @@ const currentLang = lang;
 const defaultLang = global.defaultLang.code;
 const translations = global.translations;
 const prefixDefaultLocale = global.prefixDefaultLocale;
+const isPreview = Astro.url.pathname.includes('/preview/');
 ---
 
 {
@@ -63,7 +64,7 @@ const prefixDefaultLocale = global.prefixDefaultLocale;
 				) : null}
 				<div id="logo" class:list={['relative', 'z-20', 'max-md:py-4']}>
 					<a
-						href={`${
+						href={`${isPreview ? '/preview' : ''}${
 							translations.length < 1 ||
 							(!prefixDefaultLocale && defaultLang === currentLang)
 								? '/'

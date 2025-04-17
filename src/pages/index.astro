@@ -1,12 +1,5 @@
 ---
-import { getGlobal, getPage, type PageData } from '@lib/api';
-import BaseLayout from '@layouts/BaseLayout.astro';
-import Layouts from '@components/Layouts.astro';
-const data = await getPage('home');
-const global = await getGlobal();
-const pageTitle = data.title;
+import PageRenderer from '@components/PageRenderer.astro';
 ---
 
-<BaseLayout pageTitle={pageTitle} data={data} global={global}>
-	<Layouts layouts={data.layouts} data={data} global={global} />
-</BaseLayout>
+<PageRenderer slug="home" />

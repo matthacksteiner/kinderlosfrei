@@ -1,54 +1,42 @@
 ---
-import {
-	getGlobal,
-	getPage,
-	getSections,
-	type PageData,
-	type GlobalData,
-} from '@lib/api';
-import BaseLayout from '@layouts/BaseLayout.astro';
-import Section from '@components/Section.astro';
-
-type Section = {
-	uri: string;
-	intendedTemplate: string;
-};
-
-type Item = {
-	parent: string;
-};
+import { getSections, getSection, getGlobal, type PageData } from '@lib/api';
+import PageRenderer from '@components/PageRenderer.astro';
 
 export async function getStaticPaths({ paginate }) {
-	const global = await getGlobal();
-	const elements = global.paginationElements;
+	// Get all section data directly
+	const sections = await getSections();
 
-	const API_URL = import.meta.env.KIRBY_URL;
-	const pagesResponse = await fetch(API_URL + '/index.json');
-	const data: Section[] = await pagesResponse.json();
-	const sections = data.filter((item) => item.intendedTemplate === 'section');
-	const sectionsSlug = sections.map((section) => section.uri);
-	let allItems: Item[] = [];
+	// Create array to store all paginated paths with type assertion
+	const allPaginatedPaths: any[] = [];
 
+	// Process each section one by one
 	for (const section of sections) {
-		const itemsResponse = await fetch(API_URL + `/${section.uri}.json`);
-		const itemsData: { items: Item[] } = await itemsResponse.json();
-		allItems = allItems.concat(itemsData.items);
+		// Get detailed data for this section including items
+		const sectionData = await getSection(section.uri);
+		const global = await getGlobal();
+
+		// Configure pagination
+		const pageSize = global.paginationElements || 10;
+
+		// Create pagination for this section's items
+		const paginatedData = paginate(sectionData.items || [], {
+			params: { section: section.uri },
+			pageSize,
+			props: { sectionData },
+		});
+
+		// Add to collection (using Array.prototype methods to avoid type issues)
+		for (const path of paginatedData) {
+			allPaginatedPaths.push(path);
+		}
 	}
 
-	return sectionsSlug.flatMap((section) => {
-		const filteredItems = allItems.filter((item) => item.parent === section);
-		return paginate(filteredItems, { params: { section }, pageSize: elements });
-	});
+	return allPaginatedPaths;
 }
 
-const global = await getGlobal();
-const { page } = Astro.props;
-const params = Astro.params;
-const section = params.section;
-const data = await getPage(section as string);
-const pageTitle = data.title;
+// Access props from pagination
+const { page, sectionData } = Astro.props;
+const { section } = Astro.params;
 ---
 
-<BaseLayout pageTitle={pageTitle} data={data} global={global}>
-	<Section data={data} page={page} global={global} />
-</BaseLayout>
+<PageRenderer slug={section} page={page} data={sectionData} />

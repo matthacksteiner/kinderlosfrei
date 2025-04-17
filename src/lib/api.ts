@@ -431,3 +431,71 @@ export async function getSizes(): Promise<string> {
 		})
 		.join('');
 }
+
+// ============================================================================
+// CONVENIENCE FUNCTIONS FOR COMMON OPERATIONS
+// ============================================================================
+
+/**
+ * Loads both page and global data at once for a given slug and language
+ */
+export async function getPageAndGlobal(
+	slug: string,
+	lang?: string
+): Promise<{
+	page: PageData;
+	global: GlobalData;
+}> {
+	try {
+		const pagePromise = getPage(slug, lang);
+		const globalPromise = lang
+			? getData<GlobalData>(`/${lang}/global.json`)
+			: getGlobal();
+
+		const [page, global] = await Promise.all([pagePromise, globalPromise]);
+
+		return { page, global };
+	} catch (error) {
+		console.error(
+			`Error loading data for ${slug} (${lang || 'default'})`,
+			error
+		);
+		throw error;
+	}
+}
+
+/**
+ * Loads both section page, its items, and global data at once
+ */
+export async function getSectionAndGlobal(
+	slug: string,
+	lang?: string
+): Promise<{
+	section: PageData;
+	items: PageData[];
+	global: GlobalData;
+}> {
+	try {
+		const sectionPromise = getSection(slug, lang);
+		const globalPromise = lang
+			? getData<GlobalData>(`/${lang}/global.json`)
+			: getGlobal();
+
+		const [sectionData, global] = await Promise.all([
+			sectionPromise,
+			globalPromise,
+		]);
+
+		return {
+			section: sectionData,
+			items: sectionData.items || [],
+			global,
+		};
+	} catch (error) {
+		console.error(
+			`Error loading section data for ${slug} (${lang || 'default'})`,
+			error
+		);
+		throw error;
+	}
+}

@@ -1,7 +1,6 @@
 ---
-import { getGlobal, getPage, getAllPages, type PageData } from '@lib/api';
-import BaseLayout from '@layouts/BaseLayout.astro';
-import Layouts from '@components/Layouts.astro';
+import { getAllPages } from '@lib/api';
+import PageRenderer from '@components/PageRenderer.astro';
 
 export async function getStaticPaths() {
 	const pages = await getAllPages();
@@ -14,11 +13,6 @@ export async function getStaticPaths() {
 	});
 }
 const { slug } = Astro.params;
-const global = await getGlobal();
-const data = await getPage(slug as string);
-const pageTitle = data.title;
 ---
 
-<BaseLayout pageTitle={pageTitle} data={data} global={global}>
-	<Layouts layouts={data.layouts} data={data} global={global} />
-</BaseLayout>
+<PageRenderer slug={slug} />

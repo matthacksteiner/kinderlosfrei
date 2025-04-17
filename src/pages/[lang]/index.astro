@@ -4,40 +4,28 @@ import {
 	getData,
 	getLanguages,
 	getGlobal,
-	getPage,
+	getAllPages,
 	type GlobalData,
-	type PageData,
 } from '@lib/api';
-import BaseLayout from '@layouts/BaseLayout.astro';
-import Layouts from '@components/Layouts.astro';
+import PageRenderer from '@components/PageRenderer.astro';
 
 export async function getStaticPaths() {
 	const API_URL = import.meta.env.KIRBY_URL;
 	const global = await getGlobal();
 	const prefixDefaultLocale = global.prefixDefaultLocale;
-	const pagesResponse = await fetch(API_URL + '/index.json');
-	const data = await pagesResponse.json();
 	const languages = await getLanguages();
 	const allLang = !prefixDefaultLocale
 		? languages.translations.map((lang: any) => lang.code)
 		: languages.allLang.map((lang: any) => lang.code);
-	return data.flatMap((item) => {
-		return allLang.map((lang) => {
-			return {
-				params: {
-					lang: lang,
-					slug: item.uri,
-				},
-			};
-		});
-	});
+
+	return allLang.map((lang) => ({
+		params: {
+			lang,
+		},
+	}));
 }
 const currentLang = lang;
-const data = await getPage('home', currentLang as string);
 const global = await getData<GlobalData>(`/${currentLang}/global.json`);
-const pageTitle = data.title;
 ---
 
-<BaseLayout pageTitle={pageTitle} data={data} global={global}>
-	<Layouts layouts={data.layouts} data={data} global={global} />
-</BaseLayout>
+<PageRenderer slug="home" lang={currentLang} global={global} />
