@@ -22,10 +22,36 @@ if (propsData && propsGlobal) {
 	data = propsData;
 	global = propsGlobal;
 } else {
-	data = await getPage(slug, lang);
-	global = lang
-		? await getData<GlobalData>(`/${lang}/global.json`)
-		: await getData<GlobalData>('/global.json');
+	// Add retry logic for API calls
+	const retryFetch = async (
+		fn: () => Promise<any>,
+		retries = 3,
+		delay = 1000
+	) => {
+		try {
+			return await fn();
+		} catch (error) {
+			if (retries > 0) {
+				await new Promise((resolve) => setTimeout(resolve, delay));
+				return retryFetch(fn, retries - 1, delay * 2);
+			}
+			throw error;
+		}
+	};
+
+	try {
+		[data, global] = await Promise.all([
+			retryFetch(() => getPage(slug, lang)),
+			retryFetch(() =>
+				lang
+					? getData<GlobalData>(`/${lang}/global.json`)
+					: getData<GlobalData>('/global.json')
+			),
+		]);
+	} catch (error) {
+		console.error(`Failed to fetch data for ${slug} (${lang}):`, error);
+		throw new Error(`Failed to load page data: ${error.message}`);
+	}
 }
 
 const pageTitle = data.title;
