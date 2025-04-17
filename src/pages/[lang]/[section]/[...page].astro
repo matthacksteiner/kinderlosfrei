@@ -1,36 +1,25 @@
 ---
-import {
-	getData,
-	getLanguages,
-	getGlobal,
-	getSection,
-	getPage,
-	type GlobalData,
-	type PageData,
-} from '@lib/api';
-import BaseLayout from '@layouts/BaseLayout.astro';
-import Section from '@components/Section.astro';
+import PageRenderer from '@components/PageRenderer.astro';
+import { getPage, getData, type GlobalData } from '@lib/api';
 
 export async function getStaticPaths({ paginate }) {
 	const API_URL = import.meta.env.KIRBY_URL;
-
-	const global = await getGlobal();
+	const global = await getData<GlobalData>(`/global.json`);
 	const elements = global.paginationElements;
-
 	const prefixDefaultLocale = global.prefixDefaultLocale;
-	const languages = await getLanguages();
+	const languages: GlobalData = await getData<GlobalData>(`/global.json`);
 	const allLang = !prefixDefaultLocale
-		? languages.translations.map((lang: any) => lang.code)
-		: languages.allLang.map((lang: any) => lang.code);
+		? Object.values(languages.translations).map(
+				(lang: Record<string, any>) => lang.code
+		  )
+		: languages.allLang.map(String);
 
-	let paths: Array<{ params: { lang: string; section: string }; props?: any }> =
+	let paths: Array<{ params: { lang: string; section: string }; props: any }> =
 		[];
-
 	for (const lang of allLang) {
 		const pagesResponse = await fetch(API_URL + '/' + lang + '/index.json');
 		const data = await pagesResponse.json();
 		const sections = data.filter((item) => item.intendedTemplate === 'section');
-
 		for (const section of sections) {
 			const itemsResponse = await fetch(
 				API_URL + '/' + lang + `/${section.uri}.json`
@@ -39,7 +28,6 @@ export async function getStaticPaths({ paginate }) {
 			const filteredItems = itemsData.items.filter(
 				(item) => item.parent === section.uri
 			);
-
 			paths.push(
 				...paginate(filteredItems, {
 					params: { lang, section: section.uri },
@@ -48,17 +36,12 @@ export async function getStaticPaths({ paginate }) {
 			);
 		}
 	}
-
 	return paths;
 }
 
 const { page } = Astro.props;
 const { lang, section } = Astro.params;
-const data = await getPage(section as string, lang as string);
 const global = await getData<GlobalData>(`/${lang}/global.json`);
-const pageTitle = data.title;
 ---
 
-<BaseLayout pageTitle={pageTitle} data={data} global={global}>
-	<Section data={data} page={page} global={global} />
-</BaseLayout>
+<PageRenderer slug={section} lang={lang} page={page} global={global} />

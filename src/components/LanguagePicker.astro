@@ -47,7 +47,7 @@ const currentPage = allPages.find((page) => page.uri === currentPageSlug);
 
 // Method to find translations for different languages
 function getTranslatedPageUrl(targetLangCode) {
-	// Handle home page as a special case
+	// Home page
 	if (isHome || currentPageSlug === 'home') {
 		return targetLangCode === defaultLang && !prefixDefaultLocale
 			? '/'
@@ -55,19 +55,14 @@ function getTranslatedPageUrl(targetLangCode) {
 	}
 
 	// If we have a current page with translations
-	if (currentPage && currentPage.translations) {
-		// The translations object maps target language code to translated URI
+	if (currentPage?.translations?.[targetLangCode]) {
 		const translatedUri = currentPage.translations[targetLangCode];
-
-		if (translatedUri) {
-			// Format the URL based on language settings
-			return targetLangCode === defaultLang && !prefixDefaultLocale
-				? `/${translatedUri}`
-				: `/${targetLangCode}/${translatedUri}`;
-		}
+		return targetLangCode === defaultLang && !prefixDefaultLocale
+			? `/${translatedUri}`
+			: `/${targetLangCode}/${translatedUri}`;
 	}
 
-	// If no translation found or no current page, fallback to language root
+	// Fallback: if no translation found, go to language root
 	return targetLangCode === defaultLang && !prefixDefaultLocale
 		? '/'
 		: `/${targetLangCode}`;

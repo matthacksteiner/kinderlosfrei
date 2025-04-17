@@ -1,5 +1,5 @@
 ---
-import { getPageAndGlobal, type PageData, type GlobalData } from '@lib/api';
+import { getPage, getData, type PageData, type GlobalData } from '@lib/api';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 import Section from '@components/Section.astro';
@@ -22,9 +22,10 @@ if (propsData && propsGlobal) {
 	data = propsData;
 	global = propsGlobal;
 } else {
-	const result = await getPageAndGlobal(slug, lang);
-	data = result.page;
-	global = result.global;
+	data = await getPage(slug, lang);
+	global = lang
+		? await getData<GlobalData>(`/${lang}/global.json`)
+		: await getData<GlobalData>('/global.json');
 }
 
 const pageTitle = data.title;
