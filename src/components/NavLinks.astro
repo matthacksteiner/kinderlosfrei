@@ -1,13 +1,23 @@
 ---
 import Button from '@blocks/BlockButton.astro';
+
+// Props and parameters
 const { data, global, links } = Astro.props;
 const { lang } = Astro.params;
 const path = Astro.url.pathname;
+
+// Language settings
 const currentLang = data.lang;
 const translations = global.translations;
-const logoAlign = global.logoAlign;
-const isPreview = path.includes('/preview/');
+const defaultLang = global.defaultLang.code;
+const prefixDefaultLocale = global.prefixDefaultLocale;
+const effectiveLang = lang || currentLang;
 
+// UI settings
+const logoAlign = global.logoAlign;
+const shouldUsePreview = path.includes('/preview');
+
+// Utility function for common classes
 const getCommonClasses = (item, isActive, isLast) => [
 	'nav-link',
 	'max-lg:mb-8',
@@ -25,27 +35,40 @@ const getCommonClasses = (item, isActive, isLast) => [
 			const isUrl = item.type === 'url';
 			const isPopup = item.popup === true;
 
+			// Determine if we should include language prefix
+			const shouldIncludeLanguage =
+				translations.length > 0 &&
+				effectiveLang &&
+				(prefixDefaultLocale || effectiveLang !== defaultLang);
+
+			// Construct base href
 			let href = isUrl
 				? item.href
 				: item.hash
-				? `${translations.length > 0 && lang ? '/' + currentLang : '/'}#${
-						item.hash
-				  }`
-				: translations.length > 0 && lang
-				? `/${currentLang}/${item.uri}`
+				? `${shouldIncludeLanguage ? '/' + effectiveLang : '/'}#${item.hash}`
+				: shouldIncludeLanguage
+				? `/${effectiveLang}/${item.uri}`
 				: `/${item.uri}`;
 
-			// Add preview path when in preview mode
-			if (isPreview && !isUrl) {
-				href = `/preview${href}`;
+			// Handle preview mode URLs
+			if (shouldUsePreview && !isUrl) {
+				const parts = href.split('/').filter(Boolean);
+				if (shouldIncludeLanguage) {
+					const hasLang = parts[0] === effectiveLang;
+					const cleanParts = hasLang ? parts : [effectiveLang, ...parts];
+					href = `/preview/${cleanParts.join('/')}`;
+				} else {
+					href = `/preview/${parts.join('/')}`;
+				}
 			}
 
+			// Link attributes
 			const target = isUrl ? `${isPopup ? '_blank' : '_self'}` : undefined;
 			const rel = isUrl ? `${isPopup ? 'noopener noreferrer' : ''}` : undefined;
-
 			const isActive = path.includes(item.uri);
 			const isLast = translations.length === 0;
 
+			// Render appropriate component
 			if (item.classes.includes('cta')) {
 				return (
 					<Button
