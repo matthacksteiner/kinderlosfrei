@@ -1,18 +1,25 @@
 ---
-import { getAllPages } from '@lib/api';
+import rootIndex from '@public/content/index.json';
 import PageRenderer from '@components/PageRenderer.astro';
+import { getPage } from '@lib/api';
 
 export async function getStaticPaths() {
-	const pages = await getAllPages();
-	return pages.map((item) => {
-		return {
-			params: {
-				slug: item.uri,
-			},
-		};
-	});
+	// Extract all pages from the root index
+	return rootIndex.map((page) => ({
+		params: {
+			slug: page.uri,
+		},
+		props: {
+			pageId: page.uri,
+		},
+	}));
 }
+
 const { slug } = Astro.params;
+const { pageId } = Astro.props;
+
+// Use the API function to get the page data
+const pageData = await getPage(pageId);
 ---
 
-<PageRenderer slug={slug} />
+<PageRenderer slug={slug} data={pageData} />

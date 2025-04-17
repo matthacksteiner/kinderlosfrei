@@ -1,55 +1,89 @@
 ---
+interface PageEntry {
+	id: string;
+	uri: string;
+	intendedTemplate: string;
+	parent: string | null;
+	coverOnly: boolean | null;
+	translations: Record<string, string>;
+}
+
+import rootIndex from '@public/content/index.json';
 import PageRenderer from '@components/PageRenderer.astro';
-import {
-	getPage,
-	getData,
-	getLanguageContext,
-	type GlobalData,
-} from '@lib/api';
+import { getData, getSection, type GlobalData } from '@lib/api';
 
 export async function getStaticPaths({ paginate }) {
-	const API_URL = import.meta.env.KIRBY_URL;
-	const global = await getData<GlobalData>(`/global.json`);
-	const elements = global.paginationElements;
+	// Get global config for pagination settings
+	const globalData = await getData<GlobalData>('/global.json');
+	const elements = globalData.paginationElements || 10;
 
-	const { allLangs, prefixDefaultLocale, translations } =
-		await getLanguageContext();
+	// Load the root index which contains all pages
+	const pages = rootIndex as PageEntry[];
 
-	// Determine which languages to generate paths for
-	const languagesToGenerate = !prefixDefaultLocale
-		? translations
-		: allLangs.map((lang) => lang.code);
+	// Extract languages from the pages
+	const languages = new Set<string>();
 
-	let paths: Array<{ params: { lang: string; section: string }; props: any }> =
-		[];
+	// Process all pages to find available languages
+	pages.forEach((page) => {
+		if (page.translations) {
+			Object.keys(page.translations).forEach((lang) => {
+				languages.add(lang);
+			});
+		}
+	});
 
-	for (const langCode of languagesToGenerate) {
-		const pagesResponse = await fetch(API_URL + '/' + langCode + '/index.json');
-		const data = await pagesResponse.json();
-		const sections = data.filter((item) => item.intendedTemplate === 'section');
+	// Define the return type for paths
+	const paths: any[] = [];
+
+	for (const lang of languages) {
+		// Find section pages in this language
+		const sections = pages.filter(
+			(page) =>
+				page.intendedTemplate === 'section' &&
+				page.translations &&
+				page.translations[lang]
+		);
 
 		for (const section of sections) {
-			const itemsResponse = await fetch(
-				API_URL + '/' + langCode + `/${section.uri}.json`
-			);
-			const itemsData = await itemsResponse.json();
-			const filteredItems = itemsData.items.filter(
-				(item) => item.parent === section.uri
-			);
-			paths.push(
-				...paginate(filteredItems, {
-					params: { lang: langCode, section: section.uri },
+			if (!section.translations || !section.translations[lang]) continue;
+
+			const sectionSlug = section.translations[lang];
+
+			try {
+				// Use API to get section data
+				const sectionData = await getSection(sectionSlug, lang);
+
+				// Filter items that belong to this section
+				const filteredItems = sectionData.items.filter(
+					(item) => item.parent === section.uri
+				);
+
+				// Add pagination paths with props
+				const paginatedPaths = paginate(filteredItems, {
+					params: { lang, section: sectionSlug, page: [''] },
 					pageSize: elements,
-				})
-			);
+					props: { lang, section: sectionSlug },
+				});
+
+				paths.push(...paginatedPaths);
+			} catch (error) {
+				console.error(
+					`Error loading section data for ${lang}/${sectionSlug}`,
+					error
+				);
+			}
 		}
 	}
+
 	return paths;
 }
 
+// Get data from props
 const { page } = Astro.props;
-const { lang, section } = Astro.params;
-const global = await getData<GlobalData>(`/${lang}/global.json`);
+const { lang, section } = Astro.props;
+
+// Get data using API functions
+const globalData = await getData<GlobalData>(`/${lang}/global.json`);
 ---
 
-<PageRenderer slug={section} lang={lang} page={page} global={global} />
+<PageRenderer slug={section} lang={lang} page={page} global={globalData} />

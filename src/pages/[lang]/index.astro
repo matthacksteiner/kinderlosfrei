@@ -1,26 +1,37 @@
 ---
-const { lang } = Astro.params;
-import { getData, getLanguageContext, type GlobalData } from '@lib/api';
+import rootIndex from '@public/content/index.json';
 import PageRenderer from '@components/PageRenderer.astro';
+import { getPage, getData, type GlobalData } from '@lib/api';
 
 export async function getStaticPaths() {
-	const { allLangs, prefixDefaultLocale, translations } =
-		await getLanguageContext();
+	// Extract languages from the pages
+	const languages = new Set<string>();
 
-	// Determine which languages to generate paths for
-	const languagesToGenerate = !prefixDefaultLocale
-		? translations
-		: allLangs.map((lang) => lang.code);
+	// Process all pages to find available languages
+	rootIndex.forEach((page) => {
+		if (page.translations) {
+			Object.keys(page.translations).forEach((lang) => {
+				languages.add(lang);
+			});
+		}
+	});
 
-	return languagesToGenerate.map((langCode) => ({
+	// Generate paths for all languages
+	return Array.from(languages).map((lang) => ({
 		params: {
-			lang: langCode,
+			lang,
+		},
+		props: {
+			lang,
 		},
 	}));
 }
 
-const currentLang = lang;
-const global = await getData<GlobalData>(`/${currentLang}/global.json`);
+const { lang } = Astro.props;
+
+// Use API functions to get data
+const pageData = await getPage('home', lang);
+const globalData = await getData<GlobalData>(`/${lang}/global.json`);
 ---
 
-<PageRenderer slug="home" lang={currentLang} global={global} />
+<PageRenderer slug="home" lang={lang} data={pageData} global={globalData} />

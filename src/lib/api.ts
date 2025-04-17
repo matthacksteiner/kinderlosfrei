@@ -1,3 +1,5 @@
+import path from 'path';
+
 const API_URL = import.meta.env.KIRBY_URL;
 
 // ============================================================================
@@ -98,17 +100,73 @@ class KirbyApiError extends Error implements KirbyError {
 // CORE API FUNCTIONS
 // ============================================================================
 
-// Reusable function for making GET requests
-async function fetchData<T>(uri: string): Promise<T> {
-	const response = await fetch(API_URL + uri, {
-		method: 'GET',
-	});
+// Check if in preview mode - preview still uses direct API calls
+function isPreviewMode(): boolean {
+	const isServer = typeof window === 'undefined';
+	const astroPath = process.env.ASTRO_PATH;
+	return (
+		isServer &&
+		!!astroPath &&
+		(astroPath.includes('/preview/') || astroPath === '/preview')
+	);
+}
 
-	if (response.status !== 200) {
-		console.error('Error fetching', uri, response.status, response.statusText);
-		throw new KirbyApiError(await response.text(), response.status, uri);
+// Reusable function for fetching data - use local files in build mode, API in preview mode
+async function fetchData<T>(uri: string): Promise<T> {
+	// In preview mode, use direct API calls
+	if (isPreviewMode()) {
+		const response = await fetch(API_URL + uri, {
+			method: 'GET',
+		});
+
+		if (response.status !== 200) {
+			console.error(
+				'Error fetching',
+				uri,
+				response.status,
+				response.statusText
+			);
+			throw new KirbyApiError(await response.text(), response.status, uri);
+		}
+		return response.json() as Promise<T>;
 	}
-	return response.json() as Promise<T>;
+
+	// In build mode, use local content files
+	try {
+		// Normalize the path for local file access
+		const normalizedPath = uri.startsWith('/') ? uri.substring(1) : uri;
+
+		// Server-side vs client-side handling for imports
+		if (typeof window === 'undefined') {
+			// Server-side: use fs to read the JSON file
+			const fs = await import('fs');
+			const contentPath = path.join(
+				process.cwd(),
+				'public',
+				'content',
+				normalizedPath
+			);
+
+			if (!fs.existsSync(contentPath)) {
+				throw new Error(`Content file not found: ${contentPath}`);
+			}
+
+			const data = JSON.parse(fs.readFileSync(contentPath, 'utf8'));
+			return data as T;
+		} else {
+			// Client-side: use fetch to get the JSON file
+			const response = await fetch(`/content/${normalizedPath}`);
+
+			if (!response.ok) {
+				throw new Error(`Failed to fetch content file: ${normalizedPath}`);
+			}
+
+			return response.json() as Promise<T>;
+		}
+	} catch (error) {
+		console.error(`Error loading local content file for ${uri}:`, error);
+		throw new KirbyApiError(`Failed to load content file: ${uri}`, 404, uri);
+	}
 }
 
 // Generic data fetching function
@@ -156,7 +214,19 @@ export async function getAllPages(lang?: string): Promise<PageData[]> {
 // Get specific page data
 export async function getPage(slug: string, lang?: string): Promise<PageData> {
 	const path = lang ? `/${lang}/${slug}.json` : `/${slug}.json`;
-	return fetchData<PageData>(path);
+	try {
+		return await fetchData<PageData>(path);
+	} catch (error) {
+		// If no language is specified and the page is not found at the root level,
+		// try to fetch it using the default language as fallback
+		if (!lang) {
+			const global = await getGlobal();
+			const defaultLang = global.defaultLang.code;
+			console.log(`Trying with default language: ${defaultLang}/${slug}`);
+			return await fetchData<PageData>(`/${defaultLang}/${slug}.json`);
+		}
+		throw error;
+	}
 }
 
 // Get section with its items
@@ -209,8 +279,8 @@ function createFontCSS(
 			// Ensure font items have properly encoded URLs
 			return {
 				name: item.name,
-				woff: item.woff,
-				woff2: item.woff2,
+				woff: item.woff || item.originalWoff,
+				woff2: item.woff2 || item.originalWoff2,
 			};
 		})
 		.filter((item) => item.woff || item.woff2);
@@ -240,22 +310,29 @@ function createFontCSS(
 					);
 				}
 			} else {
-				if (item.woff2) sources.push(`url('${item.woff2}') format('woff2')`);
-				if (item.woff) sources.push(`url('${item.woff}') format('woff')`);
+				// For local mode, use fonts from /public/fonts folder
+				if (item.woff2)
+					sources.push(
+						`url('/fonts/${path.basename(item.woff2)}') format('woff2')`
+					);
+				if (item.woff)
+					sources.push(
+						`url('/fonts/${path.basename(item.woff)}') format('woff')`
+					);
 			}
 
 			if (sources.length === 0) return '';
 
 			return `@font-face {
         font-family: '${item.name}';
-        src: ${sources.join(',\n\t\t\t ')};
+        src: ${sources.join(',\n        ')};
         font-weight: normal;
         font-style: normal;
         font-display: swap;
       }`;
 		})
 		.filter((css) => css !== '')
-		.join('');
+		.join('\n');
 
 	return { css, fonts: normalizedFonts };
 }
@@ -263,12 +340,8 @@ function createFontCSS(
 // Get fonts function
 export async function getFonts(): Promise<FontData> {
 	try {
-		// Import preview mode check
-		const { isPreviewMode } = await import('@lib/preview');
-		const inPreviewMode = isPreviewMode();
-
-		// Preview mode - get fonts from API and use proxy
-		if (inPreviewMode) {
+		// For preview mode, we still use the API
+		if (isPreviewMode()) {
 			const global = await getGlobal();
 
 			if (!global.font || global.font.length === 0) {
@@ -324,59 +397,38 @@ export async function getFonts(): Promise<FontData> {
 					}`;
 				})
 				.filter((css) => css !== '')
-				.join('');
+				.join('\n');
 
 			return { css, fonts: fontArray };
 		}
 
-		// Regular SSR or browser mode - use normal font handling
-		else {
-			// Server mode (not preview) - read from filesystem
-			if (typeof window === 'undefined') {
-				try {
-					const fs = await import('fs');
-					const path = await import('path');
-					const fontsJsonPath = path.join(
-						process.cwd(),
-						'public',
-						'fonts',
-						'fonts.json'
-					);
+		// For local mode, use fonts from the global data
+		const global = await getGlobal();
 
-					if (!fs.existsSync(fontsJsonPath)) {
-						return { css: '', fonts: [] };
-					}
-
-					const fontJson = fs.readFileSync(fontsJsonPath, 'utf8');
-					const fontData = JSON.parse(fontJson);
-					return createFontCSS(fontData?.fonts || []);
-				} catch (error) {
-					return { css: '', fonts: [] };
-				}
-			}
-			// Browser mode - fetch from URL
-			else {
-				try {
-					const fontsUrl = new URL('/fonts/fonts.json', window.location.origin);
-					const response = await fetch(fontsUrl);
-
-					if (!response.ok) {
-						return { css: '', fonts: [] };
-					}
-
-					const fontData = await response.json();
-					return createFontCSS(fontData?.fonts || []);
-				} catch (error) {
-					return { css: '', fonts: [] };
-				}
-			}
+		if (!global.font || global.font.length === 0) {
+			return { css: '', fonts: [] };
 		}
+
+		// Create font array from global.font
+		const fontArray = global.font
+			.map((item) => {
+				return {
+					name: item.name,
+					woff: item.url1,
+					woff2: item.url2,
+				};
+			})
+			.filter((item) => item.woff || item.woff2);
+
+		// Generate CSS for fonts
+		return createFontCSS(fontArray, false);
 	} catch (error) {
+		console.error('Error loading fonts:', error);
 		return { css: '', fonts: [] };
 	}
 }
 
-// Generate CSS for font sizes
+// Function to get sizes to use in CSS variables
 export async function getSizes(): Promise<string> {
 	const baseFontSize = 16;
 	const global = await getGlobal();
@@ -405,34 +457,34 @@ export async function getSizes(): Promise<string> {
 			}vw`;
 
 			return `
-      .font--${item.name} {
-        font-size: ${sizeMobile / baseFontSize}rem;
-        line-height: ${lineHeightMobile / sizeMobile};
-        letter-spacing: ${letterSpacingMobile / sizeMobile}em;
-        text-transform: ${item.transform};
-        text-decoration: ${item.decoration};
-      }
-      @media (min-width: 768px) and (max-width: 1919px) {
         .font--${item.name} {
-          font-size: clamp(${sizeMobile / baseFontSize}rem,
-            ${fluidValue},
-            ${sizeDesktop / baseFontSize}rem);
-          line-height: ${lineHeightDesktop / sizeDesktop};
-          letter-spacing: ${letterSpacingDesktop / sizeDesktop}em;
+          font-size: ${sizeMobile / baseFontSize}rem;
+          line-height: ${lineHeightMobile / sizeMobile};
+          letter-spacing: ${letterSpacingMobile / sizeMobile}em;
           text-transform: ${item.transform};
           text-decoration: ${item.decoration};
         }
-      }
-      @media (min-width: 1920px) {
-        .font--${item.name} {
-          font-size: ${sizeDesktopXl / baseFontSize}rem;
-          line-height: ${lineHeightDesktopXl / sizeDesktopXl};
-          letter-spacing: ${letterSpacingDesktopXl / sizeDesktopXl}em;
-          text-transform: ${item.transform};
-          text-decoration: ${item.decoration};
+        @media (min-width: 768px) and (max-width: 1919px) {
+          .font--${item.name} {
+            font-size: clamp(${sizeMobile / baseFontSize}rem,
+              ${fluidValue},
+              ${sizeDesktop / baseFontSize}rem);
+            line-height: ${lineHeightDesktop / sizeDesktop};
+            letter-spacing: ${letterSpacingDesktop / sizeDesktop}em;
+            text-transform: ${item.transform};
+            text-decoration: ${item.decoration};
+          }
         }
-      }
-    `;
+        @media (min-width: 1920px) {
+          .font--${item.name} {
+            font-size: ${sizeDesktopXl / baseFontSize}rem;
+            line-height: ${lineHeightDesktopXl / sizeDesktopXl};
+            letter-spacing: ${letterSpacingDesktopXl / sizeDesktopXl}em;
+            text-transform: ${item.transform};
+            text-decoration: ${item.decoration};
+          }
+        }
+      `;
 		})
 		.join('');
 }
