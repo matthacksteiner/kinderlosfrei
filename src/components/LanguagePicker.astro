@@ -2,7 +2,7 @@
 const { global, class: className } = Astro.props;
 const { lang } = Astro.params;
 import { Icon } from 'astro-icon/components';
-import { getAllPages } from '@lib/api';
+import { getAllPages, getData } from '@lib/api';
 import { checkIsHome } from '@lib/helpers.js';
 
 // Follow the same pattern as in Section.astro and slug files
@@ -21,52 +21,77 @@ const selectedLang =
 	allLangs.find((l) => l.code === currentLang) || global.defaultLang;
 
 // Parse the current URL pathname
-const pathname = new URL(Astro.request.url).pathname.split('/');
+const pathname = new URL(Astro.request.url).pathname.split('/').filter(Boolean);
 const isHome = checkIsHome({
 	url: { pathname: Astro.url.pathname },
 	currentLocale: currentLang,
 });
 
-// Get all pages for translations
-const allPages = await getAllPages(currentLang);
+// Get pages for both current and target languages
+const currentPages = await getAllPages(currentLang);
 
 // Extract the current page slug based on URL structure
 let currentPageSlug = '';
 if (isHome) {
 	currentPageSlug = 'home';
-} else if (translations.includes(pathname[1])) {
+} else if (translations.includes(pathname[0])) {
 	// URL format: /[lang]/[page]
-	currentPageSlug = pathname.slice(2).join('/') || 'home';
+	currentPageSlug = pathname.slice(1).join('/') || 'home';
 } else {
 	// URL format: /[page]
-	currentPageSlug = pathname.slice(1).join('/');
+	currentPageSlug = pathname.join('/');
 }
 
-// Find the current page by its uri in the current language
-const currentPage = allPages.find((page) => page.uri === currentPageSlug);
+// Find the current page data
+const currentPage = currentPages.find((page) => {
+	const pageUri = page.uri.split('/').pop();
+	return pageUri === currentPageSlug || page.uri === currentPageSlug;
+});
 
 // Method to find translations for different languages
-function getTranslatedPageUrl(targetLangCode) {
-	// Home page
+async function getTranslatedPageUrl(targetLangCode) {
+	// Home page handling
 	if (isHome || currentPageSlug === 'home') {
 		return targetLangCode === defaultLang && !prefixDefaultLocale
 			? '/'
 			: `/${targetLangCode}`;
 	}
 
-	// If we have a current page with translations
-	if (currentPage?.translations?.[targetLangCode]) {
-		const translatedUri = currentPage.translations[targetLangCode];
-		return targetLangCode === defaultLang && !prefixDefaultLocale
-			? `/${translatedUri}`
-			: `/${targetLangCode}/${translatedUri}`;
+	try {
+		// Get pages in target language
+		const targetPages = await getAllPages(targetLangCode);
+
+		// Find matching page in target language
+		const targetPage = targetPages.find(
+			(page) =>
+				currentPage?.translations?.[targetLangCode] === page.uri ||
+				page.translations?.[currentLang] === currentPage?.uri
+		);
+
+		if (targetPage) {
+			return targetLangCode === defaultLang && !prefixDefaultLocale
+				? `/${targetPage.uri}`
+				: `/${targetLangCode}/${targetPage.uri}`;
+		}
+	} catch (error) {
+		console.error('Error fetching translations:', error);
 	}
 
-	// Fallback: if no translation found, go to language root
+	// Fallback to language root if no translation found
 	return targetLangCode === defaultLang && !prefixDefaultLocale
 		? '/'
 		: `/${targetLangCode}`;
 }
+
+// Pre-fetch all translated URLs
+const translatedUrls = await Promise.all(
+	allLangs
+		.filter((language) => language.code !== selectedLang.code)
+		.map(async (language) => ({
+			code: language.code,
+			url: await getTranslatedPageUrl(language.code),
+		}))
+);
 ---
 
 {
@@ -77,7 +102,6 @@ function getTranslatedPageUrl(targetLangCode) {
 				<span class={`uppercase font--${headerFontSize} font-${headerFont}`}>
 					{selectedLang.code}
 				</span>
-
 				<Icon
 					name="chevron-down"
 					aria-hidden="true"
@@ -105,19 +129,13 @@ function getTranslatedPageUrl(targetLangCode) {
 					`items-center`,
 				]}
 			>
-				{allLangs
-					// Remove the currently selected language from the options.
-					.filter((language) => language.code !== selectedLang.code)
-					.map((language) => (
-						<li>
-							<a
-								href={getTranslatedPageUrl(language.code)}
-								class="block hover:opacity-50"
-							>
-								{language.code}
-							</a>
-						</li>
-					))}
+				{translatedUrls.map(({ code, url }) => (
+					<li>
+						<a href={url} class="block hover:opacity-50">
+							{code}
+						</a>
+					</li>
+				))}
 			</ul>
 		</details>
 	)
