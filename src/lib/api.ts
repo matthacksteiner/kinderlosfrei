@@ -10,17 +10,23 @@ export interface KirbyError {
 	message: string;
 }
 
+export interface Language {
+	code: string;
+	name?: string;
+	[key: string]: any;
+}
+
 export interface LanguageData {
-	translations: Record<string, any>;
-	defaultLang: string;
-	allLang: string[];
+	translations: Language[];
+	defaultLang: Language;
+	allLang: Language[];
 	prefixDefaultLocale: boolean;
 }
 
 export interface GlobalData {
-	translations: Record<string, any>;
-	defaultLang: string;
-	allLang: string[];
+	translations: Language[];
+	defaultLang: Language;
+	allLang: Language[];
 	prefixDefaultLocale: boolean;
 	frontendUrl: string;
 	paginationElements?: number;
@@ -498,4 +504,123 @@ export async function getSectionAndGlobal(
 		);
 		throw error;
 	}
+}
+
+// ============================================================================
+// LANGUAGE UTILITY FUNCTIONS
+// ============================================================================
+
+/**
+ * Get language information for the current context
+ */
+export async function getLanguageContext(currentLang?: string): Promise<{
+	defaultLang: string;
+	allLangs: Language[];
+	translations: string[];
+	prefixDefaultLocale: boolean;
+	currentLang: string;
+	selectedLang: Language;
+}> {
+	const global = await getGlobal();
+	const defaultLang = global.defaultLang.code;
+	const allLangs = global.allLang;
+	const translations = global.translations.map((lang: Language) => lang.code);
+	const prefixDefaultLocale = global.prefixDefaultLocale;
+
+	// Determine current language
+	const resolvedCurrentLang = currentLang || defaultLang;
+	const selectedLang =
+		allLangs.find((l: Language) => l.code === resolvedCurrentLang) ||
+		global.defaultLang;
+
+	return {
+		defaultLang,
+		allLangs,
+		translations,
+		prefixDefaultLocale,
+		currentLang: resolvedCurrentLang,
+		selectedLang,
+	};
+}
+
+/**
+ * Get the URL for a page in a specific language
+ */
+export async function getLocalizedPageUrl({
+	targetLangCode,
+	currentLang,
+	currentPageSlug,
+	isHome = false,
+	pageUri,
+}: {
+	targetLangCode: string;
+	currentLang: string;
+	currentPageSlug: string;
+	isHome?: boolean;
+	pageUri?: string;
+}): Promise<string> {
+	const { defaultLang, prefixDefaultLocale } = await getLanguageContext();
+
+	// Home page handling
+	if (isHome || currentPageSlug === 'home') {
+		return targetLangCode === defaultLang && !prefixDefaultLocale
+			? '/'
+			: `/${targetLangCode}`;
+	}
+
+	try {
+		// Get pages in target language
+		const targetPages = await getAllPages(targetLangCode);
+		const currentPages = await getAllPages(currentLang);
+
+		const currentPage = currentPages.find((page) => {
+			const uri = page.uri.split('/').pop();
+			return uri === currentPageSlug || page.uri === currentPageSlug;
+		});
+
+		// Find matching page in target language
+		const targetPage = targetPages.find(
+			(page) =>
+				currentPage?.translations?.[targetLangCode] === page.uri ||
+				page.translations?.[currentLang] === currentPage?.uri
+		);
+
+		if (targetPage) {
+			return targetLangCode === defaultLang && !prefixDefaultLocale
+				? `/${targetPage.uri}`
+				: `/${targetLangCode}/${targetPage.uri}`;
+		}
+	} catch (error) {
+		console.error('Error fetching translations:', error);
+	}
+
+	// Fallback to language root if no translation found
+	return targetLangCode === defaultLang && !prefixDefaultLocale
+		? '/'
+		: `/${targetLangCode}`;
+}
+
+/**
+ * Extract current page slug from URL path
+ */
+export function extractPageSlug({
+	pathname,
+	translations,
+	isHome,
+}: {
+	pathname: string[];
+	translations: string[];
+	isHome: boolean;
+}): string {
+	if (isHome) {
+		return 'home';
+	}
+
+	if (translations.includes(pathname[0])) {
+		// URL format: /[lang]/[page]
+		return pathname.slice(1).join('/') || 'home';
+	}
+
+	// URL format: /[page]
+	return pathname.join('/');
 }

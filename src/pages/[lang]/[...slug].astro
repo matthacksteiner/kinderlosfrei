@@ -1,6 +1,6 @@
 ---
 import {
-	getLanguages,
+	getLanguageContext,
 	getGlobal,
 	getAllPages,
 	getData,
@@ -9,23 +9,24 @@ import {
 import PageRenderer from '@components/PageRenderer.astro';
 
 export async function getStaticPaths() {
-	const global = await getGlobal();
-	const prefixDefaultLocale = global.prefixDefaultLocale;
-	const languages = await getLanguages();
-	const allLang = !prefixDefaultLocale
-		? languages.translations.map((lang: any) => lang.code)
-		: languages.allLang.map((lang: any) => lang.code);
+	const { allLangs, prefixDefaultLocale, translations } =
+		await getLanguageContext();
+
+	// Determine which languages to generate paths for
+	const languagesToGenerate = !prefixDefaultLocale
+		? translations
+		: allLangs.map((lang) => lang.code);
 
 	let paths: { params: { lang: string; slug: string } }[] = [];
 
-	for (const lang of allLang) {
+	for (const langCode of languagesToGenerate) {
 		// Use the API function to get all pages
-		const pages = await getAllPages(lang);
+		const pages = await getAllPages(langCode);
 
 		paths.push(
 			...pages.map((item) => ({
 				params: {
-					lang: lang,
+					lang: langCode,
 					slug: item.uri,
 				},
 			}))

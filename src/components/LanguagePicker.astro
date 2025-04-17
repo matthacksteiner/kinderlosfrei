@@ -2,23 +2,28 @@
 const { global, class: className } = Astro.props;
 const { lang } = Astro.params;
 import { Icon } from 'astro-icon/components';
-import { getAllPages, getData } from '@lib/api';
+import {
+	getLanguageContext,
+	getLocalizedPageUrl,
+	extractPageSlug,
+} from '@lib/api';
 import { checkIsHome } from '@lib/helpers.js';
 
-// Follow the same pattern as in Section.astro and slug files
-const defaultLang = global.defaultLang.code;
-const allLangs = global.allLang;
-const translations = global.translations.map((lang) => lang.code);
-const prefixDefaultLocale = global.prefixDefaultLocale;
+// Get language context
+const {
+	defaultLang,
+	allLangs,
+	translations,
+	prefixDefaultLocale,
+	currentLang,
+	selectedLang,
+} = await getLanguageContext(lang);
+
+// UI-related props from global
 const headerFont = global.headerFont;
 const headerFontSize = global.headerFontSize;
 const headerColor = global.headerColor;
 const headerBackground = global.headerBackground;
-
-// Determine the currently selected language
-const currentLang = lang || defaultLang;
-const selectedLang =
-	allLangs.find((l) => l.code === currentLang) || global.defaultLang;
 
 // Parse the current URL pathname
 const pathname = new URL(Astro.request.url).pathname.split('/').filter(Boolean);
@@ -27,61 +32,12 @@ const isHome = checkIsHome({
 	currentLocale: currentLang,
 });
 
-// Get pages for both current and target languages
-const currentPages = await getAllPages(currentLang);
-
-// Extract the current page slug based on URL structure
-let currentPageSlug = '';
-if (isHome) {
-	currentPageSlug = 'home';
-} else if (translations.includes(pathname[0])) {
-	// URL format: /[lang]/[page]
-	currentPageSlug = pathname.slice(1).join('/') || 'home';
-} else {
-	// URL format: /[page]
-	currentPageSlug = pathname.join('/');
-}
-
-// Find the current page data
-const currentPage = currentPages.find((page) => {
-	const pageUri = page.uri.split('/').pop();
-	return pageUri === currentPageSlug || page.uri === currentPageSlug;
+// Get current page slug
+const currentPageSlug = extractPageSlug({
+	pathname,
+	translations,
+	isHome,
 });
-
-// Method to find translations for different languages
-async function getTranslatedPageUrl(targetLangCode) {
-	// Home page handling
-	if (isHome || currentPageSlug === 'home') {
-		return targetLangCode === defaultLang && !prefixDefaultLocale
-			? '/'
-			: `/${targetLangCode}`;
-	}
-
-	try {
-		// Get pages in target language
-		const targetPages = await getAllPages(targetLangCode);
-
-		// Find matching page in target language
-		const targetPage = targetPages.find(
-			(page) =>
-				currentPage?.translations?.[targetLangCode] === page.uri ||
-				page.translations?.[currentLang] === currentPage?.uri
-		);
-
-		if (targetPage) {
-			return targetLangCode === defaultLang && !prefixDefaultLocale
-				? `/${targetPage.uri}`
-				: `/${targetLangCode}/${targetPage.uri}`;
-		}
-	} catch (error) {
-		console.error('Error fetching translations:', error);
-	}
-
-	// Fallback to language root if no translation found
-	return targetLangCode === defaultLang && !prefixDefaultLocale
-		? '/'
-		: `/${targetLangCode}`;
-}
 
 // Pre-fetch all translated URLs
 const translatedUrls = await Promise.all(
@@ -89,7 +45,12 @@ const translatedUrls = await Promise.all(
 		.filter((language) => language.code !== selectedLang.code)
 		.map(async (language) => ({
 			code: language.code,
-			url: await getTranslatedPageUrl(language.code),
+			url: await getLocalizedPageUrl({
+				targetLangCode: language.code,
+				currentLang,
+				currentPageSlug,
+				isHome,
+			}),
 		}))
 );
 ---
@@ -113,20 +74,20 @@ const translatedUrls = await Promise.all(
 				class:list={[
 					`bg--${headerBackground}`,
 					`text--${headerColor}`,
-					`absolute`,
-					`right-0`,
-					`top-6`,
-					`z-10`,
-					`mt-2`,
-					`py-2`,
-					`w-16`,
-					`rounded`,
-					`shadow-lg`,
-					`flex`,
-					`flex-col`,
-					`gap-2`,
-					`uppercase`,
-					`items-center`,
+					'absolute',
+					'right-0',
+					'top-6',
+					'z-10',
+					'mt-2',
+					'py-2',
+					'w-16',
+					'rounded',
+					'shadow-lg',
+					'flex',
+					'flex-col',
+					'gap-2',
+					'uppercase',
+					'items-center',
 				]}
 			>
 				{translatedUrls.map(({ code, url }) => (

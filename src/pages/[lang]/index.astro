@@ -1,29 +1,24 @@
 ---
 const { lang } = Astro.params;
-import {
-	getData,
-	getLanguages,
-	getGlobal,
-	getAllPages,
-	type GlobalData,
-} from '@lib/api';
+import { getData, getLanguageContext, type GlobalData } from '@lib/api';
 import PageRenderer from '@components/PageRenderer.astro';
 
 export async function getStaticPaths() {
-	const API_URL = import.meta.env.KIRBY_URL;
-	const global = await getGlobal();
-	const prefixDefaultLocale = global.prefixDefaultLocale;
-	const languages = await getLanguages();
-	const allLang = !prefixDefaultLocale
-		? languages.translations.map((lang: any) => lang.code)
-		: languages.allLang.map((lang: any) => lang.code);
+	const { allLangs, prefixDefaultLocale, translations } =
+		await getLanguageContext();
 
-	return allLang.map((lang) => ({
+	// Determine which languages to generate paths for
+	const languagesToGenerate = !prefixDefaultLocale
+		? translations
+		: allLangs.map((lang) => lang.code);
+
+	return languagesToGenerate.map((langCode) => ({
 		params: {
-			lang,
+			lang: langCode,
 		},
 	}));
 }
+
 const currentLang = lang;
 const global = await getData<GlobalData>(`/${currentLang}/global.json`);
 ---

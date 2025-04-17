@@ -1,28 +1,36 @@
 ---
 import PageRenderer from '@components/PageRenderer.astro';
-import { getPage, getData, type GlobalData } from '@lib/api';
+import {
+	getPage,
+	getData,
+	getLanguageContext,
+	type GlobalData,
+} from '@lib/api';
 
 export async function getStaticPaths({ paginate }) {
 	const API_URL = import.meta.env.KIRBY_URL;
 	const global = await getData<GlobalData>(`/global.json`);
 	const elements = global.paginationElements;
-	const prefixDefaultLocale = global.prefixDefaultLocale;
-	const languages: GlobalData = await getData<GlobalData>(`/global.json`);
-	const allLang = !prefixDefaultLocale
-		? Object.values(languages.translations).map(
-				(lang: Record<string, any>) => lang.code
-		  )
-		: languages.allLang.map(String);
+
+	const { allLangs, prefixDefaultLocale, translations } =
+		await getLanguageContext();
+
+	// Determine which languages to generate paths for
+	const languagesToGenerate = !prefixDefaultLocale
+		? translations
+		: allLangs.map((lang) => lang.code);
 
 	let paths: Array<{ params: { lang: string; section: string }; props: any }> =
 		[];
-	for (const lang of allLang) {
-		const pagesResponse = await fetch(API_URL + '/' + lang + '/index.json');
+
+	for (const langCode of languagesToGenerate) {
+		const pagesResponse = await fetch(API_URL + '/' + langCode + '/index.json');
 		const data = await pagesResponse.json();
 		const sections = data.filter((item) => item.intendedTemplate === 'section');
+
 		for (const section of sections) {
 			const itemsResponse = await fetch(
-				API_URL + '/' + lang + `/${section.uri}.json`
+				API_URL + '/' + langCode + `/${section.uri}.json`
 			);
 			const itemsData = await itemsResponse.json();
 			const filteredItems = itemsData.items.filter(
@@ -30,7 +38,7 @@ export async function getStaticPaths({ paginate }) {
 			);
 			paths.push(
 				...paginate(filteredItems, {
-					params: { lang, section: section.uri },
+					params: { lang: langCode, section: section.uri },
 					pageSize: elements,
 				})
 			);
