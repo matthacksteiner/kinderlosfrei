@@ -36,6 +36,7 @@
  * - Production ready: Handles image processing in production via Netlify Image API
  */
 
+import type { ImageProps } from '@types';
 import { screens } from '@config/screens';
 
 // --------------------------------------
@@ -100,31 +101,20 @@ const screenRanges = breakpoints.map((breakpoint, index) => {
 	}
 });
 
-interface Props {
-	// Required props
-	src: string;
+interface Props extends ImageProps {
+	// Additional props specific to Picture component
 	urlFocus: string;
 	urlFocusMobile: string;
-	width: number;
-	height: number;
 	name: string;
 	ratioMobile: string;
 	ratioDesktop: string;
 	span: string;
-
-	// Optional props with defaults
-	alt?: string;
 	position?: string;
-	id?: string;
-	class?: string;
-	loading?: 'eager' | 'lazy';
 	backgroundContainer?: 'container' | 'full';
 	gridMarginDesktop?: number;
 	gridMarginMobile?: number;
 	gridGapDesktop?: number;
 	gridGapMobile?: number;
-
-	// Optional features
 	thumbhash?: string;
 	dataZoomable?: boolean;
 	dataZoomSrc?: string;

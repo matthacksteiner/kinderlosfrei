@@ -1,4 +1,12 @@
 ---
+import type { BaseComponentProps } from '@types';
+
+interface Props extends BaseComponentProps {
+	controls?: boolean;
+	color?: string;
+	size?: 'Klein' | 'Mittel' | 'Groß';
+}
+
 const { controls, color, size } = Astro.props;
 ---
 

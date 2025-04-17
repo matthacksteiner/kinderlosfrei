@@ -7,6 +7,9 @@
       "astro/client"
     ],
     "paths": {
+      "@types": [
+        "src/types"
+      ],
       "@config/*": [
         "src/config/*"
       ],
