@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import chalk from 'chalk';
 
 export default function langFolderRename() {
 	return {
@@ -7,9 +8,14 @@ export default function langFolderRename() {
 		hooks: {
 			'astro:config:setup': async ({ logger }) => {
 				try {
+					const pluginName = chalk.cyan.bold('🌐 [Lang Folder]');
 					const API_URL = process.env.KIRBY_URL;
 					if (!API_URL) {
-						logger.warn('KIRBY_URL environment variable is not set');
+						logger.warn(
+							`${pluginName} ${chalk.yellow(
+								'⚠️ KIRBY_URL environment variable is not set'
+							)}`
+						);
 						return;
 					}
 
@@ -27,7 +33,9 @@ export default function langFolderRename() {
 						if (fs.existsSync(langFolder) && !fs.existsSync(noLangFolder)) {
 							fs.renameSync(langFolder, noLangFolder);
 							logger.info(
-								'NO translations found. Renamed [lang] folder to _[lang]'
+								`${pluginName} ${chalk.yellow('⚠️')} ${chalk.dim(
+									'No translations found.'
+								)} ${chalk.cyan('[lang]')} → ${chalk.cyan('_[lang]')}`
 							);
 						}
 					} else {
@@ -35,20 +43,32 @@ export default function langFolderRename() {
 						if (fs.existsSync(noLangFolder) && !fs.existsSync(langFolder)) {
 							fs.renameSync(noLangFolder, langFolder);
 							logger.info(
-								'Translation found. Renamed _[lang] folder back to [lang]'
+								`${pluginName} ${chalk.green('✓')} ${chalk.dim(
+									'Translations found.'
+								)} ${chalk.cyan('_[lang]')} → ${chalk.cyan('[lang]')}`
 							);
 						}
 					}
 				} catch (error) {
-					logger.error('Error in lang-folder-rename plugin:', error);
+					const pluginName = chalk.cyan.bold('🌐 [Lang Folder]');
+					logger.error(
+						`${pluginName} ${chalk.red('✖ Error:')} ${chalk.red.dim(
+							error.message
+						)}`
+					);
 					// Don't fail the build if plugin errors
 					if (process.env.NETLIFY) {
-						logger.warn('Continuing build despite plugin error on Netlify');
+						logger.warn(
+							`${pluginName} ${chalk.yellow(
+								'⚠️ Continuing build despite plugin error on Netlify'
+							)}`
+						);
 					}
 				}
 			},
 			'astro:build:done': async ({ logger }) => {
 				try {
+					const pluginName = chalk.cyan.bold('🌐 [Lang Folder]');
 					const pagesDir = path.resolve('./src/pages');
 					const langFolder = path.join(pagesDir, '[lang]');
 					const noLangFolder = path.join(pagesDir, '_[lang]');
@@ -56,13 +76,26 @@ export default function langFolderRename() {
 					// Always try to restore to [lang] after build
 					if (fs.existsSync(noLangFolder) && !fs.existsSync(langFolder)) {
 						fs.renameSync(noLangFolder, langFolder);
-						logger.info('Restored folder name back to [lang] after build');
+						logger.info(
+							`${pluginName} ${chalk.green('✓')} ${chalk.dim(
+								'Restored folder name'
+							)} ${chalk.cyan('_[lang]')} → ${chalk.cyan('[lang]')}`
+						);
 					}
 				} catch (error) {
-					logger.error('Error restoring folder name:', error);
+					const pluginName = chalk.cyan.bold('🌐 [Lang Folder]');
+					logger.error(
+						`${pluginName} ${chalk.red('✖ Error:')} ${chalk.red.dim(
+							error.message
+						)}`
+					);
 					// Don't fail the build if plugin errors
 					if (process.env.NETLIFY) {
-						logger.warn('Continuing build despite plugin error on Netlify');
+						logger.warn(
+							`${pluginName} ${chalk.yellow(
+								'⚠️ Continuing build despite plugin error on Netlify'
+							)}`
+						);
 					}
 				}
 			},

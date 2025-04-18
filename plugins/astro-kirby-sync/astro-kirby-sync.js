@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import fetch from 'node-fetch';
+import chalk from 'chalk';
 
 // Helper function to ensure directory exists
 function ensureDirectoryExists(dirPath) {
@@ -44,11 +45,13 @@ export default function astroKirbySync() {
 				try {
 					const API_URL = process.env.KIRBY_URL;
 					if (!API_URL) {
-						logger.warn('KIRBY_URL environment variable is not set');
+						logger.warn(
+							chalk.yellow('\n⚠️ KIRBY_URL environment variable is not set')
+						);
 						return;
 					}
 
-					logger.info('Starting Kirby CMS content sync...');
+					logger.info(chalk.blue('\n🔄 Starting Kirby CMS content sync...'));
 
 					// Create content directory
 					const contentDir = path.resolve('./public/content');
@@ -59,19 +62,42 @@ export default function astroKirbySync() {
 					const defaultLanguage = global.defaultLang.code;
 					const translations = global.translations.map((lang) => lang.code);
 
-					// Save global.json in root
+					logger.info(
+						chalk.gray(
+							`📚 Found languages: ${[defaultLanguage, ...translations].join(
+								', '
+							)}`
+						)
+					);
+
+					// Save global.json in root for reference
 					await saveJsonFile(path.join(contentDir, 'global.json'), global);
 
-					// Fetch and save root index.json
-					const rootIndex = await fetchJson(`${API_URL}/index.json`);
-					await saveJsonFile(path.join(contentDir, 'index.json'), rootIndex);
+					// Create default language directory and save content
+					const defaultLangDir = path.join(contentDir, defaultLanguage);
+					ensureDirectoryExists(defaultLangDir);
 
-					// Process each page from root index
+					// Save global.json in default language directory
+					await saveJsonFile(path.join(defaultLangDir, 'global.json'), global);
+
+					// Fetch and save root index.json for default language
+					logger.info(
+						chalk.yellow(
+							`\n📥 Syncing default language (${defaultLanguage})...`
+						)
+					);
+					const rootIndex = await fetchJson(`${API_URL}/index.json`);
+					await saveJsonFile(
+						path.join(defaultLangDir, 'index.json'),
+						rootIndex
+					);
+
+					// Process each page from root index for default language
 					for (const page of rootIndex) {
-						// Save default language version in root
+						logger.info(chalk.gray(`  ↳ Fetching ${page.uri}.json`));
 						const pageData = await fetchJson(`${API_URL}/${page.uri}.json`);
 						await saveJsonFile(
-							path.join(contentDir, `${page.uri}.json`),
+							path.join(defaultLangDir, `${page.uri}.json`),
 							pageData
 						);
 
@@ -81,7 +107,7 @@ export default function astroKirbySync() {
 								`${API_URL}/${page.uri}.json`
 							);
 							await saveJsonFile(
-								path.join(contentDir, `${page.uri}.json`),
+								path.join(defaultLangDir, `${page.uri}.json`),
 								sectionData
 							);
 						}
@@ -90,6 +116,8 @@ export default function astroKirbySync() {
 					// Process translations
 					for (const lang of translations) {
 						if (lang === defaultLanguage) continue;
+
+						logger.info(chalk.yellow(`\n📥 Syncing language: ${lang}...`));
 
 						// Create language directory
 						const langDir = path.join(contentDir, lang);
@@ -115,6 +143,7 @@ export default function astroKirbySync() {
 
 						// Process each page from translated index
 						for (const page of translatedIndex) {
+							logger.info(chalk.gray(`  ↳ Fetching ${lang}/${page.uri}.json`));
 							const translatedPageData = await fetchJson(
 								`${API_URL}/${lang}/${page.uri}.json`
 							);
@@ -136,12 +165,17 @@ export default function astroKirbySync() {
 						}
 					}
 
-					logger.info('Kirby CMS content sync completed successfully');
+					logger.info(chalk.green('\n✨ Content sync completed successfully!'));
 				} catch (error) {
-					logger.error('Error in astro-kirby-sync plugin:', error);
+					logger.error(chalk.red('\n❌ Error during content sync:'));
+					logger.error(chalk.red(error.message));
 					// Don't fail the build if plugin errors
 					if (process.env.NETLIFY) {
-						logger.warn('Continuing build despite plugin error on Netlify');
+						logger.warn(
+							chalk.yellow(
+								'\n⚠️ Continuing build despite plugin error on Netlify'
+							)
+						);
 					}
 				}
 			},
