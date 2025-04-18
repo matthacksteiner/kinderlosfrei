@@ -3,6 +3,14 @@ import path from 'path';
 import fetch from 'node-fetch';
 import chalk from 'chalk';
 
+// Helper function to clean directory
+function cleanDirectory(dirPath) {
+	if (fs.existsSync(dirPath)) {
+		fs.rmSync(dirPath, { recursive: true, force: true });
+	}
+	fs.mkdirSync(dirPath, { recursive: true });
+}
+
 // Helper function to ensure directory exists
 function ensureDirectoryExists(dirPath) {
 	if (!fs.existsSync(dirPath)) {
@@ -53,9 +61,10 @@ export default function astroKirbySync() {
 
 					logger.info(chalk.blue('\n🔄 Starting Kirby CMS content sync...'));
 
-					// Create content directory
+					// Create and clean content directory
 					const contentDir = path.resolve('./public/content');
-					ensureDirectoryExists(contentDir);
+					logger.info(chalk.gray('🧹 Cleaning existing content...'));
+					cleanDirectory(contentDir);
 
 					// Fetch global data first to get language information
 					const global = await fetchJson(`${API_URL}/global.json`);
@@ -70,23 +79,25 @@ export default function astroKirbySync() {
 						)
 					);
 
-					// Save global.json in root for reference
+					// Save global.json in root
 					await saveJsonFile(path.join(contentDir, 'global.json'), global);
 
-					// Create default language directory and save content
+					// Create default language directory
 					const defaultLangDir = path.join(contentDir, defaultLanguage);
 					ensureDirectoryExists(defaultLangDir);
 
 					// Save global.json in default language directory
 					await saveJsonFile(path.join(defaultLangDir, 'global.json'), global);
 
-					// Fetch and save root index.json for default language
+					// Fetch and save root index.json
 					logger.info(
 						chalk.yellow(
 							`\n📥 Syncing default language (${defaultLanguage})...`
 						)
 					);
 					const rootIndex = await fetchJson(`${API_URL}/index.json`);
+					// Save in both root and language directory
+					await saveJsonFile(path.join(contentDir, 'index.json'), rootIndex);
 					await saveJsonFile(
 						path.join(defaultLangDir, 'index.json'),
 						rootIndex
@@ -96,6 +107,11 @@ export default function astroKirbySync() {
 					for (const page of rootIndex) {
 						logger.info(chalk.gray(`  ↳ Fetching ${page.uri}.json`));
 						const pageData = await fetchJson(`${API_URL}/${page.uri}.json`);
+						// Save in both root and language directory
+						await saveJsonFile(
+							path.join(contentDir, `${page.uri}.json`),
+							pageData
+						);
 						await saveJsonFile(
 							path.join(defaultLangDir, `${page.uri}.json`),
 							pageData
@@ -105,6 +121,11 @@ export default function astroKirbySync() {
 						if (page.intendedTemplate === 'section') {
 							const sectionData = await fetchJson(
 								`${API_URL}/${page.uri}.json`
+							);
+							// Save in both root and language directory
+							await saveJsonFile(
+								path.join(contentDir, `${page.uri}.json`),
+								sectionData
 							);
 							await saveJsonFile(
 								path.join(defaultLangDir, `${page.uri}.json`),
