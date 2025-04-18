@@ -1,16 +1,11 @@
 ---
-import { getPage, getData, type PageData, type GlobalData } from '@lib/api';
+import { getPage, getData } from '@lib/api';
+import type { PageRendererProps, PageData, GlobalData } from '@types';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
 import Section from '@components/Section.astro';
 
-interface Props {
-	slug: string;
-	lang?: string;
-	data?: PageData;
-	global?: GlobalData;
-	page?: any;
-}
+type Props = PageRendererProps;
 
 const { slug, lang, data: propsData, global: propsGlobal, page } = Astro.props;
 

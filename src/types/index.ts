@@ -6,6 +6,8 @@ export type {
 	PaginatedResponse,
 	GlobalData,
 	ContentBlock,
+	PageData,
+	SectionData,
 } from './api.types';
 
 // Configuration Types
@@ -30,4 +32,5 @@ export type {
 	SeoProps,
 	ImageProps,
 	ButtonProps,
+	PageRendererProps,
 } from './components.types';

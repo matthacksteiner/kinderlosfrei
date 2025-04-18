@@ -31,3 +31,15 @@ export interface ContentBlock {
 	type: string;
 	content: Record<string, unknown>;
 }
+
+export interface PageData {
+	title: string;
+	uri: string;
+	intendedTemplate: string;
+	layouts?: any[];
+	[key: string]: any;
+}
+
+export interface SectionData extends PageData {
+	items: PageData[];
+}

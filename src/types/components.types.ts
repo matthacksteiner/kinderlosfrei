@@ -1,3 +1,5 @@
+import type { PageData, GlobalData } from './api.types';
+
 // Common Component Props
 export interface BaseComponentProps {
 	class?: string;
@@ -52,4 +54,13 @@ export interface ButtonProps extends BaseComponentProps {
 	disabled?: boolean;
 	type?: 'button' | 'submit' | 'reset';
 	onClick?: () => void;
+}
+
+// Page Components
+export interface PageRendererProps {
+	slug: string;
+	lang?: string;
+	data?: PageData;
+	global?: GlobalData;
+	page?: any;
 }
