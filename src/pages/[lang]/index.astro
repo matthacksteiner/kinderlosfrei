@@ -1,14 +1,26 @@
 ---
 import rootIndex from '@public/content/index.json';
 import PageRenderer from '@components/PageRenderer.astro';
-import { getPage, getData, type GlobalData } from '@lib/api';
+import { getPage, getData, type GlobalData, type PageData } from '@lib/api';
+
+interface PageEntry {
+	id: string;
+	uri: string;
+	intendedTemplate: string;
+	parent: string | null;
+	coverOnly: boolean | null;
+	translations: Record<string, string>;
+}
 
 export async function getStaticPaths() {
+	// Load the root index which contains all pages
+	const pages = rootIndex as PageEntry[];
+
 	// Extract languages from the pages
 	const languages = new Set<string>();
 
 	// Process all pages to find available languages
-	rootIndex.forEach((page) => {
+	pages.forEach((page) => {
 		if (page.translations) {
 			Object.keys(page.translations).forEach((lang) => {
 				languages.add(lang);
