@@ -63,12 +63,20 @@ export default function astroKirbySync() {
 					return;
 				}
 
+				// We're in production/build mode - content sync is REQUIRED
+				logger.info(
+					chalk.blue('\n🔄 Production build detected, running content sync...')
+				);
+
 				try {
 					const API_URL = process.env.KIRBY_URL;
 					if (!API_URL) {
-						logger.warn(
-							chalk.yellow('\n⚠️ KIRBY_URL environment variable is not set')
-						);
+						const errorMessage =
+							'\n⚠️ KIRBY_URL environment variable is not set - content sync FAILED';
+						logger.error(chalk.red(errorMessage));
+						if (command === 'build') {
+							throw new Error(errorMessage);
+						}
 						return;
 					}
 
@@ -203,7 +211,18 @@ export default function astroKirbySync() {
 				} catch (error) {
 					logger.error(chalk.red('\n❌ Error during content sync:'));
 					logger.error(chalk.red(error.message));
-					// Don't fail the build if plugin errors
+
+					// Fail the build in production unless on Netlify
+					if (command === 'build' && !process.env.NETLIFY) {
+						logger.error(
+							chalk.red(
+								'\n🛑 BUILD FAILED: Content sync is required for production builds'
+							)
+						);
+						throw error;
+					}
+
+					// Don't fail the build if plugin errors on Netlify
 					if (process.env.NETLIFY) {
 						logger.warn(
 							chalk.yellow(

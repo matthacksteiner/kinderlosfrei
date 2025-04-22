@@ -64,11 +64,25 @@ function isDevMode(): boolean {
 }
 
 /**
+ * Check if we're in production mode
+ * Production mode always uses local files
+ */
+function isProdMode(): boolean {
+	return !DEV_MODE && !isPreviewMode();
+}
+
+/**
  * Determine the current data source mode
  * @returns A string indicating the current data source mode
  */
 function getDataSourceMode(): 'api' | 'local' {
-	return isPreviewMode() || isDevMode() ? 'api' : 'local';
+	if (isProdMode()) {
+		// Production mode ALWAYS uses local files
+		return 'local';
+	}
+
+	// Preview mode or dev mode use API
+	return 'api';
 }
 
 // Reusable function for fetching data - use local files in build mode, API in preview mode or dev mode
@@ -117,6 +131,14 @@ async function fetchData<T>(uri: string): Promise<T> {
 			);
 
 			if (!fs.existsSync(contentPath)) {
+				if (isProdMode()) {
+					console.error(`
+---------------------------------------------------------------
+CRITICAL ERROR: Content file not found in production mode: ${contentPath}
+This indicates the content sync didn't run properly during build.
+Make sure astro-kirby-sync plugin is running in production mode.
+---------------------------------------------------------------`);
+				}
 				throw new Error(`Content file not found: ${contentPath}`);
 			}
 
@@ -127,6 +149,14 @@ async function fetchData<T>(uri: string): Promise<T> {
 			const response = await fetch(`/content/${normalizedPath}`);
 
 			if (!response.ok) {
+				if (isProdMode()) {
+					console.error(`
+---------------------------------------------------------------
+CRITICAL ERROR: Content file could not be fetched in production mode: ${normalizedPath}
+This indicates the content sync didn't run properly during build
+or files were not properly deployed.
+---------------------------------------------------------------`);
+				}
 				throw new Error(`Failed to fetch content file: ${normalizedPath}`);
 			}
 
@@ -134,6 +164,16 @@ async function fetchData<T>(uri: string): Promise<T> {
 		}
 	} catch (error) {
 		console.error(`Error loading local content file for ${uri}:`, error);
+
+		if (isProdMode()) {
+			console.error(`
+---------------------------------------------------------------
+CONTENT ERROR IN PRODUCTION MODE
+This indicates the content sync didn't run properly during build.
+Content files are missing or corrupted.
+---------------------------------------------------------------`);
+		}
+
 		throw new KirbyApiError(`Failed to load content file: ${uri}`, 404, uri);
 	}
 }
