@@ -449,13 +449,6 @@ export async function getSizes(): Promise<string> {
 			const letterSpacingDesktopXl =
 				item.letterSpacingDesktopXl || letterSpacingDesktop;
 
-			// Calculate the slope for the linear equation (for fluid typography)
-			const slope = (sizeDesktop - sizeMobile) / (1920 - 768);
-			const yAxisIntersection = sizeMobile - slope * 768;
-			const fluidValue = `${yAxisIntersection / baseFontSize}rem + ${
-				slope * 100
-			}vw`;
-
 			return `
         .font--${item.name} {
           font-size: ${sizeMobile / baseFontSize}rem;
@@ -466,9 +459,7 @@ export async function getSizes(): Promise<string> {
         }
         @media (min-width: 768px) and (max-width: 1919px) {
           .font--${item.name} {
-            font-size: clamp(${sizeMobile / baseFontSize}rem,
-              ${fluidValue},
-              ${sizeDesktop / baseFontSize}rem);
+            font-size: ${sizeDesktop / baseFontSize}rem;
             line-height: ${lineHeightDesktop / sizeDesktop};
             letter-spacing: ${letterSpacingDesktop / sizeDesktop}em;
             text-transform: ${item.transform};
