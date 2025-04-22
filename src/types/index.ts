@@ -4,10 +4,16 @@
 export type {
 	ApiResponse,
 	PaginatedResponse,
+	KirbyError,
+	Language,
+	LanguageData,
 	GlobalData,
 	ContentBlock,
 	PageData,
 	SectionData,
+	FontItem,
+	FontData,
+	FontSizeItem,
 } from './api.types';
 
 // Configuration Types
