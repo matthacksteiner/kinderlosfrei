@@ -13,23 +13,32 @@ export interface PaginatedResponse<T> extends ApiResponse<T> {
 	};
 }
 
+// Error Types
+export interface KirbyError {
+	status: number;
+	url: string;
+	message: string;
+}
+
+// Language Types
+export interface Language {
+	code: string;
+	name?: string;
+	[key: string]: any;
+}
+
+export interface LanguageData {
+	translations: Language[];
+	defaultLang: Language;
+	allLang: Language[];
+	prefixDefaultLocale: boolean;
+}
+
 // Content Types
 export interface GlobalData {
-	translations: Array<{
-		code: string;
-		name: string;
-		[key: string]: any;
-	}>;
-	defaultLang: {
-		code: string;
-		name: string;
-		[key: string]: any;
-	};
-	allLang: Array<{
-		code: string;
-		name: string;
-		[key: string]: any;
-	}>;
+	translations: Language[];
+	defaultLang: Language;
+	allLang: Language[];
 	prefixDefaultLocale: boolean;
 	frontendUrl: string;
 	paginationElements?: number;
@@ -38,20 +47,7 @@ export interface GlobalData {
 		url1?: string;
 		url2?: string;
 	}>;
-	fontSize: Array<{
-		name: string;
-		sizeMobile: number;
-		sizeDesktop: number;
-		sizeDesktopXl?: number;
-		lineHeightMobile: number;
-		lineHeightDesktop: number;
-		lineHeightDesktopXl?: number;
-		letterSpacingMobile: number;
-		letterSpacingDesktop: number;
-		letterSpacingDesktopXl?: number;
-		transform: string;
-		decoration: string;
-	}>;
+	fontSize: FontSizeItem[];
 }
 
 export interface ContentBlock {
@@ -64,9 +60,39 @@ export interface PageData {
 	uri: string;
 	intendedTemplate: string;
 	layouts?: any[];
+	translations?: Record<string, string>;
 	[key: string]: any;
 }
 
 export interface SectionData extends PageData {
 	items: PageData[];
+}
+
+// Font Types
+export interface FontItem {
+	name: string;
+	woff?: string;
+	woff2?: string;
+	originalWoff?: string;
+	originalWoff2?: string;
+}
+
+export interface FontData {
+	css: string;
+	fonts: FontItem[];
+}
+
+export interface FontSizeItem {
+	name: string;
+	sizeMobile: number;
+	sizeDesktop: number;
+	sizeDesktopXl?: number;
+	lineHeightMobile: number;
+	lineHeightDesktop: number;
+	lineHeightDesktopXl?: number;
+	letterSpacingMobile: number;
+	letterSpacingDesktop: number;
+	letterSpacingDesktopXl?: number;
+	transform: string;
+	decoration: string;
 }

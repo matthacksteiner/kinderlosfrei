@@ -1,84 +1,38 @@
 import path from 'path';
 import { isPreviewMode } from '@lib/helpers';
+import type {
+	KirbyError,
+	Language,
+	LanguageData,
+	GlobalData,
+	FontItem,
+	FontData,
+	FontSizeItem,
+	PageData,
+	SectionData,
+} from '../types/api.types';
+
+// Re-export types for backward compatibility
+export type {
+	KirbyError,
+	Language,
+	LanguageData,
+	GlobalData,
+	FontItem,
+	FontData,
+	FontSizeItem,
+	PageData,
+	SectionData,
+};
 
 const API_URL = import.meta.env.KIRBY_URL;
-
-// ============================================================================
-// TYPE DEFINITIONS
-// ============================================================================
-
-export interface KirbyError {
-	status: number;
-	url: string;
-	message: string;
-}
-
-export interface Language {
-	code: string;
-	name?: string;
-	[key: string]: any;
-}
-
-export interface LanguageData {
-	translations: Language[];
-	defaultLang: Language;
-	allLang: Language[];
-	prefixDefaultLocale: boolean;
-}
-
-export interface GlobalData {
-	translations: Language[];
-	defaultLang: Language;
-	allLang: Language[];
-	prefixDefaultLocale: boolean;
-	frontendUrl: string;
-	paginationElements?: number;
-	font?: Array<{
-		name: string;
-		url1?: string; // woff
-		url2?: string; // woff2
-	}>;
-	fontSize: FontSizeItem[];
-}
-
-export interface FontItem {
-	name: string;
-	woff?: string;
-	woff2?: string;
-	originalWoff?: string;
-	originalWoff2?: string;
-}
-
-export interface FontData {
-	css: string;
-	fonts: FontItem[];
-}
-
-export interface FontSizeItem {
-	name: string;
-	sizeMobile: number;
-	sizeDesktop: number;
-	sizeDesktopXl?: number;
-	lineHeightMobile: number;
-	lineHeightDesktop: number;
-	lineHeightDesktopXl?: number;
-	letterSpacingMobile: number;
-	letterSpacingDesktop: number;
-	letterSpacingDesktopXl?: number;
-	transform: string;
-	decoration: string;
-}
-
-export interface PageData {
-	title: string;
-	uri: string;
-	intendedTemplate: string;
-	layouts?: any[];
-	[key: string]: any;
-}
-
-export interface SectionData extends PageData {
-	items: PageData[];
+const DEV_MODE = import.meta.env.DEV;
+const DEBUG = import.meta.env.DEBUG_MODE ?? false;
+// Simple debug logger that only logs when DEBUG is true
+function debugLog(message: string) {
+	if (DEBUG) {
+		console.log(message);
+	}
 }
 
 // ============================================================================
@@ -101,30 +55,55 @@ class KirbyApiError extends Error implements KirbyError {
 // CORE API FUNCTIONS
 // ============================================================================
 
-// Reusable function for fetching data - use local files in build mode, API in preview mode
-async function fetchData<T>(uri: string): Promise<T> {
-	// In preview mode, use direct API calls
-	if (isPreviewMode()) {
-		const response = await fetch(API_URL + uri, {
-			method: 'GET',
-		});
+/**
+ * Check if we're in development mode
+ * Development mode uses direct API calls instead of static files
+ */
+function isDevMode(): boolean {
+	return !!DEV_MODE;
+}
 
-		if (response.status !== 200) {
-			console.error(
-				'Error fetching',
-				uri,
-				response.status,
-				response.statusText
-			);
-			throw new KirbyApiError(await response.text(), response.status, uri);
+/**
+ * Determine the current data source mode
+ * @returns A string indicating the current data source mode
+ */
+function getDataSourceMode(): 'api' | 'local' {
+	return isPreviewMode() || isDevMode() ? 'api' : 'local';
+}
+
+// Reusable function for fetching data - use local files in build mode, API in preview mode or dev mode
+async function fetchData<T>(uri: string): Promise<T> {
+	const mode = getDataSourceMode();
+
+	// In preview mode or dev mode, use direct API calls
+	if (mode === 'api') {
+		debugLog(
+			`🔄 [${
+				isPreviewMode() ? 'Preview' : 'Dev'
+			}] Fetching from API: ${API_URL}${uri}`
+		);
+
+		try {
+			const response = await fetch(API_URL + uri, {
+				method: 'GET',
+			});
+
+			if (response.status !== 200) {
+				throw new KirbyApiError(await response.text(), response.status, uri);
+			}
+
+			return response.json() as Promise<T>;
+		} catch (error) {
+			console.error(`Error fetching from API: ${uri}`, error);
+			throw error;
 		}
-		return response.json() as Promise<T>;
 	}
 
-	// In build mode, use local content files
+	// In production mode, use local content files
 	try {
 		// Normalize the path for local file access
 		const normalizedPath = uri.startsWith('/') ? uri.substring(1) : uri;
+		debugLog(`📁 [Production] Using local file: /content/${normalizedPath}`);
 
 		// Server-side vs client-side handling for imports
 		if (typeof window === 'undefined') {
@@ -164,11 +143,34 @@ export async function getData<T>(uri: string): Promise<T> {
 	return fetchData<T>(uri);
 }
 
+/**
+ * Log once per session when the data source changes
+ * Only logs in development mode and only once to avoid console spam
+ */
+let hasLoggedDataSource = false;
+function logDataSourceOnce() {
+	if (DEV_MODE && !hasLoggedDataSource) {
+		const mode = getDataSourceMode();
+		const sourceInfo =
+			mode === 'api'
+				? `Using live API: ${API_URL}`
+				: 'Using local content files';
+
+		console.log(`[Baukasten] ${sourceInfo}`);
+		if (DEBUG) {
+			console.log('[Baukasten] Debug logging enabled');
+		}
+
+		hasLoggedDataSource = true;
+	}
+}
+
 // ============================================================================
 // GLOBAL DATA FUNCTIONS
 // ============================================================================
 
 export async function getGlobal(): Promise<GlobalData> {
+	logDataSourceOnce();
 	return fetchData<GlobalData>('/global.json');
 }
 

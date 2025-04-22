@@ -49,7 +49,20 @@ export default function astroKirbySync() {
 	return {
 		name: 'astro-kirby-sync',
 		hooks: {
-			'astro:config:setup': async ({ logger }) => {
+			'astro:config:setup': async ({ command, logger }) => {
+				// Skip content sync in development mode
+				if (command === 'dev') {
+					logger.info(
+						chalk.blue(
+							'\n🔄 Development mode detected, skipping content sync...'
+						)
+					);
+					logger.info(
+						chalk.gray('Content will be fetched directly from the CMS API')
+					);
+					return;
+				}
+
 				try {
 					const API_URL = process.env.KIRBY_URL;
 					if (!API_URL) {

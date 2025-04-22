@@ -1,12 +1,12 @@
 ---
-import rootIndex from '@public/content/index.json';
 import PageRenderer from '@components/PageRenderer.astro';
-import { getPage, getData } from '@lib/api';
-import type { GlobalData } from '@types';
+import { getPage, getData, getAllPages } from '@lib/api';
+import type { GlobalData, PageData } from '@types';
 
-interface PageEntry {
-	translations: Record<string, string>;
-}
+// Extend the PageData with optional translations property
+type PageWithTranslations = PageData & {
+	translations?: Record<string, string>;
+};
 
 interface StaticPath {
 	params: { lang: string; slug: string };
@@ -14,8 +14,8 @@ interface StaticPath {
 }
 
 export async function getStaticPaths() {
-	// Get all pages from root index
-	const pages = rootIndex as PageEntry[];
+	// Get all pages using the API function
+	const pages = await getAllPages();
 	const paths: StaticPath[] = [];
 
 	// Process each page and its translations
