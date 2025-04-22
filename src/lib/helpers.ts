@@ -15,6 +15,21 @@ export function checkIsHome(pageContext: AstroGlobal): boolean {
 }
 
 /**
+ * Determines if the current request is in preview mode
+ * Preview mode is only available on the server and when the path includes /preview/
+ * @returns boolean indicating if preview mode is active
+ */
+export function isPreviewMode(): boolean {
+	const isServer = typeof window === 'undefined';
+	const astroPath = process.env.ASTRO_PATH;
+	return (
+		isServer &&
+		!!astroPath &&
+		(astroPath.includes('/preview/') || astroPath === '/preview')
+	);
+}
+
+/**
  * Converts a pixel value to rem units
  * @param value - The pixel value to convert
  * @returns string with rem unit

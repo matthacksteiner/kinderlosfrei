@@ -1,5 +1,6 @@
 ---
 import Button from '@blocks/BlockButton.astro';
+import { isPreviewMode } from '@lib/helpers';
 
 // Props and parameters
 const { data, global, links } = Astro.props;
@@ -15,7 +16,7 @@ const effectiveLang = lang || currentLang;
 
 // UI settings
 const logoAlign = global.logoAlign;
-const shouldUsePreview = path.includes('/preview');
+const isPreview = isPreviewMode();
 
 // Utility function for common classes
 const getCommonClasses = (item, isActive, isLast) => [
@@ -51,7 +52,7 @@ const getCommonClasses = (item, isActive, isLast) => [
 				: `/${item.uri}`;
 
 			// Handle preview mode URLs
-			if (shouldUsePreview && !isUrl) {
+			if (isPreview && !isUrl) {
 				const parts = href.split('/').filter(Boolean);
 				if (shouldIncludeLanguage) {
 					const hasLang = parts[0] === effectiveLang;

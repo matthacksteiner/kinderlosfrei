@@ -5,6 +5,7 @@ import {
 	type GlobalData,
 	type PageData,
 } from '@lib/api';
+import { isPreviewMode } from '@lib/helpers';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -23,19 +24,8 @@ export interface PreviewState {
 // PREVIEW MODE DETECTION
 // ============================================================================
 
-/**
- * Determines if the current request is in preview mode
- * Preview mode is only available on the server and when the path includes /preview/
- */
-export function isPreviewMode(): boolean {
-	const isServer = typeof window === 'undefined';
-	const astroPath = process.env.ASTRO_PATH;
-	return (
-		isServer &&
-		!!astroPath &&
-		(astroPath.includes('/preview/') || astroPath === '/preview')
-	);
-}
+// Function moved to helpers.ts and re-exported here for backward compatibility
+export { isPreviewMode } from '@lib/helpers';
 
 // ============================================================================
 // PATH HANDLING

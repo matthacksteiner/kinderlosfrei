@@ -1,4 +1,5 @@
 import path from 'path';
+import { isPreviewMode } from '@lib/helpers';
 
 const API_URL = import.meta.env.KIRBY_URL;
 
@@ -99,17 +100,6 @@ class KirbyApiError extends Error implements KirbyError {
 // ============================================================================
 // CORE API FUNCTIONS
 // ============================================================================
-
-// Check if in preview mode - preview still uses direct API calls
-function isPreviewMode(): boolean {
-	const isServer = typeof window === 'undefined';
-	const astroPath = process.env.ASTRO_PATH;
-	return (
-		isServer &&
-		!!astroPath &&
-		(astroPath.includes('/preview/') || astroPath === '/preview')
-	);
-}
 
 // Reusable function for fetching data - use local files in build mode, API in preview mode
 async function fetchData<T>(uri: string): Promise<T> {

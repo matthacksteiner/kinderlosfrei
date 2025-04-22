@@ -1,5 +1,5 @@
 ---
-import { toRem } from '@lib/helpers';
+import { toRem, isPreviewMode } from '@lib/helpers';
 import Button from '@blocks/BlockButton.astro';
 import VectorImage from '@components/VectorImage.astro';
 import Hamburger from '@components/Hamburger.astro';
@@ -33,7 +33,7 @@ const currentLang = lang;
 const defaultLang = global.defaultLang.code;
 const translations = global.translations;
 const prefixDefaultLocale = global.prefixDefaultLocale;
-const isPreview = Astro.url.pathname.includes('/preview/');
+const isPreview = isPreviewMode();
 ---
 
 {

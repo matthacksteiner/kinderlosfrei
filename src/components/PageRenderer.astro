@@ -1,5 +1,6 @@
 ---
 import { getPage, getData } from '@lib/api';
+import { isPreviewMode } from '@lib/helpers';
 import type { PageRendererProps, PageData, GlobalData } from '@types';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Layouts from '@components/Layouts.astro';
@@ -64,7 +65,7 @@ const isSectionPage = data.intendedTemplate === 'section' && page;
 		)
 	}
 	{
-		Astro.url.pathname.includes('/preview/') && (
+		isPreviewMode() && (
 			<div class="fixed bottom-4 right-4 z-40 rounded-lg bg-red-600 px-3 py-1 font-medium text-white shadow-md">
 				Preview Mode
 			</div>
