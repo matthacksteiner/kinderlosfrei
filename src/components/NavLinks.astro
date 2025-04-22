@@ -24,7 +24,7 @@ const getCommonClasses = (item, isActive, isLast) => [
 	'max-lg:mb-8',
 	logoAlign === 'center' ? 'lg:my-2' : 'lg:mr-16 2xl:mr-24',
 	isActive && 'active',
-	isLast && 'mr-0 lg:mr-0 2xl:mr-0',
+	isLast && '!mr-0',
 	...(Array.isArray(item.classes) ? item.classes : [item.classes]),
 ];
 ---
