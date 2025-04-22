@@ -1,7 +1,8 @@
 ---
 import rootIndex from '@public/content/index.json';
 import PageRenderer from '@components/PageRenderer.astro';
-import { getPage, getData, type GlobalData } from '@lib/api';
+import { getPage, getData } from '@lib/api';
+import type { GlobalData } from '@types';
 
 interface PageEntry {
 	id: string;

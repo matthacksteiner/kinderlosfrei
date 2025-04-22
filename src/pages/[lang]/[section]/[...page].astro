@@ -1,13 +1,13 @@
 ---
 import { getSections, getSection, getData } from '@lib/api';
-import type { GlobalData } from '@types';
 import PageRenderer from '@components/PageRenderer.astro';
+import type { GlobalData } from '@types';
 
 export async function getStaticPaths({ paginate }) {
 	// Get all section data directly
 	const globalData = await getData<GlobalData>('/global.json');
 	const languages = globalData.translations.map((lang) => lang.code);
-	const pageSize = globalData.paginationElements || 10;
+	const pageSize = globalData.paginationElements || 9;
 
 	// Create array to store all paginated paths
 	const allPaginatedPaths: any[] = [];
