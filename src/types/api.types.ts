@@ -15,19 +15,58 @@ export interface PaginatedResponse<T> extends ApiResponse<T> {
 
 // Content Types
 export interface GlobalData {
-	defaultLang: {
-		code: string;
-		name: string;
-	};
 	translations: Array<{
 		code: string;
 		name: string;
+		[key: string]: any;
 	}>;
-	frontendUrl: string;
+	defaultLang: {
+		code: string;
+		name: string;
+		[key: string]: any;
+	};
+	allLang: Array<{
+		code: string;
+		name: string;
+		[key: string]: any;
+	}>;
 	prefixDefaultLocale: boolean;
+	frontendUrl: string;
+	paginationElements?: number;
+	font?: Array<{
+		name: string;
+		url1?: string;
+		url2?: string;
+	}>;
+	fontSize: Array<{
+		name: string;
+		sizeMobile: number;
+		sizeDesktop: number;
+		sizeDesktopXl?: number;
+		lineHeightMobile: number;
+		lineHeightDesktop: number;
+		lineHeightDesktopXl?: number;
+		letterSpacingMobile: number;
+		letterSpacingDesktop: number;
+		letterSpacingDesktopXl?: number;
+		transform: string;
+		decoration: string;
+	}>;
 }
 
 export interface ContentBlock {
 	type: string;
 	content: Record<string, unknown>;
+}
+
+export interface PageData {
+	title: string;
+	uri: string;
+	intendedTemplate: string;
+	layouts?: any[];
+	[key: string]: any;
+}
+
+export interface SectionData extends PageData {
+	items: PageData[];
 }

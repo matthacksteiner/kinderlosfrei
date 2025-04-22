@@ -1,55 +1,54 @@
 ---
+import { getSections, getSection, getData } from '@lib/api';
 import PageRenderer from '@components/PageRenderer.astro';
-import {
-	getPage,
-	getData,
-	getLanguageContext,
-	type GlobalData,
-} from '@lib/api';
+import type { GlobalData } from '@types';
 
 export async function getStaticPaths({ paginate }) {
-	const API_URL = import.meta.env.KIRBY_URL;
-	const global = await getData<GlobalData>(`/global.json`);
-	const elements = global.paginationElements;
+	// Get all section data directly
+	const globalData = await getData<GlobalData>('/global.json');
+	const languages = globalData.translations.map((lang) => lang.code);
+	const pageSize = globalData.paginationElements || 9;
 
-	const { allLangs, prefixDefaultLocale, translations } =
-		await getLanguageContext();
+	// Create array to store all paginated paths
+	const allPaginatedPaths: any[] = [];
 
-	// Determine which languages to generate paths for
-	const languagesToGenerate = !prefixDefaultLocale
-		? translations
-		: allLangs.map((lang) => lang.code);
+	// Process each language
+	for (const lang of languages) {
+		// Get sections for this language
+		const sections = await getSections(lang);
 
-	let paths: Array<{ params: { lang: string; section: string }; props: any }> =
-		[];
-
-	for (const langCode of languagesToGenerate) {
-		const pagesResponse = await fetch(API_URL + '/' + langCode + '/index.json');
-		const data = await pagesResponse.json();
-		const sections = data.filter((item) => item.intendedTemplate === 'section');
-
+		// Process each section
 		for (const section of sections) {
-			const itemsResponse = await fetch(
-				API_URL + '/' + langCode + `/${section.uri}.json`
-			);
-			const itemsData = await itemsResponse.json();
-			const filteredItems = itemsData.items.filter(
-				(item) => item.parent === section.uri
-			);
-			paths.push(
-				...paginate(filteredItems, {
-					params: { lang: langCode, section: section.uri },
-					pageSize: elements,
-				})
-			);
+			// Get detailed data for this section including items
+			const sectionData = await getSection(section.uri, lang);
+
+			// Create pagination for this section's items
+			const paginatedData = paginate(sectionData.items || [], {
+				params: { lang, section: section.uri, page: [''] },
+				pageSize,
+				props: { sectionData, lang },
+			});
+
+			// Add to collection
+			allPaginatedPaths.push(...paginatedData);
 		}
 	}
-	return paths;
+
+	return allPaginatedPaths;
 }
 
-const { page } = Astro.props;
-const { lang, section } = Astro.params;
-const global = await getData<GlobalData>(`/${lang}/global.json`);
+// Access props from pagination
+const { page, sectionData, lang } = Astro.props;
+const { section } = Astro.params;
+
+// Get global data for the current language
+const globalData = await getData<GlobalData>(`/${lang}/global.json`);
 ---
 
-<PageRenderer slug={section} lang={lang} page={page} global={global} />
+<PageRenderer
+	slug={section}
+	lang={lang}
+	page={page}
+	data={sectionData}
+	global={globalData}
+/>

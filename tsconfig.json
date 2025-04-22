@@ -39,6 +39,9 @@
       ],
       "@overrides/*": [
         "src/overrides/*"
+      ],
+      "@public/*": [
+        "public/*"
       ]
     }
   }

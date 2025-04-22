@@ -1,9 +1,9 @@
 ---
-import { getData, getGlobal, type PageData } from '@lib/api';
 import PageRenderer from '@components/PageRenderer.astro';
+import { getPage } from '@lib/api';
 
-const data = await getData<PageData>(`/error.json`);
-const global = await getGlobal();
+// Use the API function to get properly typed data
+const pageData = await getPage('error');
 ---
 
-<PageRenderer slug="error" data={data} global={global} />
+<PageRenderer slug="error" data={pageData} />

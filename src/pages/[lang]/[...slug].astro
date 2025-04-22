@@ -1,43 +1,45 @@
 ---
-import {
-	getLanguageContext,
-	getGlobal,
-	getAllPages,
-	getData,
-	type GlobalData,
-} from '@lib/api';
+import rootIndex from '@public/content/index.json';
 import PageRenderer from '@components/PageRenderer.astro';
+import { getPage, getData } from '@lib/api';
+import type { GlobalData } from '@types';
+
+interface PageEntry {
+	translations: Record<string, string>;
+}
+
+interface StaticPath {
+	params: { lang: string; slug: string };
+	props: { lang: string; slug: string };
+}
 
 export async function getStaticPaths() {
-	const { allLangs, prefixDefaultLocale, translations } =
-		await getLanguageContext();
+	// Get all pages from root index
+	const pages = rootIndex as PageEntry[];
+	const paths: StaticPath[] = [];
 
-	// Determine which languages to generate paths for
-	const languagesToGenerate = !prefixDefaultLocale
-		? translations
-		: allLangs.map((lang) => lang.code);
-
-	let paths: { params: { lang: string; slug: string } }[] = [];
-
-	for (const langCode of languagesToGenerate) {
-		// Use the API function to get all pages
-		const pages = await getAllPages(langCode);
-
-		paths.push(
-			...pages.map((item) => ({
-				params: {
-					lang: langCode,
-					slug: item.uri,
-				},
-			}))
-		);
-	}
+	// Process each page and its translations
+	pages.forEach((page) => {
+		if (page.translations) {
+			Object.entries(page.translations).forEach(([lang, slug]) => {
+				paths.push({
+					params: { lang, slug },
+					props: { lang, slug },
+				});
+			});
+		}
+	});
 
 	return paths;
 }
 
-const { lang, slug } = Astro.params;
-const global = await getData<GlobalData>(`/${lang}/global.json`);
+const { lang, slug } = Astro.props;
+
+// Fetch page and global data for the current language
+const [pageData, globalData] = await Promise.all([
+	getPage(slug, lang),
+	getData<GlobalData>(`/${lang}/global.json`),
+]);
 ---
 
-<PageRenderer slug={slug} lang={lang} global={global} />
+<PageRenderer slug={slug} lang={lang} data={pageData} global={globalData} />
