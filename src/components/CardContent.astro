@@ -69,6 +69,11 @@ const {
 </div>
 
 <style lang="css">
+	.card-main-content {
+		/* safari workaround */
+		height: -webkit-fill-available;
+	}
+
 	.card-title {
 		@apply hyphens-auto;
 		font-family: var(--titleFont);
