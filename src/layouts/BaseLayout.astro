@@ -67,18 +67,20 @@ const googleAnalyticsCode = global.googleAnalyticsCode;
 		{
 			/* Only preload woff2 fonts if they exist and will be used */
 			!inPreviewMode &&
-				fontsList.map(
-					(font) =>
-						font.woff2 && (
-							<link
-								rel="preload"
-								href={font.woff2}
-								as="font"
-								type="font/woff2"
-								crossorigin="anonymous"
-							/>
-						)
-				)
+				fontsList.map((font) => {
+					if (!font.woff2) return null;
+					// Extract the filename from the original URL to match local CSS references
+					const fileName = font.woff2.split('/').pop();
+					return (
+						<link
+							rel="preload"
+							href={`/fonts/${fileName}`}
+							as="font"
+							type="font/woff2"
+							crossorigin="anonymous"
+						/>
+					);
+				})
 		}
 
 		<link
