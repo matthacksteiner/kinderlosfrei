@@ -24,14 +24,14 @@ const getCommonClasses = (item, isActive, isLast) => [
 	'max-lg:mb-8',
 	logoAlign === 'center' ? 'lg:my-2' : 'lg:mr-16 2xl:mr-24',
 	isActive && 'active',
-	isLast && 'mr-0',
+	isLast && 'mr-0 lg:mr-0 2xl:mr-0',
 	...(Array.isArray(item.classes) ? item.classes : [item.classes]),
 ];
 ---
 
 {
 	links &&
-		links.map((item) => {
+		links.map((item, index) => {
 			if (!item) return null;
 			const isUrl = item.type === 'url';
 			const isPopup = item.popup === true;
@@ -67,7 +67,7 @@ const getCommonClasses = (item, isActive, isLast) => [
 			const target = isUrl ? `${isPopup ? '_blank' : '_self'}` : undefined;
 			const rel = isUrl ? `${isPopup ? 'noopener noreferrer' : ''}` : undefined;
 			const isActive = path.includes(item.uri);
-			const isLast = translations.length === 0;
+			const isLast = translations.length === 0 && index === links.length - 1;
 
 			// Render appropriate component
 			if (item.classes.includes('cta')) {
