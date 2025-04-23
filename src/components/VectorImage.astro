@@ -1,10 +1,13 @@
 ---
+import { getAltFallback } from '@lib/helpers';
+
 const { image, widthMobile, widthDesktop, noLink, widthAlign } = Astro.props;
 const classes = image?.classes;
 const link = image?.linkexternal;
 const imageProps = {
 	src: image?.url,
 	alt: image?.alt,
+	name: image?.name,
 	width: image?.width,
 	height: image?.height,
 	id: image?.identifier,
@@ -124,7 +127,12 @@ const svgClasses = [
 			}
 
 			return (
-				<a href={href} target={target} rel={rel}>
+				<a
+					href={href}
+					target={target}
+					rel={rel}
+					aria-label={image.alt || getAltFallback(image.name)}
+				>
 					{renderSvg()}
 				</a>
 			);

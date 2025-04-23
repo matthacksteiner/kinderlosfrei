@@ -37,3 +37,17 @@ export function isPreviewMode(): boolean {
 export function toRem(value: number): string {
 	return `${value / 16}rem`;
 }
+
+/**
+ * Generates a human-readable alt text from an image name
+ * @param name - The image name to convert
+ * @returns Formatted alt text string
+ */
+export function getAltFallback(name?: string): string {
+	return name
+		? name
+				.replace(/[-_]/g, ' ')
+				.replace(/[^\w\s]/g, '')
+				.replace(/\b\w/g, (char) => char.toUpperCase())
+		: 'Image';
+}

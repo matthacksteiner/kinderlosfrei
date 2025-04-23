@@ -38,6 +38,7 @@
 
 import type { ImageProps } from '@types';
 import { screens } from '@config/screens';
+import { getAltFallback } from '@lib/helpers';
 
 // --------------------------------------
 // Environment Configuration
@@ -298,14 +299,6 @@ const fetchPriority = aboveFold
 		: 'low'
 	: undefined;
 
-// Generate alt text from name if not provided
-const altFallback = name
-	? name
-			.replace(/[-_]/g, ' ')
-			.replace(/[^\w\s]/g, '')
-			.replace(/\b\w/g, (char) => char.toUpperCase())
-	: 'Image';
-
 // Calculate final image dimensions for markup
 function getCalculatedWidth() {
 	const lastScreenRange = screenRanges[screenRanges.length - 1];
@@ -364,7 +357,7 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 				: sourceDesktop}
 			width={imgWidth}
 			height={imgHeight}
-			alt={alt || altFallback}
+			alt={alt || getAltFallback(name)}
 			id={id}
 			loading={aboveFold ? undefined : loading}
 			data-zoomable={dataZoomable}
