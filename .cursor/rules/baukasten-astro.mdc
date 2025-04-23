@@ -1,8 +1,10 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
+# Baukasten-Astro
+
 You are an expert in JavaScript, TypeScript, and Astro framework for scalable web development.
 
 ## Key Principles
@@ -29,11 +31,15 @@ src/
   pages/         - File-based routing system with dynamic routes
   scripts/       - Client-side scripts for interactive components
   styles/        - Global styles and Tailwind setup
+  types/         - TypeScript type definitions
 public/          - Static assets (images, fonts, etc.)
 astro.config.mjs - Astro configuration with Netlify adapter
 tailwind.config.cjs - Tailwind CSS configuration
 .env            - Environment variables (KIRBY_URL, etc.)
-plugins/        - Custom plugins extending functionality
+plugins/        - Custom plugins extending functionality:
+  - astro-kirby-sync/ - Syncs content from Kirby CMS
+  - font-downloader/ - Downloads and manages fonts
+  - lang-folder-rename/ - Handles language-specific folder renaming
 ```
 
 ## Component Development
@@ -47,10 +53,11 @@ plugins/        - Custom plugins extending functionality
 ## Blocks System
 
 The project uses a comprehensive block-based content approach:
+
 - src/blocks/ contains all content block components (BlockText, BlockImage, BlockVideo, etc.)
 - Each block corresponds to a content type in the Kirby CMS
 - Blocks receive structured data via props and render accordingly
-- Common blocks include: BlockText, BlockImage, BlockVideo, BlockCard, BlockSlider, BlockGallery, etc.
+- Common blocks include: BlockText, BlockImage, BlockVideo, BlockCard, BlockSlider, BlockGallery, BlockAccordion, BlockButtonBar, BlockColumns, BlockIconList, BlockMenu, BlockQuoteSlider, BlockGrid, BlockCode, BlockVector, BlockLine, BlockDivider, and BlockTitle
 
 ## Routing and Pages
 
@@ -68,6 +75,7 @@ The project uses a comprehensive block-based content approach:
 - global.json provides site-wide configuration including languages
 - Content is fetched at build time for static generation
 - Preview mode uses SSR for real-time content updates
+- Custom astro-kirby-sync plugin manages content synchronization
 
 ## Styling
 
@@ -75,6 +83,7 @@ The project uses a comprehensive block-based content approach:
 - Follows responsive design principles
 - Avoids @apply in favor of direct utility classes
 - Custom configurations in tailwind.config.cjs and src/overrides/tailwind.config.cjs
+- Screens configuration in src/config/screens.js
 
 ## Performance Optimization
 
@@ -83,6 +92,7 @@ The project uses a comprehensive block-based content approach:
 - Image optimization with proper CDN configuration
 - Netlify adapter for deployment
 - CSS and JavaScript compression via @playform/compress
+- Prefetch enabled for pre-rendered pages
 
 ## Integrations
 
@@ -92,13 +102,15 @@ The project uses a comprehensive block-based content approach:
 - astro-cloudinary for image optimization
 - Medium Zoom and PhotoSwipe for media galleries
 - Swiper for carousels and sliders
+- vanilla-cookieconsent for cookie management
 
 ## Internationalization
 
 - Multi-language support configured via i18n in astro.config.mjs
 - Language data from Kirby CMS global.json
-- Optional prefixing for default locale
+- Optional prefixing for default locale via prefixDefaultLocale setting
 - Dynamic language routing
+- Custom lang-folder-rename plugin for language path handling
 
 ## Deployment
 
@@ -106,6 +118,12 @@ The project uses a comprehensive block-based content approach:
 - Environment variables for different configurations
 - NODE_VERSION set to 23 for Netlify builds
 - Remote image configuration for Netlify Image CDN
+- HTML processing with pretty_urls disabled
+
+## Testing
+
+- Vitest for unit testing
+- Test command available via npm test
 
 ## Best Practices
 
