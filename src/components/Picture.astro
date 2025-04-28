@@ -279,7 +279,19 @@ function createProductionImageSrc(
 	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
 	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
 
-	const width = calculateImageWidth(containerWidth, columns, span, gridGap);
+	// Use a reasonable default DPR of 2 for the fallback image
+	// (srcset will handle actual DPR-specific images)
+	const dpr = 2;
+	const dprMaxWidth = screenRange.maxWidth * dpr;
+
+	// Calculate width and apply DPR cap
+	const calculatedWidth = calculateImageWidth(
+		containerWidth,
+		columns,
+		span,
+		gridGap
+	);
+	const width = Math.min(calculatedWidth, dprMaxWidth);
 	const height = calculateImageHeight(width, ratio);
 
 	return createNetlifyImageUrl(source, width, height);
@@ -325,10 +337,20 @@ function getCalculatedWidth() {
 			scrollbarWidth -
 			gridMarginDesktopTotal;
 	} else {
-		containerWidth = 2560 - scrollbarWidth;
+		containerWidth = Math.min(2560, maxWidthForBreakpoint * 2) - scrollbarWidth;
 	}
 
-	return calculateImageWidth(containerWidth, 12, span, gridGapDesktop);
+	// Calculate width and apply DPR cap for largest displays
+	const calculatedWidth = calculateImageWidth(
+		containerWidth,
+		12,
+		span,
+		gridGapDesktop
+	);
+	const defaultDpr = 2; // Reasonable default for markup
+	const dprMaxWidth = lastScreenRange.maxWidth * defaultDpr;
+
+	return Math.min(calculatedWidth, dprMaxWidth);
 }
 
 const imgWidth = getCalculatedWidth();
