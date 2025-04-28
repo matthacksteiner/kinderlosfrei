@@ -59,7 +59,7 @@ const useNetlifyImageProcessing = isProduction || isNetlify;
 // Layout Constants
 // --------------------------------------
 const scrollbarWidth = 17;
-const maxContainerWidth = 1920;
+const MAX_DPR = 4; // Maximum device pixel ratio to support
 
 // --------------------------------------
 // Responsive Breakpoints Configuration
@@ -69,6 +69,7 @@ const breakpoints = Object.entries(screens)
 	.map(([key, value]) => ({
 		key,
 		value: parseInt(value.replace('px', '')),
+		maxContainerWidth: parseInt(value.replace('px', '')), // Use screen size as max container width
 	}))
 	.sort((a, b) => a.value - b.value);
 
@@ -82,13 +83,15 @@ const screenRanges = breakpoints.map((breakpoint, index) => {
 			key: breakpoint.key,
 			mediaQuery: `(max-width: ${breakpoint.value}px)`,
 			maxWidth: breakpoint.value,
+			maxContainerWidth: breakpoint.maxContainerWidth,
 		};
 	} else if (!nextBreakpoint) {
 		// Last breakpoint (largest screens)
 		return {
 			key: breakpoint.key,
 			mediaQuery: `(min-width: ${breakpoint.value + 1}px)`,
-			maxWidth: breakpoint.value * 1.5, // Extra size for largest screens
+			maxWidth: breakpoint.value,
+			maxContainerWidth: breakpoint.maxContainerWidth,
 		};
 	} else {
 		// Middle breakpoints
@@ -98,6 +101,7 @@ const screenRanges = breakpoints.map((breakpoint, index) => {
 				nextBreakpoint.value
 			}px)`,
 			maxWidth: nextBreakpoint.value,
+			maxContainerWidth: breakpoint.maxContainerWidth,
 		};
 	}
 });
@@ -215,10 +219,11 @@ function getContainerWidth(
 	isMobile: boolean,
 	gridMarginTotal: number
 ) {
-	let containerWidth = screenRange.maxWidth - scrollbarWidth;
+	let containerWidth =
+		Math.min(screenRange.maxWidth, screenRange.maxContainerWidth) -
+		scrollbarWidth;
 	if (backgroundContainer === 'container' && !isMobile) {
-		containerWidth =
-			Math.min(containerWidth, maxContainerWidth) - gridMarginTotal;
+		containerWidth = containerWidth - gridMarginTotal;
 	}
 	return containerWidth;
 }
@@ -245,7 +250,10 @@ function createProductionSrcSet(
 	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
 	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
 
-	return [1, 2, 3]
+	// Use DPR values from 1 to MAX_DPR
+	const dprValues = [1, 2, 3, 4].filter((dpr) => dpr <= MAX_DPR);
+
+	return dprValues
 		.map((dpr) => {
 			const imgWidth =
 				calculateImageWidth(containerWidth, columns, span, gridGap) * dpr;
@@ -306,11 +314,12 @@ function getCalculatedWidth() {
 
 	if (backgroundContainer === 'container') {
 		containerWidth =
-			Math.min(lastScreenRange.maxWidth, maxContainerWidth) -
+			Math.min(lastScreenRange.maxWidth, lastScreenRange.maxContainerWidth) -
 			scrollbarWidth -
 			gridMarginDesktopTotal;
 	} else {
-		containerWidth = 2560 - scrollbarWidth;
+		containerWidth =
+			Math.min(2560, lastScreenRange.maxContainerWidth) - scrollbarWidth;
 	}
 
 	return calculateImageWidth(containerWidth, 12, span, gridGapDesktop);
