@@ -103,6 +103,8 @@ const screenRanges = breakpoints.map((breakpoint, index) => {
 	}
 });
 
+const mobileBreakpointIndex = breakpoints.findIndex((bp) => bp.key === 'lg');
+
 interface Props extends ImageProps {
 	// Additional props specific to Picture component
 	urlFocus: string;
@@ -333,8 +335,8 @@ const imgHeight = calculateImageHeight(imgWidth, ratioDesktopValue);
 	<picture>
 		{
 			screenRanges.map((range, index) => {
-				const source = index === 0 ? sourceMobile : sourceDesktop;
-				const isMobile = index === 0;
+				const isMobile = index < mobileBreakpointIndex;
+				const source = isMobile ? sourceMobile : sourceDesktop;
 
 				return (
 					<source

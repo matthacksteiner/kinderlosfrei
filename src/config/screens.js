@@ -1,6 +1,7 @@
 // src/config/screens.js
 export const screens = {
-	xs: '390px',
+	'2xs': '320px',
+	xs: '384px',
 	sm: '640px',
 	md: '768px',
 	lg: '1024px',
