@@ -257,8 +257,11 @@ function createProductionSrcSet(
 
 	return [1, 2, 3]
 		.map((dpr) => {
-			const imgWidth =
-				calculateImageWidth(containerWidth, columns, span, gridGap) * dpr;
+			const dprMaxWidth = screenRange.maxWidth * dpr;
+			const imgWidth = Math.min(
+				calculateImageWidth(containerWidth, columns, span, gridGap) * dpr,
+				dprMaxWidth
+			);
 			const imgHeight = calculateImageHeight(imgWidth, ratio);
 			return `${createNetlifyImageUrl(source, imgWidth, imgHeight)} ${dpr}x`;
 		})
