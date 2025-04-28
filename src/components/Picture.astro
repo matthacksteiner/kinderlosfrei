@@ -45,15 +45,17 @@ import { getAltFallback } from '@lib/helpers';
 // --------------------------------------
 const isProduction = import.meta.env.PROD;
 const isNetlify = Boolean(import.meta.env.NETLIFY);
+const isNetlifyDev = Boolean(import.meta.env.NETLIFY_DEV);
 const netlifyUrl = import.meta.env.NETLIFY_URL;
 const baseUrl = isProduction
 	? netlifyUrl
-	: isNetlify
+	: isNetlify || isNetlifyDev
 	? 'http://localhost:8888'
 	: netlifyUrl;
 
 // Should we use Netlify Image processing?
-const useNetlifyImageProcessing = isProduction || isNetlify;
+// Enable for production, Netlify environment, or Netlify Dev local environment
+const useNetlifyImageProcessing = isProduction || isNetlify || isNetlifyDev;
 
 // --------------------------------------
 // Layout Constants
