@@ -102,14 +102,6 @@ const screenRanges = breakpoints.map((breakpoint, index) => {
 	}
 });
 
-// Map each breakpoint to its max container width (same as the screen value)
-const maxContainerWidths = Object.fromEntries(
-	Object.entries(screens).map(([key, value]) => [
-		key,
-		parseInt(value.replace('px', '')),
-	])
-);
-
 interface Props extends ImageProps {
 	// Additional props specific to Picture component
 	urlFocus: string;
@@ -224,11 +216,9 @@ function getContainerWidth(
 	gridMarginTotal: number
 ) {
 	let containerWidth = screenRange.maxWidth - scrollbarWidth;
-	const maxWidthForBreakpoint =
-		maxContainerWidths[screenRange.key] || maxContainerWidth;
 	if (backgroundContainer === 'container' && !isMobile) {
 		containerWidth =
-			Math.min(containerWidth, maxWidthForBreakpoint) - gridMarginTotal;
+			Math.min(containerWidth, maxContainerWidth) - gridMarginTotal;
 	}
 	return containerWidth;
 }
@@ -257,11 +247,8 @@ function createProductionSrcSet(
 
 	return [1, 2, 3]
 		.map((dpr) => {
-			const dprMaxWidth = screenRange.maxWidth * dpr;
-			const imgWidth = Math.min(
-				calculateImageWidth(containerWidth, columns, span, gridGap) * dpr,
-				dprMaxWidth
-			);
+			const imgWidth =
+				calculateImageWidth(containerWidth, columns, span, gridGap) * dpr;
 			const imgHeight = calculateImageHeight(imgWidth, ratio);
 			return `${createNetlifyImageUrl(source, imgWidth, imgHeight)} ${dpr}x`;
 		})
@@ -279,19 +266,7 @@ function createProductionImageSrc(
 	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
 	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
 
-	// Use a reasonable default DPR of 2 for the fallback image
-	// (srcset will handle actual DPR-specific images)
-	const dpr = 2;
-	const dprMaxWidth = screenRange.maxWidth * dpr;
-
-	// Calculate width and apply DPR cap
-	const calculatedWidth = calculateImageWidth(
-		containerWidth,
-		columns,
-		span,
-		gridGap
-	);
-	const width = Math.min(calculatedWidth, dprMaxWidth);
+	const width = calculateImageWidth(containerWidth, columns, span, gridGap);
 	const height = calculateImageHeight(width, ratio);
 
 	return createNetlifyImageUrl(source, width, height);
@@ -327,30 +302,18 @@ const fetchPriority = aboveFold
 // Calculate final image dimensions for markup
 function getCalculatedWidth() {
 	const lastScreenRange = screenRanges[screenRanges.length - 1];
-	const maxWidthForBreakpoint =
-		maxContainerWidths[lastScreenRange.key] || maxContainerWidth;
 	let containerWidth;
 
 	if (backgroundContainer === 'container') {
 		containerWidth =
-			Math.min(lastScreenRange.maxWidth, maxWidthForBreakpoint) -
+			Math.min(lastScreenRange.maxWidth, maxContainerWidth) -
 			scrollbarWidth -
 			gridMarginDesktopTotal;
 	} else {
-		containerWidth = Math.min(2560, maxWidthForBreakpoint * 2) - scrollbarWidth;
+		containerWidth = 2560 - scrollbarWidth;
 	}
 
-	// Calculate width and apply DPR cap for largest displays
-	const calculatedWidth = calculateImageWidth(
-		containerWidth,
-		12,
-		span,
-		gridGapDesktop
-	);
-	const defaultDpr = 2; // Reasonable default for markup
-	const dprMaxWidth = lastScreenRange.maxWidth * defaultDpr;
-
-	return Math.min(calculatedWidth, dprMaxWidth);
+	return calculateImageWidth(containerWidth, 12, span, gridGapDesktop);
 }
 
 const imgWidth = getCalculatedWidth();
