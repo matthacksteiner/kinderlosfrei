@@ -61,6 +61,7 @@ const useNetlifyImageProcessing = isProduction || isNetlifyDev;
 // --------------------------------------
 const scrollbarWidth = 17;
 const maxContainerWidth = 1920;
+const mobileBreakpoint = 'lg';
 
 // --------------------------------------
 // Responsive Breakpoints Configuration
@@ -103,7 +104,9 @@ const screenRanges = breakpoints.map((breakpoint, index) => {
 	}
 });
 
-const mobileBreakpointIndex = breakpoints.findIndex((bp) => bp.key === 'lg');
+const mobileBreakpointIndex = breakpoints.findIndex(
+	(bp) => bp.key === mobileBreakpoint
+);
 
 interface Props extends ImageProps {
 	// Additional props specific to Picture component
