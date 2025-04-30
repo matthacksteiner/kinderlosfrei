@@ -6,6 +6,7 @@
  * - Optimal image loading for different screen sizes
  * - Prevents layout shifts using aspect ratio
  * - Supports multiple image formats and resolutions
+ * - Works in both production and development environments
  *
  * @component
  * @example
@@ -23,6 +24,16 @@
  *   thumbhash="data:image/png;base64,..." // Optional blur placeholder
  * />
  * ```
+ *
+ * ## Key Features
+ *
+ * - Responsive sizing: Automatically calculates image dimensions based on grid system
+ * - Aspect ratios: Uses different ratios for mobile/desktop with smooth transitions
+ * - Performance optimized: Supports lazy loading, fetchpriority, and decoding attributes
+ * - Low CLS: Maintains aspect ratio placeholders during image load
+ * - Enhanced UX: Optional thumbhash blurred placeholders while loading
+ * - Zoom support: Optional zoomable images
+ * - Production ready: Handles image processing in production via Netlify Image API
  */
 
 import type { ImageProps } from '@types';
@@ -30,9 +41,76 @@ import { screens } from '@config/screens';
 import { getAltFallback } from '@lib/helpers';
 
 // --------------------------------------
-// Types
+// Environment Configuration
 // --------------------------------------
-interface PictureProps extends ImageProps {
+const isProduction = import.meta.env.PROD;
+const isNetlifyDev = Boolean(import.meta.env.NETLIFY_DEV);
+const netlifyUrl = import.meta.env.NETLIFY_URL;
+const baseUrl = isProduction
+	? netlifyUrl
+	: isNetlifyDev
+	? 'http://localhost:8888'
+	: netlifyUrl;
+
+// Should we use Netlify Image processing?
+// Enable for production, Netlify environment, or Netlify Dev local environment
+const useNetlifyImageProcessing = isProduction || isNetlifyDev;
+
+// --------------------------------------
+// Layout Constants
+// --------------------------------------
+const scrollbarWidth = 17;
+const maxContainerWidth = 1920;
+const mobileBreakpoint = 'lg';
+
+// --------------------------------------
+// Process breakpoints from screens.js
+// --------------------------------------
+// Convert screens object to sorted array of objects with key and numeric value
+const breakpoints = Object.entries(screens)
+	.map(([key, value]) => ({
+		key,
+		value: parseInt(value.replace('px', '')),
+	}))
+	.sort((a, b) => a.value - b.value);
+
+// Find the index of the mobile breakpoint
+const mobileBreakpointIndex = breakpoints.findIndex(
+	(bp) => bp.key === mobileBreakpoint
+);
+
+// Create screen ranges with appropriate media queries
+const screenRanges = breakpoints.map((breakpoint, index) => {
+	const nextBreakpoint = breakpoints[index + 1];
+
+	if (index === 0) {
+		// First breakpoint (smallest screens)
+		return {
+			key: breakpoint.key,
+			mediaQuery: `(max-width: ${breakpoint.value}px)`,
+			maxWidth: breakpoint.value,
+		};
+	} else if (!nextBreakpoint) {
+		// Last breakpoint (largest screens)
+		return {
+			key: breakpoint.key,
+			mediaQuery: `(min-width: ${breakpoint.value + 1}px)`,
+			maxWidth: Math.min(breakpoint.value * 1.5, 2560), // Cap at 2560px
+		};
+	} else {
+		// Middle breakpoints
+		return {
+			key: breakpoint.key,
+			mediaQuery: `(min-width: ${breakpoint.value + 1}px) and (max-width: ${
+				nextBreakpoint.value
+			}px)`,
+			maxWidth: nextBreakpoint.value,
+		};
+	}
+});
+
+interface Props extends ImageProps {
+	// Additional props specific to Picture component
 	urlFocus: string;
 	urlFocusMobile: string;
 	name: string;
@@ -52,96 +130,6 @@ interface PictureProps extends ImageProps {
 	isFirstSlide?: boolean;
 }
 
-// --------------------------------------
-// Configuration
-// --------------------------------------
-const CONFIG = {
-	// Environment settings
-	isProduction: import.meta.env.PROD,
-	isNetlifyDev: Boolean(import.meta.env.NETLIFY_DEV),
-	netlifyUrl: import.meta.env.NETLIFY_URL,
-
-	// Layout constants
-	scrollbarWidth: 17,
-	maxContainerWidth: 1920,
-	mobileBreakpoint: 'lg',
-	gridMarginTotal: 2,
-
-	// Grid defaults
-	defaultGridMarginDesktop: 24,
-	defaultGridMarginMobile: 16,
-	defaultGridGapDesktop: 24,
-	defaultGridGapMobile: 16,
-
-	// Image optimization
-	defaultImageQuality: 70,
-	lowQualityPreview: 40,
-	imageFormat: 'avif',
-	fallbackFormat: 'webp',
-	// Common device pixel ratios (1x, 2x, 3x)
-	pixelRatios: [1, 2, 3],
-
-	// Common widths for responsive images based on standard breakpoints
-	// These widths ensure we're not generating too many or too few variants
-	responsiveWidths: [360, 640, 768, 1024, 1280, 1440, 1920, 2560],
-};
-
-// Base URL for image processing
-const baseUrl = CONFIG.isProduction
-	? CONFIG.netlifyUrl
-	: CONFIG.isNetlifyDev
-	? 'http://localhost:8888'
-	: CONFIG.netlifyUrl;
-
-// Should we use Netlify Image processing?
-const useNetlifyImageProcessing = CONFIG.isProduction || CONFIG.isNetlifyDev;
-
-// --------------------------------------
-// Process Screen Breakpoints
-// --------------------------------------
-const breakpoints = Object.entries(screens)
-	.map(([key, value]) => ({
-		key,
-		value: parseInt(value.replace('px', '')),
-	}))
-	.sort((a, b) => a.value - b.value);
-
-const screenRanges = breakpoints.map((breakpoint, index) => {
-	const nextBreakpoint = breakpoints[index + 1];
-
-	if (index === 0) {
-		// First breakpoint (mobile)
-		return {
-			key: breakpoint.key,
-			mediaQuery: `(max-width: ${breakpoint.value}px)`,
-			maxWidth: breakpoint.value,
-		};
-	} else if (!nextBreakpoint) {
-		// Last breakpoint (largest screens)
-		return {
-			key: breakpoint.key,
-			mediaQuery: `(min-width: ${breakpoint.value + 1}px)`,
-			maxWidth: breakpoint.value * 1.5, // Extra size for largest screens
-		};
-	} else {
-		// Middle breakpoints
-		return {
-			key: breakpoint.key,
-			mediaQuery: `(min-width: ${breakpoint.value + 1}px) and (max-width: ${
-				nextBreakpoint.value
-			}px)`,
-			maxWidth: nextBreakpoint.value,
-		};
-	}
-});
-
-const mobileBreakpointIndex = breakpoints.findIndex(
-	(bp) => bp.key === CONFIG.mobileBreakpoint
-);
-
-// --------------------------------------
-// Component Props
-// --------------------------------------
 const {
 	src,
 	urlFocus,
@@ -159,10 +147,10 @@ const {
 	class: className,
 	loading = 'lazy',
 	backgroundContainer = 'container',
-	gridMarginDesktop = CONFIG.defaultGridMarginDesktop,
-	gridMarginMobile = CONFIG.defaultGridMarginMobile,
-	gridGapDesktop = CONFIG.defaultGridGapDesktop,
-	gridGapMobile = CONFIG.defaultGridGapMobile,
+	gridMarginDesktop = 24,
+	gridMarginMobile = 16,
+	gridGapDesktop = 24,
+	gridGapMobile = 16,
 	// Optional features
 	thumbhash,
 	dataZoomable,
@@ -170,259 +158,149 @@ const {
 	isFirstSlide,
 } = Astro.props;
 
-// --------------------------------------
-// Utility Functions
-// --------------------------------------
-const imageUtils = {
-	validateProps() {
-		if (
-			!src ||
-			!width ||
-			!height ||
-			!name ||
-			!ratioMobile ||
-			!ratioDesktop ||
-			!span
-		) {
-			throw new Error('Missing required props in Picture component');
-		}
-
-		this.validateRatio(ratioMobile);
-		this.validateRatio(ratioDesktop);
-	},
-
-	validateRatio(ratio: string) {
-		if (ratio !== 'original' && !ratio.match(/^\d+\/\d+$/)) {
-			throw new Error(
-				`Invalid ratio format: ${ratio}. Must be either 'original' or 'number/number'`
-			);
-		}
-	},
-
-	getRatio(ratio: string, width: number, height: number): number {
-		if (!ratio) {
-			console.warn('Ratio is undefined, using default 1/1');
-			return 1; // default square ratio
-		}
-
-		const [numerator, denominator] =
-			ratio === 'original' ? [width, height] : ratio.split('/');
-		return Number(numerator) / Number(denominator);
-	},
-
-	calculateColumnWidth(
-		containerWidth: number,
-		columns: number,
-		gridGap: number
-	): number {
-		const totalGapSpace = gridGap * (columns - 1);
-		const availableSpace = containerWidth - totalGapSpace;
-		return availableSpace / columns;
-	},
-
-	calculateImageWidth(
-		containerWidth: number,
-		columns: number,
-		span: string,
-		gridGap: number
-	): number {
-		const columnWidth = this.calculateColumnWidth(
-			containerWidth,
-			columns,
-			gridGap
-		);
-		return Math.round(
-			columnWidth * Number(span) + gridGap * (Number(span) - 1)
-		);
-	},
-
-	calculateImageHeight(imageWidth: number, ratio: number): number {
-		return Math.round(imageWidth / ratio);
-	},
-
-	getContainerWidth(
-		screenRange: (typeof screenRanges)[0],
-		isMobile: boolean,
-		gridMarginTotal: number
-	) {
-		let containerWidth = screenRange.maxWidth - CONFIG.scrollbarWidth;
-		if (backgroundContainer === 'container' && !isMobile) {
-			containerWidth =
-				Math.min(containerWidth, CONFIG.maxContainerWidth) - gridMarginTotal;
-		}
-		return containerWidth;
-	},
-
-	// Find the nearest standard responsive width
-	getNearestStandardWidth(width: number): number {
-		return CONFIG.responsiveWidths.reduce((prev, curr) => {
-			return Math.abs(curr - width) < Math.abs(prev - width) ? curr : prev;
-		}, CONFIG.responsiveWidths[0]);
-	},
-
-	// Generate sizes attribute based on span and breakpoints
-	generateSizesAttribute(span: string): string {
-		const spanPercent = (Number(span) / 12) * 100;
-
-		// For full-width spans, use viewport width
-		if (spanPercent === 100) {
-			return '100vw';
-		}
-
-		// For smaller spans, calculate more precise sizes based on breakpoints
-		const mobileBreakpoint =
-			breakpoints.find((bp) => bp.key === CONFIG.mobileBreakpoint)?.value ||
-			1024;
-
-		// For mobile, images often take more space proportionally
-		return `(max-width: ${mobileBreakpoint}px) 100vw, ${spanPercent}vw`;
-	},
-
-	// Generate an array of appropriate widths for srcset
-	generateResponsiveWidths(maxWidth: number): number[] {
-		return CONFIG.responsiveWidths.filter((w) => w <= maxWidth * 2);
-	},
-};
+// Input validation
+if (
+	!src ||
+	!width ||
+	!height ||
+	!name ||
+	!ratioMobile ||
+	!ratioDesktop ||
+	!span
+) {
+	throw new Error('Missing required props in Picture component');
+}
 
 // --------------------------------------
-// Image URL Generation
+// Utility Functions for ratio and dimensions
 // --------------------------------------
-const imageProcessor = {
-	createNetlifyImageUrl(
-		source: string,
-		width: number,
-		height: number,
-		quality = CONFIG.defaultImageQuality,
-		format = CONFIG.imageFormat
-	): string {
-		return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=${format}&q=${quality}`;
-	},
-
-	createProductionSrcSet(
-		source: string,
-		screenRange: (typeof screenRanges)[0],
-		isMobile: boolean,
-		gridMarginMobileTotal: number,
-		gridMarginDesktopTotal: number,
-		ratioMobileValue: number,
-		ratioDesktopValue: number
-	): string {
-		const columns = isMobile ? 6 : 12;
-		const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
-		const gridMargin = isMobile
-			? gridMarginMobileTotal
-			: gridMarginDesktopTotal;
-		const containerWidth = imageUtils.getContainerWidth(
-			screenRange,
-			isMobile,
-			gridMargin
+function validateRatio(ratio: string) {
+	if (ratio !== 'original' && !ratio.match(/^\d+\/\d+$/)) {
+		throw new Error(
+			`Invalid ratio format: ${ratio}. Must be either 'original' or 'number/number'`
 		);
-		const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
+	}
+}
 
-		// Calculate base image width - but ensure it never exceeds the actual screen width
-		// This ensures we don't generate unnecessarily large images for small screens
-		const baseWidth = Math.min(
-			imageUtils.calculateImageWidth(containerWidth, columns, span, gridGap),
-			screenRange.maxWidth
-		);
+function getRatio(ratio: string, width: number, height: number): number {
+	if (!ratio) {
+		console.warn('Ratio is undefined, using default 1/1');
+		return 1; // default square ratio
+	}
 
-		// For higher efficiency, use standard responsive widths
-		const standardWidth = imageUtils.getNearestStandardWidth(baseWidth);
-
-		// Generate device pixel ratio variants
-		return CONFIG.pixelRatios
-			.map((dpr) => {
-				const imgWidth = Math.round(standardWidth * dpr);
-				const imgHeight = imageUtils.calculateImageHeight(imgWidth, ratio);
-				return `${this.createNetlifyImageUrl(
-					source,
-					imgWidth,
-					imgHeight
-				)} ${dpr}x`;
-			})
-			.join(', ');
-	},
-
-	createWidthBasedSrcSet(
-		source: string,
-		ratio: number,
-		isMobile: boolean
-	): string {
-		// Get maximum possible width based on container and screen
-		const lastScreenRange = screenRanges[screenRanges.length - 1];
-		const maxScreenWidth = lastScreenRange.maxWidth;
-		const columns = isMobile ? 6 : 12;
-		const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
-
-		// Calculate maximum display width for the image
-		const maxImageWidth = imageUtils.calculateImageWidth(
-			maxScreenWidth,
-			columns,
-			span,
-			gridGap
-		);
-
-		// Generate width options that make sense for this image
-		const widths = imageUtils.generateResponsiveWidths(maxImageWidth);
-
-		// Create a width-based srcset (Recommendation: use width descriptors for more flexibility)
-		return widths
-			.map((width) => {
-				const height = imageUtils.calculateImageHeight(width, ratio);
-				return `${this.createNetlifyImageUrl(source, width, height)} ${width}w`;
-			})
-			.join(', ');
-	},
-
-	createProductionImageSrc(
-		source: string,
-		screenRange: (typeof screenRanges)[0],
-		isMobile: boolean,
-		gridMarginMobileTotal: number,
-		gridMarginDesktopTotal: number,
-		ratioMobileValue: number,
-		ratioDesktopValue: number
-	): string {
-		const columns = isMobile ? 6 : 12;
-		const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
-		const gridMargin = isMobile
-			? gridMarginMobileTotal
-			: gridMarginDesktopTotal;
-		const containerWidth = imageUtils.getContainerWidth(
-			screenRange,
-			isMobile,
-			gridMargin
-		);
-		const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
-
-		// For the fallback image source, use the exact viewport width to ensure proper sizing
-		const width = Math.min(
-			imageUtils.calculateImageWidth(containerWidth, columns, span, gridGap),
-			screenRange.maxWidth
-		);
-		const height = imageUtils.calculateImageHeight(width, ratio);
-
-		return this.createNetlifyImageUrl(source, width, height);
-	},
-};
+	const [numerator, denominator] =
+		ratio === 'original' ? [width, height] : ratio.split('/');
+	return Number(numerator) / Number(denominator);
+}
 
 // --------------------------------------
-// Process Image Properties
+// Grid and image dimension calculation functions
 // --------------------------------------
-// Validate required props
-imageUtils.validateProps();
+function calculateColumnWidth(
+	containerWidth: number,
+	columns: number,
+	gridGap: number
+): number {
+	const totalGapSpace = gridGap * (columns - 1);
+	const availableSpace = containerWidth - totalGapSpace;
+	return availableSpace / columns;
+}
+
+function calculateImageWidth(
+	containerWidth: number,
+	columns: number,
+	span: string,
+	gridGap: number
+): number {
+	const columnWidth = calculateColumnWidth(containerWidth, columns, gridGap);
+	return Math.round(columnWidth * Number(span) + gridGap * (Number(span) - 1));
+}
+
+function calculateImageHeight(imageWidth: number, ratio: number): number {
+	return Math.round(imageWidth / ratio);
+}
+
+function getContainerWidth(
+	screenRange: (typeof screenRanges)[0],
+	isMobile: boolean,
+	gridMarginTotal: number
+) {
+	let containerWidth = screenRange.maxWidth - scrollbarWidth;
+	if (backgroundContainer === 'container' && !isMobile) {
+		containerWidth =
+			Math.min(containerWidth, maxContainerWidth) - gridMarginTotal;
+	}
+	return containerWidth;
+}
+
+// --------------------------------------
+// Image URL Generation functions
+// --------------------------------------
+function createNetlifyImageUrl(
+	source: string,
+	width: number,
+	height: number
+): string {
+	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif&q=70`;
+}
+
+function createProductionSrcSet(
+	source: string,
+	screenRange: (typeof screenRanges)[0],
+	isMobile: boolean
+): string {
+	const columns = isMobile ? 6 : 12;
+	const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
+	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
+	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
+	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
+
+	return [1, 2, 3]
+		.map((dpr) => {
+			const imgWidth =
+				calculateImageWidth(containerWidth, columns, span, gridGap) * dpr;
+			const imgHeight = calculateImageHeight(imgWidth, ratio);
+			return `${createNetlifyImageUrl(source, imgWidth, imgHeight)} ${dpr}x`;
+		})
+		.join(', ');
+}
+
+function createProductionImageSrc(
+	source: string,
+	screenRange: (typeof screenRanges)[0],
+	isMobile: boolean
+): string {
+	const columns = isMobile ? 6 : 12;
+	const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
+	const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
+	const containerWidth = getContainerWidth(screenRange, isMobile, gridMargin);
+	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
+
+	const width = calculateImageWidth(containerWidth, columns, span, gridGap);
+	const height = calculateImageHeight(width, ratio);
+
+	return createNetlifyImageUrl(source, width, height);
+}
+
+// --------------------------------------
+// Content Preparation
+// --------------------------------------
+// Validate ratios
+validateRatio(ratioMobile);
+validateRatio(ratioDesktop);
 
 // Process aspect ratios
-const ratioDesktopValue = imageUtils.getRatio(ratioDesktop, width, height);
-const ratioMobileValue = imageUtils.getRatio(ratioMobile, width, height);
+const ratioDesktopValue = getRatio(ratioDesktop, width, height);
+const ratioMobileValue = getRatio(ratioMobile, width, height);
 
 // Determine image sources based on ratios
 const sourceMobile = ratioMobile === 'original' ? src : urlFocusMobile;
 const sourceDesktop = ratioDesktop === 'original' ? src : urlFocus;
 
 // Calculate grid margins
-const gridMarginDesktopTotal = gridMarginDesktop * CONFIG.gridMarginTotal;
-const gridMarginMobileTotal = gridMarginMobile * CONFIG.gridMarginTotal;
+const gridMarginTotal = 2;
+const gridMarginDesktopTotal = gridMarginDesktop * gridMarginTotal;
+const gridMarginMobileTotal = gridMarginMobile * gridMarginTotal;
 
 // Determine fetch priority for performance
 const fetchPriority = aboveFold
@@ -431,20 +309,36 @@ const fetchPriority = aboveFold
 		: 'low'
 	: undefined;
 
-// Use actual viewport width for the img tag
-// Ensure we use the actual device width rather than the breakpoint value
-const firstBreakpointKey = Object.keys(screens)[0];
-const viewportWidth = Math.max(
-	parseInt(screens[firstBreakpointKey].replace('px', '')),
-	360 // Ensure we account for common mobile widths like 360, 375, etc.
+// --------------------------------------
+// Generate fallback image dimensions
+// --------------------------------------
+// Find the smallest breakpoint for fallback image
+const smallestScreenRange = screenRanges[0];
+const isMobile = true; // Use mobile dimensions for fallback
+const gridGap = isMobile ? gridGapMobile : gridGapDesktop;
+const gridMargin = isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal;
+const smallestContainerWidth = getContainerWidth(
+	smallestScreenRange,
+	isMobile,
+	gridMargin
 );
-const firstBreakpointScaledWidth = Math.round(viewportWidth);
-const firstBreakpointScaledHeight = Math.round(
-	viewportWidth / ratioMobileValue
-);
+const columns = isMobile ? 6 : 12;
+const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
 
-// Generate sizes attribute for responsive loading
-const sizesAttribute = imageUtils.generateSizesAttribute(span);
+// Calculate the smallest image size for fallback
+const fallbackWidth = calculateImageWidth(
+	smallestContainerWidth,
+	columns,
+	span,
+	gridGap
+);
+const fallbackHeight = calculateImageHeight(fallbackWidth, ratio);
+const fallbackSource = sourceMobile; // Use mobile source for fallback
+
+// Generate fallback img src
+const fallbackSrc = useNetlifyImageProcessing
+	? createNetlifyImageUrl(fallbackSource, fallbackWidth, fallbackHeight)
+	: fallbackSource;
 ---
 
 <div
@@ -461,49 +355,23 @@ const sizesAttribute = imageUtils.generateSizesAttribute(span);
 			screenRanges.map((range, index) => {
 				const isMobile = index < mobileBreakpointIndex;
 				const source = isMobile ? sourceMobile : sourceDesktop;
-				const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
 
-				return useNetlifyImageProcessing ? (
+				return (
 					<source
-						type={`image/${CONFIG.imageFormat}`}
-						srcset={imageProcessor.createWidthBasedSrcSet(
-							source,
-							ratio,
-							isMobile
-						)}
+						srcset={
+							useNetlifyImageProcessing
+								? createProductionSrcSet(source, range, isMobile)
+								: source
+						}
 						media={range.mediaQuery}
-						sizes={sizesAttribute}
 					/>
-				) : (
-					<source srcset={source} media={range.mediaQuery} />
 				);
 			})
 		}
-
-		{
-			useNetlifyImageProcessing && (
-				<source
-					type={`image/${CONFIG.fallbackFormat}`}
-					srcset={imageProcessor.createWidthBasedSrcSet(
-						sourceMobile,
-						ratioMobileValue,
-						true
-					)}
-					sizes={sizesAttribute}
-				/>
-			)
-		}
-
 		<img
-			src={useNetlifyImageProcessing
-				? imageProcessor.createNetlifyImageUrl(
-						sourceMobile,
-						firstBreakpointScaledWidth,
-						firstBreakpointScaledHeight
-				  )
-				: sourceMobile}
-			width={firstBreakpointScaledWidth}
-			height={firstBreakpointScaledHeight}
+			src={fallbackSrc}
+			width={fallbackWidth}
+			height={fallbackHeight}
 			alt={alt || getAltFallback(name)}
 			id={id}
 			loading={aboveFold ? undefined : loading}
@@ -513,7 +381,6 @@ const sizesAttribute = imageUtils.generateSizesAttribute(span);
 			decoding="async"
 			{...fetchPriority ? { fetchpriority: fetchPriority } : {}}
 			onload="this.classList.add('loaded'); this.parentNode.parentNode.classList.add('image-loaded')"
-			sizes={sizesAttribute}
 		/>
 	</picture>
 </div>
