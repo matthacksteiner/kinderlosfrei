@@ -65,7 +65,6 @@ interface Props extends ImageProps {
 	aboveFold?: boolean;
 	isFirstSlide?: boolean;
 }
-
 // --------------------------------------
 // Environment Configuration
 // --------------------------------------
@@ -106,7 +105,7 @@ const mobileBreakpointIndex = breakpoints.findIndex(
 
 // Get the actual pixel value of the mobile breakpoint
 const mobileBreakpointValue =
-	breakpoints.find((bp) => bp.key === mobileBreakpoint)?.value || 1023;
+	breakpoints.find((bp) => bp.key === mobileBreakpoint)?.value || 1024;
 
 // Create screen ranges with appropriate media queries
 const screenRanges = breakpoints.map((breakpoint, index) => {
@@ -211,7 +210,8 @@ function getContainerWidth(
 	gridMarginTotal: number
 ) {
 	let containerWidth = screenRange.maxWidth - scrollbarWidth;
-	if (backgroundContainer === 'container' && !isMobile) {
+	// Apply margin subtraction for both mobile and desktop containers
+	if (backgroundContainer === 'container' || isMobile) {
 		containerWidth =
 			Math.min(containerWidth, maxContainerWidth) - gridMarginTotal;
 	}
@@ -248,20 +248,20 @@ function calculateResponsiveImageWidth(
 	span: string,
 	gridGap: number
 ): number {
-	// For small screens, use actual screen width instead of grid calculations
+	// Use the standard grid calculation for both mobile and desktop
+	const calculatedWidth = calculateImageWidth(
+		containerWidth,
+		columns,
+		span,
+		gridGap
+	);
+
+	// For mobile, don't exceed the actual screen width
 	if (screenWidth <= mobileBreakpointValue) {
-		// For mobile, don't exceed the actual screen width
-		const calculatedWidth = calculateImageWidth(
-			containerWidth,
-			columns,
-			span,
-			gridGap
-		);
 		return Math.min(calculatedWidth, screenWidth);
 	}
 
-	// For larger screens, use the standard grid calculation
-	return calculateImageWidth(containerWidth, columns, span, gridGap);
+	return calculatedWidth;
 }
 
 function calculateImageHeight(imageWidth: number, ratio: number): number {
@@ -274,9 +274,10 @@ function calculateImageHeight(imageWidth: number, ratio: number): number {
 function createNetlifyImageUrl(
 	source: string,
 	width: number,
-	height: number
+	height: number,
+	format = 'avif'
 ): string {
-	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=avif&q=70`;
+	return `${baseUrl}/.netlify/images?url=${source}&w=${width}&h=${height}&fit=cover&fm=${format}&q=70`;
 }
 
 function createProductionSrcSet(
@@ -302,6 +303,7 @@ function createProductionSrcSet(
 					gridGap
 				) * dpr;
 			const imgHeight = calculateImageHeight(imgWidth, ratio);
+			const quality = dpr === 1 ? 75 : dpr === 2 ? 70 : 60;
 			return `${createNetlifyImageUrl(source, imgWidth, imgHeight)} ${dpr}x`;
 		})
 		.join(', ');
