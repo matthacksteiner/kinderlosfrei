@@ -248,20 +248,29 @@ function calculateResponsiveImageWidth(
 	span: string,
 	gridGap: number
 ): number {
-	// Use the standard grid calculation for both mobile and desktop
+	// Determine if we're in mobile mode
+	const isMobile = screenWidth <= mobileBreakpointValue;
+
+	// Use correct margins and columns based on screen size
+	const totalMargins = isMobile
+		? gridMarginMobileTotal
+		: gridMarginDesktopTotal;
+	const actualGridGap = isMobile ? gridGapMobile : gridGapDesktop;
+	const actualColumns = isMobile ? 6 : 12;
+
+	// Calculate the actual available width, capped at maxContainerWidth
+	const effectiveScreenWidth = Math.min(screenWidth, maxContainerWidth);
+	const availableScreenWidth = effectiveScreenWidth - totalMargins;
+
+	// Calculate the width based on the correct number of columns and grid gap
 	const calculatedWidth = calculateImageWidth(
-		containerWidth,
-		columns,
+		availableScreenWidth,
+		actualColumns,
 		span,
-		gridGap
+		actualGridGap
 	);
 
-	// For mobile, don't exceed the actual screen width
-	if (screenWidth <= mobileBreakpointValue) {
-		return Math.min(calculatedWidth, screenWidth);
-	}
-
-	return calculatedWidth;
+	return Math.min(calculatedWidth, availableScreenWidth);
 }
 
 function calculateImageHeight(imageWidth: number, ratio: number): number {
