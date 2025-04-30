@@ -41,6 +41,32 @@ import { screens } from '@config/screens';
 import { getAltFallback } from '@lib/helpers';
 
 // --------------------------------------
+// Component Props Interface
+// --------------------------------------
+interface Props extends ImageProps {
+	// Core image properties
+	urlFocus: string;
+	urlFocusMobile: string;
+	name: string;
+	ratioMobile: string;
+	ratioDesktop: string;
+	span: string;
+	// Layout and positioning options
+	position?: string;
+	backgroundContainer?: 'container' | 'full';
+	gridMarginDesktop?: number;
+	gridMarginMobile?: number;
+	gridGapDesktop?: number;
+	gridGapMobile?: number;
+	// Enhancement features
+	thumbhash?: string;
+	dataZoomable?: boolean;
+	dataZoomSrc?: string;
+	aboveFold?: boolean;
+	isFirstSlide?: boolean;
+}
+
+// --------------------------------------
 // Environment Configuration
 // --------------------------------------
 const isProduction = import.meta.env.PROD;
@@ -53,7 +79,6 @@ const baseUrl = isProduction
 	: netlifyUrl;
 
 // Should we use Netlify Image processing?
-// Enable for production, Netlify environment, or Netlify Dev local environment
 const useNetlifyImageProcessing = isProduction || isNetlifyDev;
 
 // --------------------------------------
@@ -64,7 +89,7 @@ const maxContainerWidth = 1920;
 const mobileBreakpoint = 'lg';
 
 // --------------------------------------
-// Process breakpoints from screens.js
+// Breakpoint Processing
 // --------------------------------------
 // Convert screens object to sorted array of objects with key and numeric value
 const breakpoints = Object.entries(screens)
@@ -81,7 +106,7 @@ const mobileBreakpointIndex = breakpoints.findIndex(
 
 // Get the actual pixel value of the mobile breakpoint
 const mobileBreakpointValue =
-	breakpoints.find((bp) => bp.key === mobileBreakpoint)?.value || 768;
+	breakpoints.find((bp) => bp.key === mobileBreakpoint)?.value || 1023;
 
 // Create screen ranges with appropriate media queries
 const screenRanges = breakpoints.map((breakpoint, index) => {
@@ -102,38 +127,18 @@ const screenRanges = breakpoints.map((breakpoint, index) => {
 			maxWidth: Math.min(breakpoint.value * 1.5, 2560), // Cap at 2560px
 		};
 	} else {
-		// Middle breakpoints
+		// Middle breakpoints - ensure no gaps between ranges
 		return {
 			key: breakpoint.key,
-			mediaQuery: `(min-width: ${breakpoint.value + 1}px) and (max-width: ${
-				nextBreakpoint.value
-			}px)`,
+			mediaQuery: `(min-width: ${breakpoint.value}px) and (max-width: ${nextBreakpoint.value}px)`,
 			maxWidth: nextBreakpoint.value,
 		};
 	}
 });
 
-interface Props extends ImageProps {
-	// Additional props specific to Picture component
-	urlFocus: string;
-	urlFocusMobile: string;
-	name: string;
-	ratioMobile: string;
-	ratioDesktop: string;
-	span: string;
-	position?: string;
-	backgroundContainer?: 'container' | 'full';
-	gridMarginDesktop?: number;
-	gridMarginMobile?: number;
-	gridGapDesktop?: number;
-	gridGapMobile?: number;
-	thumbhash?: string;
-	dataZoomable?: boolean;
-	dataZoomSrc?: string;
-	aboveFold?: boolean;
-	isFirstSlide?: boolean;
-}
-
+// --------------------------------------
+// Props Destructuring and Validation
+// --------------------------------------
 const {
 	src,
 	urlFocus,
@@ -176,7 +181,7 @@ if (
 }
 
 // --------------------------------------
-// Utility Functions for ratio and dimensions
+// Utility Functions for Aspect Ratio
 // --------------------------------------
 function validateRatio(ratio: string) {
 	if (ratio !== 'original' && !ratio.match(/^\d+\/\d+$/)) {
@@ -198,8 +203,21 @@ function getRatio(ratio: string, width: number, height: number): number {
 }
 
 // --------------------------------------
-// Grid and image dimension calculation functions
+// Grid and Container Width Calculations
 // --------------------------------------
+function getContainerWidth(
+	screenRange: (typeof screenRanges)[0],
+	isMobile: boolean,
+	gridMarginTotal: number
+) {
+	let containerWidth = screenRange.maxWidth - scrollbarWidth;
+	if (backgroundContainer === 'container' && !isMobile) {
+		containerWidth =
+			Math.min(containerWidth, maxContainerWidth) - gridMarginTotal;
+	}
+	return containerWidth;
+}
+
 function calculateColumnWidth(
 	containerWidth: number,
 	columns: number,
@@ -210,6 +228,9 @@ function calculateColumnWidth(
 	return availableSpace / columns;
 }
 
+// --------------------------------------
+// Image Dimension Calculations
+// --------------------------------------
 function calculateImageWidth(
 	containerWidth: number,
 	columns: number,
@@ -228,7 +249,6 @@ function calculateResponsiveImageWidth(
 	gridGap: number
 ): number {
 	// For small screens, use actual screen width instead of grid calculations
-	// This prevents oversized images on mobile devices
 	if (screenWidth <= mobileBreakpointValue) {
 		// For mobile, don't exceed the actual screen width
 		const calculatedWidth = calculateImageWidth(
@@ -248,21 +268,8 @@ function calculateImageHeight(imageWidth: number, ratio: number): number {
 	return Math.round(imageWidth / ratio);
 }
 
-function getContainerWidth(
-	screenRange: (typeof screenRanges)[0],
-	isMobile: boolean,
-	gridMarginTotal: number
-) {
-	let containerWidth = screenRange.maxWidth - scrollbarWidth;
-	if (backgroundContainer === 'container' && !isMobile) {
-		containerWidth =
-			Math.min(containerWidth, maxContainerWidth) - gridMarginTotal;
-	}
-	return containerWidth;
-}
-
 // --------------------------------------
-// Image URL Generation functions
+// Image URL Generation
 // --------------------------------------
 function createNetlifyImageUrl(
 	source: string,
@@ -352,7 +359,7 @@ const fetchPriority = aboveFold
 	: undefined;
 
 // --------------------------------------
-// Generate fallback image dimensions
+// Fallback Image Generation
 // --------------------------------------
 // Find the smallest breakpoint for fallback image
 const smallestScreenRange = screenRanges[0];
@@ -368,7 +375,7 @@ const columns = isMobile ? 6 : 12;
 const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
 const smallestScreenWidth = smallestScreenRange.maxWidth;
 
-// Calculate the smallest image size for fallback, using the screen width as a constraint
+// Calculate the smallest image size for fallback
 const fallbackWidth = calculateResponsiveImageWidth(
 	smallestScreenWidth,
 	smallestContainerWidth,
