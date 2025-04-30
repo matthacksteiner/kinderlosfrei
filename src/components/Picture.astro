@@ -231,43 +231,41 @@ function calculateColumnWidth(
 // --------------------------------------
 // Image Dimension Calculations
 // --------------------------------------
+function getScreenConfig(screenWidth: number) {
+	const isMobile = screenWidth <= mobileBreakpointValue;
+	return {
+		columns: isMobile ? 6 : 12,
+		gridGap: isMobile ? gridGapMobile : gridGapDesktop,
+		margins: isMobile ? gridMarginMobileTotal : gridMarginDesktopTotal,
+	};
+}
+
 function calculateImageWidth(
 	containerWidth: number,
 	columns: number,
 	span: string,
 	gridGap: number
 ): number {
-	const columnWidth = calculateColumnWidth(containerWidth, columns, gridGap);
-	return Math.round(columnWidth * Number(span) + gridGap * (Number(span) - 1));
+	const totalGapSpace = gridGap * (Number(span) - 1);
+	const availableSpace = containerWidth - totalGapSpace;
+	return Math.round((availableSpace * Number(span)) / columns + totalGapSpace);
 }
 
 function calculateResponsiveImageWidth(
 	screenWidth: number,
-	containerWidth: number,
-	columns: number,
-	span: string,
-	gridGap: number
+	span: string
 ): number {
-	// Determine if we're in mobile mode
-	const isMobile = screenWidth <= mobileBreakpointValue;
-
-	// Use correct margins and columns based on screen size
-	const totalMargins = isMobile
-		? gridMarginMobileTotal
-		: gridMarginDesktopTotal;
-	const actualGridGap = isMobile ? gridGapMobile : gridGapDesktop;
-	const actualColumns = isMobile ? 6 : 12;
+	const { columns, gridGap, margins } = getScreenConfig(screenWidth);
 
 	// Calculate the actual available width, capped at maxContainerWidth
 	const effectiveScreenWidth = Math.min(screenWidth, maxContainerWidth);
-	const availableScreenWidth = effectiveScreenWidth - totalMargins;
+	const availableScreenWidth = effectiveScreenWidth - margins;
 
-	// Calculate the width based on the correct number of columns and grid gap
 	const calculatedWidth = calculateImageWidth(
 		availableScreenWidth,
-		actualColumns,
+		columns,
 		span,
-		actualGridGap
+		gridGap
 	);
 
 	return Math.min(calculatedWidth, availableScreenWidth);
@@ -303,14 +301,7 @@ function createProductionSrcSet(
 
 	return [1, 2, 3]
 		.map((dpr) => {
-			const imgWidth =
-				calculateResponsiveImageWidth(
-					screenWidth,
-					containerWidth,
-					columns,
-					span,
-					gridGap
-				) * dpr;
+			const imgWidth = calculateResponsiveImageWidth(screenWidth, span) * dpr;
 			const imgHeight = calculateImageHeight(imgWidth, ratio);
 			const quality = dpr === 1 ? 75 : dpr === 2 ? 70 : 60;
 			return `${createNetlifyImageUrl(source, imgWidth, imgHeight)} ${dpr}x`;
@@ -330,13 +321,7 @@ function createProductionImageSrc(
 	const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
 	const screenWidth = screenRange.maxWidth;
 
-	const width = calculateResponsiveImageWidth(
-		screenWidth,
-		containerWidth,
-		columns,
-		span,
-		gridGap
-	);
+	const width = calculateResponsiveImageWidth(screenWidth, span);
 	const height = calculateImageHeight(width, ratio);
 
 	return createNetlifyImageUrl(source, width, height);
@@ -387,13 +372,7 @@ const ratio = isMobile ? ratioMobileValue : ratioDesktopValue;
 const smallestScreenWidth = smallestScreenRange.maxWidth;
 
 // Calculate the smallest image size for fallback
-const fallbackWidth = calculateResponsiveImageWidth(
-	smallestScreenWidth,
-	smallestContainerWidth,
-	columns,
-	span,
-	gridGap
-);
+const fallbackWidth = calculateResponsiveImageWidth(smallestScreenWidth, span);
 const fallbackHeight = calculateImageHeight(fallbackWidth, ratio);
 const fallbackSource = sourceMobile; // Use mobile source for fallback
 
