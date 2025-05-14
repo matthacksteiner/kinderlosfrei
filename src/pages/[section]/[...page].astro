@@ -16,7 +16,7 @@ export async function getStaticPaths({ paginate }) {
 		const global = await getGlobal();
 
 		// Configure pagination
-		const pageSize = global.paginationElements || 10;
+		const pageSize = global.paginationElements || 6;
 
 		// Create pagination for this section's items
 		const paginatedData = paginate(sectionData.items || [], {
@@ -25,10 +25,8 @@ export async function getStaticPaths({ paginate }) {
 			props: { sectionData },
 		});
 
-		// Add to collection (using Array.prototype methods to avoid type issues)
-		for (const path of paginatedData) {
-			allPaginatedPaths.push(path);
-		}
+		// Add to collection (spreading the array instead of pushing items individually)
+		allPaginatedPaths.push(...paginatedData);
 	}
 
 	return allPaginatedPaths;

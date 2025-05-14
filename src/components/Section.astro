@@ -7,7 +7,11 @@ import Pagination from '@components/Pagination.astro';
 const { data, global, page } = Astro.props;
 const { lang } = Astro.params;
 const { settings } = data;
-const items = page.data;
+
+// The problem: page.data contains ALL items instead of just this page's items
+// We need to slice the data according to the current page
+const pageItems = page.data.slice(0, page.size);
+
 const {
 	ratio,
 	grid: { span, gap },
@@ -57,7 +61,7 @@ const firstPath =
 <section class="section container">
 	<div class="grid-default">
 		{
-			items
+			pageItems
 				.filter((item) => item.status === 'listed')
 				.sort((a, b) => a.position - b.position)
 				.map((item) => {
