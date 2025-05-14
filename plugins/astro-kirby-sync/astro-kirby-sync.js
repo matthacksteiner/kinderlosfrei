@@ -18,17 +18,31 @@ function ensureDirectoryExists(dirPath) {
 	}
 }
 
-// Helper function to fetch JSON from URL
-async function fetchJson(url) {
-	try {
-		const response = await fetch(url);
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+// Helper function to fetch JSON from URL with retries
+async function fetchJson(url, retries = 3, delay = 1000) {
+	for (let attempt = 1; attempt <= retries; attempt++) {
+		try {
+			const response = await fetch(url);
+			if (!response.ok) {
+				if (attempt === retries) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				// Wait before retrying
+				await new Promise((resolve) => setTimeout(resolve, delay));
+				continue;
+			}
+			return await response.json();
+		} catch (error) {
+			if (attempt === retries) {
+				console.error(
+					`Error fetching ${url} after ${retries} attempts:`,
+					error
+				);
+				throw error;
+			}
+			// Wait before retrying
+			await new Promise((resolve) => setTimeout(resolve, delay));
 		}
-		return await response.json();
-	} catch (error) {
-		console.error(`Error fetching ${url}:`, error);
-		throw error;
 	}
 }
 
@@ -40,7 +54,10 @@ function saveJsonFile(filePath, data) {
 		fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 	} catch (error) {
 		console.error(`Error saving file ${filePath}:`, error);
-		throw error;
+		// In production, we want to fail fast if we can't save content
+		if (process.env.NODE_ENV === 'production') {
+			throw error;
+		}
 	}
 }
 
@@ -71,13 +88,7 @@ export default function astroKirbySync() {
 				try {
 					const API_URL = process.env.KIRBY_URL;
 					if (!API_URL) {
-						const errorMessage =
-							'\n⚠️ KIRBY_URL environment variable is not set - content sync FAILED';
-						logger.error(chalk.red(errorMessage));
-						if (command === 'build') {
-							throw new Error(errorMessage);
-						}
-						return;
+						throw new Error('KIRBY_URL environment variable is not set');
 					}
 
 					logger.info(chalk.blue('\n🔄 Starting Kirby CMS content sync...'));
@@ -88,7 +99,19 @@ export default function astroKirbySync() {
 					cleanDirectory(contentDir);
 
 					// Fetch global data first to get language information
-					const global = await fetchJson(`${API_URL}/global.json`);
+					let global;
+					try {
+						global = await fetchJson(`${API_URL}/global.json`);
+					} catch (error) {
+						throw new Error(
+							`Failed to fetch global configuration: ${error.message}`
+						);
+					}
+
+					if (!global || !global.defaultLang || !global.defaultLang.code) {
+						throw new Error('Invalid global configuration received from CMS');
+					}
+
 					const defaultLanguage = global.defaultLang.code;
 					const translations = global.translations.map((lang) => lang.code);
 
