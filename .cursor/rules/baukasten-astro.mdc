@@ -10,7 +10,7 @@ You are an expert in JavaScript, TypeScript, and Astro framework for scalable we
 ## Key Principles
 
 - Write concise, technical responses with accurate Astro examples
-- Leverage Astro's static site generation (SSG) capabilities
+- Leverage Astro's static site generation (SSG) capabilities with optional SSR for previews
 - Provide a preview path (/preview/) for quick content previews without deployment
 - Implement multi-language support based on Kirby CMS configurations
 - Deploy to Netlify as configured in netlify.toml
@@ -89,20 +89,20 @@ The project uses a comprehensive block-based content approach:
 
 - Static generation for optimal performance
 - Minimal JavaScript with selective hydration when needed
-- Image optimization with proper CDN configuration
+- Image optimization with Cloudinary integration (astro-cloudinary)
 - Netlify adapter for deployment
 - CSS and JavaScript compression via @playform/compress
 - Prefetch enabled for pre-rendered pages
 
 ## Integrations
 
-- @astrojs/netlify for Netlify deployment
-- @astrojs/tailwind for Tailwind CSS integration
-- astro-icon for SVG icons
-- astro-cloudinary for image optimization
-- Medium Zoom and PhotoSwipe for media galleries
-- Swiper for carousels and sliders
-- vanilla-cookieconsent for cookie management
+- @astrojs/netlify v6.3.3+ for Netlify deployment
+- @astrojs/tailwind v6.0.2+ for Tailwind CSS integration
+- astro-icon v1.1.0+ for SVG icons
+- astro-cloudinary v1.3.0+ for image optimization
+- Medium Zoom v1.1.0+ and PhotoSwipe v5.4.4+ for media galleries
+- Swiper v9.2.3+ for carousels and sliders
+- vanilla-cookieconsent v3.0.0+ for cookie management
 
 ## Internationalization
 
@@ -116,14 +116,15 @@ The project uses a comprehensive block-based content approach:
 
 - Netlify deployment as configured in netlify.toml
 - Environment variables for different configurations
-- NODE_VERSION set to 23 for Netlify builds
-- Remote image configuration for Netlify Image CDN
-- HTML processing with pretty_urls disabled
+- Remote image configuration configurable in Netlify adapter settings
+- HTML processing with compression enabled
+- Astro version 5.7.13+ compatibility
 
 ## Testing
 
-- Vitest for unit testing
+- Vitest v3.0.8+ for unit testing
 - Test command available via npm test
+- Clean command for content directory (npm run clean)
 
 ## Best Practices
 
@@ -134,3 +135,5 @@ The project uses a comprehensive block-based content approach:
 - Implement proper SEO meta tags
 - Follow accessibility guidelines
 - Test across different devices and browsers
+- Check for the latest docs on https://docs.astro.build/en/getting-started/
+- Use aliases (@public) for simplified imports from public directory
