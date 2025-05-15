@@ -228,47 +228,58 @@ const loadingStrategy = aboveFold ? undefined : 'lazy';
 		transition-timing-function: linear !important;
 	}
 
-	.swiper-pagination {
-		&--primary {
-			.swiper-pagination-bullet-active,
-			.swiper-pagination-progressbar-fill {
-				@apply bg-primary;
-			}
-		}
+	/* Swiper Navigation Colors */
+	.text--primary {
+		--swiper-navigation-color: var(--color-primary);
+	}
+	.text--secondary {
+		--swiper-navigation-color: var(--color-secondary);
+	}
+	.text--tertiary {
+		--swiper-navigation-color: var(--color-tertiary);
+	}
+	.text--black {
+		--swiper-navigation-color: #000000;
+	}
+	.text--white {
+		--swiper-navigation-color: #ffffff;
+	}
+	.text--transparent {
+		--swiper-navigation-color: transparent;
+	}
 
-		&--secondary {
-			.swiper-pagination-bullet-active,
-			.swiper-pagination-progressbar-fill {
-				@apply bg-secondary;
-			}
-		}
-
-		&--tertiary {
-			.swiper-pagination-bullet-active,
-			.swiper-pagination-progressbar-fill {
-				@apply bg-tertiary;
-			}
-		}
-
-		&--black {
-			.swiper-pagination-bullet-active,
-			.swiper-pagination-progressbar-fill {
-				@apply bg-black;
-			}
-		}
-
-		&--white {
-			.swiper-pagination-bullet-active,
-			.swiper-pagination-progressbar-fill {
-				@apply bg-white;
-			}
-		}
-
-		&--transparent {
-			.swiper-pagination-bullet-active,
-			.swiper-pagination-progressbar-fill {
-				@apply bg-transparent;
-			}
-		}
+	/* Swiper Pagination Colors */
+	.swiper-pagination--primary {
+		--swiper-pagination-color: var(--color-primary);
+		--swiper-pagination-bullet-inactive-color: rgba(
+			var(--color-primary-rgb),
+			0.3
+		);
+	}
+	.swiper-pagination--secondary {
+		--swiper-pagination-color: var(--color-secondary);
+		--swiper-pagination-bullet-inactive-color: rgba(
+			var(--color-secondary-rgb),
+			0.3
+		);
+	}
+	.swiper-pagination--tertiary {
+		--swiper-pagination-color: var(--color-tertiary);
+		--swiper-pagination-bullet-inactive-color: rgba(
+			var(--color-tertiary-rgb),
+			0.3
+		);
+	}
+	.swiper-pagination--black {
+		--swiper-pagination-color: #000000;
+		--swiper-pagination-bullet-inactive-color: rgba(0, 0, 0, 0.3);
+	}
+	.swiper-pagination--white {
+		--swiper-pagination-color: #ffffff;
+		--swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.3);
+	}
+	.swiper-pagination--transparent {
+		--swiper-pagination-color: transparent;
+		--swiper-pagination-bullet-inactive-color: rgba(0, 0, 0, 0.1);
 	}
 </style>
