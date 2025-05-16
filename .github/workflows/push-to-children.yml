@@ -1,0 +1,111 @@
+name: Push Template Changes to Children
+
+on:
+  workflow_dispatch:
+    inputs:
+      child_repositories:
+        description: 'Child repository URLs (space-separated, e.g., https://github.com/owner/repo1.git https://github.com/owner/repo2.git)'
+        required: true
+        type: string
+      branch_to_push:
+        description: 'Branch in this template repository to push (e.g., main)'
+        required: true
+        default: 'main'
+        type: string
+      target_branch_in_children:
+        description: 'Target branch in child repositories (e.g., main)'
+        required: true
+        default: 'main'
+        type: string
+      force_push:
+        description: 'Force push (overwrite target branch in children)? Use with caution.'
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  push_to_children:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Template Repository
+        uses: actions/checkout@v4
+        with:
+          # This token is used to checkout the template repository itself.
+          # For pushing to children, PAT_TOKEN (CHILD_REPO_PAT secret) will be used.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git User
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Push to Child Repositories
+        env:
+          CHILD_REPOSITORIES_INPUT: ${{ github.event.inputs.child_repositories }}
+          BRANCH_TO_PUSH: ${{ github.event.inputs.branch_to_push }}
+          TARGET_BRANCH_IN_CHILDREN: ${{ github.event.inputs.target_branch_in_children }}
+          FORCE_PUSH_INPUT: ${{ github.event.inputs.force_push }}
+          # This secret (CHILD_REPO_PAT) needs to be created in the template repository's settings.
+          # It should be a Personal Access Token (PAT) with 'repo' scope
+          # to allow pushing to the child repositories.
+          PAT_TOKEN: ${{ secrets.CHILD_REPO_PAT }}
+        run: |
+          set -e # Exit immediately if a command exits with a non-zero status.
+
+          if [ -z "$PAT_TOKEN" ]; then
+            echo "Error: PAT_TOKEN is not set. Please configure the CHILD_REPO_PAT secret in your repository settings."
+            exit 1
+          fi
+
+          echo "Branch to push from template: $BRANCH_TO_PUSH"
+          echo "Target branch in children: $TARGET_BRANCH_IN_CHILDREN"
+          echo "Force push: $FORCE_PUSH_INPUT"
+
+          # Split the space-separated string of child repositories into an array
+          IFS=' ' read -r -a repos <<< "$CHILD_REPOSITORIES_INPUT"
+
+          if [ ${#repos[@]} -eq 0 ]; then
+            echo "No child repositories provided."
+            exit 0
+          fi
+
+          index=0
+          for repo_url in "${repos[@]}"; do
+            # Construct the URL with PAT for authentication
+            # Using x-access-token for PAT authentication as recommended by GitHub
+            repo_url_pat=$(echo "$repo_url" | sed "s|https://github.com/|https://x-access-token:${PAT_TOKEN}@github.com/|")
+
+            echo "Processing child repository: $repo_url"
+
+            remote_name="child_${index}"
+            index=$((index + 1))
+
+            echo "Adding remote $remote_name for $repo_url"
+            # Remove remote if it exists from a previous failed run or iteration
+            git remote remove "$remote_name" 2>/dev/null || true
+            git remote add "$remote_name" "$repo_url_pat"
+
+            push_command="git push $remote_name ${BRANCH_TO_PUSH}:${TARGET_BRANCH_IN_CHILDREN}"
+            if [ "$FORCE_PUSH_INPUT" = "true" ]; then
+              push_command="$push_command --force"
+            fi
+
+            echo "Attempting to push to $remote_name ($repo_url) with command: $push_command"
+            if $push_command; then
+              echo "Successfully pushed to $repo_url"
+            else
+              echo "Failed to push to $repo_url."
+              echo "Common reasons for failure:"
+              echo "1. Incorrect repository URL."
+              echo "2. CHILD_REPO_PAT secret does not have sufficient permissions (requires 'repo' scope for the child repository)."
+              echo "3. The target branch ($TARGET_BRANCH_IN_CHILDREN) does not exist in the child repository and force push is not enabled."
+              echo "4. If not using force push, the push was rejected due to diverged histories."
+              # If one push fails, the script will continue with the next repository.
+              # To make it stop on first failure, add 'exit 1' here.
+            fi
+
+            # Clean up the remote to avoid issues if the same job runs with different repo lists later
+            # though in this per-run setup, it's less critical.
+            git remote remove "$remote_name" 2>/dev/null || true
+          done
+          echo "All specified child repositories processed."
