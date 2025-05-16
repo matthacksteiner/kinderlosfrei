@@ -38,7 +38,7 @@ jobs:
 
       - name: Process child repositories
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
           COMMIT_MESSAGE: ${{ github.event.inputs.message }}
           BRANCH_NAME: ${{ github.event.inputs.branchName }}
           CREATE_PR: ${{ github.event.inputs.createPR }}
@@ -48,10 +48,7 @@ jobs:
 
           # Configure git credentials globally for this session
           git config --global credential.helper store
-          echo "https://x-access-token:${GH_TOKEN}@github.com" > ~/.git-credentials
-
-          # Ensure GitHub CLI is authenticated
-          echo "${GH_TOKEN}" | gh auth login --with-token
+          echo "https://x-access-token:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
 
           # Read repositories from JSON
           REPOSITORIES=$(echo '${{ steps.read-repos.outputs.repos }}' | jq -r '.repositories[].url')
@@ -64,7 +61,7 @@ jobs:
             REPO_DIR="$REPO_NAME"
 
             # Clone child repository with authentication
-            REPO_URL_WITH_TOKEN=$(echo "$REPO_URL" | sed -e "s|https://|https://x-access-token:$GH_TOKEN@|")
+            REPO_URL_WITH_TOKEN=$(echo "$REPO_URL" | sed -e "s|https://|https://x-access-token:$GITHUB_TOKEN@|")
             git clone "$REPO_URL_WITH_TOKEN" "$REPO_DIR"
             cd "$REPO_DIR"
 
@@ -72,7 +69,7 @@ jobs:
             git checkout -b "$BRANCH_NAME"
 
             # Add template as a remote
-            TEMPLATE_URL_WITH_TOKEN="https://x-access-token:$GH_TOKEN@github.com/${{ github.repository }}.git"
+            TEMPLATE_URL_WITH_TOKEN="https://x-access-token:$GITHUB_TOKEN@github.com/${{ github.repository }}.git"
             git remote add template "$TEMPLATE_URL_WITH_TOKEN"
 
             # Fetch template changes
@@ -95,6 +92,11 @@ jobs:
 
             # Create PR if requested
             if [ "$CREATE_PR" = "true" ]; then
+              # Temporarily unset GH_TOKEN to avoid conflicts with gh CLI
+              unset GH_TOKEN
+              # Use GITHUB_TOKEN directly with gh CLI
+              gh auth login --with-token <<< "$GITHUB_TOKEN"
+
               gh pr create \
                 --title "Update from template repository" \
                 --body "This PR updates the repository with the latest changes from the template repository." \
