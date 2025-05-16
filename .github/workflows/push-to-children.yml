@@ -124,6 +124,17 @@ jobs:
             git remote remove "$remote_name" 2>/dev/null || true
             git remote add "$remote_name" "$repo_url_pat"
 
+            echo "Attempting to list remote refs for $trimmed_repo_url with PAT to check access..."
+            if git ls-remote "${repo_url_pat}" --refs >/dev/null; then
+              echo "Successfully listed remote refs. Repository is accessible with PAT."
+            else
+              echo "Error: Failed to list remote refs for $trimmed_repo_url using PAT."
+              echo "This likely indicates an issue with the PAT, its permissions for this repo, or the repo URL itself."
+              # Optionally, you could have the script exit here if ls-remote fails:
+              # exit 1
+              # For now, we'll let it proceed to the push attempt to see its error too.
+            fi
+
             push_command="git push $remote_name ${BRANCH_TO_PUSH}:${TARGET_BRANCH_IN_CHILDREN}"
             if [ "$FORCE_PUSH_INPUT" = "true" ]; then
               push_command="$push_command --force"
