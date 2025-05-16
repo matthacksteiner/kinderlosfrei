@@ -13,12 +13,16 @@ This plugin automatically updates the `remote_images` setting in the `netlify.to
 Add the plugin to your `astro.config.mjs` file:
 
 ```js
-import netlifyRemoteImages from './plugins/netlify-remote-images/netlifyRemoteImages.js';
+import netlifyRemoteImages from './plugins/netlify-remote-images/index.js';
 
 // In your Astro config
 export default defineConfig({
 	integrations: [
-		netlifyRemoteImages(),
+		netlifyRemoteImages({
+			// Optional configuration
+			enabled: true,
+			pattern: '/media/.*',
+		}),
 		// other integrations...
 	],
 });
@@ -29,5 +33,12 @@ Make sure your `.env` file has the `KIRBY_URL` variable set:
 ```
 KIRBY_URL=https://your-kirby-cms-url.com
 ```
+
+## Configuration Options
+
+| Option    | Type    | Default       | Description                                          |
+| --------- | ------- | ------------- | ---------------------------------------------------- |
+| `enabled` | boolean | `true`        | Whether to enable/disable the plugin                 |
+| `pattern` | string  | `'/media/.*'` | The pattern to append to KIRBY_URL for remote_images |
 
 The plugin will run during the Astro build process and update the `netlify.toml` file automatically.

@@ -8,7 +8,7 @@ import compress from '@playform/compress';
 import langFolderRename from './plugins/lang-folder-rename/langFolderRename.js';
 import fontDownloader from './plugins/font-downloader/fontDownloader.js';
 import astroKirbySync from './plugins/astro-kirby-sync/astro-kirby-sync.js';
-import netlifyRemoteImages from './plugins/netlify-remote-images/netlifyRemoteImages.js';
+import netlifyRemoteImages from './plugins/netlify-remote-images/index.js';
 import path from 'path';
 
 const API_URL = process.env.KIRBY_URL;
