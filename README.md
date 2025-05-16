@@ -20,6 +20,27 @@ use git-bash or WSL on Windows
 3. `git merge template/main --allow-unrelated-histories`
 4. run the script `update-template-version.sh` to add the new version to the README.md or manually edit the file.
 
+## Update Child Repositories
+
+If you're using this repository as a template for multiple projects, you can use the GitHub Action to push template changes to all child repositories.
+
+### Setup
+
+1. Edit `.github/child-repositories.json` to add your child repositories.
+2. You'll need to create a Personal Access Token (PAT) with `repo` permissions.
+3. Add the token as a repository secret named `PAT_TOKEN`.
+
+### Usage
+
+1. Go to the Actions tab in GitHub.
+2. Select the "Update Child Repositories" workflow.
+3. Click "Run workflow".
+4. Configure the options:
+   - Commit message for the update
+   - Branch name to create in child repositories
+   - Whether to create a pull request
+5. Click "Run workflow" to start the process.
+
 ## Semantic Versioning
 
 This project uses semantic versioning for automatic version management. The version number is automatically incremented based on commit message patterns:
