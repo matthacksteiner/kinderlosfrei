@@ -16,6 +16,14 @@ on:
         required: true
         type: boolean
         default: true
+      conflictStrategy:
+        description: 'How to handle merge conflicts'
+        required: true
+        type: choice
+        options:
+          - abort-on-conflicts
+          - create-conflict-pr
+        default: 'create-conflict-pr'
 
 jobs:
   update-child-repos:
@@ -42,6 +50,7 @@ jobs:
           COMMIT_MESSAGE: ${{ github.event.inputs.message }}
           BRANCH_NAME: ${{ github.event.inputs.branchName }}
           CREATE_PR: ${{ github.event.inputs.createPR }}
+          CONFLICT_STRATEGY: ${{ github.event.inputs.conflictStrategy }}
         run: |
           mkdir -p temp
           cd temp
@@ -75,16 +84,27 @@ jobs:
             # Fetch template changes
             git fetch template
 
-            # Merge template changes
-            if git merge template/main --allow-unrelated-histories -m "$COMMIT_MESSAGE"; then
-              echo "Successfully merged changes"
+            # Try to merge template changes
+            CONFLICTS=false
+            if ! git merge template/main --allow-unrelated-histories -m "$COMMIT_MESSAGE"; then
+              echo "Merge conflicts detected"
+              CONFLICTS=true
+
+              if [ "$CONFLICT_STRATEGY" = "abort-on-conflicts" ]; then
+                echo "Aborting merge due to conflicts"
+                git merge --abort
+                cd ..
+                continue
+              elif [ "$CONFLICT_STRATEGY" = "create-conflict-pr" ]; then
+                # Get list of conflicting files
+                CONFLICT_FILES=$(git diff --name-only --diff-filter=U)
+
+                # Add conflicts to be resolved later
+                git add .
+                git commit -m "${COMMIT_MESSAGE} [CONTAINS CONFLICTS]" -m "This commit contains merge conflicts that need to be resolved manually:" -m "$CONFLICT_FILES"
+              fi
             else
-              echo "Merge conflicts detected, attempting to resolve..."
-              # Here we choose to abort for safety, as conflict resolution can be complex
-              git merge --abort
-              echo "Skipping repository due to merge conflicts: $REPO_NAME"
-              cd ..
-              continue
+              echo "Successfully merged changes without conflicts"
             fi
 
             # Push changes
@@ -97,9 +117,17 @@ jobs:
               # Use GITHUB_TOKEN directly with gh CLI
               gh auth login --with-token <<< "$GITHUB_TOKEN"
 
+              PR_TITLE="Update from template repository"
+              PR_BODY="This PR updates the repository with the latest changes from the template repository."
+
+              if [ "$CONFLICTS" = "true" ]; then
+                PR_TITLE="[NEEDS RESOLUTION] $PR_TITLE"
+                PR_BODY="${PR_BODY}\n\n⚠️ **This PR contains merge conflicts that need to be resolved manually.**\n\nConflicting files:\n\`\`\`\n${CONFLICT_FILES}\n\`\`\`"
+              fi
+
               gh pr create \
-                --title "Update from template repository" \
-                --body "This PR updates the repository with the latest changes from the template repository." \
+                --title "$PR_TITLE" \
+                --body "$PR_BODY" \
                 --base main \
                 --head "$BRANCH_NAME"
             fi
