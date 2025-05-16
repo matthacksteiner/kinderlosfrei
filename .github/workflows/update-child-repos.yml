@@ -55,6 +55,10 @@ jobs:
           mkdir -p temp
           cd temp
 
+          # Generate a unique timestamp suffix for the branch name to avoid conflicts
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          UNIQUE_BRANCH_NAME="${BRANCH_NAME}-${TIMESTAMP}"
+
           # Configure git credentials globally for this session
           git config --global credential.helper store
           echo "https://x-access-token:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
@@ -74,8 +78,8 @@ jobs:
             git clone "$REPO_URL_WITH_TOKEN" "$REPO_DIR"
             cd "$REPO_DIR"
 
-            # Create and switch to new branch
-            git checkout -b "$BRANCH_NAME"
+            # Create and switch to new branch with unique name
+            git checkout -b "$UNIQUE_BRANCH_NAME"
 
             # Add template as a remote
             TEMPLATE_URL_WITH_TOKEN="https://x-access-token:$GITHUB_TOKEN@github.com/${{ github.repository }}.git"
@@ -107,13 +111,13 @@ jobs:
               echo "Successfully merged changes without conflicts"
             fi
 
-            # Push changes
-            git push origin "$BRANCH_NAME"
+            # Push changes - use -f to force push in case branch already exists
+            git push -f origin "$UNIQUE_BRANCH_NAME"
 
             # If there were no conflicts, merge the update branch into main and push
             if [ "$CONFLICTS" = "false" ]; then
               git checkout main
-              git merge "$BRANCH_NAME"
+              git merge "$UNIQUE_BRANCH_NAME"
               git push origin main
             fi
 
@@ -136,7 +140,7 @@ jobs:
                 --title "$PR_TITLE" \
                 --body "$PR_BODY" \
                 --base main \
-                --head "$BRANCH_NAME"
+                --head "$UNIQUE_BRANCH_NAME"
             fi
 
             cd ..
