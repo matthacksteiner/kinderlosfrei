@@ -46,6 +46,13 @@ jobs:
           mkdir -p temp
           cd temp
 
+          # Configure git credentials globally for this session
+          git config --global credential.helper store
+          echo "https://x-access-token:${GH_TOKEN}@github.com" > ~/.git-credentials
+
+          # Ensure GitHub CLI is authenticated
+          echo "${GH_TOKEN}" | gh auth login --with-token
+
           # Read repositories from JSON
           REPOSITORIES=$(echo '${{ steps.read-repos.outputs.repos }}' | jq -r '.repositories[].url')
 
@@ -56,15 +63,17 @@ jobs:
             REPO_NAME=$(basename -s .git "$REPO_URL")
             REPO_DIR="$REPO_NAME"
 
-            # Clone child repository
-            git clone "$REPO_URL" "$REPO_DIR"
+            # Clone child repository with authentication
+            REPO_URL_WITH_TOKEN=$(echo "$REPO_URL" | sed -e "s|https://|https://x-access-token:$GH_TOKEN@|")
+            git clone "$REPO_URL_WITH_TOKEN" "$REPO_DIR"
             cd "$REPO_DIR"
 
             # Create and switch to new branch
             git checkout -b "$BRANCH_NAME"
 
             # Add template as a remote
-            git remote add template ${{ github.server_url }}/${{ github.repository }}.git
+            TEMPLATE_URL_WITH_TOKEN="https://x-access-token:$GH_TOKEN@github.com/${{ github.repository }}.git"
+            git remote add template "$TEMPLATE_URL_WITH_TOKEN"
 
             # Fetch template changes
             git fetch template
