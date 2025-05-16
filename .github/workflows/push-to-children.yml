@@ -4,8 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       child_repositories:
-        description: 'Child repository URLs (space-separated, e.g., https://github.com/owner/repo1.git https://github.com/owner/repo2.git)'
-        required: true
+        description: 'Optional: Child repository URLs (space-separated). Overrides child_repo_list_file if provided.'
+        required: false
+        type: string
+      child_repo_list_file:
+        description: 'File in the repo containing a list of child repository URLs (one URL per line).'
+        required: false
+        default: '.github/child_repositories.list'
         type: string
       branch_to_push:
         description: 'Branch in this template repository to push (e.g., main)'
@@ -39,9 +44,35 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Push to Child Repositories
+      - name: Determine Child Repositories
+        id: get_repos
         env:
           CHILD_REPOSITORIES_INPUT: ${{ github.event.inputs.child_repositories }}
+          CHILD_REPO_LIST_FILE: ${{ github.event.inputs.child_repo_list_file }}
+        run: |
+          repos_to_process=""
+          if [ -n "$CHILD_REPOSITORIES_INPUT" ]; then
+            echo "Using child repositories from input."
+            repos_to_process="$CHILD_REPOSITORIES_INPUT"
+          elif [ -f "$CHILD_REPO_LIST_FILE" ]; then
+            echo "Reading child repositories from file: $CHILD_REPO_LIST_FILE"
+            # Read file, remove empty lines, and join with spaces
+            repos_to_process=$(cat "$CHILD_REPO_LIST_FILE" | sed '/^$/d' | tr '\n' ' ')
+            if [ -z "$repos_to_process" ]; then
+              echo "Error: Child repository list file ($CHILD_REPO_LIST_FILE) is empty."
+              exit 1
+            fi
+          else
+            echo "Error: No child repositories provided via input, and list file ($CHILD_REPO_LIST_FILE) not found or empty."
+            exit 1
+          fi
+          echo "Final list of repositories to process: $repos_to_process"
+          # Set output for the next step
+          echo "repos_string=$repos_to_process" >> $GITHUB_OUTPUT
+
+      - name: Push to Child Repositories
+        env:
+          REPOS_FROM_PREVIOUS_STEP: ${{ steps.get_repos.outputs.repos_string }}
           BRANCH_TO_PUSH: ${{ github.event.inputs.branch_to_push }}
           TARGET_BRANCH_IN_CHILDREN: ${{ github.event.inputs.target_branch_in_children }}
           FORCE_PUSH_INPUT: ${{ github.event.inputs.force_push }}
@@ -57,31 +88,39 @@ jobs:
             exit 1
           fi
 
+          if [ -z "$REPOS_FROM_PREVIOUS_STEP" ]; then
+            echo "Error: No child repositories determined from previous step."
+            exit 1
+          fi
+
           echo "Branch to push from template: $BRANCH_TO_PUSH"
           echo "Target branch in children: $TARGET_BRANCH_IN_CHILDREN"
           echo "Force push: $FORCE_PUSH_INPUT"
 
           # Split the space-separated string of child repositories into an array
-          IFS=' ' read -r -a repos <<< "$CHILD_REPOSITORIES_INPUT"
+          IFS=' ' read -r -a repos <<< "$REPOS_FROM_PREVIOUS_STEP"
 
           if [ ${#repos[@]} -eq 0 ]; then
-            echo "No child repositories provided."
+            echo "No child repositories to process after parsing."
             exit 0
           fi
 
           index=0
           for repo_url in "${repos[@]}"; do
-            # Construct the URL with PAT for authentication
-            # Using x-access-token for PAT authentication as recommended by GitHub
-            repo_url_pat=$(echo "$repo_url" | sed "s|https://github.com/|https://x-access-token:${PAT_TOKEN}@github.com/|")
+            # Trim whitespace that might come from tr in the previous step
+            trimmed_repo_url=$(echo "$repo_url" | xargs)
+            if [ -z "$trimmed_repo_url" ]; then
+              continue # Skip empty entries
+            fi
 
-            echo "Processing child repository: $repo_url"
+            repo_url_pat=$(echo "$trimmed_repo_url" | sed "s|https://github.com/|https://x-access-token:${PAT_TOKEN}@github.com/|")
+
+            echo "Processing child repository: $trimmed_repo_url"
 
             remote_name="child_${index}"
             index=$((index + 1))
 
-            echo "Adding remote $remote_name for $repo_url"
-            # Remove remote if it exists from a previous failed run or iteration
+            echo "Adding remote $remote_name for $trimmed_repo_url"
             git remote remove "$remote_name" 2>/dev/null || true
             git remote add "$remote_name" "$repo_url_pat"
 
@@ -90,22 +129,18 @@ jobs:
               push_command="$push_command --force"
             fi
 
-            echo "Attempting to push to $remote_name ($repo_url) with command: $push_command"
+            echo "Attempting to push to $remote_name ($trimmed_repo_url) with command: $push_command"
             if $push_command; then
-              echo "Successfully pushed to $repo_url"
+              echo "Successfully pushed to $trimmed_repo_url"
             else
-              echo "Failed to push to $repo_url."
+              echo "Failed to push to $trimmed_repo_url."
               echo "Common reasons for failure:"
               echo "1. Incorrect repository URL."
               echo "2. CHILD_REPO_PAT secret does not have sufficient permissions (requires 'repo' scope for the child repository)."
               echo "3. The target branch ($TARGET_BRANCH_IN_CHILDREN) does not exist in the child repository and force push is not enabled."
               echo "4. If not using force push, the push was rejected due to diverged histories."
-              # If one push fails, the script will continue with the next repository.
-              # To make it stop on first failure, add 'exit 1' here.
             fi
 
-            # Clean up the remote to avoid issues if the same job runs with different repo lists later
-            # though in this per-run setup, it's less critical.
             git remote remove "$remote_name" 2>/dev/null || true
           done
           echo "All specified child repositories processed."
