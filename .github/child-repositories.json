@@ -1,0 +1,12 @@
+{
+	"repositories": [
+		{
+			"name": "Super Baukasten",
+			"url": "https://github.com/matthacksteiner/super"
+		},
+		{
+			"name": "Betina Ammann Physio",
+			"url": "https://github.com/matthacksteiner/betinaamann-physio.at"
+		}
+	]
+}
