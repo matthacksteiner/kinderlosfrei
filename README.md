@@ -41,6 +41,52 @@ If you're using this repository as a template for multiple projects, you can use
    - Whether to create a pull request
 5. Click "Run workflow" to start the process.
 
+## GitHub Workflow: Update Child Repositories
+
+This project includes automation for propagating template changes to child repositories using a custom GitHub Actions workflow and configuration file.
+
+### Workflow: `.github/workflows/update-child-repos.yml`
+
+- **Purpose:** Automates the process of updating all child repositories with the latest changes from this template repository.
+- **How it works:**
+  - Can be triggered manually via GitHub Actions (workflow_dispatch).
+  - Clones each child repository listed in `.github/child-repositories.json`.
+  - Merges changes from the template repository into a new branch in each child repo.
+  - Handles merge conflicts according to the selected strategy (abort or create a conflict PR).
+  - Optionally creates a pull request in each child repository for review and merging.
+- **Inputs:**
+  - Commit message, branch name, whether to create a PR, and conflict strategy (abort or PR).
+
+### Configuration: `.github/child-repositories.json`
+
+- **Purpose:** Lists all child repositories that should receive updates from the template.
+- **Format:**
+  ```json
+  {
+  	"repositories": [
+  		{
+  			"name": "Super Baukasten",
+  			"url": "https://github.com/matthacksteiner/super"
+  		},
+  		{
+  			"name": "Betina Ammann Physio",
+  			"url": "https://github.com/matthacksteiner/betinaamann-physio.at"
+  		}
+  	]
+  }
+  ```
+- **How to use:**
+  - Add or remove repositories as needed to control which projects receive updates.
+
+### Usage Steps
+
+1. Edit `.github/child-repositories.json` to include all relevant child repositories.
+2. Trigger the workflow via the GitHub Actions tab ("Update Child Repositories").
+3. Configure the workflow inputs as needed (commit message, branch name, PR creation, conflict strategy).
+4. The workflow will process each child repository, merge changes, and create PRs if configured.
+
+> **Note:** You need a Personal Access Token (PAT) with `repo` permissions stored as the `PAT_TOKEN` secret in your repository for this workflow to function.
+
 ## Semantic Versioning
 
 This project uses semantic versioning for automatic version management. The version number is automatically incremented based on commit message patterns:
