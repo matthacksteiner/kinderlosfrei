@@ -110,6 +110,13 @@ jobs:
             # Push changes
             git push origin "$BRANCH_NAME"
 
+            # If there were no conflicts, merge the update branch into main and push
+            if [ "$CONFLICTS" = "false" ]; then
+              git checkout main
+              git merge "$BRANCH_NAME"
+              git push origin main
+            fi
+
             # Create PR if requested
             if [ "$CREATE_PR" = "true" ]; then
               # Temporarily unset GH_TOKEN to avoid conflicts with gh CLI
