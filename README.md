@@ -6,19 +6,11 @@ This is the Astro frontend part of the Baukasten project. It works in conjunctio
 
 ## Project Structure
 
-## Template Maintenance & Automation
-
-> **Note:** Template maintenance scripts and automation (such as updating child repositories and semantic versioning) are managed in the `template-tool` branch. If you are a template maintainer, please refer to the `template-tool` branch for documentation and configuration files related to:
->
-> - Updating child repositories
-> - Managing the list of children
-> - Template semantic versioning
-
 ## Updating from Template (for Child Repositories)
 
 ### Automated
 
-If you are using this repository as a child (project), you do **not** need to manage update automation or semantic versioning workflows. To update your project from the template:
+To update your project from the template:
 
 1. Add the template as a remote:
    ```sh
@@ -38,17 +30,22 @@ If you are using this repository as a child (project), you do **not** need to ma
 ## Setup Instructions
 
 1. Create a new repository from the [Baukasten template](https://github.com/matthacksteiner/baukasten).
-2. Update the `remote_images` domain in `netlify.toml`.
-3. Create a new site on Netlify:
+2. Run the initialization script to remove template maintenance files:
+   ```sh
+   ./init-project.sh
+   ```
+   This script removes workflow files that are only needed in the template repository but not in child projects.
+3. Update the `remote_images` domain in `netlify.toml`.
+4. Create a new site on Netlify:
    - Set `npm run build` as the build command.
    - Add the following environment variables:
      - `KIRBY_URL`: `https://baukasten.matthiashacksteiner.net`
      - `NETLIFY_URL`: `https://baukasten.netlify.app`
-4. Restart the build if necessary.
+5. Restart the build if necessary.
 
 ---
 
-## 2. Setting Up Webhooks
+## Setting Up Webhooks
 
 1. **Netlify Build Hook:**
    - Go to **Site Settings > Build & Deploy > Build Hooks** and create a new hook.
@@ -58,9 +55,3 @@ If you are using this repository as a child (project), you do **not** need to ma
      1. **Deploy Succeeded:** `https://cms.domain.de/webhook/netlify_deploy/success`
      2. **Deploy Failed:** `https://cms.domain.de/webhook/netlify_deploy/error`
 3. Update the Netlify hook URL in `site/config/config.php` on the SSH server.
-
----
-
-## Template Maintainers
-
-For documentation on managing child repositories, update automation, and semantic versioning, see the `README.md` in the `template-tool` branch.
