@@ -44,38 +44,22 @@ export default function fontDownloader() {
 						)}`
 					);
 
-					// First check if we have local content
-					const contentDir = path.resolve('./public/content');
-					const globalPath = path.join(contentDir, 'global.json');
-
-					let global;
-					if (fs.existsSync(globalPath)) {
-						// Use local content
-						logger.info(
-							`${pluginName} ${chalk.cyan('ℹ')} ${chalk.dim(
-								'Using local content for font download'
-							)}`
+					// Always fetch global data from API (KIRBY_URL)
+					logger.info(
+						`${pluginName} ${chalk.cyan('ℹ')} ${chalk.dim(
+							`Fetching font data from: ${API_URL}`
+						)}`
+					);
+					const response = await fetch(API_URL + '/global.json');
+					if (!response.ok) {
+						logger.error(
+							`${pluginName} ${chalk.red('✖')} Failed to fetch global.json: ${
+								response.status
+							}`
 						);
-						const globalContent = fs.readFileSync(globalPath, 'utf-8');
-						global = JSON.parse(globalContent);
-					} else {
-						// Fetch global data from API as fallback
-						logger.info(
-							`${pluginName} ${chalk.cyan('ℹ')} ${chalk.dim(
-								'Fetching global data from API for font download'
-							)}`
-						);
-						const response = await fetch(API_URL + '/global.json');
-						if (!response.ok) {
-							logger.error(
-								`${pluginName} ${chalk.red('✖')} Failed to fetch global.json: ${
-									response.status
-								}`
-							);
-							return;
-						}
-						global = await response.json();
+						return;
 					}
+					const global = await response.json();
 
 					const fonts = global.font;
 
@@ -98,20 +82,36 @@ export default function fontDownloader() {
 						const fontName = font.name;
 						let woffPath = null;
 						let woff2Path = null;
+						let hasSuccessfulDownload = false;
 
 						// Download WOFF
 						if (font.url1) {
-							const woffResponse = await fetch(font.url1);
-							if (woffResponse.ok) {
-								const woffBuffer = Buffer.from(
-									await woffResponse.arrayBuffer()
-								);
-								const fileName = path.basename(font.url1);
-								fs.writeFileSync(path.join(fontsDir, fileName), woffBuffer);
-								woffPath = `/fonts/${fileName}`;
-								logger.info(
-									`${pluginName} ${chalk.green('✓')} ${chalk.dim(
-										`Downloaded WOFF: ${fontName}`
+							try {
+								const woffResponse = await fetch(font.url1);
+								if (woffResponse.ok) {
+									const woffBuffer = Buffer.from(
+										await woffResponse.arrayBuffer()
+									);
+									const fileName = path.basename(font.url1);
+									fs.writeFileSync(path.join(fontsDir, fileName), woffBuffer);
+									woffPath = `/fonts/${fileName}`;
+									hasSuccessfulDownload = true;
+									logger.info(
+										`${pluginName} ${chalk.green('✓')} ${chalk.dim(
+											`Downloaded WOFF: ${fontName}`
+										)}`
+									);
+								} else {
+									logger.warn(
+										`${pluginName} ${chalk.yellow('⚠️')} ${chalk.dim(
+											`Failed to download WOFF for ${fontName}: ${woffResponse.status}`
+										)}`
+									);
+								}
+							} catch (error) {
+								logger.warn(
+									`${pluginName} ${chalk.yellow('⚠️')} ${chalk.dim(
+										`Error downloading WOFF for ${fontName}: ${error.message}`
 									)}`
 								);
 							}
@@ -119,27 +119,51 @@ export default function fontDownloader() {
 
 						// Download WOFF2
 						if (font.url2) {
-							const woff2Response = await fetch(font.url2);
-							if (woff2Response.ok) {
-								const woff2Buffer = Buffer.from(
-									await woff2Response.arrayBuffer()
-								);
-								const fileName = path.basename(font.url2);
-								fs.writeFileSync(path.join(fontsDir, fileName), woff2Buffer);
-								woff2Path = `/fonts/${fileName}`;
-								logger.info(
-									`${pluginName} ${chalk.green('✓')} ${chalk.dim(
-										`Downloaded WOFF2: ${fontName}`
+							try {
+								const woff2Response = await fetch(font.url2);
+								if (woff2Response.ok) {
+									const woff2Buffer = Buffer.from(
+										await woff2Response.arrayBuffer()
+									);
+									const fileName = path.basename(font.url2);
+									fs.writeFileSync(path.join(fontsDir, fileName), woff2Buffer);
+									woff2Path = `/fonts/${fileName}`;
+									hasSuccessfulDownload = true;
+									logger.info(
+										`${pluginName} ${chalk.green('✓')} ${chalk.dim(
+											`Downloaded WOFF2: ${fontName}`
+										)}`
+									);
+								} else {
+									logger.warn(
+										`${pluginName} ${chalk.yellow('⚠️')} ${chalk.dim(
+											`Failed to download WOFF2 for ${fontName}: ${woff2Response.status}`
+										)}`
+									);
+								}
+							} catch (error) {
+								logger.warn(
+									`${pluginName} ${chalk.yellow('⚠️')} ${chalk.dim(
+										`Error downloading WOFF2 for ${fontName}: ${error.message}`
 									)}`
 								);
 							}
 						}
 
-						fontData.push({
-							name: fontName,
-							woff: woffPath,
-							woff2: woff2Path,
-						});
+						// Only add font to data if at least one format was successfully downloaded
+						if (hasSuccessfulDownload) {
+							fontData.push({
+								name: fontName,
+								woff: woffPath,
+								woff2: woff2Path,
+							});
+						} else {
+							logger.warn(
+								`${pluginName} ${chalk.yellow('⚠️')} ${chalk.dim(
+									`Skipping ${fontName} - no valid font files downloaded`
+								)}`
+							);
+						}
 					}
 
 					// Save font metadata
