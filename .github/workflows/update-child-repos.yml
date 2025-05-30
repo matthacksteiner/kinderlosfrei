@@ -136,7 +136,8 @@ jobs:
             IFS='|' read -ra IGNORE_FILES <<< "$TEMPLATE_IGNORE_LIST"
             for file in "${IGNORE_FILES[@]}"; do
               if [[ -f "$file" ]]; then
-                git rm --cached "$file" 2>/dev/null || rm -f "$file"
+                # Remove from git index and working directory
+                git rm -f "$file" 2>/dev/null || rm -f "$file"
                 echo "  ✓ Removed $file"
                 files_removed=true
               fi
@@ -318,6 +319,14 @@ jobs:
             # If there were no conflicts, merge the update branch into default branch and push
             if [[ "$CONFLICTS" == "false" ]]; then
               echo "Merging changes into $DEFAULT_BRANCH..."
+
+              # Ensure working directory is clean before checkout
+              if ! git diff --quiet || ! git diff --cached --quiet; then
+                echo "Working directory not clean, committing remaining changes..."
+                git add .
+                git commit -m "Finalize template update changes" --allow-empty
+              fi
+
               git checkout "$DEFAULT_BRANCH"
               git merge "$UNIQUE_BRANCH_NAME"
 
