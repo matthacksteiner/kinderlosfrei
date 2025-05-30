@@ -131,6 +131,11 @@ jobs:
           CONFLICT_COUNT=0
           ERROR_COUNT=0
 
+          # Initialize arrays to track repository names by status
+          SUCCESS_REPOS=()
+          CONFLICT_REPOS=()
+          ERROR_REPOS=()
+
           for REPO_URL in $REPOSITORIES; do
             TOTAL_REPOS=$((TOTAL_REPOS + 1))
             echo "==========================================="
@@ -141,6 +146,7 @@ jobs:
             if [[ ! "$REPO_URL" =~ ^https://github\.com/[^/]+/[^/]+\.git$ ]] && [[ ! "$REPO_URL" =~ ^https://github\.com/[^/]+/[^/]+$ ]]; then
               echo "Error: Invalid repository URL format: $REPO_URL"
               ERROR_COUNT=$((ERROR_COUNT + 1))
+              ERROR_REPOS+=("$REPO_URL")
               continue
             fi
 
@@ -165,6 +171,7 @@ jobs:
             if ! git clone "$REPO_URL_WITH_TOKEN" "$REPO_DIR" 2>/dev/null; then
               echo "Error: Failed to clone repository: $REPO_URL"
               ERROR_COUNT=$((ERROR_COUNT + 1))
+              ERROR_REPOS+=("$REPO_NAME")
               continue
             fi
 
@@ -180,6 +187,7 @@ jobs:
                 echo "Error: Neither main nor master branch found"
                 cd ..
                 ERROR_COUNT=$((ERROR_COUNT + 1))
+                ERROR_REPOS+=("$REPO_NAME")
                 continue
               fi
             fi
@@ -191,6 +199,7 @@ jobs:
               echo "DRY RUN: Would create branch $UNIQUE_BRANCH_NAME and merge template changes"
               cd ..
               SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+              SUCCESS_REPOS+=("$REPO_NAME")
               continue
             fi
 
@@ -212,6 +221,7 @@ jobs:
               echo "Error: Failed to fetch template changes"
               cd ..
               ERROR_COUNT=$((ERROR_COUNT + 1))
+              ERROR_REPOS+=("$REPO_NAME")
               continue
             fi
 
@@ -224,6 +234,7 @@ jobs:
               echo "Merge conflicts detected"
               CONFLICTS=true
               CONFLICT_COUNT=$((CONFLICT_COUNT + 1))
+              CONFLICT_REPOS+=("$REPO_NAME")
 
               if [[ "$CONFLICT_STRATEGY" == "abort-on-conflicts" ]]; then
                 echo "Aborting merge due to conflicts"
@@ -242,12 +253,14 @@ jobs:
                   echo "Error: Failed to commit conflicts"
                   cd ..
                   ERROR_COUNT=$((ERROR_COUNT + 1))
+                  ERROR_REPOS+=("$REPO_NAME")
                   continue
                 fi
               fi
             else
               echo "Successfully merged changes without conflicts"
               SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+              SUCCESS_REPOS+=("$REPO_NAME")
             fi
 
             # Push changes with error handling
@@ -256,6 +269,7 @@ jobs:
               echo "Error: Failed to push branch"
               cd ..
               ERROR_COUNT=$((ERROR_COUNT + 1))
+              ERROR_REPOS+=("$REPO_NAME")
               continue
             fi
 
@@ -268,6 +282,7 @@ jobs:
               if ! git push origin "$DEFAULT_BRANCH"; then
                 echo "Error: Failed to push to $DEFAULT_BRANCH"
                 ERROR_COUNT=$((ERROR_COUNT + 1))
+                ERROR_REPOS+=("$REPO_NAME")
                 cd ..
                 continue
               fi
@@ -293,6 +308,7 @@ jobs:
                 echo "Error: GitHub CLI not available"
                 cd ..
                 ERROR_COUNT=$((ERROR_COUNT + 1))
+                ERROR_REPOS+=("$REPO_NAME")
                 continue
               fi
 
@@ -304,6 +320,7 @@ jobs:
                 echo "Error: Failed to authenticate with GitHub CLI"
                 cd ..
                 ERROR_COUNT=$((ERROR_COUNT + 1))
+                ERROR_REPOS+=("$REPO_NAME")
                 continue
               fi
 
@@ -324,6 +341,7 @@ jobs:
               else
                 echo "Error: Failed to create pull request"
                 ERROR_COUNT=$((ERROR_COUNT + 1))
+                ERROR_REPOS+=("$REPO_NAME")
               fi
             fi
 
@@ -335,14 +353,36 @@ jobs:
           cd /
           rm -rf "$TEMP_DIR"
 
-          # Print summary
+          # Print detailed summary
           echo "==========================================="
           echo "SUMMARY"
           echo "==========================================="
           echo "Total repositories processed: $TOTAL_REPOS"
-          echo "Successful updates: $SUCCESS_COUNT"
-          echo "Updates with conflicts: $CONFLICT_COUNT"
-          echo "Errors encountered: $ERROR_COUNT"
+          echo ""
+
+          if [[ ${#SUCCESS_REPOS[@]} -gt 0 ]]; then
+            echo "✅ SUCCESSFUL UPDATES ($SUCCESS_COUNT):"
+            for repo in "${SUCCESS_REPOS[@]}"; do
+              echo "  • $repo"
+            done
+            echo ""
+          fi
+
+          if [[ ${#CONFLICT_REPOS[@]} -gt 0 ]]; then
+            echo "⚠️  UPDATES WITH CONFLICTS ($CONFLICT_COUNT):"
+            for repo in "${CONFLICT_REPOS[@]}"; do
+              echo "  • $repo"
+            done
+            echo ""
+          fi
+
+          if [[ ${#ERROR_REPOS[@]} -gt 0 ]]; then
+            echo "❌ ERRORS ENCOUNTERED ($ERROR_COUNT):"
+            for repo in "${ERROR_REPOS[@]}"; do
+              echo "  • $repo"
+            done
+            echo ""
+          fi
 
           if [[ "$ERROR_COUNT" -gt 0 ]]; then
             echo "⚠️  Some repositories failed to update"
