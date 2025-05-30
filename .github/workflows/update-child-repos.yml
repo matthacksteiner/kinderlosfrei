@@ -117,6 +117,34 @@ jobs:
           echo "https://x-access-token:${GITHUB_TOKEN}@github.com" > "$TEMP_DIR/.git-credentials"
           chmod 600 "$TEMP_DIR/.git-credentials"
 
+          # Read template ignore list from the template repository
+          TEMPLATE_IGNORE_FILE="$GITHUB_WORKSPACE/.templateignore"
+          if [[ -f "$TEMPLATE_IGNORE_FILE" ]]; then
+            echo "Reading template ignore list from .templateignore..."
+            TEMPLATE_IGNORE_LIST=$(grep -v '^#' "$TEMPLATE_IGNORE_FILE" | grep -v '^$' | tr '\n' '|' | sed 's/|$//')
+            echo "Template files to exclude: $TEMPLATE_IGNORE_LIST"
+          else
+            echo "Warning: .templateignore file not found, using default exclusions"
+            TEMPLATE_IGNORE_LIST=".github/workflows/update-child-repos.yml|.github/child-repositories.json|.github/workflows/semantic-version.yml"
+          fi
+
+          # Function to remove template-specific files
+          remove_template_files() {
+            echo "Removing template-specific files from merged changes..."
+            local files_removed=false
+
+            IFS='|' read -ra IGNORE_FILES <<< "$TEMPLATE_IGNORE_LIST"
+            for file in "${IGNORE_FILES[@]}"; do
+              if [[ -f "$file" ]]; then
+                git rm --cached "$file" 2>/dev/null || rm -f "$file"
+                echo "  ✓ Removed $file"
+                files_removed=true
+              fi
+            done
+
+            echo "$files_removed"
+          }
+
           # Read repositories from JSON with better error handling
           REPOSITORIES=$(echo '${{ steps.read-repos.outputs.repos }}' | jq -r '.repositories[].url // empty')
 
@@ -245,6 +273,9 @@ jobs:
                 # Get list of conflicting files
                 CONFLICT_FILES=$(git diff --name-only --diff-filter=U || echo "Unable to determine conflict files")
 
+                # Remove template-specific files before committing conflicts
+                remove_template_files
+
                 # Add conflicts to be resolved later
                 git add .
                 if ! git commit -m "${COMMIT_MESSAGE} [CONTAINS CONFLICTS]" \
@@ -259,6 +290,17 @@ jobs:
               fi
             else
               echo "Successfully merged changes without conflicts"
+
+              # Remove template-specific files before committing
+              TEMPLATE_FILES_REMOVED=$(remove_template_files)
+
+              # If template files were removed, create an additional commit to clean them up
+              if [[ "$TEMPLATE_FILES_REMOVED" == "true" ]]; then
+                echo "Committing removal of template-specific files..."
+                git add .
+                git commit -m "Remove template-specific files from child repository" --allow-empty
+              fi
+
               SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
               SUCCESS_REPOS+=("$REPO_NAME")
             fi

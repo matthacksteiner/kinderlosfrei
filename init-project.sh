@@ -8,27 +8,56 @@
 
 echo "Initializing project by removing template maintenance files..."
 
-# Remove workflow files
-if [ -f .github/workflows/semantic-version.yml ]; then
-  rm .github/workflows/semantic-version.yml
-  echo "✓ Removed semantic-version.yml"
-else
-  echo "✗ semantic-version.yml not found"
-fi
+# Read files to remove from .templateignore
+if [ -f ".templateignore" ]; then
+  echo "Reading template files to remove from .templateignore..."
 
-if [ -f .github/workflows/update-child-repos.yml ]; then
-  rm .github/workflows/update-child-repos.yml
-  echo "✓ Removed update-child-repos.yml"
-else
-  echo "✗ update-child-repos.yml not found"
-fi
+  while IFS= read -r line; do
+    # Skip comments and empty lines
+    if [[ "$line" =~ ^[[:space:]]*# ]] || [[ -z "$line" ]]; then
+      continue
+    fi
 
-# Remove configuration files
-if [ -f .github/child-repositories.json ]; then
-  rm .github/child-repositories.json
-  echo "✓ Removed child-repositories.json"
+    # Remove leading/trailing whitespace
+    file=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
+    if [ -f "$file" ]; then
+      rm "$file"
+      echo "✓ Removed $file"
+    else
+      echo "✗ $file not found"
+    fi
+  done < .templateignore
+
+  # Remove the .templateignore file itself
+  if [ -f ".templateignore" ]; then
+    rm ".templateignore"
+    echo "✓ Removed .templateignore"
+  fi
 else
-  echo "✗ child-repositories.json not found"
+  echo "Warning: .templateignore not found, falling back to hardcoded file list"
+
+  # Fallback to hardcoded files for backwards compatibility
+  if [ -f .github/workflows/semantic-version.yml ]; then
+    rm .github/workflows/semantic-version.yml
+    echo "✓ Removed semantic-version.yml"
+  else
+    echo "✗ semantic-version.yml not found"
+  fi
+
+  if [ -f .github/workflows/update-child-repos.yml ]; then
+    rm .github/workflows/update-child-repos.yml
+    echo "✓ Removed update-child-repos.yml"
+  else
+    echo "✗ update-child-repos.yml not found"
+  fi
+
+  if [ -f .github/child-repositories.json ]; then
+    rm .github/child-repositories.json
+    echo "✓ Removed child-repositories.json"
+  else
+    echo "✗ child-repositories.json not found"
+  fi
 fi
 
 # Optional: Remove this script itself

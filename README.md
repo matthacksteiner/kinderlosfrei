@@ -31,10 +31,13 @@ To update your project from the template:
 
 1. Create a new repository from the [Baukasten template](https://github.com/matthacksteiner/baukasten).
 2. Run the initialization script to remove template maintenance files:
+
    ```sh
    ./init-project.sh
    ```
+
    This script removes workflow files that are only needed in the template repository but not in child projects.
+
 3. Update the `remote_images` domain in `netlify.toml`.
 4. Create a new site on Netlify:
    - Set `npm run build` as the build command.
@@ -42,6 +45,27 @@ To update your project from the template:
      - `KIRBY_URL`: `https://baukasten.matthiashacksteiner.net`
      - `NETLIFY_URL`: `https://baukasten.netlify.app`
 5. Restart the build if necessary.
+
+---
+
+## Template Maintenance System
+
+This repository uses a `.templateignore` system to prevent template-specific files from being pushed to child repositories during updates:
+
+### For Template Maintainers
+
+- Edit `.templateignore` to add or remove files that should be excluded from child repositories
+- The automated update workflow (`.github/workflows/update-child-repos.yml`) reads this file and automatically removes listed files from child repositories
+- Common files to exclude:
+  - Template maintenance workflows
+  - Repository configuration files (like `child-repositories.json`)
+  - Template-specific documentation
+
+### For Child Repository Owners
+
+- Template-specific files are automatically excluded during updates
+- If you manually merge template changes, run `./init-project.sh` to clean up any template files
+- The init script also reads from `.templateignore` for consistency
 
 ---
 
