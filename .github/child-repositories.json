@@ -1,6 +1,10 @@
 {
 	"repositories": [
 		{
+			"name": "Laterna Bezau",
+			"url": "https://github.com/matthacksteiner/laterna-bezau.at"
+		},
+		{
 			"name": "Super Baukasten",
 			"url": "https://github.com/matthacksteiner/super"
 		},
