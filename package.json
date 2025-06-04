@@ -10,7 +10,9 @@
 		"astro": "astro",
 		"test": "vitest",
 		"test:sync": "node plugins/astro-kirby-sync/test-incremental-sync.js",
-		"clean": "rimraf public/content"
+		"clean": "rimraf public/content",
+		"clean-build": "npm run clean && npm run build",
+		"clean-dev": "npm run clean && npm run dev"
 	},
 	"dependencies": {
 		"@astrojs/netlify": "^6.3.4",
