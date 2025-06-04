@@ -226,13 +226,27 @@ async function performFullSync(API_URL, contentDir, logger) {
 		)
 	);
 
-	// Sync default language (no prefix)
+	// Sync default language (no prefix) - but we need to sync it both to root AND to its language directory
 	logger.info(
 		chalk.yellow(`\n📥 Syncing default language (${defaultLanguage})...`)
 	);
 	const defaultStats = await performIncrementalLanguageSync(
 		API_URL,
 		null,
+		contentDir,
+		syncState,
+		logger
+	);
+
+	// ALSO sync default language to its own language directory
+	logger.info(
+		chalk.yellow(
+			`\n📥 Syncing default language to /${defaultLanguage}/ directory...`
+		)
+	);
+	const defaultLangDirStats = await performIncrementalLanguageSync(
+		API_URL,
+		defaultLanguage,
 		contentDir,
 		syncState,
 		logger
@@ -302,6 +316,22 @@ async function performIncrementalSync(API_URL, contentDir, logger) {
 		);
 		totalChangedFiles += defaultStats.changedFiles;
 		totalFiles += defaultStats.totalFiles;
+
+		// ALSO check default language in its own language directory
+		logger.info(
+			chalk.yellow(
+				`\n🔍 Checking default language in /${defaultLanguage}/ directory...`
+			)
+		);
+		const defaultLangDirStats = await performIncrementalLanguageSync(
+			API_URL,
+			defaultLanguage,
+			contentDir,
+			syncState,
+			logger
+		);
+		totalChangedFiles += defaultLangDirStats.changedFiles;
+		totalFiles += defaultLangDirStats.totalFiles;
 
 		// Check translations
 		for (const lang of translations) {
