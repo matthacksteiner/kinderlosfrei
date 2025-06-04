@@ -59,27 +59,7 @@ This README is for **template maintainers**. It documents how to manage child re
 
 ---
 
-## 3. Semantic Versioning for the Template
-
-### Workflow: `.github/workflows/semantic-version.yml`
-
-- **Purpose:** Manages semantic versioning and GitHub releases for the template repository.
-- **How it works:**
-  - On every push or PR to `main`, the workflow checks commit messages for version bump patterns:
-    - `major:` → major version bump
-    - `feat:` → minor version bump
-    - `fix:` → patch version bump
-  - Creates a GitHub release for each new version.
-
-### Tracking Template Version in Children
-
-- When updating a child repository, the update workflow can write the current template version (tag) to a file (e.g., `TEMPLATE_VERSION`) in the child repo.
-- This allows you to track which template version each child is based on.
-- You can automate this in the update script or do it manually.
-
----
-
-## 4. Best Practices
+## 3. Best Practices
 
 - Keep template-only files (like update workflows and child-repositories.json) in the `template-tool` branch.
 - Only files in `main` will be copied to new repositories created from the template.
