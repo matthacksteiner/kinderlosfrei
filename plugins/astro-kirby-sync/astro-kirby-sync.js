@@ -2,6 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import fetch from 'node-fetch';
 import chalk from 'chalk';
+import { createHash } from 'crypto';
+
+// Helper function to generate SHA-256 hash of content
+function generateContentHash(content) {
+	return createHash('sha256').update(JSON.stringify(content)).digest('hex');
+}
 
 // Helper function to clean directory
 function cleanDirectory(dirPath) {
@@ -61,6 +67,284 @@ function saveJsonFile(filePath, data) {
 	}
 }
 
+// Load sync state from disk
+function loadSyncState(contentDir) {
+	const stateFile = path.join(contentDir, '.sync-state.json');
+	if (!fs.existsSync(stateFile)) {
+		return {
+			lastSync: null,
+			contentHashes: {},
+			version: '1.0.0',
+		};
+	}
+
+	try {
+		const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
+		return {
+			lastSync: state.lastSync || null,
+			contentHashes: state.contentHashes || {},
+			version: state.version || '1.0.0',
+		};
+	} catch (error) {
+		console.warn('Invalid sync state file, starting fresh:', error.message);
+		return {
+			lastSync: null,
+			contentHashes: {},
+			version: '1.0.0',
+		};
+	}
+}
+
+// Save sync state to disk
+function saveSyncState(contentDir, state) {
+	const stateFile = path.join(contentDir, '.sync-state.json');
+	try {
+		fs.writeFileSync(stateFile, JSON.stringify(state, null, 2));
+	} catch (error) {
+		console.error('Error saving sync state:', error);
+	}
+}
+
+// Check if content has changed by comparing hashes
+function hasContentChanged(url, newContent, oldHashes) {
+	const newHash = generateContentHash(newContent);
+	const oldHash = oldHashes[url];
+	return !oldHash || oldHash !== newHash;
+}
+
+// Perform incremental sync for a specific language
+async function performIncrementalLanguageSync(
+	API_URL,
+	lang,
+	contentDir,
+	syncState,
+	logger
+) {
+	const langPath = lang ? `${lang}/` : '';
+	const langDir = lang ? path.join(contentDir, lang) : contentDir;
+	let changedFiles = 0;
+	let totalFiles = 0;
+
+	// Ensure language directory exists
+	ensureDirectoryExists(langDir);
+
+	// Fetch and check global.json
+	const globalUrl = `${API_URL}/${langPath}global.json`;
+	const globalData = await fetchJson(globalUrl);
+	totalFiles++;
+
+	if (hasContentChanged(globalUrl, globalData, syncState.contentHashes)) {
+		logger.info(chalk.gray(`  ↳ Updated global.json`));
+		await saveJsonFile(path.join(langDir, 'global.json'), globalData);
+		syncState.contentHashes[globalUrl] = generateContentHash(globalData);
+		changedFiles++;
+
+		// Also save to root if this is the default language
+		if (!lang) {
+			await saveJsonFile(path.join(contentDir, 'global.json'), globalData);
+		}
+	}
+
+	// Fetch and check index.json
+	const indexUrl = `${API_URL}/${langPath}index.json`;
+	const indexData = await fetchJson(indexUrl);
+	totalFiles++;
+
+	if (hasContentChanged(indexUrl, indexData, syncState.contentHashes)) {
+		logger.info(chalk.gray(`  ↳ Updated index.json`));
+		await saveJsonFile(path.join(langDir, 'index.json'), indexData);
+		syncState.contentHashes[indexUrl] = generateContentHash(indexData);
+		changedFiles++;
+
+		// Also save to root if this is the default language
+		if (!lang) {
+			await saveJsonFile(path.join(contentDir, 'index.json'), indexData);
+		}
+	}
+
+	// Check each page in the index
+	for (const page of indexData) {
+		const pageUrl = `${API_URL}/${langPath}${page.uri}.json`;
+		const pageData = await fetchJson(pageUrl);
+		totalFiles++;
+
+		if (hasContentChanged(pageUrl, pageData, syncState.contentHashes)) {
+			logger.info(chalk.gray(`  ↳ Updated ${page.uri}.json`));
+			await saveJsonFile(path.join(langDir, `${page.uri}.json`), pageData);
+			syncState.contentHashes[pageUrl] = generateContentHash(pageData);
+			changedFiles++;
+
+			// Also save to root if this is the default language
+			if (!lang) {
+				await saveJsonFile(path.join(contentDir, `${page.uri}.json`), pageData);
+			}
+		}
+
+		// Handle sections (fetch additional data if needed)
+		if (page.intendedTemplate === 'section') {
+			// Section data is the same as page data in this case, no additional fetch needed
+			// The section items are included in the page.json response
+		}
+	}
+
+	return { changedFiles, totalFiles };
+}
+
+// Perform full sync (fallback when incremental fails)
+async function performFullSync(API_URL, contentDir, logger) {
+	logger.info(chalk.blue('\n🔄 Performing full content sync...'));
+
+	// Clean existing content
+	logger.info(chalk.gray('🧹 Cleaning existing content...'));
+	cleanDirectory(contentDir);
+
+	// Initialize sync state
+	const syncState = {
+		lastSync: new Date().toISOString(),
+		contentHashes: {},
+		version: '1.0.0',
+	};
+
+	// Fetch global data first to get language information
+	let global;
+	try {
+		global = await fetchJson(`${API_URL}/global.json`);
+	} catch (error) {
+		throw new Error(`Failed to fetch global configuration: ${error.message}`);
+	}
+
+	if (!global || !global.defaultLang || !global.defaultLang.code) {
+		throw new Error('Invalid global configuration received from CMS');
+	}
+
+	const defaultLanguage = global.defaultLang.code;
+	const translations = global.translations.map((lang) => lang.code);
+
+	logger.info(
+		chalk.gray(
+			`📚 Found languages: ${[defaultLanguage, ...translations].join(', ')}`
+		)
+	);
+
+	// Sync default language (no prefix)
+	logger.info(
+		chalk.yellow(`\n📥 Syncing default language (${defaultLanguage})...`)
+	);
+	const defaultStats = await performIncrementalLanguageSync(
+		API_URL,
+		null,
+		contentDir,
+		syncState,
+		logger
+	);
+
+	// Sync translations
+	for (const lang of translations) {
+		if (lang === defaultLanguage) continue;
+
+		logger.info(chalk.yellow(`\n📥 Syncing language: ${lang}...`));
+		const langStats = await performIncrementalLanguageSync(
+			API_URL,
+			lang,
+			contentDir,
+			syncState,
+			logger
+		);
+	}
+
+	// Save sync state
+	saveSyncState(contentDir, syncState);
+
+	logger.info(chalk.green('\n✨ Full content sync completed successfully!'));
+	return syncState;
+}
+
+// Perform incremental sync
+async function performIncrementalSync(API_URL, contentDir, logger) {
+	logger.info(chalk.blue('\n🔄 Performing incremental content sync...'));
+
+	// Load existing sync state
+	const syncState = loadSyncState(contentDir);
+
+	if (!syncState.lastSync) {
+		logger.info(
+			chalk.yellow('📦 No previous sync found, performing full sync...')
+		);
+		return await performFullSync(API_URL, contentDir, logger);
+	}
+
+	logger.info(
+		chalk.gray(`🕐 Last sync: ${new Date(syncState.lastSync).toLocaleString()}`)
+	);
+
+	// Ensure content directory exists
+	ensureDirectoryExists(contentDir);
+
+	let totalChangedFiles = 0;
+	let totalFiles = 0;
+
+	try {
+		// Fetch global data to get language information
+		const global = await fetchJson(`${API_URL}/global.json`);
+		const defaultLanguage = global.defaultLang.code;
+		const translations = global.translations.map((lang) => lang.code);
+
+		// Check default language (no prefix)
+		logger.info(
+			chalk.yellow(`\n🔍 Checking default language (${defaultLanguage})...`)
+		);
+		const defaultStats = await performIncrementalLanguageSync(
+			API_URL,
+			null,
+			contentDir,
+			syncState,
+			logger
+		);
+		totalChangedFiles += defaultStats.changedFiles;
+		totalFiles += defaultStats.totalFiles;
+
+		// Check translations
+		for (const lang of translations) {
+			if (lang === defaultLanguage) continue;
+
+			logger.info(chalk.yellow(`\n🔍 Checking language: ${lang}...`));
+			const langStats = await performIncrementalLanguageSync(
+				API_URL,
+				lang,
+				contentDir,
+				syncState,
+				logger
+			);
+			totalChangedFiles += langStats.changedFiles;
+			totalFiles += langStats.totalFiles;
+		}
+
+		// Update sync state
+		syncState.lastSync = new Date().toISOString();
+		saveSyncState(contentDir, syncState);
+
+		if (totalChangedFiles === 0) {
+			logger.info(
+				chalk.green(
+					`\n✨ Content is up-to-date! Checked ${totalFiles} files, no changes found.`
+				)
+			);
+		} else {
+			logger.info(
+				chalk.green(
+					`\n✨ Incremental sync completed! Updated ${totalChangedFiles}/${totalFiles} files.`
+				)
+			);
+		}
+
+		return syncState;
+	} catch (error) {
+		logger.warn(chalk.yellow(`\n⚠️ Incremental sync failed: ${error.message}`));
+		logger.info(chalk.yellow('🔄 Falling back to full sync...'));
+		return await performFullSync(API_URL, contentDir, logger);
+	}
+}
+
 // Main plugin function
 export default function astroKirbySync() {
 	return {
@@ -91,146 +375,21 @@ export default function astroKirbySync() {
 						throw new Error('KIRBY_URL environment variable is not set');
 					}
 
-					logger.info(chalk.blue('\n🔄 Starting Kirby CMS content sync...'));
-
-					// Create and clean content directory
 					const contentDir = path.resolve('./public/content');
-					logger.info(chalk.gray('🧹 Cleaning existing content...'));
-					cleanDirectory(contentDir);
 
-					// Fetch global data first to get language information
-					let global;
-					try {
-						global = await fetchJson(`${API_URL}/global.json`);
-					} catch (error) {
-						throw new Error(
-							`Failed to fetch global configuration: ${error.message}`
+					// Check if we should force a full sync
+					const forceFullSync = process.env.FORCE_FULL_SYNC === 'true';
+
+					if (forceFullSync) {
+						logger.info(
+							chalk.yellow(
+								'🔄 FORCE_FULL_SYNC enabled, performing full sync...'
+							)
 						);
+						await performFullSync(API_URL, contentDir, logger);
+					} else {
+						await performIncrementalSync(API_URL, contentDir, logger);
 					}
-
-					if (!global || !global.defaultLang || !global.defaultLang.code) {
-						throw new Error('Invalid global configuration received from CMS');
-					}
-
-					const defaultLanguage = global.defaultLang.code;
-					const translations = global.translations.map((lang) => lang.code);
-
-					logger.info(
-						chalk.gray(
-							`📚 Found languages: ${[defaultLanguage, ...translations].join(
-								', '
-							)}`
-						)
-					);
-
-					// Save global.json in root
-					await saveJsonFile(path.join(contentDir, 'global.json'), global);
-
-					// Create default language directory
-					const defaultLangDir = path.join(contentDir, defaultLanguage);
-					ensureDirectoryExists(defaultLangDir);
-
-					// Save global.json in default language directory
-					await saveJsonFile(path.join(defaultLangDir, 'global.json'), global);
-
-					// Fetch and save root index.json
-					logger.info(
-						chalk.yellow(
-							`\n📥 Syncing default language (${defaultLanguage})...`
-						)
-					);
-					const rootIndex = await fetchJson(`${API_URL}/index.json`);
-					// Save in both root and language directory
-					await saveJsonFile(path.join(contentDir, 'index.json'), rootIndex);
-					await saveJsonFile(
-						path.join(defaultLangDir, 'index.json'),
-						rootIndex
-					);
-
-					// Process each page from root index for default language
-					for (const page of rootIndex) {
-						logger.info(chalk.gray(`  ↳ Fetching ${page.uri}.json`));
-						const pageData = await fetchJson(`${API_URL}/${page.uri}.json`);
-						// Save in both root and language directory
-						await saveJsonFile(
-							path.join(contentDir, `${page.uri}.json`),
-							pageData
-						);
-						await saveJsonFile(
-							path.join(defaultLangDir, `${page.uri}.json`),
-							pageData
-						);
-
-						// If page is a section, fetch its items
-						if (page.intendedTemplate === 'section') {
-							const sectionData = await fetchJson(
-								`${API_URL}/${page.uri}.json`
-							);
-							// Save in both root and language directory
-							await saveJsonFile(
-								path.join(contentDir, `${page.uri}.json`),
-								sectionData
-							);
-							await saveJsonFile(
-								path.join(defaultLangDir, `${page.uri}.json`),
-								sectionData
-							);
-						}
-					}
-
-					// Process translations
-					for (const lang of translations) {
-						if (lang === defaultLanguage) continue;
-
-						logger.info(chalk.yellow(`\n📥 Syncing language: ${lang}...`));
-
-						// Create language directory
-						const langDir = path.join(contentDir, lang);
-						ensureDirectoryExists(langDir);
-
-						// Save translated global.json
-						const translatedGlobal = await fetchJson(
-							`${API_URL}/${lang}/global.json`
-						);
-						await saveJsonFile(
-							path.join(langDir, 'global.json'),
-							translatedGlobal
-						);
-
-						// Fetch and save translated index.json
-						const translatedIndex = await fetchJson(
-							`${API_URL}/${lang}/index.json`
-						);
-						await saveJsonFile(
-							path.join(langDir, 'index.json'),
-							translatedIndex
-						);
-
-						// Process each page from translated index
-						for (const page of translatedIndex) {
-							logger.info(chalk.gray(`  ↳ Fetching ${lang}/${page.uri}.json`));
-							const translatedPageData = await fetchJson(
-								`${API_URL}/${lang}/${page.uri}.json`
-							);
-							await saveJsonFile(
-								path.join(langDir, `${page.uri}.json`),
-								translatedPageData
-							);
-
-							// If page is a section, fetch its items
-							if (page.intendedTemplate === 'section') {
-								const translatedSectionData = await fetchJson(
-									`${API_URL}/${lang}/${page.uri}.json`
-								);
-								await saveJsonFile(
-									path.join(langDir, `${page.uri}.json`),
-									translatedSectionData
-								);
-							}
-						}
-					}
-
-					logger.info(chalk.green('\n✨ Content sync completed successfully!'));
 				} catch (error) {
 					logger.error(chalk.red('\n❌ Error during content sync:'));
 					logger.error(chalk.red(error.message));

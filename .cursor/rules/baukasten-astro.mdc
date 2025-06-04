@@ -33,6 +33,7 @@ src/
   styles/        - Global styles and Tailwind setup
   types/         - TypeScript type definitions
 public/          - Static assets (images, fonts, etc.)
+docs/            - All project documentation
 astro.config.mjs - Astro configuration with Netlify adapter
 tailwind.config.cjs - Tailwind CSS configuration
 .env            - Environment variables (KIRBY_URL, etc.)
@@ -137,3 +138,5 @@ The project uses a comprehensive block-based content approach:
 - Test across different devices and browsers
 - Check for the latest docs on https://docs.astro.build/en/getting-started/
 - Use aliases (@public) for simplified imports from public directory
+- **All documentation must be placed in the `docs/` folder** - This includes technical documentation, setup guides, API documentation, and any other project-related documentation
+

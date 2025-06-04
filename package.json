@@ -9,6 +9,7 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"test": "vitest",
+		"test:sync": "node plugins/astro-kirby-sync/test-incremental-sync.js",
 		"clean": "rimraf public/content"
 	},
 	"dependencies": {
