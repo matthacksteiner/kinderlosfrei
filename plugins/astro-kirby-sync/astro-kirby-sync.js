@@ -79,11 +79,6 @@ function getSyncStateFilePath() {
 function loadSyncState() {
 	const stateFile = getSyncStateFilePath();
 
-	if (process.env.NETLIFY) {
-		console.log(`[DEBUG] Looking for sync state file at: ${stateFile}`);
-		console.log(`[DEBUG] File exists: ${fs.existsSync(stateFile)}`);
-	}
-
 	if (!fs.existsSync(stateFile)) {
 		return {
 			lastSync: null,
@@ -94,16 +89,6 @@ function loadSyncState() {
 
 	try {
 		const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
-
-		if (process.env.NETLIFY) {
-			console.log(`[DEBUG] Loaded sync state - Last sync: ${state.lastSync}`);
-			console.log(
-				`[DEBUG] Content hashes count: ${
-					Object.keys(state.contentHashes || {}).length
-				}`
-			);
-		}
-
 		return {
 			lastSync: state.lastSync || null,
 			contentHashes: state.contentHashes || {},
@@ -143,17 +128,7 @@ function saveSyncState(state) {
 function hasContentChanged(url, newContent, oldHashes) {
 	const newHash = generateContentHash(newContent);
 	const oldHash = oldHashes[url];
-	const hasChanged = !oldHash || oldHash !== newHash;
-
-	// Debug logging for Netlify
-	if (process.env.NETLIFY) {
-		console.log(`[HASH DEBUG] ${url}`);
-		console.log(`  Old hash: ${oldHash || 'none'}`);
-		console.log(`  New hash: ${newHash}`);
-		console.log(`  Changed: ${hasChanged}`);
-	}
-
-	return hasChanged;
+	return !oldHash || oldHash !== newHash;
 }
 
 // Check if content needs to be downloaded (either changed or file doesn't exist)
@@ -380,21 +355,6 @@ async function performIncrementalSync(API_URL, contentDir, logger) {
 
 	// Load existing sync state
 	const syncState = loadSyncState();
-
-	// Debug logging for Netlify
-	if (process.env.NETLIFY) {
-		console.log(`[SYNC DEBUG] Loaded sync state:`);
-		console.log(`  Last sync: ${syncState.lastSync}`);
-		console.log(
-			`  Content hashes count: ${
-				Object.keys(syncState.contentHashes || {}).length
-			}`
-		);
-		console.log(
-			`  Sample hash keys:`,
-			Object.keys(syncState.contentHashes || {}).slice(0, 3)
-		);
-	}
 
 	if (!syncState.lastSync) {
 		logger.info(
