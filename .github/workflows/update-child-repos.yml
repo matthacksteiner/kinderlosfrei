@@ -135,15 +135,103 @@ jobs:
 
             IFS='|' read -ra IGNORE_FILES <<< "$TEMPLATE_IGNORE_LIST"
             for file in "${IGNORE_FILES[@]}"; do
-              if [[ -f "$file" ]]; then
-                # Remove from git index and working directory
-                git rm -f "$file" 2>/dev/null || rm -f "$file"
-                echo "  ✓ Removed $file"
-                files_removed=true
+              # Only remove files that were added by the template merge
+              # Check if file exists in template but not in original child repo
+              if git show template/main:"$file" >/dev/null 2>&1; then
+                # File exists in template, check if it was in child repo before merge
+                if ! git show HEAD~1:"$file" >/dev/null 2>&1; then
+                  # File was NOT in child repo before, so it came from template - remove it
+                  if [[ -f "$file" ]]; then
+                    git rm -f "$file" 2>/dev/null || rm -f "$file"
+                    echo "  ✓ Removed template file $file"
+                    files_removed=true
+                  elif [[ -d "$file" ]]; then
+                    git rm -rf "$file" 2>/dev/null || rm -rf "$file"
+                    echo "  ✓ Removed template directory $file"
+                    files_removed=true
+                  fi
+                else
+                  echo "  ↳ Preserved existing child repo file: $file"
+                fi
               fi
             done
 
             echo "$files_removed"
+          }
+
+          # Function to check if conflicts are only on template-ignored files
+          check_template_only_conflicts() {
+            local conflict_files=$(git diff --name-only --diff-filter=U 2>/dev/null || echo "")
+            local has_non_template_conflicts=false
+
+            if [[ -z "$conflict_files" ]]; then
+              echo "false"
+              return
+            fi
+
+            echo "Checking if conflicts are only on template-ignored files..." >&2
+            echo "Template ignore list: '$TEMPLATE_IGNORE_LIST'" >&2
+            echo "Conflicted files: '$conflict_files'" >&2
+
+            # Check each conflict file against template ignore list
+            while IFS= read -r conflict_file; do
+              [[ -z "$conflict_file" ]] && continue
+
+              echo "  Checking conflict file: '$conflict_file'" >&2
+
+              local is_template_file=false
+              IFS='|' read -ra IGNORE_FILES <<< "$TEMPLATE_IGNORE_LIST"
+              echo "  Template ignore array: ${IGNORE_FILES[*]}" >&2
+
+              for ignore_file in "${IGNORE_FILES[@]}"; do
+                echo "    Comparing '$conflict_file' with '$ignore_file'" >&2
+                if [[ "$conflict_file" == "$ignore_file" ]]; then
+                  echo "  ↳ Conflict on template-ignored file: $conflict_file" >&2
+                  is_template_file=true
+                  break
+                fi
+              done
+
+              if [[ "$is_template_file" == "false" ]]; then
+                echo "  ⚠️  Conflict on non-template file: $conflict_file" >&2
+                has_non_template_conflicts=true
+              fi
+            done <<< "$conflict_files"
+
+            if [[ "$has_non_template_conflicts" == "true" ]]; then
+              echo "false"
+            else
+              echo "true"
+            fi
+          }
+
+          # Function to auto-resolve template-only conflicts
+          auto_resolve_template_conflicts() {
+            echo "Auto-resolving conflicts on template-ignored files..."
+
+            # Remove all template-specific files (they shouldn't be in child repos anyway)
+            IFS='|' read -ra IGNORE_FILES <<< "$TEMPLATE_IGNORE_LIST"
+            for file in "${IGNORE_FILES[@]}"; do
+              if [[ -f "$file" ]]; then
+                git rm -f "$file" 2>/dev/null || rm -f "$file"
+                echo "  ✓ Resolved conflict by removing template file: $file"
+              elif [[ -d "$file" ]]; then
+                git rm -rf "$file" 2>/dev/null || rm -rf "$file"
+                echo "  ✓ Resolved conflict by removing template directory: $file"
+              fi
+            done
+
+            # Mark all remaining conflicts as resolved (if any)
+            git add .
+
+            # Check if there are still unresolved conflicts
+            if git diff --name-only --diff-filter=U 2>/dev/null | grep -q .; then
+              echo "⚠️  Warning: Some conflicts could not be auto-resolved"
+              return 1
+            else
+              echo "✅ All template conflicts resolved automatically"
+              return 0
+            fi
           }
 
           # Read repositories from JSON with better error handling
@@ -159,11 +247,13 @@ jobs:
           SUCCESS_COUNT=0
           CONFLICT_COUNT=0
           ERROR_COUNT=0
+          NO_CHANGES_COUNT=0
 
           # Initialize arrays to track repository names by status
           SUCCESS_REPOS=()
           CONFLICT_REPOS=()
           ERROR_REPOS=()
+          NO_CHANGES_REPOS=()
 
           for REPO_URL in $REPOSITORIES; do
             TOTAL_REPOS=$((TOTAL_REPOS + 1))
@@ -254,48 +344,149 @@ jobs:
               continue
             fi
 
-            # Try to merge template changes
-            echo "Attempting to merge template changes..."
+            # Check if there are actually any changes to merge
+            echo "Checking for changes between child repository and template..."
+
+            # Compare the trees to see if there are actual differences
+            CHILD_TREE=$(git rev-parse HEAD^{tree})
+            TEMPLATE_TREE=$(git rev-parse template/main^{tree})
+
+            if [[ "$CHILD_TREE" == "$TEMPLATE_TREE" ]]; then
+              echo "✅ No changes detected - child repository is already up to date with template"
+              echo "Skipping merge and cleaning up..."
+
+              # Switch back to main branch and delete the temporary branch
+              git checkout "$DEFAULT_BRANCH"
+              git branch -D "$UNIQUE_BRANCH_NAME"
+
+              cd ..
+              NO_CHANGES_COUNT=$((NO_CHANGES_COUNT + 1))
+              NO_CHANGES_REPOS+=("$REPO_NAME")
+              continue
+            fi
+
+            # Check if merge would result in changes
+            echo "Changes detected, attempting to merge template changes..."
+            MERGE_BASE=$(git merge-base HEAD template/main 2>/dev/null || echo "no-merge-base")
+
+            if [[ "$MERGE_BASE" != "no-merge-base" ]]; then
+              # Check if template/main is already merged
+              if git merge-base --is-ancestor template/main HEAD; then
+                echo "✅ Template changes are already merged into child repository"
+                echo "Skipping merge and cleaning up..."
+
+                # Switch back to main branch and delete the temporary branch
+                git checkout "$DEFAULT_BRANCH"
+                git branch -D "$UNIQUE_BRANCH_NAME"
+
+                cd ..
+                NO_CHANGES_COUNT=$((NO_CHANGES_COUNT + 1))
+                NO_CHANGES_REPOS+=("$REPO_NAME")
+                continue
+              fi
+            fi
+
             CONFLICTS=false
             CONFLICT_FILES=""
 
             if ! git merge template/main --allow-unrelated-histories -m "$COMMIT_MESSAGE" --no-edit; then
               echo "Merge conflicts detected"
-              CONFLICTS=true
-              CONFLICT_COUNT=$((CONFLICT_COUNT + 1))
-              CONFLICT_REPOS+=("$REPO_NAME")
 
-              if [[ "$CONFLICT_STRATEGY" == "abort-on-conflicts" ]]; then
-                echo "Aborting merge due to conflicts"
-                git merge --abort
-                cd ..
-                continue
-              elif [[ "$CONFLICT_STRATEGY" == "create-conflict-pr" ]]; then
-                # Get list of conflicting files
+              # Check if conflicts are only on template-ignored files
+              TEMPLATE_ONLY_CONFLICTS=$(check_template_only_conflicts)
+
+              if [[ "$TEMPLATE_ONLY_CONFLICTS" == "true" ]]; then
+                echo "✅ Conflicts are only on template-ignored files - auto-resolving..."
+
+                if auto_resolve_template_conflicts; then
+                  echo "✅ Successfully auto-resolved template conflicts"
+                  git commit -m "$COMMIT_MESSAGE" --no-edit
+
+                  # Remove any remaining template files
+                  TEMPLATE_FILES_REMOVED=$(remove_template_files)
+                  if [[ "$TEMPLATE_FILES_REMOVED" == "true" ]]; then
+                    echo "Committing removal of any remaining template-specific files..."
+                    git add .
+                    git commit -m "Remove template-specific files from child repository" --allow-empty
+                  fi
+
+                  SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+                  SUCCESS_REPOS+=("$REPO_NAME")
+                else
+                  echo "❌ Failed to auto-resolve conflicts"
+                  CONFLICTS=true
+                  CONFLICT_COUNT=$((CONFLICT_COUNT + 1))
+                  CONFLICT_REPOS+=("$REPO_NAME")
+                  CONFLICT_FILES=$(git diff --name-only --diff-filter=U || echo "Unable to determine conflict files")
+
+                  if [[ "$CONFLICT_STRATEGY" == "abort-on-conflicts" ]]; then
+                    echo "Aborting merge due to conflicts"
+                    git merge --abort
+                    cd ..
+                    continue
+                  elif [[ "$CONFLICT_STRATEGY" == "create-conflict-pr" ]]; then
+                    remove_template_files
+                    git add .
+                    if ! git commit -m "${COMMIT_MESSAGE} [CONTAINS CONFLICTS]" \
+                        -m "This commit contains merge conflicts that need to be resolved manually:" \
+                        -m "$CONFLICT_FILES"; then
+                      echo "Error: Failed to commit conflicts"
+                      cd ..
+                      ERROR_COUNT=$((ERROR_COUNT + 1))
+                      ERROR_REPOS+=("$REPO_NAME")
+                      continue
+                    fi
+                  fi
+                fi
+              else
+                echo "❌ Real conflicts detected on non-template files"
+                CONFLICTS=true
+                CONFLICT_COUNT=$((CONFLICT_COUNT + 1))
+                CONFLICT_REPOS+=("$REPO_NAME")
                 CONFLICT_FILES=$(git diff --name-only --diff-filter=U || echo "Unable to determine conflict files")
 
-                # Remove template-specific files before committing conflicts
-                remove_template_files
-
-                # Add conflicts to be resolved later
-                git add .
-                if ! git commit -m "${COMMIT_MESSAGE} [CONTAINS CONFLICTS]" \
-                    -m "This commit contains merge conflicts that need to be resolved manually:" \
-                    -m "$CONFLICT_FILES"; then
-                  echo "Error: Failed to commit conflicts"
+                if [[ "$CONFLICT_STRATEGY" == "abort-on-conflicts" ]]; then
+                  echo "Aborting merge due to conflicts"
+                  git merge --abort
                   cd ..
-                  ERROR_COUNT=$((ERROR_COUNT + 1))
-                  ERROR_REPOS+=("$REPO_NAME")
                   continue
+                elif [[ "$CONFLICT_STRATEGY" == "create-conflict-pr" ]]; then
+                  remove_template_files
+                  git add .
+                  if ! git commit -m "${COMMIT_MESSAGE} [CONTAINS CONFLICTS]" \
+                      -m "This commit contains merge conflicts that need to be resolved manually:" \
+                      -m "$CONFLICT_FILES"; then
+                    echo "Error: Failed to commit conflicts"
+                    cd ..
+                    ERROR_COUNT=$((ERROR_COUNT + 1))
+                    ERROR_REPOS+=("$REPO_NAME")
+                    continue
+                  fi
                 fi
               fi
             else
               echo "Successfully merged changes without conflicts"
 
-              # Remove template-specific files before committing
+              # Check if the merge actually introduced any changes
+              if git diff --quiet HEAD~1 HEAD; then
+                echo "✅ Merge completed but no changes were introduced"
+                echo "Template and child repository were already in sync"
+
+                # Reset to previous commit to clean up the empty merge
+                git reset --hard HEAD~1
+
+                # Switch back to main branch and delete the temporary branch
+                git checkout "$DEFAULT_BRANCH"
+                git branch -D "$UNIQUE_BRANCH_NAME"
+
+                cd ..
+                NO_CHANGES_COUNT=$((NO_CHANGES_COUNT + 1))
+                NO_CHANGES_REPOS+=("$REPO_NAME")
+                continue
+              fi
+
               TEMPLATE_FILES_REMOVED=$(remove_template_files)
 
-              # If template files were removed, create an additional commit to clean them up
               if [[ "$TEMPLATE_FILES_REMOVED" == "true" ]]; then
                 echo "Committing removal of template-specific files..."
                 git add .
@@ -345,7 +536,7 @@ jobs:
                 if git push origin --delete "$UNIQUE_BRANCH_NAME" 2>/dev/null; then
                   echo "✅ Temporary branch deleted successfully"
                 else
-                  echo "⚠️  Warning: Failed to delete temporary branch (it may not exist on remote)"
+                  echo "⚠️  Warning: Failed to delete temporary branch"
                 fi
               fi
             fi
@@ -406,7 +597,7 @@ jobs:
 
           # Print detailed summary
           echo "==========================================="
-          echo "SUMMARY"
+          echo "REPOSITORIES UPDATE SUMMARY"
           echo "==========================================="
           echo "Total repositories processed: $TOTAL_REPOS"
           echo ""
@@ -415,6 +606,14 @@ jobs:
             echo "✅ SUCCESSFUL UPDATES ($SUCCESS_COUNT):"
             for repo in "${SUCCESS_REPOS[@]}"; do
               echo "  • $repo"
+            done
+            echo ""
+          fi
+
+          if [[ ${#NO_CHANGES_REPOS[@]} -gt 0 ]]; then
+            echo "ℹ️  NO CHANGES NEEDED ($NO_CHANGES_COUNT):"
+            for repo in "${NO_CHANGES_REPOS[@]}"; do
+              echo "  • $repo (already up to date)"
             done
             echo ""
           fi
