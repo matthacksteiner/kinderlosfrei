@@ -53,18 +53,18 @@ This repository uses a `.templateignore` system to prevent template-specific fil
 
 ### For Template Maintainers
 
-- Edit `.templateignore` to add or remove files that should be excluded from child repositories
-- The automated update workflow (`.github/workflows/update-child-repos.yml`) reads this file and automatically removes listed files from child repositories
+- Edit `.templateignore` to add or remove files that should be excluded from child repositories.
+- The automated update workflow (`.github/workflows/update-child-repos.yml`) reads this file and automatically removes listed files from child repositories.
 - Common files to exclude:
-  - Template maintenance workflows
-  - Repository configuration files (like `child-repositories.json`)
-  - Template-specific documentation
+  - Template maintenance workflows.
+  - Repository configuration files (like `child-repositories.json`).
+  - Template-specific documentation.
 
 ### For Child Repository Owners
 
-- Template-specific files are automatically excluded during updates
-- If you manually merge template changes, run `./init-project.sh` to clean up any template files
-- The init script also reads from `.templateignore` for consistency
+- Template-specific files are automatically excluded during updates.
+- If you manually merge template changes, run `./init-project.sh` to clean up any template files.
+- The init script also reads from `.templateignore` for consistency.
 
 ---
 
