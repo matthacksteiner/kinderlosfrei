@@ -143,18 +143,41 @@ function saveSyncState(state) {
 function hasContentChanged(url, newContent, oldHashes) {
 	const newHash = generateContentHash(newContent);
 	const oldHash = oldHashes[url];
-	return !oldHash || oldHash !== newHash;
+	const hasChanged = !oldHash || oldHash !== newHash;
+
+	// Debug logging for Netlify
+	if (process.env.NETLIFY) {
+		console.log(`[HASH DEBUG] ${url}`);
+		console.log(`  Old hash: ${oldHash || 'none'}`);
+		console.log(`  New hash: ${newHash}`);
+		console.log(`  Changed: ${hasChanged}`);
+	}
+
+	return hasChanged;
 }
 
 // Check if content needs to be downloaded (either changed or file doesn't exist)
-function needsDownload(url, newContent, oldHashes, filePath) {
-	// Always download if file doesn't exist
-	if (!fs.existsSync(filePath)) {
+function needsDownload(
+	url,
+	newContent,
+	oldHashes,
+	filePath,
+	forceDownloadMissingFiles = true
+) {
+	// Check if content has changed first
+	const contentChanged = hasContentChanged(url, newContent, oldHashes);
+
+	// If content changed, we need to download
+	if (contentChanged) {
 		return true;
 	}
 
-	// Otherwise check if content has changed
-	return hasContentChanged(url, newContent, oldHashes);
+	// If content hasn't changed but file doesn't exist, download only if forced
+	if (!fs.existsSync(filePath)) {
+		return forceDownloadMissingFiles;
+	}
+
+	return false;
 }
 
 // Perform incremental sync for a specific language
@@ -179,18 +202,21 @@ async function performIncrementalLanguageSync(
 	totalFiles++;
 
 	const globalFilePath = path.join(langDir, 'global.json');
-	if (
-		needsDownload(
-			globalUrl,
-			globalData,
-			syncState.contentHashes,
-			globalFilePath
-		)
-	) {
+	const globalContentChanged = hasContentChanged(
+		globalUrl,
+		globalData,
+		syncState.contentHashes
+	);
+
+	if (globalContentChanged) {
 		logger.info(chalk.gray(`  ↳ Updated global.json`));
-		await saveJsonFile(globalFilePath, globalData);
-		syncState.contentHashes[globalUrl] = generateContentHash(globalData);
 		changedFiles++;
+		syncState.contentHashes[globalUrl] = generateContentHash(globalData);
+	}
+
+	// Always ensure the file exists (create if missing or changed)
+	if (globalContentChanged || !fs.existsSync(globalFilePath)) {
+		await saveJsonFile(globalFilePath, globalData);
 
 		// Also save to root if this is the default language
 		if (!lang) {
@@ -204,13 +230,21 @@ async function performIncrementalLanguageSync(
 	totalFiles++;
 
 	const indexFilePath = path.join(langDir, 'index.json');
-	if (
-		needsDownload(indexUrl, indexData, syncState.contentHashes, indexFilePath)
-	) {
+	const indexContentChanged = hasContentChanged(
+		indexUrl,
+		indexData,
+		syncState.contentHashes
+	);
+
+	if (indexContentChanged) {
 		logger.info(chalk.gray(`  ↳ Updated index.json`));
-		await saveJsonFile(indexFilePath, indexData);
-		syncState.contentHashes[indexUrl] = generateContentHash(indexData);
 		changedFiles++;
+		syncState.contentHashes[indexUrl] = generateContentHash(indexData);
+	}
+
+	// Always ensure the file exists (create if missing or changed)
+	if (indexContentChanged || !fs.existsSync(indexFilePath)) {
+		await saveJsonFile(indexFilePath, indexData);
 
 		// Also save to root if this is the default language
 		if (!lang) {
@@ -225,13 +259,21 @@ async function performIncrementalLanguageSync(
 		totalFiles++;
 
 		const pageFilePath = path.join(langDir, `${page.uri}.json`);
-		if (
-			needsDownload(pageUrl, pageData, syncState.contentHashes, pageFilePath)
-		) {
+		const pageContentChanged = hasContentChanged(
+			pageUrl,
+			pageData,
+			syncState.contentHashes
+		);
+
+		if (pageContentChanged) {
 			logger.info(chalk.gray(`  ↳ Updated ${page.uri}.json`));
-			await saveJsonFile(pageFilePath, pageData);
-			syncState.contentHashes[pageUrl] = generateContentHash(pageData);
 			changedFiles++;
+			syncState.contentHashes[pageUrl] = generateContentHash(pageData);
+		}
+
+		// Always ensure the file exists (create if missing or changed)
+		if (pageContentChanged || !fs.existsSync(pageFilePath)) {
+			await saveJsonFile(pageFilePath, pageData);
 
 			// Also save to root if this is the default language
 			if (!lang) {
@@ -338,6 +380,21 @@ async function performIncrementalSync(API_URL, contentDir, logger) {
 
 	// Load existing sync state
 	const syncState = loadSyncState();
+
+	// Debug logging for Netlify
+	if (process.env.NETLIFY) {
+		console.log(`[SYNC DEBUG] Loaded sync state:`);
+		console.log(`  Last sync: ${syncState.lastSync}`);
+		console.log(
+			`  Content hashes count: ${
+				Object.keys(syncState.contentHashes || {}).length
+			}`
+		);
+		console.log(
+			`  Sample hash keys:`,
+			Object.keys(syncState.contentHashes || {}).slice(0, 3)
+		);
+	}
 
 	if (!syncState.lastSync) {
 		logger.info(

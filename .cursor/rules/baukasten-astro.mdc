@@ -116,6 +116,7 @@ The project uses a comprehensive block-based content approach:
 ## Deployment
 
 - Netlify deployment as configured in netlify.toml
+- always check the latest netlify documentation: https://docs.netlify.com
 - Environment variables for different configurations
 - Remote image configuration configurable in Netlify adapter settings
 - HTML processing with compression enabled
