@@ -418,14 +418,13 @@ async function performIncrementalSync(API_URL, contentDir, logger) {
 
 // Main Netlify Build Plugin
 export default {
-	// Before the build runs, restore cached sync state
+	// Before the build starts, restore cache and run the content sync (CRITICAL: must be before Astro build)
 	async onPreBuild({ utils, netlify }) {
 		console.log(
 			chalk.blue('\n🔄 [Netlify Build Plugin] Restoring sync state cache...')
 		);
 
 		const syncStateFile = getSyncStateFilePath();
-		const cacheDir = path.dirname(syncStateFile);
 
 		try {
 			// Restore the sync state file from cache
@@ -449,10 +448,6 @@ export default {
 				)
 			);
 		}
-	},
-
-	// During Astro config setup, run the content sync
-	async onBuild({ utils, netlify }) {
 		// Skip content sync in development mode
 		if (process.env.CONTEXT === 'dev') {
 			console.log(
