@@ -67,9 +67,8 @@ function saveJsonFile(filePath, data) {
 	}
 }
 
-// Get sync state file path (outside content directory to avoid cleaning)
+// Get sync state file path
 function getSyncStateFilePath() {
-	// Store sync state in project root, not in content directory
 	return path.resolve('./.astro-kirby-sync-state.json');
 }
 
@@ -417,75 +416,131 @@ async function performIncrementalSync(API_URL, contentDir, logger) {
 	}
 }
 
-// Main plugin function
-export default function astroKirbySync() {
-	return {
-		name: 'astro-kirby-sync',
-		hooks: {
-			'astro:config:setup': async ({ command, logger }) => {
-				// Skip content sync in development mode
-				if (command === 'dev') {
-					logger.info(
-						chalk.blue(
-							'\n🔄 Development mode detected, skipping content sync...'
-						)
-					);
-					logger.info(
-						chalk.gray('Content will be fetched directly from the CMS API')
-					);
-					return;
-				}
+// Main Netlify Build Plugin
+export default {
+	// Before the build runs, restore cached sync state
+	async onPreBuild({ utils, netlify }) {
+		console.log(
+			chalk.blue('\n🔄 [Netlify Build Plugin] Restoring sync state cache...')
+		);
 
-				// We're in production/build mode - content sync is REQUIRED
-				logger.info(
-					chalk.blue('\n🔄 Production build detected, running content sync...')
+		const syncStateFile = getSyncStateFilePath();
+		const cacheDir = path.dirname(syncStateFile);
+
+		try {
+			// Restore the sync state file from cache
+			await utils.cache.restore(syncStateFile);
+
+			if (fs.existsSync(syncStateFile)) {
+				console.log(
+					chalk.green(
+						'✅ [Netlify Build Plugin] Sync state restored from cache'
+					)
 				);
+			} else {
+				console.log(
+					chalk.yellow('📦 [Netlify Build Plugin] No cached sync state found')
+				);
+			}
+		} catch (error) {
+			console.warn(
+				chalk.yellow(
+					`⚠️ [Netlify Build Plugin] Failed to restore cache: ${error.message}`
+				)
+			);
+		}
+	},
 
-				try {
-					const API_URL = process.env.KIRBY_URL;
-					if (!API_URL) {
-						throw new Error('KIRBY_URL environment variable is not set');
-					}
+	// During Astro config setup, run the content sync
+	async onBuild({ utils, netlify }) {
+		// Skip content sync in development mode
+		if (process.env.CONTEXT === 'dev') {
+			console.log(
+				chalk.blue('\n🔄 Development mode detected, skipping content sync...')
+			);
+			console.log(
+				chalk.gray('Content will be fetched directly from the CMS API')
+			);
+			return;
+		}
 
-					const contentDir = path.resolve('./public/content');
+		// We're in production/build mode - content sync is REQUIRED
+		console.log(
+			chalk.blue('\n🔄 Production build detected, running content sync...')
+		);
 
-					// Check if we should force a full sync
-					const forceFullSync = process.env.FORCE_FULL_SYNC === 'true';
+		try {
+			const API_URL = process.env.KIRBY_URL;
+			if (!API_URL) {
+				throw new Error('KIRBY_URL environment variable is not set');
+			}
 
-					if (forceFullSync) {
-						logger.info(
-							chalk.yellow(
-								'🔄 FORCE_FULL_SYNC enabled, performing full sync...'
-							)
-						);
-						await performFullSync(API_URL, contentDir, logger);
-					} else {
-						await performIncrementalSync(API_URL, contentDir, logger);
-					}
-				} catch (error) {
-					logger.error(chalk.red('\n❌ Error during content sync:'));
-					logger.error(chalk.red(error.message));
+			const contentDir = path.resolve('./public/content');
 
-					// Fail the build in production unless on Netlify
-					if (command === 'build' && !process.env.NETLIFY) {
-						logger.error(
-							chalk.red(
-								'\n🛑 BUILD FAILED: Content sync is required for production builds'
-							)
-						);
-						throw error;
-					}
+			// Check if we should force a full sync
+			const forceFullSync = process.env.FORCE_FULL_SYNC === 'true';
 
-					// Don't fail the build if plugin errors on Netlify
-					if (process.env.NETLIFY) {
-						logger.warn(
-							chalk.yellow(
-								'\n⚠️ Continuing build despite plugin error on Netlify'
-							)
-						);
-					}
-				}
-			},
-		},
-	};
-}
+			if (forceFullSync) {
+				console.log(
+					chalk.yellow('🔄 FORCE_FULL_SYNC enabled, performing full sync...')
+				);
+				await performFullSync(API_URL, contentDir, { info: console.log });
+			} else {
+				await performIncrementalSync(API_URL, contentDir, {
+					info: console.log,
+				});
+			}
+		} catch (error) {
+			console.error(chalk.red('\n❌ Error during content sync:'));
+			console.error(chalk.red(error.message));
+
+			// Fail the build in production unless on Netlify
+			if (process.env.CONTEXT === 'production' && !process.env.NETLIFY) {
+				console.error(
+					chalk.red(
+						'\n🛑 BUILD FAILED: Content sync is required for production builds'
+					)
+				);
+				throw error;
+			}
+
+			// Don't fail the build if plugin errors on Netlify
+			if (process.env.NETLIFY) {
+				console.warn(
+					chalk.yellow('\n⚠️ Continuing build despite plugin error on Netlify')
+				);
+			}
+		}
+	},
+
+	// After the build is done, cache the sync state for future builds
+	async onPostBuild({ utils, netlify }) {
+		console.log(
+			chalk.blue('\n🔄 [Netlify Build Plugin] Saving sync state to cache...')
+		);
+
+		const syncStateFile = getSyncStateFilePath();
+
+		try {
+			if (fs.existsSync(syncStateFile)) {
+				// Cache the sync state file for future builds
+				await utils.cache.save(syncStateFile);
+				console.log(
+					chalk.green(
+						'✅ [Netlify Build Plugin] Sync state cached successfully'
+					)
+				);
+			} else {
+				console.log(
+					chalk.yellow('⚠️ [Netlify Build Plugin] No sync state file to cache')
+				);
+			}
+		} catch (error) {
+			console.warn(
+				chalk.yellow(
+					`⚠️ [Netlify Build Plugin] Failed to save cache: ${error.message}`
+				)
+			);
+		}
+	},
+};
