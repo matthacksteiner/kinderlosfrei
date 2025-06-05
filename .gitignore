@@ -35,6 +35,3 @@ coverage/
 # Downloaded font files
 public/fonts/
 public/content/
-
-# Astro Kirby Sync state file
-.astro-kirby-sync-state.json

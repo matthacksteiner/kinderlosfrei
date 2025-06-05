@@ -69,7 +69,10 @@ function saveJsonFile(filePath, data) {
 
 // Get sync state file path
 function getSyncStateFilePath() {
-	return path.resolve('./.astro-kirby-sync-state.json');
+	// Store in .astro directory to keep it with other build artifacts
+	const astroDir = path.resolve('./.astro');
+	ensureDirectoryExists(astroDir);
+	return path.join(astroDir, 'kirby-sync-state.json');
 }
 
 // Load sync state from disk
@@ -564,3 +567,6 @@ export default {
 		}
 	},
 };
+
+// Export sync functions for use in Astro integration
+export { performFullSync, performIncrementalSync };
