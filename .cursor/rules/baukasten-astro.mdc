@@ -139,5 +139,6 @@ The project uses a comprehensive block-based content approach:
 - Test across different devices and browsers
 - Check for the latest docs on https://docs.astro.build/en/getting-started/
 - Use aliases (@public) for simplified imports from public directory
+- Put all documentation into the docs folder - except the documentation for the build plugins. this documentation should remain in the plugin folder.
 
 
