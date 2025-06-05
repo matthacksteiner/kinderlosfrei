@@ -109,16 +109,6 @@ function saveSyncState(state) {
 	const stateFile = getSyncStateFilePath();
 	try {
 		fs.writeFileSync(stateFile, JSON.stringify(state, null, 2));
-
-		if (process.env.NETLIFY) {
-			console.log(`[DEBUG] Saved sync state to: ${stateFile}`);
-			console.log(`[DEBUG] Last sync: ${state.lastSync}`);
-			console.log(
-				`[DEBUG] Content hashes count: ${
-					Object.keys(state.contentHashes || {}).length
-				}`
-			);
-		}
 	} catch (error) {
 		console.error('Error saving sync state:', error);
 	}
