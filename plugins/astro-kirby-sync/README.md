@@ -84,7 +84,7 @@ NODE_ENV=production
 
 ## Sync State File
 
-The plugin creates a `.sync-state.json` file in your `public/content` directory:
+The plugin creates a `kirby-sync-state.json` file in your `.astro` directory (not in `public/content`):
 
 ```json
 {
@@ -179,7 +179,7 @@ FORCE_FULL_SYNC=true npm run build
 Delete the sync state to start fresh:
 
 ```bash
-rm public/content/.sync-state.json
+rm .astro/kirby-sync-state.json
 ```
 
 ### Debug Sync Issues

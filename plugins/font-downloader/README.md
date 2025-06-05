@@ -14,7 +14,7 @@ This plugin automatically downloads web fonts defined in your Kirby CMS configur
 - Cleans old font files before downloading new ones
 - Supports both WOFF and WOFF2 formats
 - Generates metadata about fonts for use in your Astro components
-- Works with either local content or by fetching directly from the CMS
+- Always fetches font data from your Kirby CMS (local content is not supported)
 - Provides detailed console feedback during the download process
 
 ## Usage

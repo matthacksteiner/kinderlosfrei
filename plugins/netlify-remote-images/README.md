@@ -41,4 +41,4 @@ KIRBY_URL=https://your-kirby-cms-url.com
 | `enabled` | boolean | `true`        | Whether to enable/disable the plugin                 |
 | `pattern` | string  | `'/media/.*'` | The pattern to append to KIRBY_URL for remote_images |
 
-The plugin will run during the Astro build process and update the `netlify.toml` file automatically.
+The plugin uses the `baukasten-utils` logger for consistent output and will run during the Astro build process to update the `netlify.toml` file automatically.
