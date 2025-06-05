@@ -143,6 +143,17 @@ function hasContentChanged(url, newContent, oldHashes) {
 	return !oldHash || oldHash !== newHash;
 }
 
+// Check if content needs to be downloaded (either changed or file doesn't exist)
+function needsDownload(url, newContent, oldHashes, filePath) {
+	// Always download if file doesn't exist
+	if (!fs.existsSync(filePath)) {
+		return true;
+	}
+
+	// Otherwise check if content has changed
+	return hasContentChanged(url, newContent, oldHashes);
+}
+
 // Perform incremental sync for a specific language
 async function performIncrementalLanguageSync(
 	API_URL,
@@ -164,9 +175,17 @@ async function performIncrementalLanguageSync(
 	const globalData = await fetchJson(globalUrl);
 	totalFiles++;
 
-	if (hasContentChanged(globalUrl, globalData, syncState.contentHashes)) {
+	const globalFilePath = path.join(langDir, 'global.json');
+	if (
+		needsDownload(
+			globalUrl,
+			globalData,
+			syncState.contentHashes,
+			globalFilePath
+		)
+	) {
 		logger.info(chalk.gray(`  ↳ Updated global.json`));
-		await saveJsonFile(path.join(langDir, 'global.json'), globalData);
+		await saveJsonFile(globalFilePath, globalData);
 		syncState.contentHashes[globalUrl] = generateContentHash(globalData);
 		changedFiles++;
 
@@ -181,9 +200,12 @@ async function performIncrementalLanguageSync(
 	const indexData = await fetchJson(indexUrl);
 	totalFiles++;
 
-	if (hasContentChanged(indexUrl, indexData, syncState.contentHashes)) {
+	const indexFilePath = path.join(langDir, 'index.json');
+	if (
+		needsDownload(indexUrl, indexData, syncState.contentHashes, indexFilePath)
+	) {
 		logger.info(chalk.gray(`  ↳ Updated index.json`));
-		await saveJsonFile(path.join(langDir, 'index.json'), indexData);
+		await saveJsonFile(indexFilePath, indexData);
 		syncState.contentHashes[indexUrl] = generateContentHash(indexData);
 		changedFiles++;
 
@@ -199,9 +221,12 @@ async function performIncrementalLanguageSync(
 		const pageData = await fetchJson(pageUrl);
 		totalFiles++;
 
-		if (hasContentChanged(pageUrl, pageData, syncState.contentHashes)) {
+		const pageFilePath = path.join(langDir, `${page.uri}.json`);
+		if (
+			needsDownload(pageUrl, pageData, syncState.contentHashes, pageFilePath)
+		) {
 			logger.info(chalk.gray(`  ↳ Updated ${page.uri}.json`));
-			await saveJsonFile(path.join(langDir, `${page.uri}.json`), pageData);
+			await saveJsonFile(pageFilePath, pageData);
 			syncState.contentHashes[pageUrl] = generateContentHash(pageData);
 			changedFiles++;
 
