@@ -14,3 +14,11 @@ remote_images = [ "https://cms.baukasten.matthiashacksteiner.net/media/.*" ]
 
 [dev]
   autoLaunch = false
+
+# Cache the sync state file and node_modules for faster builds
+[build.cache]
+  base = "/"
+  paths = [
+    ".astro-kirby-sync-state.json",
+    "node_modules"
+  ]

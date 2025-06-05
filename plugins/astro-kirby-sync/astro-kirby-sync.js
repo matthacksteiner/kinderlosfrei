@@ -67,9 +67,21 @@ function saveJsonFile(filePath, data) {
 	}
 }
 
+// Get sync state file path (outside content directory to avoid cleaning)
+function getSyncStateFilePath() {
+	// Store sync state in project root, not in content directory
+	return path.resolve('./.astro-kirby-sync-state.json');
+}
+
 // Load sync state from disk
-function loadSyncState(contentDir) {
-	const stateFile = path.join(contentDir, '.sync-state.json');
+function loadSyncState() {
+	const stateFile = getSyncStateFilePath();
+
+	if (process.env.NETLIFY) {
+		console.log(`[DEBUG] Looking for sync state file at: ${stateFile}`);
+		console.log(`[DEBUG] File exists: ${fs.existsSync(stateFile)}`);
+	}
+
 	if (!fs.existsSync(stateFile)) {
 		return {
 			lastSync: null,
@@ -80,6 +92,16 @@ function loadSyncState(contentDir) {
 
 	try {
 		const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
+
+		if (process.env.NETLIFY) {
+			console.log(`[DEBUG] Loaded sync state - Last sync: ${state.lastSync}`);
+			console.log(
+				`[DEBUG] Content hashes count: ${
+					Object.keys(state.contentHashes || {}).length
+				}`
+			);
+		}
+
 		return {
 			lastSync: state.lastSync || null,
 			contentHashes: state.contentHashes || {},
@@ -96,10 +118,20 @@ function loadSyncState(contentDir) {
 }
 
 // Save sync state to disk
-function saveSyncState(contentDir, state) {
-	const stateFile = path.join(contentDir, '.sync-state.json');
+function saveSyncState(state) {
+	const stateFile = getSyncStateFilePath();
 	try {
 		fs.writeFileSync(stateFile, JSON.stringify(state, null, 2));
+
+		if (process.env.NETLIFY) {
+			console.log(`[DEBUG] Saved sync state to: ${stateFile}`);
+			console.log(`[DEBUG] Last sync: ${state.lastSync}`);
+			console.log(
+				`[DEBUG] Content hashes count: ${
+					Object.keys(state.contentHashes || {}).length
+				}`
+			);
+		}
 	} catch (error) {
 		console.error('Error saving sync state:', error);
 	}
@@ -267,7 +299,7 @@ async function performFullSync(API_URL, contentDir, logger) {
 	}
 
 	// Save sync state
-	saveSyncState(contentDir, syncState);
+	saveSyncState(syncState);
 
 	logger.info(chalk.green('\n✨ Full content sync completed successfully!'));
 	return syncState;
@@ -278,7 +310,7 @@ async function performIncrementalSync(API_URL, contentDir, logger) {
 	logger.info(chalk.blue('\n🔄 Performing incremental content sync...'));
 
 	// Load existing sync state
-	const syncState = loadSyncState(contentDir);
+	const syncState = loadSyncState();
 
 	if (!syncState.lastSync) {
 		logger.info(
@@ -288,7 +320,17 @@ async function performIncrementalSync(API_URL, contentDir, logger) {
 	}
 
 	logger.info(
-		chalk.gray(`🕐 Last sync: ${new Date(syncState.lastSync).toLocaleString()}`)
+		chalk.gray(
+			`🕐 Last sync: ${new Date(syncState.lastSync).toLocaleString('en-US', {
+				hour12: false,
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit',
+				second: '2-digit',
+			})}`
+		)
 	);
 
 	// Ensure content directory exists
@@ -351,7 +393,7 @@ async function performIncrementalSync(API_URL, contentDir, logger) {
 
 		// Update sync state
 		syncState.lastSync = new Date().toISOString();
-		saveSyncState(contentDir, syncState);
+		saveSyncState(syncState);
 
 		if (totalChangedFiles === 0) {
 			logger.info(
