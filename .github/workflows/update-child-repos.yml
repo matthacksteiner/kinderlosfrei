@@ -28,7 +28,7 @@ on:
         description: 'Perform a dry run without making actual changes'
         required: false
         type: boolean
-        default: false
+        default: true
       deleteTempBranch:
         description: 'Delete temporary branch after successful merge to main/master'
         required: false
@@ -42,7 +42,7 @@ permissions:
 jobs:
   update-child-repos:
     runs-on: ubuntu-latest
-    timeout-minutes: 45  # Increased timeout for large operations
+    timeout-minutes: 45 # Increased timeout for large operations
     steps:
       - name: Checkout template repository
         uses: actions/checkout@v4
