@@ -421,7 +421,7 @@ const fallbackSrc = useNetlifyImageProcessing
 			class:list={[className, 'image-fade']}
 			decoding="async"
 			{...fetchPriority ? { fetchpriority: fetchPriority } : {}}
-			onload="this.classList.add('loaded'); this.parentNode.parentNode.classList.add('image-loaded')"
+			onload="this.classList.add('loaded'); if (this.parentNode && this.parentNode.parentNode) { this.parentNode.parentNode.classList.add('image-loaded'); }"
 		/>
 	</picture>
 </div>
