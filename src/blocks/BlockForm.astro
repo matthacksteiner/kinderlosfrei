@@ -147,7 +147,7 @@ const isNoSpamProtection = spamProtection === 'none';
 		<form
 			name={formName}
 			method="POST"
-			action={actionUrl}
+			{...actionUrl ? { action: actionUrl } : {}}
 			data-netlify="true"
 			netlify-honeypot={isHoneypot ? 'bot-field' : undefined}
 			data-netlify-recaptcha={isCaptcha ? 'true' : undefined}
