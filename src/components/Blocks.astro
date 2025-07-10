@@ -19,7 +19,6 @@ import BlockCode from '@blocks/BlockCode.astro';
 import BlockGallery from '@blocks/BlockGallery.astro';
 import BlockButtonBar from '@blocks/BlockButtonBar.astro';
 import BlockCard from '@blocks/BlockCard.astro';
-import BlockForm from '@blocks/BlockForm.astro';
 const { blocks, global, span, backgroundContainer } = Astro.props;
 ---
 
@@ -303,38 +302,6 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							cardBorderRadius={block.content.cardborderradius}
 							cardBorderPaddingDesktop={block.content.cardborderpaddingdesktop}
 							cardBorderPaddingMobile={block.content.cardborderpaddingmobile}
-							metadata={block.content.metadata}
-						/>
-					);
-				case 'form':
-					return (
-						<BlockForm
-							formName={block.content.formname}
-							fields={block.content.fields}
-							submitButton={block.content.submitbutton}
-							successPage={block.content.successpage}
-							emailSubject={block.content.emailsubject}
-							emailRecipient={block.content.emailrecipient}
-							spamProtection={block.content.spamprotection}
-							textFont={
-								block.content.textgroup?.textfont || block.content.textfont
-							}
-							textSize={
-								block.content.textgroup?.textsize || block.content.textsize
-							}
-							textColor={
-								block.content.textgroup?.textcolor || block.content.textcolor
-							}
-							textAlign={
-								block.content.textgroup?.textalign || block.content.textalign
-							}
-							buttonLocal={block.content.buttonlocal}
-							buttonSettings={block.content.buttonsettings}
-							buttonColors={block.content.buttoncolors}
-							buttonAlign={block.content.buttonalign}
-							fieldSpacing={block.content.fieldspacing}
-							formWidth={block.content.formwidth}
-							formAlign={block.content.formalign}
 							metadata={block.content.metadata}
 						/>
 					);

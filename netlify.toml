@@ -7,25 +7,14 @@ publish = "dist"
 [[plugins]]
 package = "./plugins/astro-kirby-sync"
 
-# HTML processing settings for better form detection and security
 [build.processing.html]
 pretty_urls = false
 
-# Form settings for Netlify Forms
-[forms]
-# Netlify Forms are enabled by default, but explicitly enable them
-enabled = true
-# Set maximum form submissions per month (optional)
-spam_filter = true
-
-# Build environment settings
 [build.environment]
 NODE_VERSION = "23"
 
-# Images configuration for remote images
 [images]
 remote_images = [ "https://cms.baukasten.matthiashacksteiner.net/media/.*" ]
 
-# Development server configuration
 [dev]
   autoLaunch = false
