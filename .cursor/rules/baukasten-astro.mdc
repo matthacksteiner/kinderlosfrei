@@ -3,6 +3,7 @@ description:
 globs:
 alwaysApply: true
 ---
+
 # Baukasten-Astro
 
 You are an expert in JavaScript, TypeScript, and Astro framework for scalable web development.
@@ -62,7 +63,7 @@ snippets/        - Legacy snippet directory (blocks moved to src/blocks/)
 - Follow the established patterns in existing components
 - Keep components small, focused, and reusable
 - Use Tailwind CSS for styling without @apply
-- Include test files in components/__tests__/ for complex components
+- Include test files in components/**tests**/ for complex components
 
 ## Blocks System
 
@@ -72,6 +73,18 @@ The project uses a comprehensive block-based content approach:
 - Each block corresponds to a content type in the Kirby CMS
 - Blocks receive structured data via props and render accordingly
 - Current blocks include: BlockText, BlockImage, BlockVideo, BlockCard, BlockSlider, BlockGallery, BlockAccordion, BlockButtonBar, BlockColumns, BlockIconList, BlockMenu, BlockQuoteSlider, BlockGrid, BlockCode, BlockVector, BlockLine, BlockDivider, BlockTitle, and BlockButton
+
+### Block Creation Requirements
+
+When creating a new block, you MUST follow these rules:
+
+1. **File Structure**: Create the block component as `src/blocks/Block[Name].astro` following the naming convention of existing blocks
+2. **Import Integration**: Add the import statement at the top of `src/components/Blocks.astro` alongside other block imports
+3. **Switch Case Integration**: Add a new case to the switch statement in `Blocks.astro` that matches the block type name and renders the new component with appropriate props
+4. **Props Structure**: Follow the same prop structure pattern as existing blocks, using `block.content.[property]` for accessing block data
+5. **Metadata Support**: Include `metadata={block.content.metadata}` prop for all blocks to support consistent metadata handling
+6. **TypeScript Support**: Define appropriate TypeScript interfaces in `src/types/blocks.types.ts` for the new block's props
+7. **Documentation**: Update the current blocks list in this documentation when adding new block types
 
 ## Routing and Pages
 
@@ -173,5 +186,3 @@ The project uses a comprehensive block-based content approach:
 - Use the established block system for content components
 - Leverage the multi-language routing system for international sites
 - Utilize the preview system for content validation before deployment
-
-
