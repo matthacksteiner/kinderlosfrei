@@ -62,3 +62,66 @@ export interface BlockSliderProps extends BaseBlockProps {
 		loop?: boolean;
 	};
 }
+
+// Contact Form Block
+export interface BlockContactFormProps extends BaseBlockProps {
+	formName: string;
+	emailSubject: string;
+	successPage?: {
+		url?: string;
+		text?: string;
+	};
+	spamProtection: 'captcha' | 'honeypot' | 'none';
+	fields?: {
+		firstname?: {
+			label?: string;
+			placeholder?: string;
+			help?: string;
+		};
+		lastname?: {
+			label?: string;
+			placeholder?: string;
+			help?: string;
+		};
+		email?: {
+			label?: string;
+			placeholder?: string;
+			help?: string;
+		};
+		message?: {
+			label?: string;
+			placeholder?: string;
+			rows?: number;
+			help?: string;
+		};
+		submitButton?: {
+			label?: string;
+			placeholder?: string;
+		};
+	};
+	fieldSpacing?: 'small' | 'medium' | 'large';
+	formWidth?: 'full' | 'large' | 'medium' | 'small';
+	formAlign?: 'left' | 'center' | 'right';
+	textGroup?: {
+		textfont?: string;
+		textcolor?: string;
+		textsize?: string;
+	};
+	buttonLocal?: boolean;
+	buttonSettings?: {
+		buttonfont?: string;
+		buttonfontsize?: string;
+		buttonpadding?: number;
+		buttonborderradius?: number;
+		buttonborderwidth?: number;
+	};
+	buttonColors?: {
+		buttontextcolor?: string;
+		buttontextcoloractive?: string;
+		buttonbackgroundcolor?: string;
+		buttonbackgroundcoloractive?: string;
+		buttonbordercolor?: string;
+		buttonbordercoloractive?: string;
+	};
+	buttonAlign?: 'start' | 'center' | 'end';
+}

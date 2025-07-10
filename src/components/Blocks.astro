@@ -19,6 +19,7 @@ import BlockCode from '@blocks/BlockCode.astro';
 import BlockGallery from '@blocks/BlockGallery.astro';
 import BlockButtonBar from '@blocks/BlockButtonBar.astro';
 import BlockCard from '@blocks/BlockCard.astro';
+import BlockContactForm from '@blocks/BlockContactForm.astro';
 const { blocks, global, span, backgroundContainer } = Astro.props;
 ---
 
@@ -302,6 +303,26 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							cardBorderRadius={block.content.cardborderradius}
 							cardBorderPaddingDesktop={block.content.cardborderpaddingdesktop}
 							cardBorderPaddingMobile={block.content.cardborderpaddingmobile}
+							metadata={block.content.metadata}
+						/>
+					);
+				case 'contactForm':
+					return (
+						<BlockContactForm
+							formName={block.content.formname}
+							emailSubject={block.content.emailsubject}
+							successPage={block.content.successpage}
+							spamProtection={block.content.spamprotection}
+							fields={block.content.fields}
+							fieldSpacing={block.content.fieldspacing}
+							formWidth={block.content.formwidth}
+							formAlign={block.content.formalign}
+							textGroup={block.content.textgroup}
+							buttonLocal={block.content.buttonlocal}
+							buttonSettings={block.content.buttonsettings}
+							buttonColors={block.content.buttoncolors}
+							buttonAlign={block.content.buttonalign}
+							global={global}
 							metadata={block.content.metadata}
 						/>
 					);
