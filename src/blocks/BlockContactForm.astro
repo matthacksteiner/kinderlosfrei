@@ -25,6 +25,8 @@ const lastnameConfig = fields.lastname || {};
 const emailConfig = fields.email || { label: 'E-Mail' };
 const messageConfig = fields.message || {};
 const submitButtonConfig = fields.submitButton || {};
+const successMessageConfig = fields.successMessage || {};
+const errorMessageConfig = fields.errorMessage || {};
 
 // Calculate styling variables
 const textFont = textGroup?.textfont || global.textFont;
@@ -314,12 +316,19 @@ const alignClass = {
 			<!-- Inline feedback container (hidden by default) -->
 			<div class="form-feedback hidden" id="form-feedback">
 				<div class="feedback-success hidden">
-					<p>✓ Vielen Dank! Ihre Nachricht wurde erfolgreich versendet.</p>
+					<p>
+						✓ {
+							successMessageConfig.text ||
+								'Vielen Dank! Ihre Nachricht wurde erfolgreich versendet.'
+						}
+					</p>
 				</div>
 				<div class="feedback-error hidden">
 					<p>
-						✗ Es gab einen Fehler beim Versenden Ihrer Nachricht. Bitte
-						versuchen Sie es erneut.
+						✗ {
+							errorMessageConfig.text ||
+								'Es gab einen Fehler beim Versenden Ihrer Nachricht. Bitte versuchen Sie es erneut.'
+						}
 					</p>
 				</div>
 			</div>
