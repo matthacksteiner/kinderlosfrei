@@ -7,14 +7,55 @@ publish = "dist"
 [[plugins]]
 package = "./plugins/astro-kirby-sync"
 
+# HTML processing settings for better form detection and security
 [build.processing.html]
 pretty_urls = false
 
+# Form settings for Netlify Forms
+[forms]
+# Netlify Forms are enabled by default, but explicitly enable them
+enabled = true
+# Set maximum form submissions per month (optional)
+spam_filter = true
+
+# Build environment settings
 [build.environment]
 NODE_VERSION = "23"
 
+# Images configuration for remote images
 [images]
 remote_images = [ "https://cms.baukasten.matthiashacksteiner.net/media/.*" ]
 
+# Security headers for forms and general site protection
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security headers
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Content Security Policy for reCAPTCHA
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com https://www.googletagmanager.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      img-src 'self' data: https: blob:;
+      connect-src 'self' https:;
+      frame-src https://www.google.com;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+    """
+
+# Form-specific headers for enhanced security
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
+# Development server configuration
 [dev]
   autoLaunch = false

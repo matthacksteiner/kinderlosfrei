@@ -22,7 +22,7 @@ const {
 } = Astro.props;
 
 // Generate form action URL - handle linkField structure
-let actionUrl = '/';
+let actionUrl = undefined; // Don't redirect by default
 if (successPage?.link) {
 	if (successPage.link === 'url' && successPage.url) {
 		actionUrl = successPage.url;
@@ -120,6 +120,30 @@ const isNoSpamProtection = spamProtection === 'none';
 	{...metadata?.attributes}
 >
 	<div class="container">
+		<!-- Success message (hidden by default) -->
+		<div
+			id="form-success"
+			class="mb-4 hidden rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700"
+			role="alert"
+		>
+			<p class="font-medium">Vielen Dank für Ihre Nachricht!</p>
+			<p class="text-sm">
+				Wir haben Ihre Anfrage erhalten und werden uns bald bei Ihnen melden.
+			</p>
+		</div>
+
+		<!-- Error message (hidden by default) -->
+		<div
+			id="form-error"
+			class="mb-4 hidden rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
+			role="alert"
+		>
+			<p class="font-medium">Es ist ein Fehler aufgetreten.</p>
+			<p class="text-sm">
+				Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.
+			</p>
+		</div>
+
 		<form
 			name={formName}
 			method="POST"
@@ -399,7 +423,7 @@ const isNoSpamProtection = spamProtection === 'none';
 </style>
 
 <script>
-	// Handle form submission
+	// Handle form submission with inline success/error messages
 	document.addEventListener('DOMContentLoaded', function () {
 		const forms = document.querySelectorAll(
 			'.netlify-form'
@@ -407,10 +431,78 @@ const isNoSpamProtection = spamProtection === 'none';
 
 		forms.forEach((form) => {
 			form.addEventListener('submit', function (e) {
-				// You can add custom form handling here if needed
-				// For now, let Netlify handle the submission
-				console.log('Form submitted:', form.name);
+				const formAction = form.getAttribute('action');
+				const successMessage = document.getElementById('form-success');
+				const errorMessage = document.getElementById('form-error');
+				const submitButton = form.querySelector(
+					'.submit-button'
+				) as HTMLButtonElement;
+
+				// If no action is specified (no redirect), handle with AJAX
+				if (!formAction || formAction === 'undefined') {
+					e.preventDefault();
+
+					// Disable submit button
+					if (submitButton) {
+						submitButton.disabled = true;
+						submitButton.textContent = 'Wird gesendet...';
+					}
+
+					// Hide any previous messages
+					successMessage?.classList.add('hidden');
+					errorMessage?.classList.add('hidden');
+
+					// Submit form via fetch
+					const formData = new FormData(form);
+
+					fetch('/', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+						body: new URLSearchParams(formData as any).toString(),
+					})
+						.then(() => {
+							// Show success message
+							successMessage?.classList.remove('hidden');
+							form.reset();
+
+							// Scroll to success message
+							successMessage?.scrollIntoView({
+								behavior: 'smooth',
+								block: 'center',
+							});
+						})
+						.catch(() => {
+							// Show error message
+							errorMessage?.classList.remove('hidden');
+
+							// Scroll to error message
+							errorMessage?.scrollIntoView({
+								behavior: 'smooth',
+								block: 'center',
+							});
+						})
+						.finally(() => {
+							// Re-enable submit button
+							if (submitButton) {
+								submitButton.disabled = false;
+								submitButton.textContent =
+									form.dataset.originalButtonText || 'Absenden';
+							}
+						});
+				} else {
+					// Let Netlify handle the redirect normally
+					console.log('Form submitted with redirect to:', formAction);
+				}
 			});
+
+			// Store original button text
+			const submitButton = form.querySelector(
+				'.submit-button'
+			) as HTMLButtonElement;
+			if (submitButton && !form.dataset.originalButtonText) {
+				form.dataset.originalButtonText =
+					submitButton.textContent || 'Absenden';
+			}
 		});
 	});
 </script>
