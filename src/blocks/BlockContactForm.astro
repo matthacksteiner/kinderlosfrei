@@ -10,6 +10,7 @@ const {
 	fieldSpacing = 'medium',
 	formWidth = 'full',
 	formAlign = 'left',
+	formBorderRadius = 0,
 	textGroup = {},
 	buttonLocal = false,
 	buttonSettings = {},
@@ -32,6 +33,7 @@ const errorMessageConfig = fields.errorMessage || {};
 const textFont = textGroup?.textfont || global.textFont;
 const textColor = textGroup?.textcolor || global.textColor;
 const textSize = textGroup?.textsize || global.textSize;
+const formInputBorderRadius = toRem(formBorderRadius);
 
 const buttonFont =
 	buttonLocal && buttonSettings ? buttonSettings.buttonfont : global.buttonFont;
@@ -341,6 +343,7 @@ const alignClass = {
 	is:global
 	define:vars={{
 		textFont,
+		formInputBorderRadius,
 		buttonFont,
 		buttonPadding,
 		buttonBorderRadius,
@@ -364,7 +367,8 @@ const alignClass = {
 	}
 
 	.form-input {
-		@apply w-full rounded-md border border-gray-300 px-4 py-3 outline-none transition-colors duration-200 focus:border-primary focus:ring-2 focus:ring-primary;
+		@apply w-full border border-gray-300 px-4 py-3 outline-none transition-colors duration-200 focus:border-primary focus:ring-2 focus:ring-primary;
+		border-radius: var(--formInputBorderRadius);
 	}
 
 	.form-textarea {
