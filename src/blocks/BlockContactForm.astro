@@ -386,15 +386,37 @@ const alignClass = {
 	}
 
 	.form-feedback {
-		@apply mt-4 rounded-md p-4;
+		@apply mt-6;
 	}
 
 	.feedback-success {
-		@apply border border-green-200 bg-green-50 text-green-800;
+		@apply relative overflow-hidden rounded-lg border-l-4 border-green-500 bg-green-50 p-4 shadow-sm;
+		@apply transition-all duration-300 ease-in-out;
+	}
+
+	.feedback-success::before {
+		content: '';
+		@apply absolute inset-0 bg-gradient-to-r from-green-500/5 to-transparent;
+	}
+
+	.feedback-success p {
+		@apply relative z-10 m-0 flex items-center gap-3 font-medium text-green-800;
+		@apply text-sm leading-relaxed;
 	}
 
 	.feedback-error {
-		@apply border border-red-200 bg-red-50 text-red-800;
+		@apply relative overflow-hidden rounded-lg border-l-4 border-red-500 bg-red-50 p-4 shadow-sm;
+		@apply transition-all duration-300 ease-in-out;
+	}
+
+	.feedback-error::before {
+		content: '';
+		@apply absolute inset-0 bg-gradient-to-r from-red-500/5 to-transparent;
+	}
+
+	.feedback-error p {
+		@apply relative z-10 m-0 flex items-center gap-3 font-medium text-red-800;
+		@apply text-sm leading-relaxed;
 	}
 
 	/* Text color classes */
