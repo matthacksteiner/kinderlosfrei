@@ -138,50 +138,101 @@ const alignClass = {
 
 		<!-- Form fields container -->
 		<div class:list={[spacingClass]}>
-			<!-- First name field -->
+			<!-- Name fields container -->
 			{
-				firstnameConfig.label ||
-					(firstnameConfig.placeholder && (
-						<div class="form-field">
-							<label for="firstname" class="form-label">
-								{firstnameConfig.label}
-							</label>
-							<input
-								type="text"
-								id="firstname"
-								name="firstname"
-								placeholder={firstnameConfig.placeholder}
-								class="form-input"
-								required
-							/>
-							{firstnameConfig.help && (
-								<p class="form-help">{firstnameConfig.help}</p>
-							)}
-						</div>
-					))
-			}
+				(() => {
+					const firstnameActive =
+						firstnameConfig.label || firstnameConfig.placeholder;
+					const lastnameActive =
+						lastnameConfig.label || lastnameConfig.placeholder;
+					const bothActive = firstnameActive && lastnameActive;
 
-			<!-- Last name field -->
-			{
-				lastnameConfig.label ||
-					(lastnameConfig.placeholder && (
-						<div class="form-field">
-							<label for="lastname" class="form-label">
-								{lastnameConfig.label}
-							</label>
-							<input
-								type="text"
-								id="lastname"
-								name="lastname"
-								placeholder={lastnameConfig.placeholder}
-								class="form-input"
-								required
-							/>
-							{lastnameConfig.help && (
-								<p class="form-help">{lastnameConfig.help}</p>
-							)}
-						</div>
-					))
+					if (bothActive) {
+						return (
+							<div
+								class={`flex gap-${
+									fieldSpacing === 'small'
+										? '3'
+										: fieldSpacing === 'medium'
+										? '6'
+										: '8'
+								}`}
+							>
+								<div class="form-field flex-1">
+									<label for="firstname" class="form-label">
+										{firstnameConfig.label}
+									</label>
+									<input
+										type="text"
+										id="firstname"
+										name="firstname"
+										placeholder={firstnameConfig.placeholder}
+										class="form-input"
+										required
+									/>
+									{firstnameConfig.help && (
+										<p class="form-help">{firstnameConfig.help}</p>
+									)}
+								</div>
+								<div class="form-field flex-1">
+									<label for="lastname" class="form-label">
+										{lastnameConfig.label}
+									</label>
+									<input
+										type="text"
+										id="lastname"
+										name="lastname"
+										placeholder={lastnameConfig.placeholder}
+										class="form-input"
+										required
+									/>
+									{lastnameConfig.help && (
+										<p class="form-help">{lastnameConfig.help}</p>
+									)}
+								</div>
+							</div>
+						);
+					} else if (firstnameActive) {
+						return (
+							<div class="form-field">
+								<label for="firstname" class="form-label">
+									{firstnameConfig.label}
+								</label>
+								<input
+									type="text"
+									id="firstname"
+									name="firstname"
+									placeholder={firstnameConfig.placeholder}
+									class="form-input"
+									required
+								/>
+								{firstnameConfig.help && (
+									<p class="form-help">{firstnameConfig.help}</p>
+								)}
+							</div>
+						);
+					} else if (lastnameActive) {
+						return (
+							<div class="form-field">
+								<label for="lastname" class="form-label">
+									{lastnameConfig.label}
+								</label>
+								<input
+									type="text"
+									id="lastname"
+									name="lastname"
+									placeholder={lastnameConfig.placeholder}
+									class="form-input"
+									required
+								/>
+								{lastnameConfig.help && (
+									<p class="form-help">{lastnameConfig.help}</p>
+								)}
+							</div>
+						);
+					}
+					return null;
+				})()
 			}
 
 			<!-- Email field -->
