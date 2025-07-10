@@ -148,16 +148,14 @@ const alignClass = {
 					const bothActive = firstnameActive && lastnameActive;
 
 					if (bothActive) {
+						const gapClass =
+							fieldSpacing === 'small'
+								? 'gap-3'
+								: fieldSpacing === 'medium'
+								? 'gap-6'
+								: 'gap-8';
 						return (
-							<div
-								class={`flex gap-${
-									fieldSpacing === 'small'
-										? '3'
-										: fieldSpacing === 'medium'
-										? '6'
-										: '8'
-								}`}
-							>
+							<div class:list={['flex', gapClass]}>
 								<div class="form-field flex-1">
 									<label for="firstname" class="form-label">
 										{firstnameConfig.label}
