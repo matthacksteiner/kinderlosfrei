@@ -19,7 +19,6 @@ const {
 	global,
 	metadata,
 } = Astro.props;
-
 // Extract field configurations with defaults
 const firstnameConfig = fields.firstname || {};
 const lastnameConfig = fields.lastname || {};
@@ -34,7 +33,6 @@ const textFont = textGroup?.textfont || global.textFont;
 const textColor = textGroup?.textcolor || global.textColor;
 const textSize = textGroup?.textsize || global.textSize;
 const formInputBorderRadius = toRem(formBorderRadius);
-
 const buttonFont =
 	buttonLocal && buttonSettings ? buttonSettings.buttonfont : global.buttonFont;
 const buttonFontSize =
