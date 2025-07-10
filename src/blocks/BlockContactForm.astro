@@ -140,58 +140,64 @@ const alignClass = {
 		<div class:list={[spacingClass]}>
 			<!-- First name field -->
 			{
-				firstnameConfig.label && (
-					<div class="form-field">
-						<label for="firstname" class="form-label">
-							{firstnameConfig.label}
-						</label>
-						<input
-							type="text"
-							id="firstname"
-							name="firstname"
-							placeholder={firstnameConfig.placeholder}
-							class="form-input"
-							required
-						/>
-						{firstnameConfig.help && (
-							<p class="form-help">{firstnameConfig.help}</p>
-						)}
-					</div>
-				)
+				firstnameConfig.label ||
+					(firstnameConfig.placeholder && (
+						<div class="form-field">
+							<label for="firstname" class="form-label">
+								{firstnameConfig.label}
+							</label>
+							<input
+								type="text"
+								id="firstname"
+								name="firstname"
+								placeholder={firstnameConfig.placeholder}
+								class="form-input"
+								required
+							/>
+							{firstnameConfig.help && (
+								<p class="form-help">{firstnameConfig.help}</p>
+							)}
+						</div>
+					))
 			}
 
 			<!-- Last name field -->
 			{
-				lastnameConfig.label && (
-					<div class="form-field">
-						<label for="lastname" class="form-label">
-							{lastnameConfig.label}
-						</label>
-						<input
-							type="text"
-							id="lastname"
-							name="lastname"
-							placeholder={lastnameConfig.placeholder}
-							class="form-input"
-							required
-						/>
-						{lastnameConfig.help && (
-							<p class="form-help">{lastnameConfig.help}</p>
-						)}
-					</div>
-				)
+				lastnameConfig.label ||
+					(lastnameConfig.placeholder && (
+						<div class="form-field">
+							<label for="lastname" class="form-label">
+								{lastnameConfig.label}
+							</label>
+							<input
+								type="text"
+								id="lastname"
+								name="lastname"
+								placeholder={lastnameConfig.placeholder}
+								class="form-input"
+								required
+							/>
+							{lastnameConfig.help && (
+								<p class="form-help">{lastnameConfig.help}</p>
+							)}
+						</div>
+					))
 			}
 
 			<!-- Email field -->
 			<div class="form-field">
-				<label for="email" class="form-label">
-					{emailConfig.label || 'E-Mail'}
-				</label>
+				{
+					emailConfig.label && (
+						<label for="email" class="form-label">
+							{emailConfig.label}
+						</label>
+					)
+				}
 				<input
 					type="email"
 					id="email"
 					name="email"
-					placeholder={emailConfig.placeholder}
+					placeholder={emailConfig.placeholder || 'E-Mail'}
 					class="form-input"
 					required
 				/>
@@ -200,9 +206,13 @@ const alignClass = {
 
 			<!-- Message field -->
 			<div class="form-field">
-				<label for="message" class="form-label">
-					{messageConfig.label || 'Nachricht'}
-				</label>
+				{
+					messageConfig.label && (
+						<label for="message" class="form-label">
+							{messageConfig.label}
+						</label>
+					)
+				}
 				<textarea
 					id="message"
 					name="message"
@@ -248,7 +258,7 @@ const alignClass = {
 						'duration-300',
 					]}
 				>
-					{submitButtonConfig.label || 'Nachricht senden'}
+					{submitButtonConfig.placeholder || 'Nachricht senden'}
 				</button>
 			</div>
 
