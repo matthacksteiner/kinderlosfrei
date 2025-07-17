@@ -56,7 +56,16 @@ const firstPath =
 		: pathname[1] + '/' + pathname[2];
 ---
 
-{layoutPre && <Layouts layouts={layoutPre} global={global} class="layoutPre" />}
+{
+	layoutPre && (
+		<Layouts
+			layouts={layoutPre}
+			global={global}
+			class="layoutPre"
+			data={data}
+		/>
+	)
+}
 
 <section class="section container">
 	<div class="grid-default">
@@ -141,7 +150,12 @@ const firstPath =
 
 {
 	layoutPost && (
-		<Layouts layouts={layoutPost} global={global} class="layoutPost" />
+		<Layouts
+			layouts={layoutPost}
+			global={global}
+			class="layoutPost"
+			data={data}
+		/>
 	)
 }
 

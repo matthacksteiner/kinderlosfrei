@@ -20,7 +20,8 @@ import BlockGallery from '@blocks/BlockGallery.astro';
 import BlockButtonBar from '@blocks/BlockButtonBar.astro';
 import BlockCard from '@blocks/BlockCard.astro';
 import BlockContactForm from '@blocks/BlockContactForm.astro';
-const { blocks, global, span, backgroundContainer } = Astro.props;
+import BlockNavigation from '@blocks/BlockNavigation.astro';
+const { blocks, global, span, backgroundContainer, data } = Astro.props;
 ---
 
 {
@@ -325,6 +326,22 @@ const { blocks, global, span, backgroundContainer } = Astro.props;
 							buttonAlign={block.content.buttonalign}
 							global={global}
 							metadata={block.content.metadata}
+						/>
+					);
+				case 'navigation':
+					return (
+						<BlockNavigation
+							previousToggle={block.content.previousToggle}
+							nextToggle={block.content.nextToggle}
+							previousLabel={block.content.previousLabel}
+							nextLabel={block.content.nextLabel}
+							navigationAlign={block.content.navigationAlign}
+							buttonLocal={block.content.buttonlocal}
+							buttonSettings={block.content.buttonsettings}
+							buttonColors={block.content.buttoncolors}
+							metadata={block.content.metadata}
+							global={global}
+							data={data}
 						/>
 					);
 				default:

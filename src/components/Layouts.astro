@@ -1,7 +1,7 @@
 ---
 import Columns from '@components/Columns.astro';
 import ScrollButton from '@components/ScrollButton.astro';
-const { global, layouts, class: className } = Astro.props;
+const { global, layouts, class: className, data } = Astro.props;
 ---
 
 {
@@ -64,6 +64,7 @@ const { global, layouts, class: className } = Astro.props;
 							global={global}
 							backgroundPadding={backgroundPadding}
 							backgroundContainer={backgroundContainer}
+							data={data}
 						/>
 					</div>
 					<ScrollButton

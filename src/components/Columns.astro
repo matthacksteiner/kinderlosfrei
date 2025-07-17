@@ -1,6 +1,7 @@
 ---
 import Blocks from '@components/Blocks.astro';
-const { columns, global, backgroundPadding, backgroundContainer } = Astro.props;
+const { columns, global, backgroundPadding, backgroundContainer, data } =
+	Astro.props;
 ---
 
 {
@@ -33,6 +34,7 @@ const { columns, global, backgroundPadding, backgroundContainer } = Astro.props;
 							global={global}
 							span={span}
 							backgroundContainer={backgroundContainer}
+							data={data}
 						/>
 					</section>
 				);

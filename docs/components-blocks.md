@@ -1,91 +1,598 @@
-# Components and Blocks
+# Components and Blocks System
 
-The Baukasten-Astro project heavily relies on a component-based architecture, a core feature of Astro. This is further extended by a block system for rendering structured content fetched from Kirby CMS.
+The Baukasten Astro template uses a comprehensive component-based architecture with a flexible blocks system that integrates seamlessly with the Kirby CMS backend.
 
-## Astro Components (`src/components/`)
+## Architecture Overview
 
-- **Reusable UI Elements**: Components in `src/components/` are reusable pieces of UI, such as buttons, cards, navigation bars, sliders, accordions, etc.
-- **.astro Files**: Most components are defined as `.astro` files. These files can contain a mix of HTML-like syntax, JavaScript (in the frontmatter script tag), and CSS (scoped by default).
-- **Props**: Components accept `props` to customize their appearance and behavior. TypeScript is often used to define the shape of these props for better type safety (see `src/types/`).
-- **Slots**: Astro components can use `<slot />` elements to allow parent components to pass down children, making them flexible and composable.
-- **Client-Side Interactivity**: For components requiring client-side JavaScript, Astro offers client directives (e.g., `client:load`, `client:idle`, `client:visible`) to control how and when component scripts are loaded and hydrated in the browser. This helps in keeping the JavaScript footprint minimal.
+### Components Structure
 
-## Content Blocks (`src/blocks/`)
+```
+src/
+├── blocks/              # Content block components
+│   ├── BlockAccordion.astro
+│   ├── BlockButton.astro
+│   ├── BlockCard.astro
+│   ├── BlockNavigation.astro
+│   └── ...
+├── components/          # Reusable UI components
+│   ├── Blocks.astro     # Main block renderer
+│   ├── Link.astro       # Link component
+│   ├── Picture.astro    # Image component
+│   └── ...
+└── types/
+    └── blocks.types.ts  # TypeScript definitions
+```
 
-The block system is a cornerstone of how content from Kirby CMS is rendered dynamically on the pages.
+### Block System Flow
 
-- **Mapping to Kirby Blocks**: Content in Kirby is often structured using "blocks" (e.g., a text block, an image block, a video block, a grid). Each type of block defined in Kirby has a corresponding Astro component in the `src/blocks/` directory.
-  - For example, if Kirby has a "BlockText" type, there will be a `src/blocks/BlockText.astro` component.
-- **Dynamic Rendering**: When a page is rendered, it iterates through the array of content blocks fetched from the CMS (e.g., the `contentBlocks` array in the JSON example from `content-management-api.md`).
-- **`Astro.glob` or Dynamic Imports**: A common pattern is to use `Astro.glob('../blocks/*.astro')` to get references to all block components, or to dynamically import the correct block component based on the `type` property of the block data.
-- **Props from CMS**: Each block component receives the data for that specific block from the CMS as props.
-  - Example: `BlockImage.astro` might receive `props` like `image`, `alt`, `caption`.
-- **Common Blocks**: The project includes a comprehensive set of common blocks:
-  - `BlockText.astro`
-  - `BlockImage.astro`
-  - `BlockVideo.astro`
-  - `BlockCard.astro`
-  - `BlockSlider.astro`
-  - `BlockGallery.astro`
-  - `BlockAccordion.astro`
-  - `BlockButtonBar.astro`
-  - `BlockColumns.astro`
-  - `BlockIconList.astro`
-  - `BlockMenu.astro`
-  - `BlockQuoteSlider.astro`
-  - `BlockGrid.astro`
-  - `BlockCode.astro`
-  - `BlockVector.astro` (for SVG graphics)
-  - `BlockLine.astro` / `BlockDivider.astro`
-  - `BlockTitle.astro`
+1. **Kirby CMS** → Defines block structure and processes data
+2. **JSON API** → Provides structured block data
+3. **Blocks.astro** → Routes blocks to appropriate components
+4. **Block Components** → Render individual blocks
+5. **TypeScript** → Provides type safety
 
-### Example: Rendering Blocks
+## Creating New Block Components
 
-A page component (e.g., `[...slug].astro`) might render blocks like this:
+Follow this comprehensive guide when creating new blocks in the Astro frontend:
+
+### Step 1: Create the Block Component
+
+Create a new file in `src/blocks/Block[Name].astro`:
 
 ```astro
 ---
-// Example: Simplified block rendering logic
-import { Astro } from 'astro';
+import Link from '@components/Link.astro';
+import { toRem } from '@lib/helpers';
 
-// Assume all block components are available or dynamically imported
-// This is a conceptual example; actual implementation might vary
-const blockComponents = {
-	text: (await import('../blocks/BlockText.astro')).default,
-	image: (await import('../blocks/BlockImage.astro')).default,
-	// ... other block types
-};
+// Define props interface (matches data from Kirby)
+const {
+    // Content fields
+    toggle,
+    customText,
+    items,
 
-export async function getStaticPaths() {
-	/* ... fetch paths ... */
+    // Styling fields
+    align,
+    color,
+    size,
+
+    // Button settings (if applicable)
+    buttonLocal,
+    buttonSettings,
+    buttonColors,
+
+    // System props
+    metadata,
+    global,
+    data, // Include if block needs page/navigation data
+} = Astro.props;
+
+// Process styling variables with fallbacks to global settings
+const useLocalStyling = buttonLocal;
+const buttonFont = useLocalStyling
+    ? buttonSettings?.buttonFont
+    : global.buttonFont;
+
+const buttonPadding = useLocalStyling
+    ? toRem(buttonSettings?.buttonPadding)
+    : toRem(global.buttonPadding);
+
+// Process alignment classes
+const alignmentClass = align === 'left'
+    ? 'justify-start'
+    : align === 'right'
+    ? 'justify-end'
+    : align === 'center'
+    ? 'justify-center'
+    : 'justify-between';
+
+// Early return for conditional rendering
+if (!toggle) {
+    return null;
 }
 
-const { entry } = Astro.props; // Assuming entry contains page data with contentBlocks
-const contentBlocks = entry.data.contentBlocks || [];
+// Process complex data if needed
+const processedItems = items?.map(item => ({
+    ...item,
+    processed: true
+}));
 ---
 
-<BaseLayout {...entry.data.seo}>
-	<h1>{entry.data.title}</h1>
-	<article>
-		{
-			contentBlocks.map((block) => {
-				const Component = blockComponents[block.type];
-				return Component ? (
-					<Component {...block} />
-				) : (
-					<p>Unknown block type: {block.type}</p>
-				);
-			})
-		}
-	</article>
-</BaseLayout>
+<div
+    id={metadata?.identifier || undefined}
+    class:list={[
+        'blockName',
+        'blocks',
+        alignmentClass,
+        `text--${color}`,
+        metadata?.classes,
+    ]}
+    {...metadata?.attributes || {}}
+>
+    <div class="block-content">
+        {customText && (
+            <p class:list={['custom-text', `font--${size}`]}>
+                {customText}
+            </p>
+        )}
+
+        {processedItems?.map((item) => (
+            <div class="block-item">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+                {item.linkobject && (
+                    <Link
+                        link={item.linkobject}
+                        class="item-link"
+                    >
+                        {item.linkobject.title}
+                    </Link>
+                )}
+            </div>
+        ))}
+    </div>
+</div>
+
+<style
+    lang="css"
+    define:vars={{
+        buttonFont,
+        buttonPadding,
+    }}
+>
+    .blockName {
+        font-family: var(--buttonFont);
+    }
+
+    .block-content {
+        padding: var(--buttonPadding);
+    }
+
+    .custom-text {
+        /* Component-specific styles */
+    }
+
+    .block-item {
+        /* Layout styles */
+    }
+
+    .item-link {
+        /* Link styles */
+    }
+</style>
+
+<script>
+    // Add client-side interactivity if needed
+    document.addEventListener('DOMContentLoaded', () => {
+        const blockElements = document.querySelectorAll('.blockName');
+
+        blockElements.forEach(block => {
+            // Add event listeners or initialize functionality
+        });
+    });
+</script>
 ```
 
-This dynamic approach allows content editors to build diverse page layouts in Kirby, which are then faithfully rendered by Astro using the corresponding block components.
+### Step 2: Register in Blocks.astro
 
-## Layouts (`src/layouts/`)
+Add your component to the main block renderer in `src/components/Blocks.astro`:
 
-Layouts are special Astro components that define the overall structure of a page (e.g., header, footer, main content area). Content pages and components are typically rendered within a layout.
+```astro
+---
+// Import all block components
+import BlockAccordion from '@blocks/BlockAccordion.astro';
+import BlockButton from '@blocks/BlockButton.astro';
+import BlockName from '@blocks/BlockName.astro'; // Your new block
+// ... other imports
 
-- `BaseLayout.astro`: Often a root layout providing HTML boilerplate, head metadata, and global styles.
-- Other layouts might exist for specific page types (e.g., `PostLayout.astro`, `ProductLayout.astro`).
+const {
+    blocks,
+    global,
+    span,
+    backgroundContainer,
+    data, // Page-specific data
+} = Astro.props;
+---
+
+<!-- Block renderer -->
+{
+    blocks?.map((block) => {
+        // Calculate span for responsive layouts
+        const blockSpan = span || 12;
+
+        switch (block.type) {
+            case 'accordion':
+                return (
+                    <BlockAccordion
+                        {...block.content}
+                        global={global}
+                        span={blockSpan}
+                        data={data}
+                    />
+                );
+
+            case 'button':
+                return (
+                    <BlockButton
+                        {...block.content}
+                        global={global}
+                        span={blockSpan}
+                        data={data}
+                    />
+                );
+
+            case 'blockname': // Your new block case
+                return (
+                    <BlockName
+                        {...block.content}
+                        global={global}
+                        span={blockSpan}
+                        data={data}
+                    />
+                );
+
+            default:
+                console.warn(`Unknown block type: ${block.type}`);
+                return null;
+        }
+    })
+}
+```
+
+### Step 3: Add TypeScript Definitions
+
+Create type definitions in `src/types/blocks.types.ts`:
+
+```typescript
+// Base interface that all blocks extend
+export interface BaseBlockProps {
+    type: string;
+    id?: string;
+    metadata?: {
+        identifier?: string;
+        classes?: string;
+        attributes?: Record<string, any>;
+    };
+}
+
+// Your new block interface
+export interface BlockNameProps extends BaseBlockProps {
+    // Content fields
+    toggle: boolean;
+    customText?: string;
+    items?: Array<{
+        title: string;
+        text: string;
+        linkobject?: LinkObject;
+    }>;
+
+    // Styling fields
+    align?: 'left' | 'center' | 'right' | 'between';
+    color?: 'primary' | 'secondary' | 'tertiary' | 'black' | 'white';
+    size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl';
+
+    // Button settings (if applicable)
+    buttonLocal?: boolean;
+    buttonSettings?: {
+        buttonFont?: string;
+        buttonFontSize?: string;
+        buttonPadding?: number;
+        buttonBorderRadius?: number;
+        buttonBorderWidth?: number;
+    };
+    buttonColors?: {
+        buttonTextColor?: string;
+        buttonTextColorActive?: string;
+        buttonBackgroundColor?: string;
+        buttonBackgroundColorActive?: string;
+        buttonBorderColor?: string;
+        buttonBorderColorActive?: string;
+    };
+
+    // System props
+    global?: GlobalSettings;
+    data?: PageData;
+    span?: number;
+}
+
+// Helper types
+interface LinkObject {
+    type: 'page' | 'url' | 'email' | 'tel';
+    href: string;
+    title: string;
+    target?: '_blank' | '_self';
+}
+
+interface GlobalSettings {
+    buttonFont: string;
+    buttonFontSize: string;
+    buttonPadding: number;
+    // ... other global settings
+}
+
+interface PageData {
+    navigation?: {
+        prevPage?: { uri: string; title: string; };
+        nextPage?: { uri: string; title: string; };
+    };
+    // ... other page data
+}
+```
+
+### Step 4: Component Patterns and Best Practices
+
+#### Responsive Design
+```astro
+---
+// Use span for responsive layouts
+const itemSpan = span / items.length;
+---
+
+<div
+    class="grid-layout"
+    style={`grid-template-columns: repeat(${items.length}, 1fr);`}
+>
+    {items.map(item => (
+        <div class="grid-item" style={`--span: ${itemSpan}`}>
+            <!-- Item content -->
+        </div>
+    ))}
+</div>
+```
+
+#### Conditional Rendering
+```astro
+---
+// Early returns for conditional blocks
+if (!toggle || !items?.length) {
+    return null;
+}
+
+// Conditional content
+const showAdvanced = settings?.advanced === true;
+---
+
+{showAdvanced && (
+    <div class="advanced-content">
+        <!-- Advanced features -->
+    </div>
+)}
+```
+
+#### Global vs Local Settings
+```astro
+---
+// Always provide fallbacks to global settings
+const textColor = useLocalStyling
+    ? textColors?.textColor
+    : global.textColor;
+
+const fontSize = useLocalStyling
+    ? textSettings?.fontSize
+    : global.fontSize;
+---
+```
+
+#### Image and Media Handling
+```astro
+---
+import ImageComponent from '@components/ImageComponent.astro';
+
+// For blocks with images
+const loadingStrategy = aboveFold ? 'eager' : 'lazy';
+---
+
+{image?.url && (
+    <ImageComponent
+        global={global}
+        image={image}
+        loading={loadingStrategy}
+        ratioMobile={ratioMobile}
+        ratioDesktop={ratioDesktop}
+        span={span}
+        aboveFold={aboveFold}
+    />
+)}
+```
+
+#### Link Handling
+```astro
+---
+import Link from '@components/Link.astro';
+---
+
+{linkobject?.type && (
+    <Link
+        link={linkobject}
+        class:list={[
+            'block-link',
+            `text--${textColor}`,
+            `font--${fontSize}`
+        ]}
+    >
+        {linkobject.title}
+    </Link>
+)}
+```
+
+### Step 5: Styling Guidelines
+
+#### Use CSS Custom Properties
+```astro
+<style
+    lang="css"
+    define:vars={{
+        textFont,
+        buttonPadding,
+        customColor,
+    }}
+>
+    .blockName {
+        font-family: var(--textFont);
+        padding: var(--buttonPadding);
+        color: var(--customColor);
+    }
+</style>
+```
+
+#### Follow Utility Class Patterns
+```astro
+<div
+    class:list={[
+        'blockName',
+        'blocks',
+        `font--${fontSize}`,
+        `text--${textColor}`,
+        `bg--${backgroundColor}`,
+        metadata?.classes,
+    ]}
+>
+```
+
+#### Responsive Breakpoints
+```css
+.blockName {
+    /* Mobile first approach */
+    @apply grid-cols-1 gap-4;
+
+    /* Tablet and up */
+    @apply md:grid-cols-2 md:gap-6;
+
+    /* Desktop and up */
+    @apply lg:grid-cols-3 lg:gap-8;
+}
+```
+
+### Step 6: Data Flow and Props
+
+#### Accessing Page Data
+```astro
+---
+// For blocks that need page-specific data
+const { data } = Astro.props;
+const pageNavigation = data?.navigation;
+const currentPage = data?.currentPage;
+
+// Use with conditional rendering
+if (!pageNavigation?.prevPage && !pageNavigation?.nextPage) {
+    return null;
+}
+---
+```
+
+#### Component Hierarchy for Data Passing
+When blocks need access to `data`, ensure the prop is passed through:
+- `Pages/[...slug].astro` → `PageRenderer.astro` → `Section.astro` → `Layouts.astro` → `BlockGrid.astro` → `Columns.astro` → `Blocks.astro` → `YourBlock.astro`
+
+### Step 7: Testing and Debugging
+
+#### Console Logging for Development
+```astro
+---
+// Debug props in development
+console.log('🚀 Block data:', {
+    type: 'blockname',
+    toggle,
+    customText,
+    items: items?.length || 0
+});
+---
+```
+
+#### Error Boundaries
+```astro
+---
+// Graceful error handling
+try {
+    const processedData = complexDataProcessing(items);
+} catch (error) {
+    console.error('Block processing error:', error);
+    return null;
+}
+---
+```
+
+### Step 8: Performance Considerations
+
+#### Lazy Loading
+```astro
+---
+// Determine loading strategy
+const loadingStrategy = aboveFold ? 'eager' : 'lazy';
+const shouldPreload = aboveFold && isFirstItem;
+---
+
+<img
+    src={image.url}
+    loading={loadingStrategy}
+    {shouldPreload && { fetchpriority: 'high' }}
+/>
+```
+
+#### Client-Side Scripts
+```astro
+<script>
+    // Use define:vars for server-to-client data
+    const blockConfig = {
+        autoplay: autoplayEnabled,
+        delay: slideDelay
+    };
+
+    // Initialize only when needed
+    if (blockConfig.autoplay) {
+        // Initialize autoplay functionality
+    }
+</script>
+```
+
+### Common Block Types and Patterns
+
+#### Interactive Blocks (Accordion, Tabs)
+```astro
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const accordionButtons = document.querySelectorAll('.accordion-button');
+
+        accordionButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                // Toggle logic
+            });
+        });
+    });
+</script>
+```
+
+#### Media Blocks (Slider, Gallery)
+```astro
+<script>
+    import Swiper from 'swiper';
+
+    const swiperOptions = {
+        slidesPerView: viewMobile,
+        spaceBetween: padding,
+        breakpoints: {
+            1024: {
+                slidesPerView: viewDesktop
+            }
+        }
+    };
+
+    new Swiper('.swiper', swiperOptions);
+</script>
+```
+
+#### Form Blocks
+```astro
+<script>
+    const form = document.querySelector('.contact-form');
+
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        // Handle form submission
+    });
+</script>
+```
+
+This comprehensive guide ensures that all new blocks follow consistent patterns, maintain type safety, and integrate seamlessly with the existing Baukasten architecture.

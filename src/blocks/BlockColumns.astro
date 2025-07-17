@@ -1,6 +1,6 @@
 ---
 import Blocks from '@components/Blocks.astro';
-const { columns, global, span: spanParent } = Astro.props;
+const { columns, global, span: spanParent, data } = Astro.props;
 ---
 
 <section class="blockColumns grid-default">
@@ -22,6 +22,7 @@ const { columns, global, span: spanParent } = Astro.props;
 								global={global}
 								span={span}
 								backgroundContainer="container"
+								data={data}
 							/>
 						</section>
 					);
