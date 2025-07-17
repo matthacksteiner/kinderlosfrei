@@ -50,7 +50,7 @@ const buttonBorderWidth =
 		? toRem(buttonSettings.buttonborderwidth)
 		: toRem(global.buttonBorderWidth);
 const buttonBorderRadius =
-	link.title && link.title.length === 1
+	link && link.title && link.title.length === 1
 		? '50%'
 		: buttonLocal && buttonSettings
 		? toRem(buttonSettings.buttonborderradius)
@@ -69,27 +69,31 @@ const buttonBorderRadius =
 	]}
 	{...metadata?.attributes}
 >
-	<Link
-		link={link}
-		class:list={[
-			'button',
-			'inline-block',
-			`font--${size}`,
-			`buttonText--${color}`,
-			`buttonTextActive--${colorActive}`,
-			`buttonBg--${bg}`,
-			`buttonBgActive--${bgActive}`,
-			`buttonBorder--${buttonBorderColor}`,
-			`buttonBorderActive--${buttonBorderColorActive}`,
-			'transition-all',
-			'duration-300',
-			align === 'start' || align === 'normal'
-				? 'mr-auto'
-				: align === 'center'
-				? 'mx-auto'
-				: align === 'end' && 'ml-auto',
-		]}
-	/>
+	{
+		link && link.type && (
+			<Link
+				link={link}
+				class:list={[
+					'button',
+					'inline-block',
+					`font--${size}`,
+					`buttonText--${color}`,
+					`buttonTextActive--${colorActive}`,
+					`buttonBg--${bg}`,
+					`buttonBgActive--${bgActive}`,
+					`buttonBorder--${buttonBorderColor}`,
+					`buttonBorderActive--${buttonBorderColorActive}`,
+					'transition-all',
+					'duration-300',
+					align === 'start' || align === 'normal'
+						? 'mr-auto'
+						: align === 'center'
+						? 'mx-auto'
+						: align === 'end' && 'ml-auto',
+				]}
+			/>
+		)
+	}
 </div>
 
 <style

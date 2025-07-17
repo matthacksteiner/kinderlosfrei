@@ -12,23 +12,24 @@ const { global, items, font, align, color, size, gap, metadata } = Astro.props;
 		<ul class:list={['list', 'flex', 'flex-col']}>
 			{
 				items &&
-					items.map((item) => {
-						const link = item.linkobject;
-						return (
-							<li>
-								<Link
-									global={global}
-									link={link}
-									class:list={[
-										`text`,
-										`font--${size}`,
-										`text--${color}`,
-										`text--${align}`,
-									]}
-								/>
-							</li>
-						);
-					})
+					items
+						.filter((item) => item.linkobject && item.linkobject.type)
+						.map((item) => {
+							const link = item.linkobject;
+							return (
+								<li>
+									<Link
+										link={link}
+										class:list={[
+											`text`,
+											`font--${size}`,
+											`text--${color}`,
+											`text--${align}`,
+										]}
+									/>
+								</li>
+							);
+						})
 			}
 		</ul>
 	</nav>

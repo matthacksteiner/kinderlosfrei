@@ -53,7 +53,7 @@ const shouldApplyZoom = lightbox && !image.linktoggle;
 ---
 
 {
-	image.linktoggle ? (
+	image.linktoggle && link && link.type ? (
 		<Link link={link} aria-label={`Mehr zu ${image.alt}`}>
 			<div
 				class:list={[
