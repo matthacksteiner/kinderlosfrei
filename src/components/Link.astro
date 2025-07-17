@@ -79,9 +79,10 @@ switch (link.type) {
 			href = `${currentLang ? `/${currentLang}` : ''}${hash ? `#${hash}` : ''}`;
 		} else {
 			// For other pages, construct URL with language prefix and URI
+			// The URI from CMS already includes the full path, so use it as-is
 			// Format: /language/uri or /uri (if no language)
 			// Add hash fragment if it exists
-			href = `${currentLang ? `/${currentLang}/` : ''}${uri}${
+			href = `${currentLang ? `/${currentLang}/` : '/'}${uri}${
 				hash ? `#${hash}` : ''
 			}`;
 		}
@@ -96,7 +97,8 @@ switch (link.type) {
 		href = `tel:${link.href}`;
 		break;
 	default:
-		href = link.href;
+		// Fallback for any unhandled link types - cast to BaseLink to access href
+		href = (link as BaseLink).href || '#';
 }
 
 const attributes = {
