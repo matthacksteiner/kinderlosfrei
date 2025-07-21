@@ -40,7 +40,6 @@ export default defineConfig({
 	integrations: [
 		astroKirbySync(),
 		tailwind({
-			// Enable CSS nesting
 			nesting: true,
 			config: { path: './src/overrides/tailwind.config.cjs' },
 		}),
