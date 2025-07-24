@@ -307,3 +307,23 @@ const buttonBorderColorActive = useLocalStyling
 		}
 	}
 </style>
+
+<script>
+	document.addEventListener('keydown', function (event) {
+		if (event.key === 'ArrowLeft') {
+			const prevButton = document.querySelector(
+				'.nav-button--prev'
+			) as HTMLElement;
+			if (prevButton) {
+				prevButton.click();
+			}
+		} else if (event.key === 'ArrowRight') {
+			const nextButton = document.querySelector(
+				'.nav-button--next'
+			) as HTMLElement;
+			if (nextButton) {
+				nextButton.click();
+			}
+		}
+	});
+</script>
