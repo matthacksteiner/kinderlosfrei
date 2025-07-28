@@ -1,0 +1,150 @@
+---
+import { toRem } from '@lib/helpers';
+import ImageComponent from '@components/ImageComponent.astro';
+
+const {
+	items,
+	titleLevel,
+	titleFont,
+	titleColor,
+	titleSize,
+	titleAlign,
+	textFont,
+	textColor,
+	textSize,
+	textAlign,
+	spanMobile,
+	spanDesktop,
+	gapMobile,
+	gapDesktop,
+	ratioMobile,
+	ratioDesktop,
+	global,
+	span,
+	metadata,
+} = Astro.props;
+
+const { lang } = Astro.params;
+
+// If no items, don't render anything
+const hasItems = items && items.length > 0;
+
+// Convert values to proper types
+const gapDesktopValue = toRem(parseInt(gapDesktop) || 16);
+const gapMobileValue = toRem(parseInt(gapMobile) || 16);
+const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
+const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
+
+// Filter and sort items (only if items exist)
+const displayItems = hasItems
+	? items
+		.filter((item) => item.status === 'listed')
+		.sort((a, b) => (a.position || 0) - (b.position || 0))
+	: [];
+
+const TitleLevel = titleLevel || 'h2';
+---
+
+{hasItems && (
+<section
+	id={metadata?.identifier}
+	class:list={['blockFeatured', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
+>
+	<div class="grid-default">
+		{
+			displayItems.map((item) => {
+				const image = item.thumbnail;
+				const coverOnly = item.coverOnly;
+
+				return (
+					<div
+						class:list={[
+							`featured-item`,
+							`col-span-${spanMobile || 6}`,
+							`lg:col-span-${spanDesktop || 6}`,
+						]}
+					>
+						{coverOnly ? (
+							<ImageComponent
+								global={global}
+								image={image}
+								loading="lazy"
+								ratioMobile={ratioMobile}
+								ratioDesktop={ratioDesktop}
+								backgroundContainer="container"
+								span={parseInt(spanDesktop)}
+							/>
+						) : (
+							<a href={lang ? `/${lang}/${item.uri}` : '/' + item.uri}>
+								<ImageComponent
+									global={global}
+									image={image}
+									loading="lazy"
+									ratioMobile={ratioMobile}
+									ratioDesktop={ratioDesktop}
+									backgroundContainer="container"
+									span={parseInt(spanDesktop)}
+								/>
+							</a>
+						)}
+
+						<TitleLevel
+							class:list={[
+								'featured-title',
+								`text--${titleColor}`,
+								`font--${titleSize}`,
+								`text--${titleAlign}`,
+							]}
+							set:html={item.title}
+						/>
+
+						<p
+							class:list={[
+								'featured-text',
+								`text--${textColor}`,
+								`font--${textSize}`,
+								`text--${textAlign}`,
+							]}
+							set:html={item.description}
+						/>
+					</div>
+				);
+			})
+		}
+	</div>
+</section>
+)}
+
+<style
+	lang="css"
+	define:vars={{
+		gapDesktop: gapDesktopValue,
+		gapMobile: gapMobileValue,
+		gridBlockMobile,
+		gridBlockDesktop,
+		titleFont,
+		textFont,
+	}}
+>
+	.blockFeatured .featured-title {
+		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
+		font-family: var(--titleFont);
+	}
+
+	.blockFeatured .featured-text {
+		font-family: var(--textFont);
+	}
+
+	.blockFeatured .grid-default {
+		@apply gap-y-[var(--gapMobile)] lg:gap-y-[var(--gapDesktop)];
+	}
+
+	.blockFeatured .featured-item a {
+		@apply block;
+	}
+
+	.blockFeatured .featured-item a:hover {
+		@apply opacity-80 transition-opacity;
+	}
+</style>

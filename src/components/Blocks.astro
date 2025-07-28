@@ -21,6 +21,7 @@ import BlockButtonBar from '@blocks/BlockButtonBar.astro';
 import BlockCard from '@blocks/BlockCard.astro';
 import BlockContactForm from '@blocks/BlockContactForm.astro';
 import BlockNavigation from '@blocks/BlockNavigation.astro';
+import BlockFeatured from '@blocks/BlockFeatured.astro';
 const { blocks, global, span, backgroundContainer, data } = Astro.props;
 ---
 
@@ -342,6 +343,30 @@ const { blocks, global, span, backgroundContainer, data } = Astro.props;
 							metadata={block.content.metadata}
 							global={global}
 							data={data}
+						/>
+					);
+				case 'featured':
+					return (
+						<BlockFeatured
+							items={block.content.items}
+							titleLevel={block.content.fonttitle?.level}
+							titleFont={block.content.fonttitle?.titlefont}
+							titleColor={block.content.fonttitle?.titlecolor}
+							titleSize={block.content.fonttitle?.titlesize}
+							titleAlign={block.content.fonttitle?.titlealign}
+							textFont={block.content.fonttext?.textfont}
+							textColor={block.content.fonttext?.textcolor}
+							textSize={block.content.fonttext?.textsize}
+							textAlign={block.content.fonttext?.textalign}
+							spanMobile={block.content.displaygrid?.spanmobile}
+							spanDesktop={block.content.displaygrid?.span}
+							gapMobile={block.content.displaygrid?.gapmobile}
+							gapDesktop={block.content.displaygrid?.gap}
+							ratioMobile={block.content.displayratio?.ratiomobile}
+							ratioDesktop={block.content.displayratio?.ratio}
+							global={global}
+							span={span}
+							metadata={block.content.metadata}
 						/>
 					);
 				default:
