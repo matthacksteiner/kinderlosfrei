@@ -18,8 +18,6 @@ const {
 	isFirstSlide,
 } = Astro.props;
 
-const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
-const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
 const pictureProps = {
 	src: image.url,
 	urlFocus: image.urlFocus,
@@ -29,16 +27,16 @@ const pictureProps = {
 	alt: image.alt,
 	name: image.name,
 	id: image.identifier,
-	ratioMobile: ratioMobile,
-	ratioDesktop: ratioDesktop,
+	ratioMobile: ratioMobile || 'original',
+	ratioDesktop: ratioDesktop || 'original',
 	backgroundContainer: backgroundContainer,
 	loading: loading,
-	span: span,
+	span: span || 6,
 	lightbox: lightbox,
-	gridGapMobile: global.gridGapMobile,
-	gridMarginMobile: global.gridMarginMobile,
-	gridGapDesktop: global.gridGapDesktop,
-	gridMarginDesktop: global.gridMarginDesktop,
+	gridGapMobile: global.gridGapMobile || 0,
+	gridMarginMobile: global.gridMarginMobile || 0,
+	gridGapDesktop: global.gridGapDesktop || 0,
+	gridMarginDesktop: global.gridMarginDesktop || 0,
 	positon: 'relative',
 	class: image.classes
 		? `${image.classes} w-full object-cover`
@@ -47,8 +45,9 @@ const pictureProps = {
 	aboveFold: aboveFold,
 	isFirstSlide: isFirstSlide,
 };
+const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
+const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
 const link = image.linkexternal;
-
 const shouldApplyZoom = lightbox && !image.linktoggle;
 ---
 

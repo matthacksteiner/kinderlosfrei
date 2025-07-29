@@ -73,7 +73,7 @@ const TitleLevel = titleLevel || 'h2';
 								ratioMobile={ratioMobile}
 								ratioDesktop={ratioDesktop}
 								backgroundContainer="container"
-								span={parseInt(spanDesktop)}
+								span={spanDesktop}
 							/>
 						) : (
 							<a href={lang ? `/${lang}/${item.uri}` : '/' + item.uri}>
@@ -84,7 +84,7 @@ const TitleLevel = titleLevel || 'h2';
 									ratioMobile={ratioMobile}
 									ratioDesktop={ratioDesktop}
 									backgroundContainer="container"
-									span={parseInt(spanDesktop)}
+									span={spanDesktop}
 								/>
 							</a>
 						)}
