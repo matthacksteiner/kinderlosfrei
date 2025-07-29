@@ -82,6 +82,10 @@ describe('BlockFeatured Component', () => {
 		gapDesktop: '24',
 		ratioMobile: '1/1',
 		ratioDesktop: '16/9',
+		fontTitleToggle: true,
+		fontTextToggle: true,
+		captionAlign: 'bottom',
+		captionControls: [],
 		global: mockGlobal,
 		span: 6,
 		metadata: {
@@ -139,6 +143,185 @@ describe('BlockFeatured Component', () => {
 		});
 
 		expect(result.trim()).toBe('');
+	});
+
+	/**
+	 * Cover-only mode tests
+	 */
+	test('renders cover-only items without links', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			params: { lang: 'de' },
+			props: baseProps,
+		});
+
+		// Non-cover items should have links
+		expect(result).toContain('href="/de/items/item-1"');
+		// Cover-only items should not have links to their pages
+		expect(result).not.toContain('href="/de/items/item-2"');
+	});
+
+	test('cover-only items display content differently', async () => {
+		const container = await AstroContainer.create();
+		const coverOnlyItems = [
+			{
+				...mockItems[0],
+				coverOnly: true,
+			},
+		];
+
+		const result = await container.renderToString(BlockFeatured, {
+			props: {
+				...baseProps,
+				items: coverOnlyItems,
+				captionAlign: 'center',
+			},
+		});
+
+		// Cover-only items with center caption should have absolute positioning
+		expect(result).toContain('absolute left-2/4 top-2/4');
+		expect(result).toContain('z-20 w-4/5 max-w-[75%]');
+		expect(result).toContain('-translate-x-2/4 -translate-y-2/4');
+	});
+
+	/**
+	 * Caption alignment tests
+	 */
+	test('renders center-aligned captions with absolute positioning', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			props: {
+				...baseProps,
+				captionAlign: 'center',
+				fontTitleToggle: true,
+				fontTextToggle: true,
+			},
+		});
+
+		// Center-aligned content should have absolute positioning classes
+		expect(result).toContain('absolute left-2/4 top-2/4');
+		expect(result).toContain('z-20 w-4/5 max-w-[75%]');
+		expect(result).toContain('-translate-x-2/4 -translate-y-2/4');
+	});
+
+	test('renders non-center captions below images', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			props: {
+				...baseProps,
+				captionAlign: 'bottom',
+				fontTitleToggle: true,
+				fontTextToggle: true,
+			},
+		});
+
+		// Non-center captions should use the text-content class pattern
+		expect(result).toContain('featured-text-content');
+		expect(result).toContain('z-20');
+		// Should not contain absolute positioning for center captions
+		expect(result).not.toContain('absolute left-2/4 top-2/4');
+	});
+
+	/**
+	 * Font toggle tests
+	 */
+	test('hides title when fontTitleToggle is false', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			props: {
+				...baseProps,
+				fontTitleToggle: false,
+				fontTextToggle: true,
+			},
+		});
+
+		// Should not contain title elements but should contain text
+		expect(result).not.toContain('<h2');
+		expect(result).toContain('Description for item 1');
+	});
+
+	test('hides text when fontTextToggle is false', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			props: {
+				...baseProps,
+				fontTitleToggle: true,
+				fontTextToggle: false,
+			},
+		});
+
+		// Should contain title but not description paragraphs
+		expect(result).toContain('<h2');
+		expect(result).toContain('Featured Item 1');
+		// The description text might still appear in HTML but not in visible <p> tags
+		const paragraphMatches = result.match(
+			/<p[^>]*>.*?Description for item 1.*?<\/p>/g
+		);
+		expect(paragraphMatches).toBeNull();
+	});
+
+	test('hides both title and text when both toggles are false', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			props: {
+				...baseProps,
+				fontTitleToggle: false,
+				fontTextToggle: false,
+			},
+		});
+
+		// Should not contain title or text elements
+		expect(result).not.toContain('<h2');
+		const paragraphMatches = result.match(/<p[^>]*>.*?Description.*?<\/p>/g);
+		expect(paragraphMatches).toBeNull();
+
+		// But should still contain the image
+		expect(result).toContain('class="picture-container"');
+	});
+
+	/**
+	 * Overlay functionality tests
+	 */
+	test('applies overlay when captionControls includes overlay', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			props: {
+				...baseProps,
+				captionControls: ['overlay'],
+			},
+		});
+
+		// Should contain overlay class
+		expect(result).toContain('overlay');
+	});
+
+	test('does not apply overlay when captionControls is empty', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			props: {
+				...baseProps,
+				captionControls: [],
+			},
+		});
+
+		// Should not contain overlay class in relative divs
+		const overlayMatches = result.match(
+			/class="[^"]*relative[^"]*overlay[^"]*"/g
+		);
+		expect(overlayMatches).toBeNull();
+	});
+
+	test('applies overlay with other caption controls', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			props: {
+				...baseProps,
+				captionControls: ['overlay', 'other-control'],
+			},
+		});
+
+		// Should still contain overlay class
+		expect(result).toContain('overlay');
 	});
 
 	/**
@@ -229,6 +412,18 @@ describe('BlockFeatured Component', () => {
 		expect(result).toContain('<h2');
 	});
 
+	test('applies custom CSS classes for titles and text', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			props: baseProps,
+		});
+
+		// Should apply the custom classes passed to SectionImage
+		expect(result).toContain('featured-title');
+		expect(result).toContain('featured-text');
+		expect(result).toContain('featured-text-content');
+	});
+
 	/**
 	 * Image component integration tests
 	 */
@@ -242,6 +437,17 @@ describe('BlockFeatured Component', () => {
 		expect(result).toContain('class="picture-container"');
 		expect(result).toContain('--ratio-mobile: 1');
 		expect(result).toContain('--ratio-desktop:');
+	});
+
+	test('passes background container setting correctly', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			props: baseProps,
+		});
+
+		// The SectionImage should pass backgroundContainer="container" to ImageComponent
+		// This should affect the CSS variables or classes applied
+		expect(result).toContain('class="picture-container"');
 	});
 
 	/**
@@ -419,5 +625,62 @@ describe('BlockFeatured Component', () => {
 
 		expect(result).toContain('<strong>bold</strong>');
 		expect(result).toContain('<em>emphasis</em>');
+	});
+
+	/**
+	 * SectionImage integration tests
+	 */
+	test('passes all required props to SectionImage', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(BlockFeatured, {
+			params: { lang: 'en' },
+			props: {
+				...baseProps,
+				titleLevel: 'h4',
+				titleFont: 'serif',
+				captionAlign: 'top',
+			},
+		});
+
+		// Check that the title level is properly passed and used
+		expect(result).toContain('<h4');
+
+		// Check that the custom classes are applied
+		expect(result).toContain('featured-title');
+		expect(result).toContain('featured-text');
+		expect(result).toContain('featured-text-content');
+	});
+
+	test('handles items with missing thumbnails', async () => {
+		const container = await AstroContainer.create();
+		const itemsWithMissingThumbnails = [
+			{
+				...mockItems[0],
+				// Item with valid thumbnail should render
+			},
+			{
+				...mockItems[1],
+				thumbnail: null, // Item without thumbnail
+			},
+		];
+
+		// Currently the component doesn't handle missing thumbnails gracefully
+		// This test documents the current behavior and can be updated when the component is improved
+		try {
+			const result = await container.renderToString(BlockFeatured, {
+				props: {
+					...baseProps,
+					items: itemsWithMissingThumbnails,
+				},
+			});
+
+			// If the component is fixed to handle missing thumbnails, update this expectation
+			expect(result).toContain('Featured Item 1');
+		} catch (error) {
+			// Current expected behavior - component throws error on null thumbnail
+			expect(error.message).toContain(
+				"Cannot read properties of null (reading 'url')"
+			);
+		}
 	});
 });

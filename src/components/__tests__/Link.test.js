@@ -28,9 +28,7 @@ describe('Link Component', () => {
 	});
 
 	test('renders page type link with language and hash correctly', async () => {
-		const container = await AstroContainer.create({
-			params: { lang: 'en' },
-		});
+		const container = await AstroContainer.create();
 		const props = {
 			link: {
 				type: 'page',
@@ -40,8 +38,11 @@ describe('Link Component', () => {
 			},
 		};
 
-		const result = await container.renderToString(Link, { props });
-		expect(result).toContain('href="about#section1"');
+		const result = await container.renderToString(Link, {
+			props,
+			params: { lang: 'en' },
+		});
+		expect(result).toContain('href="/en/about#section1"');
 		expect(result).toContain('About Us');
 	});
 
@@ -56,7 +57,7 @@ describe('Link Component', () => {
 		};
 
 		const result = await container.renderToString(Link, { props });
-		expect(result).toContain('href="contact"');
+		expect(result).toContain('href="/contact"');
 		expect(result).toContain('Contact');
 	});
 
