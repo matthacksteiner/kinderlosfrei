@@ -174,7 +174,7 @@ describe('Picture Component', () => {
 			props: propsWithClass,
 		});
 
-		expect(result).toContain('class="custom-class"');
+		expect(result).toContain('class="custom-class image-fade"');
 	});
 
 	test('applies custom ID to img element', async () => {
@@ -438,24 +438,40 @@ describe('Picture Component', () => {
 			props: baseProps,
 		});
 
-		// Check for mobile breakpoint (max-width: 640px)
-		expect(result).toContain('media="(max-width: 640px)"');
+		// Check for smallest breakpoint (max-width: 320px)
+		expect(result).toContain('media="(max-width: 320px)"');
 
-		// Check for tablet/small desktop breakpoints
+		// Check for xs breakpoint (min-width: 384px) and (max-width: 640px)
 		expect(result).toContain(
-			'media="(min-width: 769px) and (max-width: 1024px)"'
-		);
-		expect(result).toContain(
-			'media="(min-width: 1025px) and (max-width: 1280px)"'
+			'media="(min-width: 384px) and (max-width: 640px)"'
 		);
 
-		// Check for larger desktop breakpoints
+		// Check for sm breakpoint (min-width: 640px) and (max-width: 768px)
 		expect(result).toContain(
-			'media="(min-width: 1281px) and (max-width: 1440px)"'
+			'media="(min-width: 640px) and (max-width: 768px)"'
 		);
+
+		// Check for md breakpoint (min-width: 768px) and (max-width: 1024px)
 		expect(result).toContain(
-			'media="(min-width: 1441px) and (max-width: 1920px)"'
+			'media="(min-width: 768px) and (max-width: 1024px)"'
 		);
+
+		// Check for lg breakpoint (min-width: 1024px) and (max-width: 1280px)
+		expect(result).toContain(
+			'media="(min-width: 1024px) and (max-width: 1280px)"'
+		);
+
+		// Check for xl breakpoint (min-width: 1280px) and (max-width: 1440px)
+		expect(result).toContain(
+			'media="(min-width: 1280px) and (max-width: 1440px)"'
+		);
+
+		// Check for 2xl breakpoint (min-width: 1440px) and (max-width: 1920px)
+		expect(result).toContain(
+			'media="(min-width: 1440px) and (max-width: 1920px)"'
+		);
+
+		// Check for largest breakpoint (min-width: 1921px)
 		expect(result).toContain('media="(min-width: 1921px)"');
 
 		// Check that srcset contains 1x, 2x, and 3x DPR values for each source
@@ -473,7 +489,7 @@ describe('Picture Component', () => {
 
 		// Check a few specific breakpoints
 		const mobileSource = sourceTags.find((tag) =>
-			tag.includes('(max-width: 640px)')
+			tag.includes('(max-width: 320px)')
 		);
 		expect(mobileSource).toBeDefined();
 		expect(mobileSource).toContain('1x,');
@@ -481,7 +497,7 @@ describe('Picture Component', () => {
 		expect(mobileSource).toContain('3x');
 
 		const desktopSource = sourceTags.find((tag) =>
-			tag.includes('(min-width: 1441px)')
+			tag.includes('(min-width: 1921px)')
 		);
 		expect(desktopSource).toBeDefined();
 		expect(desktopSource).toContain('1x,');
@@ -526,14 +542,14 @@ describe('Picture Component', () => {
 
 		// Mobile source should use urlFocusMobile
 		const customMobileSource = customSourceTags.find((tag) =>
-			tag.includes('(max-width: 640px)')
+			tag.includes('(max-width: 320px)')
 		);
 		expect(customMobileSource).toBeDefined();
 		expect(customMobileSource).toContain('/test-focus-mobile.jpg');
 
 		// Desktop source should use urlFocus
 		const customDesktopSource = customSourceTags.find((tag) =>
-			tag.includes('(min-width: 769px)')
+			tag.includes('(min-width: 1024px)')
 		);
 		expect(customDesktopSource).toBeDefined();
 		expect(customDesktopSource).toContain('/test-focus.jpg');

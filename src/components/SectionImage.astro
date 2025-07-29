@@ -1,0 +1,196 @@
+---
+import { toRem } from '@lib/helpers';
+import ImageComponent from '@components/ImageComponent.astro';
+import type { SectionImageProps } from '../types';
+
+type Props = SectionImageProps;
+
+const {
+	item,
+	global,
+	ratioMobile,
+	ratioDesktop,
+	span,
+	spanDesktop,
+	titleLevel = 'h2',
+	titleFont,
+	titleColor,
+	titleSize,
+	titleAlign,
+	textFont,
+	textColor,
+	textSize,
+	textAlign,
+	fontTitleToggle = true,
+	fontTextToggle = true,
+	captionAlign = 'bottom',
+	captionControls = [],
+	titleClass = 'title',
+	textClass = 'text',
+	textContentClass = 'text-content',
+	lang,
+	backgroundContainer = 'container',
+} = Astro.props;
+
+const TitleLevel = titleLevel;
+const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
+const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
+
+// Check if we should show overlay
+const showOverlay = captionControls && captionControls.includes('overlay');
+---
+
+{
+	item.coverOnly ? (
+		<div class:list={['relative', showOverlay && 'overlay']}>
+			<ImageComponent
+				global={global}
+				image={item.thumbnail}
+				loading="lazy"
+				ratioMobile={ratioMobile}
+				ratioDesktop={ratioDesktop}
+				backgroundContainer={backgroundContainer}
+				span={spanDesktop || span}
+			/>
+
+			{(fontTitleToggle || fontTextToggle) && captionAlign === 'center' && (
+				<div class="absolute left-2/4 top-2/4 z-20 w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
+					{fontTitleToggle && (
+						<TitleLevel
+							class:list={[
+								titleClass,
+								`text--${titleColor}`,
+								`font--${titleSize}`,
+								`text--${titleAlign}`,
+							]}
+							set:html={item.title}
+						/>
+					)}
+
+					{fontTextToggle && (
+						<p
+							class:list={[
+								textClass,
+								`text--${textColor}`,
+								`font--${textSize}`,
+								`text--${textAlign}`,
+							]}
+							set:html={item.description}
+						/>
+					)}
+				</div>
+			)}
+		</div>
+	) : (
+		<a href={lang ? `/${lang}/${item.uri}` : '/' + item.uri}>
+			<div class:list={['relative', showOverlay && 'overlay']}>
+				<ImageComponent
+					global={global}
+					image={item.thumbnail}
+					loading="lazy"
+					ratioMobile={ratioMobile}
+					ratioDesktop={ratioDesktop}
+					backgroundContainer={backgroundContainer}
+					span={spanDesktop || span}
+				/>
+
+				{(fontTitleToggle || fontTextToggle) && captionAlign === 'center' && (
+					<div class="absolute left-2/4 top-2/4 z-20 w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
+						{fontTitleToggle && (
+							<TitleLevel
+								class:list={[
+									titleClass,
+									`text--${titleColor}`,
+									`font--${titleSize}`,
+									`text--${titleAlign}`,
+								]}
+								set:html={item.title}
+							/>
+						)}
+
+						{fontTextToggle && (
+							<p
+								class:list={[
+									textClass,
+									`text--${textColor}`,
+									`font--${textSize}`,
+									`text--${textAlign}`,
+								]}
+								set:html={item.description}
+							/>
+						)}
+					</div>
+				)}
+			</div>
+		</a>
+	)
+}
+
+{
+	(fontTitleToggle || fontTextToggle) && captionAlign !== 'center' && (
+		<div class:list={[textContentClass, 'z-20']}>
+			{fontTitleToggle && (
+				<TitleLevel
+					class:list={[
+						titleClass,
+						`text--${titleColor}`,
+						`font--${titleSize}`,
+						`text--${titleAlign}`,
+					]}
+					set:html={item.title}
+				/>
+			)}
+
+			{fontTextToggle && (
+				<p
+					class:list={[
+						textClass,
+						`text--${textColor}`,
+						`font--${textSize}`,
+						`text--${textAlign}`,
+					]}
+					set:html={item.description}
+				/>
+			)}
+		</div>
+	)
+}
+
+<style
+	lang="css"
+	define:vars={{
+		gridBlockMobile,
+		gridBlockDesktop,
+		titleFont,
+		textFont,
+	}}
+>
+	.title,
+	.featured-title {
+		font-family: var(--titleFont);
+	}
+
+	.text,
+	.featured-text {
+		font-family: var(--textFont);
+	}
+
+	.text-content,
+	.featured-text-content,
+	.section-text-content {
+		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
+	}
+
+	/* Use the same overlay approach as ImageComponent.astro */
+	.overlay:before {
+		@apply absolute left-0 top-0 z-10 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
+	}
+
+	a {
+		@apply block;
+	}
+
+	a:hover {
+		@apply opacity-80 transition-opacity;
+	}
+</style>
