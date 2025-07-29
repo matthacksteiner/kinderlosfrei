@@ -14,6 +14,7 @@ export type {
 	FontItem,
 	FontData,
 	FontSizeItem,
+	ImageData,
 	SectionItem,
 } from './api.types';
 

@@ -97,11 +97,39 @@ export interface FontSizeItem {
 	decoration: string;
 }
 
+// Image Types
+export interface ImageData {
+	url: string;
+	width: number;
+	height: number;
+	alt: string;
+	name: string;
+	identifier?: string;
+	classes?: string;
+	captiontoggle?: boolean;
+	captiontitle?: string;
+	captiontextfont?: string;
+	captiontextsize?: string;
+	captiontextcolor?: string;
+	captiontextalign?: string;
+	captionoverlay?: string;
+	captionalign?: string;
+	captionOverlayRange?: number;
+	captionColor?: string;
+	linktoggle?: boolean;
+	linkexternal?: any;
+	thumbhash?: string;
+	urlFocus?: string;
+	urlFocusMobile?: string;
+	focusX?: number;
+	focusY?: number;
+}
+
 // Section Item Types
 export interface SectionItem {
 	uri: string;
 	title: string;
 	description: string;
-	thumbnail: any;
+	thumbnail: ImageData;
 	coverOnly: boolean;
 }

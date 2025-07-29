@@ -191,9 +191,8 @@ const overlayColor = captionColor || '#000000';
 		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
 	}
 
-	/* Dynamic overlay color and opacity based on captionColor and captionOverlayRange */
 	.overlay:before {
-		@apply absolute left-0 top-0 z-10 h-full w-full content-[''];
+		@apply absolute left-0 top-0 z-10 h-full w-full transition-opacity duration-300 content-[''];
 		background-color: color-mix(
 			in srgb,
 			var(--overlayColor) calc(var(--overlayOpacity) * 100%),
@@ -201,11 +200,16 @@ const overlayColor = captionColor || '#000000';
 		);
 	}
 
-	a {
-		@apply block;
+	/* Hover effects based on overlay state */
+	.overlay:hover:before {
+		@apply opacity-0;
 	}
 
-	a:hover {
-		@apply opacity-80 transition-opacity;
+	.relative:not(.overlay):hover {
+		@apply opacity-80 transition-opacity duration-300;
+	}
+
+	a {
+		@apply block;
 	}
 </style>

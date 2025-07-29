@@ -49,6 +49,10 @@ const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
 const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
 const link = image.linkexternal;
 const shouldApplyZoom = lightbox && !image.linktoggle;
+
+// Dynamic overlay settings from image data
+const overlayOpacity = (image.captionOverlayRange || 50) / 100;
+const overlayColor = image.captionColor || '#000000';
 ---
 
 {
@@ -81,11 +85,33 @@ const shouldApplyZoom = lightbox && !image.linktoggle;
 	)
 }
 
-<style lang="css" define:vars={{ gridBlockMobile, gridBlockDesktop }}>
+<style
+	lang="css"
+	define:vars={{
+		gridBlockMobile,
+		gridBlockDesktop,
+		overlayOpacity,
+		overlayColor,
+	}}
+>
 	.text-content {
 		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
 	}
+
 	.overlay:before {
-		@apply absolute left-0 top-0 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
+		@apply absolute left-0 top-0 z-10 h-full w-full transition-opacity duration-300 content-[''];
+		background-color: color-mix(
+			in srgb,
+			var(--overlayColor) calc(var(--overlayOpacity) * 100%),
+			transparent
+		);
+	}
+
+	.overlay:hover:before {
+		@apply opacity-0;
+	}
+
+	.relative:not(.overlay):hover {
+		@apply opacity-80 transition-opacity duration-300;
 	}
 </style>
