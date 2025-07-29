@@ -1,6 +1,6 @@
 ---
 import { toRem } from '@lib/helpers';
-import ImageComponent from '@components/ImageComponent.astro';
+import SectionImage from '@components/SectionImage.astro';
 
 const {
 	items,
@@ -19,6 +19,10 @@ const {
 	gapDesktop,
 	ratioMobile,
 	ratioDesktop,
+	fontTitleToggle,
+	fontTextToggle,
+	captionAlign,
+	captionControls,
 	global,
 	span,
 	metadata,
@@ -41,8 +45,6 @@ const displayItems = hasItems
 		.filter((item) => item.status === 'listed')
 		.sort((a, b) => (a.position || 0) - (b.position || 0))
 	: [];
-
-const TitleLevel = titleLevel || 'h2';
 ---
 
 {hasItems && (
@@ -53,64 +55,41 @@ const TitleLevel = titleLevel || 'h2';
 >
 	<div class="grid-default">
 		{
-			displayItems.map((item) => {
-				const image = item.thumbnail;
-				const coverOnly = item.coverOnly;
-
-				return (
-					<div
-						class:list={[
-							`featured-item`,
-							`col-span-${spanMobile || 6}`,
-							`lg:col-span-${spanDesktop || 6}`,
-						]}
-					>
-						{coverOnly ? (
-							<ImageComponent
-								global={global}
-								image={image}
-								loading="lazy"
-								ratioMobile={ratioMobile}
-								ratioDesktop={ratioDesktop}
-								backgroundContainer="container"
-								span={spanDesktop}
-							/>
-						) : (
-							<a href={lang ? `/${lang}/${item.uri}` : '/' + item.uri}>
-								<ImageComponent
-									global={global}
-									image={image}
-									loading="lazy"
-									ratioMobile={ratioMobile}
-									ratioDesktop={ratioDesktop}
-									backgroundContainer="container"
-									span={spanDesktop}
-								/>
-							</a>
-						)}
-
-						<TitleLevel
-							class:list={[
-								'featured-title',
-								`text--${titleColor}`,
-								`font--${titleSize}`,
-								`text--${titleAlign}`,
-							]}
-							set:html={item.title}
-						/>
-
-						<p
-							class:list={[
-								'featured-text',
-								`text--${textColor}`,
-								`font--${textSize}`,
-								`text--${textAlign}`,
-							]}
-							set:html={item.description}
-						/>
-					</div>
-				);
-			})
+			displayItems.map((item) => (
+				<div
+					class:list={[
+						`featured-item`,
+						`col-span-${spanMobile || 6}`,
+						`lg:col-span-${spanDesktop || 6}`,
+					]}
+				>
+					<SectionImage
+						item={item}
+						global={global}
+						ratioMobile={ratioMobile}
+						ratioDesktop={ratioDesktop}
+						spanDesktop={spanDesktop}
+						titleLevel={titleLevel}
+						titleFont={titleFont}
+						titleColor={titleColor}
+						titleSize={titleSize}
+						titleAlign={titleAlign}
+						textFont={textFont}
+						textColor={textColor}
+						textSize={textSize}
+						textAlign={textAlign}
+						fontTitleToggle={fontTitleToggle}
+						fontTextToggle={fontTextToggle}
+						captionAlign={captionAlign}
+						captionControls={captionControls}
+						titleClass="featured-title"
+						textClass="featured-text"
+						textContentClass="featured-text-content"
+						lang={lang}
+						backgroundContainer="container"
+					/>
+				</div>
+			))
 		}
 	</div>
 </section>
@@ -127,24 +106,7 @@ const TitleLevel = titleLevel || 'h2';
 		textFont,
 	}}
 >
-	.blockFeatured .featured-title {
-		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
-		font-family: var(--titleFont);
-	}
-
-	.blockFeatured .featured-text {
-		font-family: var(--textFont);
-	}
-
 	.blockFeatured .grid-default {
 		@apply gap-y-[var(--gapMobile)] lg:gap-y-[var(--gapDesktop)];
-	}
-
-	.blockFeatured .featured-item a {
-		@apply block;
-	}
-
-	.blockFeatured .featured-item a:hover {
-		@apply opacity-80 transition-opacity;
 	}
 </style>

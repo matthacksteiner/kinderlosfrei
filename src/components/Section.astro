@@ -1,7 +1,7 @@
 ---
 import { toRem } from '@lib/helpers';
 import Layouts from '@components/Layouts.astro';
-import ImageComponent from '@components/ImageComponent.astro';
+import SectionImage from '@components/SectionImage.astro';
 import Pagination from '@components/Pagination.astro';
 
 const { data, global, page } = Astro.props;
@@ -17,9 +17,11 @@ const {
 	grid: { span, gap },
 	title,
 	text,
+	caption,
 } = settings;
 
 const {
+	toggle: titleToggle,
 	level: TitleLevel,
 	font: titleFont,
 	color: titleColor,
@@ -28,11 +30,14 @@ const {
 } = title;
 
 const {
+	toggle: textToggle,
 	font: textFont,
 	color: textColor,
 	size: textSize,
 	align: textAlign,
 } = text;
+
+const { align: captionAlign, controls: captionControls } = caption;
 const pageSize = page.size;
 const pageTotal = page.total;
 const layoutPre = data.layoutPre;
@@ -73,63 +78,41 @@ const firstPath =
 			pageItems
 				.filter((item) => item.status === 'listed')
 				.sort((a, b) => a.position - b.position)
-				.map((item) => {
-					const image = item.thumbnail;
-					const coverOnly = item.coverOnly;
-					return (
-						<div
-							class:list={[
-								`section-item`,
-								`col-span-${spanMobile}`,
-								`lg:col-span-${span}`,
-							]}
-						>
-							{coverOnly ? (
-								<ImageComponent
-									global={global}
-									image={image}
-									loading="lazy"
-									ratioMobile={ratioMobile}
-									ratioDesktop={ratio}
-									backgroundContainer="container"
-									span={span}
-								/>
-							) : (
-								<a href={lang ? `/${lang}/${item.uri}` : '/' + item.uri}>
-									<ImageComponent
-										global={global}
-										image={image}
-										loading="lazy"
-										ratioMobile={ratioMobile}
-										ratioDesktop={ratio}
-										backgroundContainer="container"
-										span={span}
-									/>
-								</a>
-							)}
-
-							<TitleLevel
-								class:list={[
-									'title',
-									`text--${titleColor}`,
-									`font--${titleSize}`,
-									`text--${titleAlign}`,
-								]}
-								set:html={item.title}
-							/>
-
-							<p
-								class:list={[
-									'text',
-									`text--${textColor}`,
-									`font--${textSize}`,
-									`text--${textAlign}`,
-								]}
-								set:html={item.description}
-							/>
-						</div>
-					);
-				})
+				.map((item) => (
+					<div
+						class:list={[
+							`section-item`,
+							`col-span-${spanMobile}`,
+							`lg:col-span-${span}`,
+						]}
+					>
+						<SectionImage
+							item={item}
+							global={global}
+							ratioMobile={ratioMobile}
+							ratioDesktop={ratio}
+							span={span}
+							titleLevel={TitleLevel}
+							titleFont={titleFont}
+							titleColor={titleColor}
+							titleSize={titleSize}
+							titleAlign={titleAlign}
+							textFont={textFont}
+							textColor={textColor}
+							textSize={textSize}
+							textAlign={textAlign}
+							fontTitleToggle={titleToggle}
+							fontTextToggle={textToggle}
+							captionAlign={captionAlign}
+							captionControls={captionControls}
+							titleClass="title"
+							textClass="text"
+							textContentClass="section-text-content"
+							lang={lang}
+							backgroundContainer="container"
+						/>
+					</div>
+				))
 		}
 	</div>
 	{
@@ -170,15 +153,6 @@ const firstPath =
 		textFont,
 	}}
 >
-	.title {
-		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
-		font-family: var(--titleFont);
-	}
-
-	.text {
-		font-family: var(--textFont);
-	}
-
 	.grid-default {
 		@apply gap-y-[var(--gapMobile)] lg:gap-y-[var(--gapDesktop,)];
 	}
