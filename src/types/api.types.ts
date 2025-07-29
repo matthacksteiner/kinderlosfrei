@@ -96,3 +96,12 @@ export interface FontSizeItem {
 	transform: string;
 	decoration: string;
 }
+
+// Section Item Types
+export interface SectionItem {
+	uri: string;
+	title: string;
+	description: string;
+	thumbnail: any;
+	coverOnly: boolean;
+}

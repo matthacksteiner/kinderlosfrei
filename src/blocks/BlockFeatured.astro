@@ -34,10 +34,10 @@ const { lang } = Astro.params;
 const hasItems = items && items.length > 0;
 
 // Convert values to proper types
-const gapDesktopValue = toRem(parseInt(gapDesktop) || 16);
-const gapMobileValue = toRem(parseInt(gapMobile) || 16);
-const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
-const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
+const gapDesktopValue = toRem(parseInt(gapDesktop));
+const gapMobileValue = toRem(parseInt(gapMobile));
+const gridBlockMobile = toRem(global.gridBlockMobile);
+const gridBlockDesktop = toRem(global.gridBlockDesktop);
 
 // Filter and sort items (only if items exist)
 const displayItems = hasItems
@@ -59,8 +59,8 @@ const displayItems = hasItems
 				<div
 					class:list={[
 						`featured-item`,
-						`col-span-${spanMobile || 6}`,
-						`lg:col-span-${spanDesktop || 6}`,
+						`col-span-${spanMobile}`,
+						`lg:col-span-${spanDesktop}`,
 					]}
 				>
 					<SectionImage

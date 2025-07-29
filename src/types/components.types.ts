@@ -1,4 +1,4 @@
-import type { PageData, GlobalData } from './api.types';
+import type { PageData, GlobalData, SectionItem } from './api.types';
 
 // Common Component Props
 export interface BaseComponentProps {
@@ -63,4 +63,32 @@ export interface PageRendererProps {
 	data?: PageData;
 	global?: GlobalData;
 	page?: any;
+}
+
+// Section Components
+export interface SectionImageProps extends BaseComponentProps {
+	item: SectionItem;
+	global: any;
+	ratioMobile: string;
+	ratioDesktop: string;
+	span?: number;
+	spanDesktop?: number;
+	titleLevel?: string;
+	titleFont?: string;
+	titleColor?: string;
+	titleSize?: string;
+	titleAlign?: string;
+	textFont?: string;
+	textColor?: string;
+	textSize?: string;
+	textAlign?: string;
+	fontTitleToggle?: boolean;
+	fontTextToggle?: boolean;
+	captionAlign?: string;
+	captionControls?: string[];
+	titleClass?: string;
+	textClass?: string;
+	textContentClass?: string;
+	lang?: string;
+	backgroundContainer?: string;
 }

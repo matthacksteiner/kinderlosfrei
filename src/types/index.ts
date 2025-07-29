@@ -14,6 +14,7 @@ export type {
 	FontItem,
 	FontData,
 	FontSizeItem,
+	SectionItem,
 } from './api.types';
 
 // Configuration Types
@@ -39,4 +40,5 @@ export type {
 	ImageProps,
 	ButtonProps,
 	PageRendererProps,
+	SectionImageProps,
 } from './components.types';

@@ -1,39 +1,9 @@
 ---
 import { toRem } from '@lib/helpers';
 import ImageComponent from '@components/ImageComponent.astro';
+import type { SectionImageProps } from '../types';
 
-interface Props {
-	item: {
-		uri: string;
-		title: string;
-		description: string;
-		thumbnail: any;
-		coverOnly: boolean;
-	};
-	global: any;
-	ratioMobile: string;
-	ratioDesktop: string;
-	span?: number;
-	spanDesktop?: number;
-	titleLevel?: string;
-	titleFont?: string;
-	titleColor?: string;
-	titleSize?: string;
-	titleAlign?: string;
-	textFont?: string;
-	textColor?: string;
-	textSize?: string;
-	textAlign?: string;
-	fontTitleToggle?: boolean;
-	fontTextToggle?: boolean;
-	captionAlign?: string;
-	captionControls?: string[];
-	titleClass?: string;
-	textClass?: string;
-	textContentClass?: string;
-	lang?: string;
-	backgroundContainer?: string;
-}
+type Props = SectionImageProps;
 
 const {
 	item,
