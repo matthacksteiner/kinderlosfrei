@@ -37,7 +37,12 @@ const {
 	align: textAlign,
 } = text;
 
-const { align: captionAlign, controls: captionControls } = caption;
+const {
+	align: captionAlign,
+	controls: captionControls,
+	overlayRange: captionOverlayRange,
+	color: captionColor,
+} = caption;
 const pageSize = page.size;
 const pageTotal = page.total;
 const layoutPre = data.layoutPre;
@@ -107,6 +112,8 @@ const firstPath =
 							fontTextToggle={textToggle}
 							captionAlign={captionAlign}
 							captionControls={captionControls}
+							captionOverlayRange={captionOverlayRange}
+							captionColor={captionColor}
 							titleClass="title"
 							textClass="text"
 							textContentClass="section-text-content"

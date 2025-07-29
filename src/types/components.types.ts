@@ -86,6 +86,8 @@ export interface SectionImageProps extends BaseComponentProps {
 	fontTextToggle?: boolean;
 	captionAlign?: string;
 	captionControls?: string[];
+	captionOverlayRange?: number;
+	captionColor?: string;
 	titleClass?: string;
 	textClass?: string;
 	textContentClass?: string;

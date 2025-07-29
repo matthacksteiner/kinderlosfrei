@@ -25,6 +25,8 @@ const {
 	fontTextToggle = true,
 	captionAlign = 'bottom',
 	captionControls = [],
+	captionOverlayRange = 50,
+	captionColor = '#000000',
 	titleClass = 'title',
 	textClass = 'text',
 	textContentClass = 'text-content',
@@ -38,6 +40,12 @@ const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
 
 // Check if we should show overlay
 const showOverlay = captionControls && captionControls.includes('overlay');
+
+// Convert range (0-100) to opacity (0-1)
+const overlayOpacity = (captionOverlayRange || 50) / 100;
+
+// Use the caption color (default black)
+const overlayColor = captionColor || '#000000';
 ---
 
 {
@@ -163,6 +171,8 @@ const showOverlay = captionControls && captionControls.includes('overlay');
 		gridBlockDesktop,
 		titleFont,
 		textFont,
+		overlayOpacity,
+		overlayColor,
 	}}
 >
 	.title,
@@ -181,9 +191,14 @@ const showOverlay = captionControls && captionControls.includes('overlay');
 		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
 	}
 
-	/* Use the same overlay approach as ImageComponent.astro */
+	/* Dynamic overlay color and opacity based on captionColor and captionOverlayRange */
 	.overlay:before {
-		@apply absolute left-0 top-0 z-10 h-full w-full bg-[rgba(_0,0,0,0.25_)] content-[''];
+		@apply absolute left-0 top-0 z-10 h-full w-full content-[''];
+		background-color: color-mix(
+			in srgb,
+			var(--overlayColor) calc(var(--overlayOpacity) * 100%),
+			transparent
+		);
 	}
 
 	a {
