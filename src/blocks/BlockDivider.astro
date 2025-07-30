@@ -1,0 +1,32 @@
+---
+import { toRem } from '@lib/helpers';
+
+const {
+	global,
+	spacingMobileTop,
+	spacingMobileBottom,
+	spacingDesktopTop,
+	spacingDesktopBottom,
+} = Astro.props;
+
+const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
+const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
+---
+
+<div class="blockDivider blocks"></div>
+
+<style
+	lang="css"
+	define:vars={{
+		spacingDesktopBottom,
+		spacingDesktopTop,
+		spacingMobileBottom,
+		spacingMobileTop,
+		gridBlockMobile,
+		gridBlockDesktop,
+	}}
+>
+	.blockDivider {
+		@apply pb-[var(--spacingMobileBottom)] pt-[var(--spacingMobileTop)] lg:pb-[var(--spacingDesktopBottom)] lg:pt-[var(--spacingDesktopTop)];
+	}
+</style>

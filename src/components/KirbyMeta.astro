@@ -1,0 +1,54 @@
+---
+const { data, global, pageTitle } = Astro.props;
+const socialMeta = data.meta.social;
+const kirbyUrl = global.kirbyUrl;
+const frontendURL = global.frontendUrl;
+const siteURL = global.siteUrl;
+let canonicalFrontend = data.meta.canonical.replace(siteURL, frontendURL);
+canonicalFrontend = canonicalFrontend.replace(/\/$/, '');
+const canonicalUrl = new URL(Astro.url.pathname, canonicalFrontend);
+const separators = data.meta.separators || '|';
+const siteTitle = global.siteTitle;
+const orgOrPerson = data.meta.org || data.meta.person;
+---
+
+<title data-siteTitle={siteTitle} data-orgOrPerson={orgOrPerson}>
+	{
+		pageTitle === 'home' || undefined || null
+			? siteTitle
+			: `${pageTitle} ${separators} ${siteTitle}`
+	}
+</title>
+<meta name="description" content={data.meta.description} />
+<meta name="robots" content={data.meta.robots} />
+<link rel="canonical" href={canonicalUrl} />
+{
+	Object.entries(socialMeta).map(([key, value]) => (
+		<meta
+			property={key === 'og:url' ? 'og:url' : key}
+			content={
+				key === 'og:url' ? canonicalFrontend : (value as string).toString()
+			}
+		/>
+	))
+}
+<link rel="sitemap" href={kirbyUrl + '/sitemap.xml'} />
+
+<script define:vars={{ orgOrPerson }}>
+	if (!orgOrPerson) return;
+	const script = document.createElement('script');
+	script.setAttribute('type', 'application/ld+json');
+
+	script.textContent = JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'website',
+		author: {
+			'@type': orgOrPerson['@type'],
+			name: orgOrPerson['name'],
+			email: orgOrPerson['email'] && orgOrPerson['email'],
+			logo: orgOrPerson['logo'] && orgOrPerson['logo'],
+			avatar: orgOrPerson['avatar'] && orgOrPerson['avatar'],
+		},
+	});
+	document.head.appendChild(script);
+</script>

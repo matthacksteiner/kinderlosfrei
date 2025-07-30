@@ -1,0 +1,117 @@
+---
+import { toRem } from '@lib/helpers';
+import Picture from '@components/Picture.astro';
+import ImageCaption from '@components/ImageCaption.astro';
+import ImageCopyright from './ImageCopyright.astro';
+import Link from '@components/Link.astro';
+
+const {
+	global,
+	image,
+	ratioDesktop,
+	ratioMobile,
+	loading,
+	span,
+	backgroundContainer,
+	lightbox,
+	aboveFold,
+	isFirstSlide,
+} = Astro.props;
+
+const pictureProps = {
+	src: image.url,
+	urlFocus: image.urlFocus,
+	urlFocusMobile: image.urlFocusMobile,
+	width: image.width,
+	height: image.height,
+	alt: image.alt,
+	name: image.name,
+	id: image.identifier,
+	ratioMobile: ratioMobile || 'original',
+	ratioDesktop: ratioDesktop || 'original',
+	backgroundContainer: backgroundContainer,
+	loading: loading,
+	span: span || 6,
+	lightbox: lightbox,
+	gridGapMobile: global.gridGapMobile || 0,
+	gridMarginMobile: global.gridMarginMobile || 0,
+	gridGapDesktop: global.gridGapDesktop || 0,
+	gridMarginDesktop: global.gridMarginDesktop || 0,
+	positon: 'relative',
+	class: image.classes
+		? `${image.classes} w-full object-cover`
+		: 'w-full object-cover',
+	thumbhash: image.thumbhash,
+	aboveFold: aboveFold,
+	isFirstSlide: isFirstSlide,
+};
+const gridBlockMobile = toRem(global.gridBlockMobile) || '1rem';
+const gridBlockDesktop = toRem(global.gridBlockDesktop) || '1rem';
+const link = image.linkexternal;
+const shouldApplyZoom = lightbox && !image.linktoggle;
+
+// Dynamic overlay settings from image data
+const overlayOpacity = (image.captionOverlayRange || 50) / 100;
+const overlayColor = image.captionColor || '#000000';
+---
+
+{
+	image.linktoggle && link && link.type ? (
+		<Link link={link} aria-label={`Mehr zu ${image.alt}`}>
+			<div
+				class:list={[
+					'relative',
+					image.captionoverlay === 'overlay' && 'overlay',
+				]}
+			>
+				<Picture {...pictureProps} />
+				{image.captiontoggle ? (
+					<ImageCaption {...image} global={global} />
+				) : null}
+				{image.copyrighttoggle ? <ImageCopyright {...image} /> : null}
+			</div>
+		</Link>
+	) : (
+		<div
+			class:list={['relative', image.captionoverlay === 'overlay' && 'overlay']}
+		>
+			<Picture
+				{...pictureProps}
+				dataZoomable={shouldApplyZoom ? true : undefined}
+			/>
+			{image.captiontoggle ? <ImageCaption {...image} global={global} /> : null}
+			{image.copyrighttoggle ? <ImageCopyright {...image} /> : null}
+		</div>
+	)
+}
+
+<style
+	lang="css"
+	define:vars={{
+		gridBlockMobile,
+		gridBlockDesktop,
+		overlayOpacity,
+		overlayColor,
+	}}
+>
+	.text-content {
+		@apply mt-[var(--gridBlockMobile)] lg:mt-[var(--gridBlockDesktop)];
+	}
+
+	.overlay:before {
+		@apply absolute left-0 top-0 z-10 h-full w-full transition-opacity duration-300 content-[''];
+		background-color: color-mix(
+			in srgb,
+			var(--overlayColor) calc(var(--overlayOpacity) * 100%),
+			transparent
+		);
+	}
+
+	.overlay:hover:before {
+		@apply opacity-0;
+	}
+
+	.relative:not(.overlay):hover {
+		@apply opacity-80 transition-opacity duration-300;
+	}
+</style>

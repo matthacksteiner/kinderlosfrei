@@ -1,0 +1,98 @@
+---
+import Button from '@blocks/BlockButton.astro';
+import { isPreviewMode } from '@lib/helpers';
+
+// Props and parameters
+const { data, global, links } = Astro.props;
+const { lang } = Astro.params;
+const path = Astro.url.pathname;
+
+// Language settings
+const currentLang = data.lang;
+const translations = global.translations;
+const defaultLang = global.defaultLang.code;
+const prefixDefaultLocale = global.prefixDefaultLocale;
+const effectiveLang = lang || currentLang;
+
+// UI settings
+const logoAlign = global.logoAlign;
+const isPreview = isPreviewMode();
+
+// Utility function for common classes
+const getCommonClasses = (item, isActive, isLast) => [
+	'nav-link',
+	'max-lg:mb-8',
+	logoAlign === 'center' ? 'lg:my-2' : 'lg:mr-16 2xl:mr-24',
+	isActive && 'active',
+	isLast && '!mr-0',
+	...(Array.isArray(item.classes) ? item.classes : [item.classes]),
+];
+---
+
+{
+	links &&
+		links.map((item, index) => {
+			if (!item) return null;
+			const isUrl = item.type === 'url';
+			const isPopup = item.popup === true;
+
+			// Determine if we should include language prefix
+			const shouldIncludeLanguage =
+				translations.length > 0 &&
+				effectiveLang &&
+				(prefixDefaultLocale || effectiveLang !== defaultLang);
+
+			// Construct base href
+			let href = isUrl
+				? item.href
+				: item.hash
+				? `${shouldIncludeLanguage ? '/' + effectiveLang : '/'}#${item.hash}`
+				: shouldIncludeLanguage
+				? `/${effectiveLang}/${item.uri}`
+				: `/${item.uri}`;
+
+			// Handle preview mode URLs
+			if (isPreview && !isUrl) {
+				const parts = href.split('/').filter(Boolean);
+				if (shouldIncludeLanguage) {
+					const hasLang = parts[0] === effectiveLang;
+					const cleanParts = hasLang ? parts : [effectiveLang, ...parts];
+					href = `/preview/${cleanParts.join('/')}`;
+				} else {
+					href = `/preview/${parts.join('/')}`;
+				}
+			}
+
+			// Link attributes
+			const target = isUrl ? `${isPopup ? '_blank' : '_self'}` : undefined;
+			const rel = isUrl ? `${isPopup ? 'noopener noreferrer' : ''}` : undefined;
+			const isActive = path.includes(item.uri);
+			const isLast = translations.length === 0 && index === links.length - 1;
+
+			// Render appropriate component
+			if (item.classes.includes('cta')) {
+				return (
+					<Button
+						link={{ ...item, href }}
+						global={global}
+						className={getCommonClasses(item, isActive, isLast).join(' ')}
+						data-astro-prefetch
+					>
+						{item.title}
+					</Button>
+				);
+			}
+
+			return (
+				<a
+					href={href}
+					target={target}
+					rel={rel}
+					class:list={getCommonClasses(item, isActive, isLast)}
+					data-astro-prefetch
+				>
+					{item.title}
+				</a>
+			);
+		})
+}

@@ -1,0 +1,73 @@
+---
+const {
+	items,
+	font,
+	color,
+	size,
+	align,
+	iconSize,
+	iconGap,
+	iconListGap,
+	iconDirection,
+	metadata,
+} = Astro.props;
+---
+
+<div
+	id={metadata?.identifier || undefined}
+	class:list={['blockIconlist', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
+>
+	<ul
+		class:list={[
+			'list',
+			'flex',
+			iconDirection === 'Horizontal' ? 'flex-row' : 'flex-col',
+		]}
+		style={`row-gap: ${iconGap}px`}
+	>
+		{
+			items.map((item) => (
+				<li>
+					<a
+						href={item.url}
+						target="_blank"
+						rel="noopener"
+						class:list={['link', 'flex']}
+						style={`column-gap: ${iconListGap}px;`}
+						aria-label="icon list item"
+					>
+						{item.icon && (
+							<div
+								set:html={item.icon.source}
+								class:list={['icon', `text--${color}`]}
+								style={`height: ${iconSize}px; width: ${iconSize}px;`}
+							/>
+						)}
+						<span
+							class:list={[
+								'text',
+								`font--${size}`,
+								`text--${color}`,
+								`text--${align}`,
+							]}
+						>
+							{item.text}
+						</span>
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</div>
+
+<style lang="css" define:vars={{ font }}>
+	.blockIconlist {
+		font-family: var(--font);
+	}
+	.link,
+	.icon,
+	.text {
+		@apply flex items-center;
+	}
+</style>

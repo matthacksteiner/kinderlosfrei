@@ -1,0 +1,127 @@
+---
+import ImageComponent from '@components/ImageComponent.astro';
+
+const {
+	global,
+	images,
+	layoutType,
+	lightbox,
+	viewMobile,
+	viewDesktop,
+	viewPaddingMobile,
+	viewPaddingDesktop,
+	ratioMobile,
+	ratioDesktop,
+	span,
+	metadata,
+	aboveFold,
+} = Astro.props;
+// Convert padding values to numbers for CSS variables
+const paddingDesktopValue = viewPaddingDesktop
+	? parseInt(viewPaddingDesktop)
+	: 0;
+const paddingMobileValue = viewPaddingMobile ? parseInt(viewPaddingMobile) : 0;
+
+// Base classes for different layout types
+let layoutClass = 'grid-layout';
+if (layoutType === 'masonry') {
+	layoutClass = 'masonry-layout';
+}
+
+const itemSpan = span / viewDesktop;
+
+// Determine loading strategy based on aboveFold
+const loadingStrategy = aboveFold ? 'eager' : 'lazy';
+---
+
+<section
+	id={metadata?.identifier || undefined}
+	class:list={['blockGallery', 'blocks', metadata?.classes]}
+	{...metadata?.attributes}
+	data-layouttype={layoutType}
+	data-viewmobile={viewMobile}
+	data-viewdesktop={viewDesktop}
+	data-viewpaddingmobile={viewPaddingMobile}
+	data-viewpaddingdesktop={viewPaddingDesktop}
+>
+	<div class:list={[layoutClass]}>
+		{
+			images?.map((image) => (
+				<div class="gallery-item">
+					<div class="image-wrapper">
+						<ImageComponent
+							global={global}
+							image={image}
+							loading={loadingStrategy}
+							ratioMobile={ratioMobile}
+							ratioDesktop={ratioDesktop}
+							span={itemSpan}
+							lightbox={lightbox}
+							aboveFold={aboveFold}
+						/>
+					</div>
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<style
+	lang="css"
+	is:global
+	define:vars={{
+		viewMobile: viewMobile,
+		viewDesktop: viewDesktop,
+		paddingMobile: `${paddingMobileValue}px`,
+		paddingDesktop: `${paddingDesktopValue}px`,
+	}}
+>
+	/* Grid Layout */
+	.blockGallery .grid-layout {
+		@apply grid;
+		grid-template-columns: repeat(var(--viewMobile), 1fr);
+		gap: var(--paddingMobile);
+	}
+
+	@media (min-width: 768px) {
+		.blockGallery .grid-layout {
+			grid-template-columns: repeat(var(--viewDesktop), 1fr);
+			gap: var(--paddingDesktop);
+		}
+	}
+
+	/* Masonry Layout */
+	.blockGallery .masonry-layout {
+		column-count: var(--viewMobile);
+		column-gap: var(--paddingMobile);
+	}
+
+	@media (min-width: 768px) {
+		.blockGallery .masonry-layout {
+			column-count: var(--viewDesktop);
+			column-gap: var(--paddingDesktop);
+		}
+	}
+
+	/* Item Styles */
+	.blockGallery[data-layouttype='masonry'] .gallery-item {
+		@apply mb-4 break-inside-avoid;
+	}
+
+	.medium-zoom-overlay,
+	.medium-zoom-image--opened {
+		z-index: 999;
+	}
+</style>
+
+<script>
+	import mediumZoom from 'medium-zoom';
+
+	document.addEventListener('DOMContentLoaded', () => {
+		mediumZoom('[data-zoomable]', {
+			margin: 24,
+			background: 'rgba(0, 0, 0, 0.8)',
+			scrollOffset: 40,
+		});
+	});
+</script>

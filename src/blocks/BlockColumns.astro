@@ -1,0 +1,39 @@
+---
+import Blocks from '@components/Blocks.astro';
+const { columns, global, span: spanParent, data } = Astro.props;
+---
+
+<section class="blockColumns grid-default">
+	{
+		columns && (
+			<>
+				{columns.map((column, index) => {
+					const spanChild = column.span;
+					const span = spanChild / (12 / spanParent);
+					const blocks = column.blocks;
+					const colClass = `column lg:col-span-${spanChild}
+
+				${blocks.length > 0 ? 'col-span-6' : 'hidden lg:block'} `;
+
+					return (
+						<section class={colClass}>
+							<Blocks
+								blocks={blocks}
+								global={global}
+								span={span}
+								backgroundContainer="container"
+								data={data}
+							/>
+						</section>
+					);
+				})}
+			</>
+		)
+	}
+</section>
+
+<style lang="css" is:global>
+	.blockGrid > .blockColumns {
+		@apply grid grid-cols-6 gap-x-[var(--gridGapMobile)] gap-y-[var(--gridGapMobile)] lg:grid-cols-12 lg:gap-x-[var(--gridGapDesktop)] lg:gap-y-[var(--gridGapDesktop)];
+	}
+</style>

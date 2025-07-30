@@ -1,0 +1,118 @@
+---
+/**
+ * Link Component
+ *
+ * Renders different types of links (URL, page, file, email, telephone) with proper attributes
+ * and language handling. Supports popup windows and file downloads.
+ *
+ * @component
+ * @example
+ * ```astro
+ * <Link
+ *   link={{
+ *     type: 'url',
+ *     href: 'https://example.com',
+ *     title: 'External Link',
+ *     popup: true
+ *   }}
+ *   class="custom-class"
+ * />
+ * ```
+ */
+
+interface BaseLink {
+	type: 'url' | 'page' | 'file' | 'email' | 'tel';
+	href: string;
+	title?: string;
+	popup?: boolean;
+}
+
+interface PageLink extends BaseLink {
+	type: 'page';
+	uri: string;
+	hash?: string;
+}
+
+interface FileLink extends BaseLink {
+	type: 'file';
+	downloadFilename?: string;
+}
+
+interface Props {
+	// Required props
+	link: BaseLink | PageLink | FileLink;
+
+	// Optional props
+	class?: string;
+}
+
+const { link, class: className, ...rest } = Astro.props;
+const { lang } = Astro.params;
+const currentLang = lang;
+
+// Input validation
+if (!link) {
+	throw new Error('Missing link prop in Link.astro');
+}
+
+if (!link.type) {
+	throw new Error('Link must have type properties');
+}
+
+if (link.type === 'page' && !('uri' in link)) {
+	throw new Error('Page links must include a uri property');
+}
+
+let href = '';
+switch (link.type) {
+	case 'url':
+		href = link.href;
+		break;
+	case 'page':
+		// Extract URI and hash from the page link, defaulting URI to empty string if not provided
+		const { uri = '', hash } = link as PageLink;
+
+		if (uri === '') {
+			// For home page (empty URI), construct URL with just the language prefix
+			// Format: /language or / (if no language)
+			// Add hash fragment if it exists
+			href = `${currentLang ? `/${currentLang}` : ''}${hash ? `#${hash}` : ''}`;
+		} else {
+			// For other pages, construct URL with language prefix and URI
+			// The URI from CMS already includes the full path, so use it as-is
+			// Format: /language/uri or /uri (if no language)
+			// Add hash fragment if it exists
+			href = `${currentLang ? `/${currentLang}/` : '/'}${uri}${
+				hash ? `#${hash}` : ''
+			}`;
+		}
+		break;
+	case 'file':
+		href = link.href;
+		break;
+	case 'email':
+		href = link.href;
+		break;
+	case 'tel':
+		href = `tel:${link.href}`;
+		break;
+	default:
+		// Fallback for any unhandled link types - cast to BaseLink to access href
+		href = (link as BaseLink).href || '#';
+}
+
+const attributes = {
+	href,
+	...(link.popup ? { target: '_blank', rel: 'noopener' } : {}),
+	...(link.type === 'file' ? { download: '' } : {}),
+};
+const defaultContent = link.title
+	? link.title
+	: link.type === 'page'
+	? (link as PageLink).uri
+	: link.href;
+---
+
+<a {...attributes} {...rest} class:list={[className]}>
+	<slot>{defaultContent}</slot>
+</a>
