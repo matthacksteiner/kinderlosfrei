@@ -11,10 +11,10 @@ package = "./plugins/astro-kirby-sync"
 pretty_urls = false
 
 [build.environment]
-NODE_VERSION = "22"
+NODE_VERSION = "23"
 
 [images]
-remote_images = ["https://cms.baukasten.matthiashacksteiner.net/media/.*"]
+remote_images = [ "https://cms.baukasten.matthiashacksteiner.net/media/.*" ]
 
 [dev]
-autoLaunch = false
+  autoLaunch = false
