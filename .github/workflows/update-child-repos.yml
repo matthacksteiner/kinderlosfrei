@@ -267,7 +267,23 @@ jobs:
             git checkout -b "$UNIQUE_BRANCH_NAME"
             echo "🔀 Merging template changes..."
 
-            if ! git merge template/main --no-edit; then
+            # Create a clean template branch by removing template-specific files
+            echo "🧹 Creating clean template branch..."
+            git checkout -b "clean-template-${RANDOM_SUFFIX}" template/main
+
+            # Remove template-specific files to prevent conflicts
+            if [[ -n "$TEMPLATE_IGNORE_LIST" ]]; then
+              IFS='|' read -ra IGNORE_FILES <<< "$TEMPLATE_IGNORE_LIST"
+              for file in "${IGNORE_FILES[@]}"; do
+                [[ -f "$file" ]] && rm -f "$file"
+              done
+              git add . && git commit -m "Remove template-specific files for merge" --allow-empty
+            fi
+
+            # Switch back to the update branch and merge the cleaned template
+            git checkout "$UNIQUE_BRANCH_NAME"
+
+            if ! git merge "clean-template-${RANDOM_SUFFIX}" --no-edit --allow-unrelated-histories; then
               echo "⚠️ Merge conflicts detected"
               CONFLICTS=true
               CONFLICT_COUNT=$((CONFLICT_COUNT + 1))
@@ -284,14 +300,7 @@ jobs:
                 git commit -m "$COMMIT_MESSAGE [CONTAINS CONFLICTS]" || true
               fi
             else
-              # Remove template files
-              if [[ -n "$TEMPLATE_IGNORE_LIST" ]]; then
-                IFS='|' read -ra IGNORE_FILES <<< "$TEMPLATE_IGNORE_LIST"
-                for file in "${IGNORE_FILES[@]}"; do
-                  [[ -f "$file" ]] && rm -f "$file"
-                done
-                git add . && git commit -m "Remove template files" --allow-empty
-              fi
+              # Template files already cleaned before merge
               SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
               SUCCESS_REPOS+=("$REPO_NAME")
             fi
@@ -309,6 +318,9 @@ jobs:
               ERROR_COUNT=$((ERROR_COUNT + 1))
               ERROR_REPOS+=("$REPO_NAME")
             fi
+
+            # Clean up temporary branch
+            git branch -D "clean-template-${RANDOM_SUFFIX}" 2>/dev/null || true
 
             cd ..
           done <<< "$REPOSITORIES"
