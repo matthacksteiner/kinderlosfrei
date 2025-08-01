@@ -14,11 +14,7 @@ pretty_urls = false
 NODE_VERSION = "23"
 
 [images]
-<<<<<<< HEAD
 remote_images = [ "https://cms.kinderlosfrei.matthiashacksteiner.net/media/.*" ]
-=======
-remote_images = [ "https://cms.baukasten.matthiashacksteiner.net/media/.*" ]
->>>>>>> clean-template-666d3f4a
 
 [dev]
   autoLaunch = false
