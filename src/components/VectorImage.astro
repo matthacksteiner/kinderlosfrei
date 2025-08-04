@@ -90,7 +90,7 @@ const svgClasses = [
 						class={svgClasses}
 						id={image.identifier}
 						set:html={prepareSvgSource(image.source)}
-						aria-label={image.alt}
+						aria-label={image.alt || 'Decorative image'}
 						role="img"
 					/>
 				);
