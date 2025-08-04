@@ -15,3 +15,7 @@ init-project.sh
 
 # This file itself (template ignore list)
 .templateignore
+
+# AI files
+.kiro
+.cursor
