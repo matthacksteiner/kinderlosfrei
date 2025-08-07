@@ -62,7 +62,7 @@ const overlayColor = captionColor || '#000000';
 			/>
 
 			{(fontTitleToggle || fontTextToggle) && captionAlign === 'center' && (
-				<div class="absolute left-2/4 top-2/4 z-20 w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
+				<div class="absolute left-2/4 top-2/4 z-10 w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
 					{fontTitleToggle && (
 						<TitleLevel
 							class:list={[
@@ -103,7 +103,7 @@ const overlayColor = captionColor || '#000000';
 				/>
 
 				{(fontTitleToggle || fontTextToggle) && captionAlign === 'center' && (
-					<div class="absolute left-2/4 top-2/4 z-20 w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
+					<div class="absolute left-2/4 top-2/4 z-10 w-4/5 max-w-[75%] -translate-x-2/4 -translate-y-2/4">
 						{fontTitleToggle && (
 							<TitleLevel
 								class:list={[
@@ -136,7 +136,7 @@ const overlayColor = captionColor || '#000000';
 
 {
 	(fontTitleToggle || fontTextToggle) && captionAlign !== 'center' && (
-		<div class:list={[textContentClass, 'z-20']}>
+		<div class:list={[textContentClass, 'z-10']}>
 			{fontTitleToggle && (
 				<TitleLevel
 					class:list={[
